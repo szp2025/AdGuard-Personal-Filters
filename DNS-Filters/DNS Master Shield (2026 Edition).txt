@@ -1,0 +1,33 @@
+[Adblock Plus 2.0]
+! Title: DNS & Tunnel Stealth 2026 (Eternal)
+! Description: Защита от утечек DNS, DoH-прокси, анонимайзеров и скрытых туннелей.
+! Version: 2.0.0
+
+! --- [1] ЗАСЛОН ОТ СКРЫТЫХ DNS-КАНАЛОВ (DoH/DoT) ---
+||*dns-over-https*^$important
+||*dns-over-tls*^$important
+||*doh-proxy*^$important
+||*dot-proxy*^$important
+
+! --- [2] БЛОКИРОВКА АНОНИМАЙЗЕРОВ И ТУННЕЛЕЙ (VPN/Tor) ---
+||*onion-gateway*^$important
+||*exit-node*^$important
+||*tor-node*^$important
+||*proxy-bypass*^$important
+||*vpn-tunnel*^$important
+
+! --- [3] ЗАЩИТА ОТ DNS-ОТРАВЛЕНИЯ И HIJACKING ---
+||*dns-poisoning*^$important
+||*nxdomain-hijack*^$important
+||*ddns*.*^$important
+
+! --- [4] ПОДОЗРИТЕЛЬНЫЕ ЗОНЫ (Suspicious TLDs) ---
+||*.bit^$important
+||*.onion^$important
+||*.lib^$important
+||*.bazar^$important
+
+! --- [5] ИСКЛЮЧЕНИЯ ДЛЯ СТАБИЛЬНОСТИ (Whitelist) ---
+@@||googleapis.com^$important
+@@||samsung.com^$important
+@@||google.com^$important

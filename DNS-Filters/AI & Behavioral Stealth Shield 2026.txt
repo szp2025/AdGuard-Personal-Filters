@@ -1,0 +1,38 @@
+[Adblock Plus 2.0]
+! Title: AI & Behavioral Stealth Shield 2026 (Eternal)
+! Description: Умная изоляция от нейро-профилирования, поведенческого анализа и анти-скоринга.
+! Version: 2.0.0
+
+! --- [1] НЕЙРО-АНАЛИТИКА И AI TRAINING (Изоляция моделей) ---
+||*vortex.data.microsoft*.*^$important
+||*browser.events.data.microsoft*.*^$important
+||*telemetry.nvidia*.*^$important
+||*openai.com^$important,domain=~openai.com
+||*anthropic.com^$important,domain=~anthropic.com
+||*generativelanguage*.*^$important
+
+! --- [2] BEHAVIORAL ANALYSIS (Поведенческий анти-трекинг) ---
+||*segment*.*^$important
+||*amplitude*.*^$important
+||*mixpanel*.*^$important
+||*logrocket*.*^$important
+||*hotjar*.*^$important
+||*smartlook*.*^$important
+
+! --- [3] АНТИ-СКОРИНГ И RISK-ANALYSIS (Security Check) ---
+||*sift*.*^$important
+||*threatmetrix*.*^$important
+||*cardinalcommerce*.*^$important
+||*trustarc*.*^$important
+||*forter*.*^$important
+
+! --- [4] СКРЫТЫЕ ПИНГИ И HEARTBEAT (Heartbeat Shield) ---
+||*heartbeat*.*^$important
+||*ping*.*^$important
+||*chartbeat*.*^$important
+||*telemetry.sdk*.*^$important
+
+! --- [5] МОНИТОРИНГ СЕССИЙ (Session Replay Shield) ---
+||*fullstory*.*^$important
+||*mouseflow*.*^$important
+||*inspectlet*.*^$important

@@ -1,0 +1,87 @@
+[Adblock Plus 2.0]
+! Title: PARANOID FILTRE 2026 (Eternal & Autonomous)
+! Автор: ChatGPT & Gemini
+! Версия: 2.0.0 (Обновлено 2026-03-15)
+! Описание: Глубокая модернизация с сохранением FR-исключений.
+
+! === [1] УМНЫЙ ГЛОБАЛЬНЫЙ ПЕРИМЕТР (CORE) ===
+||*firebase*.*^$important
+||*crashlytics*.*^$important
+||*analytics*.*^$important
+||*measurement*.*^$important
+||*doubleclick*.*^$important
+||*googletagmanager*.*^$important
+
+! === [2] АВТОНОМНЫЙ ЗАСЛОН SDK (Appsflyer/Adjust/Datadog) ===
+||*appsflyer*.*^$important
+||*adjust*.*^$important
+||*branch.io*^$important
+||*datadoghq*.*^$important
+
+! === [3] META & TIKTOK LOCKDOWN (Smart Masks) ===
+||*graph*.facebook.com^$important
+||*pixel*.facebook.com^$important
+||*analytics*.tiktok.com^$important
+||*byteoversea*.*^$important
+
+! === [4] SECURITY & MALWARE (Eternal Protection) ===
+||*telemetry*.malwarebytes.com^$important
+||*sentry*.*^$important
+||*bugsnag*.*^$important
+||*rollbar*.*^$important
+
+! === [5] ASIA & RUS TRACKERS (Deep Shield) ===
+||*hicloud*.*^$important
+||*mi.com*^$important,domain=~mi.com
+||*umeng*.*^$important
+||*mc.yandex*.*^$important
+||*adfox.yandex*.*^$important
+
+! ==============================================================
+! === ВАШИ ОРИГИНАЛЬНЫЕ ИСКЛЮЧЕНИЯ (TV-FR / MEDIA) - СОХРАНЕНО
+! ==============================================================
+@@||france.tv^$media,script,domain=france.tv|france2.fr|france3.fr|france5.fr|franceinfo.fr
+@@||ftven.fr^$media,script,domain=france.tv|france2.fr|france3.fr|france5.fr
+@@||geo.ftven.fr^$xmlhttprequest,domain=france.tv|franceinfo.fr
+@@||sas.videoplaza.tv^$media,domain=france.tv
+@@||cdnapi.kaltura.com^$media,domain=france.tv|franceinfo.fr
+
+@@||tf1.fr^$media,script
+@@||tf1info.fr^$media,script
+@@||player.tf1.fr^$media,script
+@@||lci.fr^$media,script
+@@||cdn.tf1.fr^$media
+@@||s.tf1.fr^$media
+@@||static.tf1.fr^$media
+@@||tf1.wat.tv^$media
+@@||media.tf1.fr^$media
+
+@@||6play.fr^$media,script
+@@||m6.fr^$media,script
+@@||geo.m6.fr^$xmlhttprequest
+
+@@||francetvinfo.fr^$media,script
+@@||bfmtv.com^$media,script
+@@||leparisien.fr^$media,script
+
+@@||webmaster-gratuite.com^$document,media
+
+! ==============================================================
+! === ВАШИ ОРИГИНАЛЬНЫЕ CRITICAL SERVICES - СОХРАНЕНО
+! ==============================================================
+@@||accounts.google.com^$document,script,xmlhttprequest
+@@||play.google.com^$document,script
+@@||android.clients.google.com^$xmlhttprequest,script
+@@||www.googleapis.com^$xmlhttprequest,script
+@@||clients2.google.com^$xmlhttprequest
+@@||update.googleapis.com^$xmlhttprequest
+@@||gstatic.com^$script,domain=google.com|play.google.com
+
+! ==============================================================
+! === WILDCARD BLOCKS (Autonomous Logic) ===
+||*.analytics.*^$important
+||*.tracking.*^$important
+||*.telemetry.*^$important
+||*.log.*^$important
+||*.collect.*^$important
+! ==============================================================

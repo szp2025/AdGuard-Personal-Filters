@@ -1,0 +1,62 @@
+[Adblock Plus 2.0]
+! Title: Sovereign Shield 2026 (Global Eternal Monolith - Social Hardened)
+! Description: Ультимативная изоляция: Google, Samsung, Facebook, TikTok, Instagram, Yandex, Mail.ru.
+! Version: 9.0.0
+
+! --- [1] СОЦИАЛЬНЫЙ ЩИТ (TikTok, Meta, Telegram) ---
+||*tiktokv.com*^$important
+||*byteoversea.com*^$important
+||*musical.ly*^$important
+||*facebook.com/tr/*^$important
+||*facebook.com/ads/*^$important
+||*instagram.com/logging/*^$important
+||*graph.instagram.com*^$important
+||*whatsapp.com/ppd*^$important
+||*whatsapp.net/cs*^$important
+||*config.telegram.org*^$important
+
+! --- [2] ДИНАМИЧЕСКАЯ БЛОКИРОВКА КОРНЯ (Global) ---
+||*firebase*.googleapis.com^$important
+||*crashlytics*.com^$important
+||*telemetry*.samsungcloud.com^$important
+||*connectivity*.samsungcloud.com^$important
+||*graph*.facebook.com^$important
+||*measurement*.com^$important
+||*metrics*.googleapis.com^$important
+
+! --- [3] ЭКОСИСТЕМА YANDEX & MAIL.RU ---
+||*metrika*.yandex.*^$important
+||*mc.yandex*.ru^$important
+||*clck.yandex*.ru^$important
+||*yandex*.ru/ads/*^$important
+||*itp.mail.ru*^$important
+||*pixel.mail.ru*^$important
+||*top-fwz1.mail.ru*^$important
+
+! --- [4] YAHOO & WESTERN TRACKERS ---
+||*analytics.yahoo*.com^$important
+||*advertising.yahoo*.com^$important
+||*scorecardresearch*.com^$important
+
+! --- [5] БЛОКИРОВКА ОБХОДНЫХ ПУТЕЙ (GVT & Redirectors) ---
+||*.gvt1.com^$important
+||*.googlesyndication.com^$important
+||*.doubleclick.net^$important
+||*ocsp.pki.goog*^$important
+
+! --- [6] ИЗОЛЯЦИЯ КОНТЕНТА И ОБЛАКОВ ---
+||*.internal.storage.samsungcloud.com^$important
+||*workspacevideo*.googleapis.com^$important
+||*googleusercontent*.com^$important
+||*picasaweb*.google.com^$important
+
+! --- [7] АНТИ-ИДЕНТИФИКАЦИЯ И ПРОВИЖИНИНГ ---
+||*fingerprint*.io^$important
+||*fingerprintjs*.com^$important
+||*device-metrics*.com^$important
+||device-provisioning.googleapis.com^$important
+
+! --- [8] СИСТЕМНЫЕ СЛУЖБЫ SAMSUNG & CALLAPP ---
+||*.callapp.com^$important
+||*ospserver*.net^$important
+||*samsungcloud*.com^$important

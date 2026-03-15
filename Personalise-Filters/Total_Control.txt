@@ -1,0 +1,54 @@
+[Adblock Plus 2.0]
+! Title: The Omni-Protocol 2026 (Eternal)
+! Description: Умная фильтрация аналитики, промо-акций и скрытых систем сбора данных.
+! Version: 2.1.0
+! Обновлено: 15 марта 2026 г.
+
+! --- [1] ГЛОБАЛЬНЫЕ МАСКИ АНАЛИТИКИ (Global Stats) ---
+||*analytics*.*^$important
+||*metrics*.*^$important
+||*telemetry*.*^$important
+||*log-upload*.*^$important
+||*usage-stats*.*^$important
+
+! --- [2] ТЕХНИЧЕСКИЙ ШПИОНАЖ (Crash & Logs) ---
+||*crashlytics*.*^$important
+||*bugsnag*.*^$important
+||*sentry*.*^$important
+||*bugzilla*.*^$important
+||*instabug*.*^$important
+
+! --- [3] МАРКЕТИНГОВЫЙ ПЕРИМЕТР (Growth & Promo) ---
+||*growthpromo*.*^$important
+||*app-measurement*.*^$important
+||*ads-delivery*.*^$important
+||*promos.google*.*^$important
+||*survey*.*^$important
+||*appsflyer*.*^$important
+||*adjust*.*^$important
+||*branch.io*^$important
+
+! --- [4] ПОВЕДЕНЧЕСКИЙ АНАЛИЗ (Behavioral) ---
+||*segment*.*^$important
+||*amplitude*.*^$important
+||*mixpanel*.*^$important
+||*fullstory*.*^$important
+||*logrocket*.*^$important
+
+! --- [5] МОБИЛЬНАЯ РЕКЛАМА (In-App Ads) ---
+||*doubleclick*.*^$important
+||*unityads*.*^$important
+||*vungle*.*^$important
+||*pangle*.*^$important
+
+! --- [6] ХИРУРГИЧЕСКАЯ БЛОКИРОВКА (Yandex/Promo Fix) ---
+||*yastatic.net*/metrika/*^$important
+||*yastatic.net*/adv/*^$important
+||*clck.yandex*.*^$important
+||*mc.yandex*.*^$important
+||*promo*.*^$important
+
+! --- [7] ИСКЛЮЧЕНИЯ ДЛЯ СТАБИЛЬНОСТИ ---
+@@||googleapis.com^$important
+@@||samsung.com^$important
+@@||apple.com^$important

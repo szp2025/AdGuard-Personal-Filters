@@ -1,0 +1,45 @@
+[Adblock Plus 2.0]
+! Title: Inbound Shield 2026 (Eternal)
+! Description: Умная блокировка всплывающих окон, видео-рекламы и вредоносных модулей.
+! Version: 2.0.0
+
+! --- [1] VIDEO & DISPLAY ADS (Анти-роллы и вставки) ---
+||*video-ads*^$important
+||*ad-delivery*^$important
+||*midroll*.*^$important
+||*preroll*.*^$important
+||*postroll*.*^$important
+||*outstream*.*^$important
+
+! --- [2] POP-UP & OVERLAY (Защита от перекрытия экрана) ---
+||*popunder*.*^$important
+||*pop-up*.*^$important
+||*overlay*.*^$important
+||*interstitial*.*^$important
+||*notification-spam*.*^$important
+
+! --- [3] AD-EXCHANGE & RTB (Рекламные биржи) ---
+||*adsystem*.*^$important
+||*adserver*.*^$important
+||*doubleclick*.*^$important
+||*taboola*.*^$important
+||*outbrain*.*^$important
+
+! --- [4] BEACONS & PIXELS (Невидимые жучки) ---
+||*pixel*.*^$important
+||*tracking-pixel*.*^$important
+||*web-beacon*.*^$important
+||*beacons*.*^$important
+
+! --- [5] MALWARE & EXPLOITS (Защита от угроз) ---
+||*crypto-miner*.*^$important
+||*web-miner*.*^$important
+||*malvertising*.*^$important
+||*fake-update*.*^$important
+||*phishing*.*^$important
+
+! --- [6] ИСКЛЮЧЕНИЯ (Whitelist для стабильности систем) ---
+@@||googleapis.com^$important
+@@||samsung.com^$important
+@@||google.com^$important
+@@||apple.com^$important

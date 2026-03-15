@@ -1,0 +1,47 @@
+[Adblock Plus 2.0]
+! Title: Security Shield 2026 (Eternal)
+! Description: Умная защита от эксплойтов, малвари, шпионского ПО и атак на сотовые протоколы.
+! Version: 2.0.0
+
+! --- [1] MALWARE & RANSOMWARE (Анти-вирусный заслон) ---
+||*malware*.*^$important
+||*trojan*.*^$important
+||*ransomware*.*^$important
+||*spyware*.*^$important
+||*keylogger*.*^$important
+||*rootkit*.*^$important
+
+! --- [2] EXPLOIT & INJECTION (Защита от взлома) ---
+||*exploit*.*^$important
+||*backdoor*.*^$important
+||*web-shell*.*^$important
+||*sql-inject*.*^$important
+||*remote-exec*.*^$important
+||*zero-day*.*^$important
+
+! --- [3] C&C & BOTNETS (Обрыв связи с хакером) ---
+||*cnc-server*.*^$important
+||*botnet*.*^$important
+||*cobaltstrike*.*^$important
+||*meterpreter*.*^$important
+||*rat-stealer*.*^$important
+
+! --- [4] MOBILE & NETWORK ATTACKS (Специфические угрозы) ---
+||*imsi-catcher*.*^$important
+||*sim-jacker*.*^$important
+||*ss7-attack*.*^$important
+||*pegasus*.*^$important
+||*zero-click*.*^$important
+||*smpp-exploit*.*^$important
+
+! --- [5] DATA EXFILTRATION (Защита от кражи данных) ---
+||*data-exfil*.*^$important
+||*cookie-theft*.*^$important
+||*credential-harvesting*.*^$important
+||*identity-theft*.*^$important
+
+! --- [6] ИСКЛЮЧЕНИЯ (Whitelist для системных служб) ---
+@@||googleapis.com^$important
+@@||samsung.com^$important
+@@||google.com^$important
+@@||apple.com^$important
