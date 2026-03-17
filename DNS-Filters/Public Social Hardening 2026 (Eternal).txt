@@ -1,0 +1,28 @@
+[Adblock Plus 2.0]
+! Title: Public & Social Hardening 2026 (Eternal)
+! Description: Защита в публичных сетях, блокировка трекеров QR-кодов и умных городов.
+! Version: 1.2.0
+! Last modified: 2026-03-16 03:11
+! Rules count: 27
+
+! === [1] PUBLIC WI-FI & SMART CITY (Защита в сетях) ===
+||*city-wifi-portal*.*^$important
+||*public-hotspot-auth*.*^$important
+||*smart-city-tracker*.*^$important
+||*iot-analytics*.*^$important
+
+! === [2] QR-CODE & PHYSICAL TRACKING (Скрытые метки) ===
+||*qr-tracker*.*^$important
+||*dynamic-qr-stats*.*^$important
+||*location-beacon*.*^$important
+
+! === [3] SOCIAL HARDENING (Ограничение соцсетей) ===
+||*graph.facebook.com*^$important
+||*pixel.facebook.com*^$important
+||*analytics.tiktok.com*^$important
+||*connect.ok.ru*^$important
+||*vk.com/rtrg*^$important
+
+! === [4] PRIVACY STABILITY ===
+@@||github.com^$document
+@@||googleapis.com^$important
