@@ -689,3 +689,32 @@
 ||*diagnostics*.*^$important,domain=~apple.com|~samsung.com
 ||*telemetry-service*.*^$important
 
+
+! =========================================================================
+! [26] METADATA & FINGERPRINT LOCKDOWN 2026 (ETERNAL)
+! =========================================================================
+
+! --- Уровень 1: Умная анти-идентификация (ID & Fingerprint) ---
+||*fingerprint*.*^$important
+||*fpjs*.*^$important
+||*h-sdk*.*^$important
+||*measurement*.*^$important
+||*device-metrics*.*^$important
+
+! --- Уровень 2: Hardware Stealth (Защита параметров железа) ---
+||*hardware-stats*.*^$important
+||*metrics.icloud*.*^$important,domain=~apple.com
+||*pixel-metrics*.*^$important
+||*sensor-data*.*^$important
+
+! --- Уровень 3: Автономный заслон SDK (Crashlytics & Tracking) ---
+||*crashlytics*.*^$important
+||*bugsnag*.*^$important
+||*branch.io*^$important
+||*criteo*.*^$important
+||*doubleclick*.*^$important
+
+! --- Уровень 4: Блокировка скрытых API (WebRTC & Canvas Leak) ---
+||*canvas-fingerprint*.*^$important
+||*webrtc-test*.*^$important
+||*client-hints*.*^$important
