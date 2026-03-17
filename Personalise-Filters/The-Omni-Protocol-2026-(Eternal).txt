@@ -196,29 +196,42 @@
 ||yandex.*/clck/*$network,important
 
 ! =========================================================================
-! [6] HIDE SEARCH QUERIES (ETERNAL EDITION): СКРЫТЬ ПОИСКОВЫЕ ЗАПРОСЫ
+! [6] HIDE SEARCH QUERIES: UNIVERSAL STEALTH BYPASS (v11.2.0)
 ! =========================================================================
-! Очистка заголовка Referer для всех переходов из поисковиков
-! Сайт-получатель увидит только "google.com", но не твой запрос
-||*$referer=~/(^https?:\/\/[^\/]+\/)/,domain=google.*|yandex.*|bing.com|duckduckgo.com|baidu.com|ecosia.org
 
-! Удаление параметров перенаправления (Redirect Tracking)
-! Поисковики часто прогоняют тебя через промежуточную ссылку для записи клика
-||google.*$removeparam=url,domain=google.*
-||google.*$removeparam=q,domain=google.*,important
-||yandex.*$removeparam=url,domain=yandex.*
+! --- Уровень 1: Глобальная маскировка Referer (Анонимный переход) ---
+! Маскируем полный адрес запроса. Сайт увидит только "google.com", 
+! но не узнает, что именно ты искал. Работает для всех зеркал (*.com, *.ru, *.fr).
+||*$referer=~/(^https?:\/\/[^\/]+\/)/,domain=google.*|yandex.*|bing.com|duckduckgo.com|baidu.com|ecosia.org|yahoo.com
+
+! --- Уровень 2: Anti-Redirect & Link Purge (Чистые ссылки) ---
+! Вырезаем параметры, через которые поисковики записывают твой клик.
+||google.*$removeparam=/^(url|q|res|usg)/,domain=google.*,important
+||yandex.*$removeparam=/^(url|text|uuid|click|key)/,domain=yandex.*,important
 ||bing.com$removeparam=url
+||*$removeparam=rdata,domain=duckduckgo.com
 
-! Скриптлет-блокировщик атрибута 'ping'
-! Запрещает браузеру "стучать" поисковику, на какую ссылку из выдачи ты нажал
-#%#//scriptlet("set-constant", "navigator.sendBeacon", "true")
-#%#//scriptlet("abort-current-inline-script", "window.ping")
+! --- Уровень 3: Блокировка фоновой слежки (Beacon & Ping) ---
+! Запрещаем браузеру отправлять отчеты о кликах в фоновом режиме.
+! Используем 'undefined' для ping, чтобы не вызывать ошибок в скриптах сайтов.
+#%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
+#%#//scriptlet("set-constant", "window.ping", "undefined")
+#%#//scriptlet("set-attribute", "a[ping]", "ping", "")
 
-! Удаление идентификаторов "клик-фрода" (скрывают твою уникальность для рекламных сетей)
+! --- Уровень 4: Уничтожение Click-Fraud ID (Рекламные метки) ---
+! Удаляем идентификаторы, которые связывают твой клик с рекламным профилем.
 ||*$removeparam=gciid
 ||*$removeparam=gckid
 ||*$removeparam=gclsrc
+||*$removeparam=_ga
+||*$removeparam=_gl
+||*$removeparam=msclkid
 
+! --- Уровень 5: Скриптлеты для очистки выдачи ---
+! Удаляем JS-обработчики, которые подменяют прямые ссылки на трекинговые при клике.
+#%#//scriptlet("set-constant", "rwt", "undefined")
+#%#//scriptlet("abort-current-inline-script", "google.navigation")
+#%#//scriptlet("prevent-listener", "click", "yandex.ru/clck")
 
 ! =========================================================================
 ! [7] PRIVACY HEADERS: GLOBAL PRIVACY CONTROL & DO NOT TRACK
