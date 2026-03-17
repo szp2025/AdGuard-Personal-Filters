@@ -188,3 +188,24 @@
 ||*$removeparam=gciid
 ||*$removeparam=gckid
 ||*$removeparam=gclsrc
+
+
+! =========================================================================
+! [7] PRIVACY HEADERS: GLOBAL PRIVACY CONTROL & DO NOT TRACK
+! =========================================================================
+! Принудительная вставка заголовка Do Not Track (DNT) во все HTTP-запросы
+||*$header=DNT:1,important
+
+! Поддержка стандарта Global Privacy Control (GPC)
+! Сообщает сайтам, что ты запрещаешь продажу или передачу своих данных
+||*$header=Sec-GPC:1,important
+
+! Скриптлеты для защиты на уровне браузерного API (JS)
+! Если сайт через скрипт проверит настройки приватности, он получит ответ "Запрещено"
+#%#//scriptlet("set-constant", "navigator.doNotTrack", "1")
+#%#//scriptlet("set-constant", "navigator.msDoNotTrack", "1")
+#%#//scriptlet("set-constant", "window.doNotTrack", "1")
+#%#//scriptlet("set-constant", "navigator.globalPrivacyControl", "true")
+
+! Блокировка попыток сайтов игнорировать сигналы GPC
+#%#//scriptlet("abort-on-property-read", "window.optOut")
