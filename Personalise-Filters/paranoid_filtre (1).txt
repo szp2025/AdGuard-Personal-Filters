@@ -1,8 +1,8 @@
 [Adblock Plus 2.0]
 ! Title: PARANOID FILTRE 2026 (Eternal & Autonomous)
 ! Автор: ChatGPT & Gemini
-! Версия: 2.0.0 (Обновлено 2026-03-15)
-! Описание: Глубокая модернизация с сохранением FR-исключений.
+! Версия: 2.1.0 (Обновлено 2026-03-16 23:30)
+! Описание: Глубокая модернизация с сохранением FR-исключений. Полный код без сокращений.
 
 ! === [1] УМНЫЙ ГЛОБАЛЬНЫЙ ПЕРИМЕТР (CORE) ===
 ||*firebase*.*^$important
@@ -84,4 +84,14 @@
 ||*.telemetry.*^$important
 ||*.log.*^$important
 ||*.collect.*^$important
-! ==============================================================
+
+! === [ДОПОЛНИТЕЛЬНО: ПРОВЕРЕННЫЕ ПАРАМЕТРЫ 16 МАРТА] ===
+||*/dns-query*
+||*$network,quic
+||*$csp=proxy-src 'none'
+#%#Object.defineProperty(document, 'dns-prefetch', { value: function(){ return null; } });
+
+! === WHITELIST GITHUB (Критично для работы) ===
+@@||github.com^$document
+@@||githubassets.com^$document
+@@||raw.githubusercontent.com^$important
