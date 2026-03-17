@@ -51,50 +51,35 @@
 
 
 ! =========================================================================
-! [3] TRACKER GENOCIDE (ETERNAL EDITION): ТОТАЛЬНОЕ УНИЧТОЖЕНИЕ СЛЕЖКИ
+! [3] TRACKER GENOCIDE (BALANCED EDITION): УМНЫЙ ЩИТ
 ! =========================================================================
-! --- Уровень 1: Поведенческий щит (Session Replay & Heatmaps) ---
-! Уничтожаем тех, кто записывает твои клики и движения пальца
-||*hotjar.com^$important
-||*amplitude.com^$important
-||*mixpanel.com^$important
+! --- Уровень 1: Поведенческий щит ---
+! Оставляем блокировку, но даем дышать важным сервисам
+||*hotjar.com^$important,domain=~yandex.ru|~loirehabitat.fr
+||*amplitude.com^$important,domain=~revolut.com|~n26.com
 ||*clarity.ms^$important
-||*mouseflow.com^$important
-||*fullstory.com^$important
 
-! --- Уровень 2: JS-Инъекции и обман (Scriptlets) ---
-! Подменяем функции трекеров "пустышками", чтобы сайты не ломались, думая что всё ок
-#%#//scriptlet("abort-current-inline-script", "google-analytics")
-#%#//scriptlet("abort-current-inline-script", "ga")
+! --- Уровень 2: Scriptlets (Смягчение) ---
+! Мы отключаем abort-on-property-read для dataLayer, так как это ломает логику входа на многих сайтах
 #%#//scriptlet("set-constant", "ga.loaded", "true")
-#%#//scriptlet("abort-on-property-read", "dataLayer")
 #%#//scriptlet("prevent-listener", "click", "scorecardresearch.com")
 
-! --- Уровень 3: Агрессивный бан рекламных бирж (RTB) ---
-! Блокируем даже скрытые цепочки перепродажи твоих данных
-||*doubleclick.net^$important,domain=~google.com|~youtube.com
-||*adsystem*.*^$important
-||*adserver*.*^$important
-||*adnxs.com^$important
-||*openx.net^$important
-||*rubiconproject.com^$important
-||*pubmatic.com^$important
+! --- Уровень 3: Рекламные биржи ---
+! Добавляем исключение для Яндекса и французских госуслуг
+||*doubleclick.net^$important,domain=~google.com|~youtube.com|~yandex.ru
+||*adsystem*.*^$important,domain=~yandex.ru|~loirehabitat.fr
+||*adserver*.*^$important,domain=~yandex.ru
 
-! --- Уровень 4: Мобильные SDK (Защита внутри приложений) ---
-! Вырезаем аналитику из приложений, оставляя только критический функционал
-||*appsflyer.com^$important,domain=~revolut.com|~n26.com|~apple.com
-||*adjust.com^$important
-||*branch.io^$important
-||*kochava.com^$important
-||*crashlytics.com^$important
+! --- Level 4: Мобильные SDK ---
+! Расширяем список исключений, чтобы приложения не "зависали"
+||*appsflyer.com^$important,domain=~revolut.com|~n26.com|~apple.com|~gomining.com
+||*crashlytics.com^$important,domain=~google.com|~samsung.com|~revolut.com
 
-! --- Уровень 5: Очистка от "жучков" (Tracking Pixels) ---
-! Уничтожаем невидимые картинки размером 1х1 пиксель
-||*/pixel.gif$important
-||*/track.gif$important
-||*web-beacon*.*^$important
-||*beacons*.*^$important
-||*metrics.*^$important,domain=~google.com|~youtube.com|~samsung.com|~apple.com|~waze.com
+! --- Level 5: Очистка от жучков ---
+! Самый важный фикс: разрешаем метрику для Яндекса и системных нужд, иначе будет 404/белая страница
+||*/pixel.gif$important,domain=~yandex.ru|~loirehabitat.fr
+||*web-beacon*.*^$important,domain=~yandex.ru
+||*metrics.*^$important,domain=~google.com|~youtube.com|~samsung.com|~apple.com|~waze.com|~yandex.ru|~loirehabitat.fr
 
 ! =========================================================================
 ! [4] URL CLEANER (ETERNAL EDITION): ОЧИСТКА ССЫЛОК
