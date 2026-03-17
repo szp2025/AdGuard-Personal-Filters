@@ -371,3 +371,41 @@
 ||*/track.gif$important
 ! Очистка кэша DNS-префетчинга
 #%#Object.defineProperty(document, 'dns-prefetch', { value: function(){ return null; } });
+
+
+! =========================================================================
+! [34] DEEP CONTENT HARDENING: ГЛУБОКАЯ ФИЛЬТРАЦИЯ КОНТЕНТА
+! =========================================================================
+! Блокировка скрытых запросов к серверам аналитики (замена тумблера "Фильтрация HTTPS")
+||*$websocket,important
+||*$ping,important
+||*$csp=connect-src 'self' *,important
+
+! =========================================================================
+! [35] SMARTPHONE TELEMETRY: (SAMSUNG/GOOGLE/SYSTEM)
+! =========================================================================
+! Остановка фонового сбора данных самой ОС
+||samsung-com.akamaized.net^$important
+||samsungcloud.com^$important
+||events.data.microsoft.com^$important
+||telemetry.google.com^$important
+
+! =========================================================================
+! [36] GLOBAL WILDCARD SHIELD: (АВТОНОМНЫЙ ПЕРЕХВАТ)
+! =========================================================================
+! Эти правила ловят трекеры, которых еще нет в базах (Wildcards)
+||*-analytics.*^$important
+||*track.*^$important,domain=~google.com|~yandex.ru|~github.com
+||*log.*^$important,domain=~google.com|~samsung.com|~github.com
+||*metrics.*^$important
+||*telemetry.*^$important
+
+! =========================================================================
+! [37] SYSTEM STABILITY: (WHITE-LIST ДЛЯ ЖИЗНЕННО ВАЖНЫХ СЛУЖБ)
+! =========================================================================
+! Чтобы всё вышеперечисленное не сломало телефон и оплату
+@@||connectivitycheck.gstatic.com^$important
+@@||clients3.google.com^$important
+@@||play.google.com^$important
+@@||itunes.apple.com^$important
+@@||icloud.com^$important
