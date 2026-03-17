@@ -754,3 +754,36 @@
 ! Вырезаем трекеры, которые следят за тобой в момент оплаты (Checkout)
 ||*checkout-analytics*.*^$important
 ||*payment-metrics*.*^$important
+
+
+
+! =========================================================================
+! [28] PUBLIC & SOCIAL HARDENING 2026 (ETERNAL)
+! =========================================================================
+
+! --- Уровень 1: Public Wi-Fi & Smart City (Защита в городских сетях) ---
+! Блокируем системы сбора данных умных городов и порталы авторизации
+||*city-wifi-portal*.*^$important
+||*public-hotspot-auth*.*^$important
+||*smart-city-tracker*.*^$important
+||*iot-analytics*.*^$important
+
+! --- Уровень 2: QR-Code & Physical Tracking (Скрытые метки) ---
+! Уничтожаем трекеры, которые активируются при сканировании QR-кодов
+||*qr-tracker*.*^$important
+||*dynamic-qr-stats*.*^$important
+||*location-beacon*.*^$important
+
+! --- Уровень 3: Social Hardening (Жесткая изоляция соцсетей) ---
+! Обрезаем "щупальца" социальных графов, которые следят за тобой на сторонних сайтах
+||*graph.facebook.com*^$important
+||*pixel.facebook.com*^$important
+||*analytics.tiktok.com*^$important
+||*connect.ok.ru*^$important
+||*vk.com/rtrg*^$important
+
+! --- Уровень 4: Privacy Stability (Белые списки для критических узлов) ---
+! Гарантируем работу кода и библиотек для стабильности интерфейсов
+@@||github.com^$document
+@@||googleapis.com^$important
+
