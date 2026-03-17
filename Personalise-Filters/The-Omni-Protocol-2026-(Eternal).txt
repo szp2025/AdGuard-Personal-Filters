@@ -1153,3 +1153,23 @@
 @@||gomining.com^$important
 @@||samsung.com^$important
 @@||apple.com^$important
+
+
+! =========================================================================
+! [42] FINAL REFINEMENT: YANDEX FIX & ANTI-ADBLOCK KILLER (v11.0.0)
+! =========================================================================
+
+! --- Уровень 1: Разблокировка Yandex.ru (чтобы сайт открывался) ---
+@@||yandex.ru^$document
+@@||yandex.com^$document
+@@||yastatic.net^$important
+@@||yandex.st^$important
+
+! --- Уровень 2: Anti-Adblock (чтобы сайты не видели AdGuard) ---
+##+js(set-constant, AdGuard, undefined)
+##+js(set-constant, canRunAds, true)
+##+js(set-constant, abp, false)
+
+! --- Уровень 3: Дополнительный Whitelist ---
+@@||*.gomining.com^$important
+@@||*.revolut.com^$important
