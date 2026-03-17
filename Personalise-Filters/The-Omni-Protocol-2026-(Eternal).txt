@@ -626,7 +626,7 @@
 @@||android.apis.google.com^$important
 @@||connectivitycheck.android.com^$important
 @@||play.googleapis.com^$important
-@@||gvt1.com^$important
+@@||*gvt1.com^$important
 
 ! Отключаем блокировку QUIC именно для Google (чтобы Gmail не тормозил)
 @@||google.com^$network,quic,important
@@ -634,9 +634,3 @@
 
 ! Гарантия работы вложений в Gmail
 @@||mail-attachment.googleusercontent.com^$important
-
-! === [FIX] GVT1 INFRASTRUCTURE (ОБНОВЛЕНИЯ GOOGLE PLAY) ===
-@@||gvt1.com^$important
-@@||*.gvt1.com^$important
-@@||gvt2.com^$important
-@@||*.gvt2.com^$important
