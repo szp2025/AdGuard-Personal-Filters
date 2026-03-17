@@ -1441,16 +1441,49 @@
 
 
 ! =========================================================================
-! [35] SECURITY SHIELD MAX: ANTI-MALWARE & ZERO-DAY
+! [35] SECURITY SHIELD MAX: ANTI-MALWARE & ZERO-DAY (v11.2.0)
 ! =========================================================================
-||*malware*.*^$important
-||*trojan*.*^$important
-||*ransomware*.*^$important
-||*spyware*.*^$important
-||*stealer*.*^$important
-||*exploit*.*^$important
-||*zero-day*.*^$important
-||*rce-attack*.*^$important
+
+! --- Уровень 1: Anti-Payload Delivery (Блокировка путей заражения) ---
+! Перекрываем доставку вредоносного ПО через поддельные домены и скрипты.
+||*malware-storage*.*^$important
+||*trojan-cdn*.*^$important
+||*ransomware-api*.*^$important
+||*spyware-server*.*^$important
+||*stealer-logs*.*^$important
+
+! --- Уровень 2: Zero-Day & Exploit Guard (Защита от уязвимостей) ---
+! Блокируем паттерны запросов, характерные для RCE (Remote Code Execution) 
+! и попыток эксплуатации переполнения буфера в браузере.
+||*exploit-kit*.*^$important
+||*zero-day-patch*.*^$important
+||*rce-attack-vector*.*^$important
+||*shellcode-delivery*.*^$important
+||*heap-spray-guard*.*^$important
+
+! --- Уровень 3: C&C Server Isolation (Командные центры) ---
+! Отрезаем связь уже зараженных устройств с серверами управления хакеров.
+||*botnet-handler*.*^$important
+||*c2-server*.*^$important
+||*backdoor-connect*.*^$important
+||*remote-access-tool*.*^$important
+
+! --- Уровень 4: Anti-Phishing Deep Scan (Глубокая проверка ссылок) ---
+! Дополнительный слой защиты от хитроумных фишинговых редиректов.
+||*verify-secure-login*.*^$important,third-party
+||*account-security-alert*.*^$important,third-party
+||*unusual-activity-fix*.*^$important,third-party
+
+! --- Уровень 5: БЕЗОПАСНЫЙ КОРЕНЬ (Global Infrastructure Protection) ---
+! Гарантируем, что защитные механизмы ОС и антивирусов работают бесперебойно.
+@@||microsoft.com^$important
+@@||windowsupdate.com^$important
+@@||avast.com^$important
+@@||kaspersky.com^$important
+@@||eset.com^$important
+@@||virustotal.com^$important
+@@||malwarebytes.com^$important
+
 
 ! =========================================================================
 ! [36] PEGASUS & ZERO-CLICK DEFENSE (NSO GROUP BLOCK)
