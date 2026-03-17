@@ -200,3 +200,35 @@
 ||telemetry.sdk.samsung.com^$important
 ||diag.google.com^$important
 ||firebase-settings.googleapis.com^$important
+
+! =========================================================================
+! [19] VIDEO AD-SHIELD: ПОДАВЛЕНИЕ ВИДЕО-РЕКЛАМЫ (YouTube/Twitch/Media)
+! =========================================================================
+! Блокировка рекламных вставок перед и во время видео
+||googlesyndication.com/pagead/js/adsbygoogle.js$important
+||*midroll*.*^$important,media
+||*preroll*.*^$important,media
+||*postroll*.*^$important,media
+! Удаление контейнеров для рекламы в видеоплеерах
+##.ad-showing
+##.video-ads
+
+! =========================================================================
+! [20] APP & WEB FRAME BLOCK: РЕКЛАМА В ПРИЛОЖЕНИЯХ И БРАУЗЕРЕ
+! =========================================================================
+! Блокировка рекламных сетей, часто используемых в бесплатных приложениях
+||ads.mopub.com^$important
+||unityads.unity3d.com^$important
+||app-measurement.com^$important
+||googleads.g.doubleclick.net^$important
+! Скрытие рекламных фреймов и баннеров на страницах
+##iframe[id^="google_ads_frame"]
+##div[class*="ad-box"]
+##[id^="ad_unit"]
+
+! =========================================================================
+! [21] GLOBAL AD-SERVERS: (DNS & NETWORK LEVEL)
+! =========================================================================
+||*ads-delivery*.*^$important
+||*adserver*.*^$important
+||*marketing-api*.*^$important
