@@ -1682,16 +1682,44 @@
 
 
 ! =========================================================================
-! [41] FINAL SYSTEM INTEGRITY (STABILITY GATE)
+! [41] FINAL SYSTEM INTEGRITY: THE STABILITY GATE (v11.2.0)
 ! =========================================================================
+
+! --- Уровень 1: Разработка и репозитории (Dev Ecosystem) ---
+! Гарантируем бесперебойный доступ к коду и ресурсам GitHub.
 @@||github.com^$document,important
 @@||api.github.com^$important
+@@||githubassets.com^$important
+@@||raw.githubusercontent.com^$important
+
+! --- Уровень 2: Финансовая стабильность (FinTech Core) ---
+! Приоритет для банковских шлюзов и систем оплаты.
 @@||revolut.com^$important
 @@||n26.com^$important
 @@||stripe.com^$important
+@@||checkout.stripe.com^$important
 @@||gomining.com^$important
+
+! --- Уровень 3: Инфраструктура производителей (Vendor Integrity) ---
+! Обеспечиваем получение обновлений безопасности и работу системных служб.
 @@||samsung.com^$important
 @@||apple.com^$important
+@@||microsoft.com^$important
+@@||windowsupdate.com^$important
+@@||icloud.com^$important
+
+! --- Уровень 4: Глобальные API и Сервисы (Cloud Services) ---
+! Белый список для базовых библиотек, без которых "ломаются" сайты.
+@@||googleapis.com^$important
+@@||fonts.gstatic.com^$important
+@@||ajax.aspnetcdn.com^$important
+@@||cdn.jsdelivr.net^$important
+
+! --- Уровень 5: DNS & Network Check (Сетевой пульс) ---
+! Разрешаем системные запросы на проверку наличия интернета.
+@@||connectivitycheck.gstatic.com^$important
+@@||captive.apple.com^$important
+@@||msftconnecttest.com^$important
 
 
 ! =========================================================================
