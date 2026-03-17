@@ -1020,3 +1020,67 @@
 ||*fingerprintjs*.com^$important
 ||*device-metrics*.com^$important
 ||device-provisioning.googleapis.com^$important
+
+! =========================================================================
+! [34] INBOUND SHIELD 2026 (APEX STABLE)
+! =========================================================================
+
+! --- Уровень 1: Video Ads & Streaming Defense (Анти-роллы и вставки) ---
+||*video-ads*^$important
+||*ad-delivery*^$important
+||*midroll*.*^$important
+||*preroll*.*^$important
+||*postroll*.*^$important
+||*outstream*.*^$important
+||*in-stream*.*^$important
+||*video-overlay*.*^$important
+
+! --- Уровень 2: Pop-Up & Overlay Control (Защита от перекрытия экрана) ---
+||*popunder*.*^$important
+||*pop-up*.*^$important
+||*overlay*.*^$important
+||*interstitial*.*^$important
+||*notification-spam*.*^$important
+||*sticky-ad*.*^$important
+||*floating-ad*.*^$important
+
+! --- Уровень 3: Ad-Exchange & RTB (Рекламные биржи и аукционы) ---
+||*adsystem*.*^$important
+||*adserver*.*^$important
+||*doubleclick*.*^$important
+||*taboola*.*^$important
+||*outbrain*.*^$important
+||*adnxs*.*^$important
+||*rubiconproject*.*^$important
+
+! --- Уровень 4: Beacons & Tracking Pixels (Невидимые жучки) ---
+||*pixel*.*^$important
+||*tracking-pixel*.*^$important
+||*web-beacon*.*^$important
+||*beacons*.*^$important
+||*telemetry-pixel*.*^$important
+
+! --- Уровень 5: Malware & Exploit Delivery (Защита от активных угроз) ---
+||*crypto-miner*.*^$important
+||*web-miner*.*^$important
+||*malvertising*.*^$important
+||*fake-update*.*^$important
+||*phishing*.*^$important
+||*exploit-kit*.*^$important
+
+! --- Уровень 6: Anti-Shame & Spam Cleaner (Чистка интерфейса) ---
+||*spam-module*.*^$important
+||*newsletter-popup*.*^$important
+||*subscription-wall*.*^$important
+
+! --- Уровень 7: КРИТИЧЕСКИЙ WHITELIST (Financial & System Stability) ---
+@@||github.com^$document
+@@||githubassets.com^$document
+@@||raw.githubusercontent.com^$important
+@@||revolut.com^$important
+@@||n26.com^$important
+@@||stripe.com^$important
+@@||gomining.com^$important
+@@||googleapis.com^$important
+@@||samsung.com^$important
+@@||apple.com^$important
