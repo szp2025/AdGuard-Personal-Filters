@@ -1084,3 +1084,72 @@
 @@||googleapis.com^$important
 @@||samsung.com^$important
 @@||apple.com^$important
+
+
+! =========================================================================
+! [35] SECURITY SHIELD MAX: ANTI-MALWARE & ZERO-DAY
+! =========================================================================
+||*malware*.*^$important
+||*trojan*.*^$important
+||*ransomware*.*^$important
+||*spyware*.*^$important
+||*stealer*.*^$important
+||*exploit*.*^$important
+||*zero-day*.*^$important
+||*rce-attack*.*^$important
+
+! =========================================================================
+! [36] PEGASUS & ZERO-CLICK DEFENSE (NSO GROUP BLOCK)
+! =========================================================================
+||*pegasus-spyware*.*^$important
+||*zero-click*.*^$important
+||*nso-group*.*^$important
+||*targeted-attack*.*^$important
+||*payload-delivery*.*^$important
+
+! =========================================================================
+! [37] MOBILE & SIM INTEGRITY (SS7 & IMSI CATCHER)
+! =========================================================================
+||*imsi-catcher*.*^$important
+||*sim-jacker*.*^$important
+||*ss7-attack*.*^$important
+||*cellular-intercept*.*^$important
+||*base-station-spoofing*.*^$important
+
+! =========================================================================
+! [38] PORT LOCKDOWN: ЗАПРЕТ УДАЛЕННОГО ДОСТУПА
+! =========================================================================
+||*:22$important,network
+||*:23$important,network
+||*:3389$important,network
+||*:5900$important,network
+||*:445$important,network
+
+! =========================================================================
+! [39] NETWORK SCANNING & SHODAN DEFENSE
+! =========================================================================
+||*port-scan*.*^$important
+||*shodan.io*^$important
+||*censys.io*^$important
+||127.0.0.1$important
+||localhost$important
+
+! =========================================================================
+! [40] HACKING SUPPRESSION (METASPLOIT & KALI)
+! =========================================================================
+||*kali-linux*.*^$important
+||*metasploit*.*^$important
+||*brute-force*.*^$important
+||*packet-inject*.*^$important
+
+! =========================================================================
+! [41] FINAL SYSTEM INTEGRITY (STABILITY GATE)
+! =========================================================================
+@@||github.com^$document,important
+@@||api.github.com^$important
+@@||revolut.com^$important
+@@||n26.com^$important
+@@||stripe.com^$important
+@@||gomining.com^$important
+@@||samsung.com^$important
+@@||apple.com^$important
