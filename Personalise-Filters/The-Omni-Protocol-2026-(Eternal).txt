@@ -1,68 +1,60 @@
 [Adblock Plus 2.0]
-! Title: The Omni-Protocol 2026 (Stage 1: Multi-Store Fix)
-! Version: 7.3.2
+! Title: The Omni-Protocol 2026 (Stage 1: Triple-Store & Infrastructure)
+! Version: 7.3.4 (Apple Integrated)
 ! Last modified: 2026-03-17
 
 ! =========================================================================
-! [1] SYSTEM BYPASS: GOOGLE & SAMSUNG INFRASTRUCTURE
+! [1] SYSTEM BYPASS: GLOBAL CDN & INFRASTRUCTURE
 ! =========================================================================
-! База Google Play
-@@||google.com^$important
-@@||googleapis.com^$important
-@@||gstatic.com^$important
-@@||googleusercontent.com^$important
-@@||android.com^$important
-@@||gvt1.com^$important
+! Google Play & Services CDN
 @@||*.gvt1.com^$important
-@@||gvt2.com^$important
 @@||*.gvt2.com^$important
-@@||connectivitycheck.gstatic.com^$important
+@@||*.gvt3.com^$important
+@@||*.googlevideo.com^$important
+@@||android.clients.google.com^$important
+@@||play.google.com^$important
+@@||play.googleapis.com^$important
 
-! База Samsung Galaxy Store & System Updates
-@@||samsung.com^$important
-@@||samsungcloud.com^$important
-@@||samsungapps.com^$important
-@@||samsungosp.com^$important
-@@||samsung-com.akamaized.net^$important
-@@||galaxy.store^$important
-@@||osp-v2.samsung.com^$important
+! Apple Infrastructure (Music, iCloud, Updates)
+@@||*.apple.com^$important
+@@||*.icloud.com^$important
+@@||*.itunes.apple.com^$important
+@@||*.mzstatic.com^$important
+@@||*.apple-cloudkit.com^$important
+
+! Samsung & Galaxy Store
+@@||*.samsung.com^$important
+@@||*.samsungapps.com^$important
+@@||*.galaxy.store^$important
+@@||*.samsungcloud.com^$important
 
 ! YouTube & Waze
-@@||youtube.com^$important
-@@||googlevideo.com^$important
-@@||ytimg.com^$important
-@@||waze.com^$important
+@@||*.youtube.com^$important
+@@||*.ytimg.com^$important
+@@||*.waze.com^$important
 
 ! =========================================================================
-! [2] NETWORK STEALTH: DNS & QUIC (SAFE MODE)
+! [2] NETWORK STEALTH: DNS & QUIC
 ! =========================================================================
 ||*$csp=proxy-src 'none'
 ||*$header=X-Forwarded-For,important
 ||*$header=Via,important
 
-! Разрешаем сетевую активность для магазинов (чтобы не висела загрузка)
-@@||google.com^$network,important
-@@||googleapis.com^$network,important
-@@||samsung.com^$network,important
-@@||gvt1.com^$network,important
-
-! Исправленный QUIC: Расширенный список исключений
+! Разрешаем QUIC для всей тройки гигантов
 @@||google.com^$network,quic
-@@||googleapis.com^$network,quic
-@@||gstatic.com^$network,quic
+@@||apple.com^$network,quic
 @@||samsung.com^$network,quic
 @@||gvt1.com^$network,quic
-@@||youtube.com^$network,quic
-||*$network,quic,domain=~google.com|~googleapis.com|~gstatic.com|~samsung.com|~gvt1.com|~youtube.com
+||*$network,quic,domain=~google.com|~apple.com|~samsung.com|~gvt1.com
 
 ! =========================================================================
-! [3] TRACKER GENOCIDE (С УМНЫМИ ИСКЛЮЧЕНИЯМИ)
+! [3] TRACKER GENOCIDE (WHITELISTED FOR INFRASTRUCTURE)
 ! =========================================================================
 ||*doubleclick.net*^$important,domain=~google.com
 ||*adsystem*.*^$important
 ||*adserver*.*^$important
 
-! Маски теперь обходят системные CDN Samsung и Google
-||*.analytics.*^$important,domain=~google.com|~googleapis.com|~waze.com|~samsung.com|~gvt1.com|~samsungapps.com
-||*.stats.*^$important,domain=~google.com|~googleapis.com|~waze.com|~samsung.com|~samsungapps.com
-||*.metrics.*^$important,domain=~google.com|~youtube.com|~waze.com|~samsung.com
+! Исключаем Apple, Google и Samsung из масок аналитики
+||*.analytics.*^$important,domain=~google.com|~apple.com|~samsung.com|~gvt1.com|~waze.com
+||*.stats.*^$important,domain=~google.com|~apple.com|~samsung.com|~gvt1.com|~waze.com
+||*.metrics.*^$important,domain=~google.com|~apple.com|~samsung.com|~youtube.com
