@@ -320,3 +320,28 @@
 ! --- Дополнительно: Запрет на доступ к датчикам (Акселерометр, Магнетометр) ---
 #%#//scriptlet("set-constant", "DeviceMotionEvent", "undefined")
 #%#//scriptlet("set-constant", "DeviceOrientationEvent", "undefined")
+
+
+! =========================================================================
+! [13] IDENTITY MASKING (ETERNAL EDITION): REFERER & USER-AGENT
+! =========================================================================
+! --- Referer Stealth (Скрытие пути перехода) ---
+! Ограничиваем Referer до уровня домена (сайт видит только откуда ты, но не конкретную страницу)
+||*$referer=~/(^https?:\/\/[^\/]+\/)/,third-party,important,domain=~google.com|~apple.com|~samsung.com|~youtube.com|~n26.com|~revolut.com
+
+! Полное удаление Referer для известных рекламных сетей и аналитики
+||*analytics*.*$header=Referer,important
+||*doubleclick.net^$header=Referer,important
+||*ads.*$header=Referer,important
+
+! --- User-Agent Masking (Маскировка устройства) ---
+! Подменяем данные о браузере и ОС на стандартную стабильную сборку Windows/Chrome
+! Это защищает от фингерпринтинга по версии прошивки и модели телефона
+#%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
+#%#//scriptlet("set-constant", "navigator.appVersion", "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36")
+#%#//scriptlet("set-constant", "navigator.platform", "Win32")
+
+! Блокировка Client-Hints (современная замена User-Agent), которая выдает модель CPU
+||*$header=Sec-CH-UA,important,domain=~google.com|~apple.com|~samsung.com
+||*$header=Sec-CH-UA-Platform,important,domain=~google.com|~apple.com|~samsung.com
+||*$header=Sec-CH-UA-Model,important,domain=~google.com|~apple.com|~samsung.com
