@@ -1,54 +1,80 @@
 [Adblock Plus 2.0]
 ! Title: Inbound Shield 2026 (Eternal)
-! Description: Умная блокировка всплывающих окон, видео-рекламы и вредоносных модулей.
-! Version: 2.1.0 (Final Stable)
-! Last modified: 2026-03-17
+! Description: Умная блокировка входящих угроз, видео-рекламы и вредоносных модулей.
+! Version: 2.2.0 (Apex Stable)
+! Last modified: 2026-03-16 22:50
 
-! --- [1] VIDEO & DISPLAY ADS (Анти-роллы и вставки) ---
+! =========================================================================
+! [1] VIDEO ADS & STREAMING DEFENSE (Анти-роллы и вставки)
+! =========================================================================
 ||*video-ads*^$important
 ||*ad-delivery*^$important
 ||*midroll*.*^$important
 ||*preroll*.*^$important
 ||*postroll*.*^$important
 ||*outstream*.*^$important
+||*in-stream*.*^$important
+||*video-overlay*.*^$important
 
-! --- [2] POP-UP & OVERLAY (Защита от перекрытия экрана) ---
+! =========================================================================
+! [2] POP-UP & OVERLAY CONTROL (Защита от перекрытия экрана)
+! =========================================================================
 ||*popunder*.*^$important
 ||*pop-up*.*^$important
 ||*overlay*.*^$important
 ||*interstitial*.*^$important
 ||*notification-spam*.*^$important
+||*sticky-ad*.*^$important
+||*floating-ad*.*^$important
 
-! --- [3] AD-EXCHANGE & RTB (Рекламные биржи) ---
+! =========================================================================
+! [3] AD-EXCHANGE & RTB (Рекламные биржи и аукционы)
+! =========================================================================
 ||*adsystem*.*^$important
 ||*adserver*.*^$important
 ||*doubleclick*.*^$important
 ||*taboola*.*^$important
 ||*outbrain*.*^$important
+||*adnxs*.*^$important
+||*rubiconproject*.*^$important
 
-! --- [4] BEACONS & PIXELS (Невидимые жучки) ---
+! =========================================================================
+! [4] BEACONS & TRACKING PIXELS (Невидимые жучки)
+! =========================================================================
 ||*pixel*.*^$important
 ||*tracking-pixel*.*^$important
 ||*web-beacon*.*^$important
 ||*beacons*.*^$important
+||*telemetry-pixel*.*^$important
 
-! --- [5] MALWARE & EXPLOITS (Защита от угроз) ---
+! =========================================================================
+! [5] MALWARE & EXPLOIT DELIVERY (Защита от активных угроз)
+! =========================================================================
 ||*crypto-miner*.*^$important
 ||*web-miner*.*^$important
 ||*malvertising*.*^$important
 ||*fake-update*.*^$important
 ||*phishing*.*^$important
+||*exploit-kit*.*^$important
 
-! --- [6] ИСКЛЮЧЕНИЯ (Whitelist для стабильности систем) ---
-@@||googleapis.com^$important
-@@||samsung.com^$important
-@@||google.com^$important
-@@||apple.com^$important
+! =========================================================================
+! [6] ANTI-SHAME & SPAM CLEANER (Чистка интерфейса)
+! =========================================================================
+||*spam-module*.*^$important
+||*newsletter-popup*.*^$important
+||*subscription-wall*.*^$important
 
-! --- [7] КРИТИЧЕСКИЕ ИСКЛЮЧЕНИЯ (GitHub & Payments) ---
-! Чтобы скрипты GitHub и банковские шлюзы не принимались за "входящие угрозы"
+! =========================================================================
+! [7] КРИТИЧЕСКИЙ WHITELIST (GitHub & Financial Stability)
+! =========================================================================
+! Исключения для стабильной работы твоих систем
 @@||github.com^$document
 @@||githubassets.com^$document
+@@||raw.githubusercontent.com^$important
 @@||revolut.com^$important
 @@||n26.com^$important
 @@||stripe.com^$important
+@@||gomining.com^$important
+@@||googleapis.com^$important
+@@||samsung.com^$important
+@@||apple.com^$important
