@@ -97,3 +97,24 @@
 ||*popunder*.*^$important
 ||*overlay-ads*.*^$important
 ||*midroll*.*^$important
+
+! =========================================================================
+! [10] COOKIE & STORAGE HARDENING: ЗАМЕНА "МЕТОДОВ ОТСЛЕЖИВАНИЯ"
+! =========================================================================
+! Ограничение времени жизни сторонних куки и блокировка трекинга через хранилище
+||*$third-party,cookie,important
+#%#//scriptlet("set-constant", "document.cookie", "undefined")
+! Нейтрализация отслеживания через кэш браузера (ETag)
+||*$header=If-None-Match,important
+||*$header=ETag,important
+
+! =========================================================================
+! [11] HEADER & AUTH PROTECTION: ЗАМЕНА "ДОПОЛНИТЕЛЬНЫХ НАСТРОЕК"
+! =========================================================================
+! Блокировка заголовка авторизации для предотвращения кросс-доменной идентификации
+||*$header=Authorization,third-party,important
+! Удаление специфического заголовка Google для отслеживания версий Chrome
+||*$header=X-Client-Data,important
+! Защита от префетчинга (замена "Do Not Track" на уровне сетевых запросов)
+||*$header=Purpose,prefetch,important
+||*$header=X-Purpose,prefetch,important
