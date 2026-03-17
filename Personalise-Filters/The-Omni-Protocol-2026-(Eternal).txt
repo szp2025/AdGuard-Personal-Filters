@@ -587,3 +587,67 @@
 #%#//scriptlet("abort-current-inline-script", "detectAdBlock")
 #%#//scriptlet("set-constant", "canRunAds", "true")
 #%#//scriptlet("set-constant", "isAdBlockActive", "false")
+
+
+! =========================================================================
+! [23] HARDWARE & FINGERPRINT MASKING (ETERNAL EDITION)
+! =========================================================================
+! --- Скрытие параметров "Железа" ---
+! Подменяем количество ядер CPU и объем RAM (чтобы не выделяться)
+#%#//scriptlet("set-constant", "navigator.hardwareConcurrency", "8")
+#%#//scriptlet("set-constant", "navigator.deviceMemory", "8")
+
+! --- Защита от Canvas & WebGL Fingerprinting ---
+! Запрещаем сайтам читать точные данные о видеокарте
+#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.toDataURL", "undefined")
+#%#//scriptlet("set-constant", "WebGLRenderingContext.prototype.getParameter", "undefined")
+
+! --- Battery Status Masking (Защита от слежки по заряду) ---
+! Сайты не узнают, сколько у тебя % батареи и заряжается ли телефон
+#%#//scriptlet("set-constant", "navigator.getBattery", "undefined")
+
+! --- AudioContext Fingerprinting ---
+! Блокировка идентификации по уникальному отпечатку звуковой карты
+#%#//scriptlet("abort-on-property-read", "AudioContext")
+#%#//scriptlet("abort-on-property-read", "webkitAudioContext")
+
+! --- Screen Resolution Masking ---
+! Сообщаем сайтам стандартное разрешение экрана (Full HD) вместо реального
+#%#//scriptlet("set-constant", "screen.width", "1920")
+#%#//scriptlet("set-constant", "screen.height", "1080")
+
+! =========================================================================
+! [24] ETERNAL AUTONOMOUS SECURITY: ZERO-TRUST SHIELD (ЗАМЕНА БАЗ БЕЗОПАСНОСТИ)
+! =========================================================================
+! --- Уровень 1: Блокировка векторов атак (Анти-фишинг и Анти-вирус) ---
+! Запрещаем выполнение скриптов из подозрительных доменных зон (часто фишинг)
+||*.top^$script,third-party
+||*.zip^$important
+||*.click^$script,third-party
+||*.monster^$script,third-party
+
+! --- Уровень 2: Защита от криптоджекинга (Майнеры) ---
+! Блокируем саму возможность использования CPU для майнинга через WebAssembly
+#%#//scriptlet("abort-on-property-read", "WebAssembly.instantiate")
+||*coinhab*.*$important
+||*crypto-loot*.*$important
+
+! --- Уровень 3: Защита от кражи данных (Anti-Exfiltration) ---
+! Запрещаем отправку данных на сторонние "сборщики" (Loggers)
+||*log.*$third-party,important
+||*telemetry*.*$third-party,important
+||*collector*.*$third-party,important
+
+! --- Уровень 4: Анти-эксплойт (Защита браузера) ---
+! Блокируем скрытые iframe, которые используются для автоматической загрузки файлов
+##iframe[width="0"][height="0"]
+##iframe[style*="display: none"]
+#%#//scriptlet("abort-on-property-write", "window.location.href", "/\.exe|\.apk|\.scr/")
+
+! --- Уровень 5: Валидация форм (Анти-фишинг) ---
+! Предупреждаем отправку паролей на незащищенные или сторонние ресурсы
+#%#//scriptlet("abort-on-property-read", "password", "input")
+
+! --- Уровень 6: Блокировка вредоносных сокращателей ссылок ---
+||*bit.ly*$subdocument,third-party
+||*cutt.ly*$subdocument,third-party
