@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: IMSI & Protocol Shield 2026 (Eternal)
-! Description: Умная защита от MITM-атак, перехвата OCSP, шпионских каналов и утечек через порты.
+! Description: Умная защита от MITM-атак, перехвата OCSP, шпионских каналов и утечек через порты. добавлен в The Omni-Protocol 2026 (Eternal)
 ! Version: 2.0.0
 
 ! --- [1] ЗАЩИТА ОТ ПЕРЕХВАТА И СЕРТИФИКАТОВ (OCSP & PKI) ---
