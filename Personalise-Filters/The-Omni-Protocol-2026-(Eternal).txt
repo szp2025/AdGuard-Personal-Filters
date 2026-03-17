@@ -345,3 +345,25 @@
 ||*$header=Sec-CH-UA,important,domain=~google.com|~apple.com|~samsung.com
 ||*$header=Sec-CH-UA-Platform,important,domain=~google.com|~apple.com|~samsung.com
 ||*$header=Sec-CH-UA-Model,important,domain=~google.com|~apple.com|~samsung.com
+
+
+! =========================================================================
+! [14] ANTI-GOOGLE FINGERPRINTING (ETERNAL EDITION): X-CLIENT-DATA
+! =========================================================================
+! Удаление заголовка X-Client-Data для всех запросов к сервисам Google
+! Это ломает механизм скрытой идентификации браузера
+||google.*$header=X-Client-Data,important
+||youtube.com$header=X-Client-Data,important
+||googleusercontent.com$header=X-Client-Data,important
+||gstatic.com$header=X-Client-Data,important
+||googletagmanager.com$header=X-Client-Data,important
+||google-analytics.com$header=X-Client-Data,important
+||doubleclick.net$header=X-Client-Data,important
+
+! Скрытие заголовка X-Goog-Encode-Response-If-Executable
+! (Используется для предотвращения XSS, но также может служить для анализа клиента)
+||google.*$header=X-Goog-Encode-Response-If-Executable,important
+
+! Защита от передачи данных о состоянии Chrome-экспериментов через JS
+#%#//scriptlet("set-constant", "window.chrome.csi", "undefined")
+#%#//scriptlet("set-constant", "window.chrome.loadTimes", "undefined")
