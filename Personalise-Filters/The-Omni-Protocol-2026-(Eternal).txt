@@ -575,3 +575,15 @@
 ! --- Уровень 4: Специфические трекеры Meta (Pixel) ---
 ||facebook.com/tr/*$pixel,important
 ||*pixel.facebook.com$important
+
+
+! =========================================================================
+! [22] ANTI-ADBLOCK REPLENISHMENT (ЗАМЕНА WARNING REMOVAL LIST)
+! =========================================================================
+! Скрытие специфических окон, которые просят выключить блокировщик
+##.ab-test-modal
+##div[class*="adblock-overlay"]
+##section[id*="adblock-message"]
+#%#//scriptlet("abort-current-inline-script", "detectAdBlock")
+#%#//scriptlet("set-constant", "canRunAds", "true")
+#%#//scriptlet("set-constant", "isAdBlockActive", "false")
