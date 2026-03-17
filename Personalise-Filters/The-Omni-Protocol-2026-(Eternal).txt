@@ -342,7 +342,8 @@
 ||*.telemetry.*^$important,domain=~google.com|~samsung.com
 ||*.stats.*^$important,domain=~google.com|~googleapis.com|~waze.com
 ||*.collect.*^$important,domain=~google.com|~googleapis.com
-||*.logging.*^$important,domain=~google.com|~googleapis.com
+||*.logging.*^$important,domain=~google.com|~googleapis.com|~youtube.com
+
 ! =========================================================================
 ! [FIX] GOOGLE, WAZE & YOUTUBE INFRASTRUCTURE
 ! =========================================================================
@@ -409,7 +410,7 @@
 ||*-analytics.*^$important
 ||*track.*^$important,domain=~google.com|~yandex.ru|~github.com
 ||*log.*^$important,domain=~google.com|~samsung.com|~github.com
-||*metrics.*^$important
+||*metrics.*^$important,domain=~google.com|~youtube.com|~waze.com
 ||*telemetry.*^$important
 
 ! =========================================================================
@@ -567,7 +568,7 @@
 ! =========================================================================
 ! [58] PARANOID CORE: ГЛОБАЛЬНЫЙ ПЕРИМЕТР (FIREBASE/SDK)
 ! =========================================================================
-||*firebase*.*^$important
+||*firebase*.*^$important,domain=~google.com|~googleapis.com|~waze.com|~revolut.com
 ||*crashlytics*.*^$important
 ||*measurement*.*^$important
 ||*appsflyer*.*^$important
