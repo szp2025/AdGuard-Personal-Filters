@@ -29,3 +29,36 @@
 ! =========================================================================
 ! Скрываем источник перехода, кроме доверенных финансовых и тех. ресурсов
 ||*$header=Referer,domain=~google.com|~yandex.ru|~revolut.com|~n26.com|~github.com|~stripe.com
+
+! =========================================================================
+! [4] API SHIELD: ЗАМЕНА "БЛОКИРОВКИ WEBRTC, PUSH И LOCATION"
+! =========================================================================
+! Полная нейтрализация WebRTC для предотвращения утечки реального IP
+#%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
+#%#//scriptlet("set-constant", "webkitRTCPeerConnection", "undefined")
+! Отключение Push-уведомлений и запросов на определение местоположения
+#%#//scriptlet("set-constant", "Notification.permission", "denied")
+#%#//scriptlet("abort-current-inline-script", "navigator.geolocation")
+#%#//scriptlet("set-constant", "navigator.geolocation", "undefined")
+
+! =========================================================================
+! [5] TRACKING PARAMETERS: ЗАМЕНА "УДАЛЕНИЯ ПАРАМЕТРОВ ИЗ URL"
+! =========================================================================
+! Глубокая очистка ссылок от всех известных маркетинговых хвостов
+||*$removeparam=utm_source
+||*$removeparam=utm_medium
+||*$removeparam=utm_campaign
+||*$removeparam=utm_term
+||*$removeparam=utm_content
+||*$removeparam=fbclid
+||*$removeparam=gclid
+||*$removeparam=msclkid
+||*$removeparam=mc_eid
+
+! =========================================================================
+! [6] FINGERPRINT PROTECTION: ЗАМЕНА "СКРЫТИЯ USER-AGENT"
+! =========================================================================
+! Подмена данных о железе и браузере для защиты от фингерпринтинга
+#%#//scriptlet("set-constant", "navigator.webdriver", "false")
+#%#Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 });
+#%#Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 });
