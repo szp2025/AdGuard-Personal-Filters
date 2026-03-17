@@ -1561,15 +1561,47 @@
 @@||vvm.*^$important
 @@||ims.mnc*.mcc*.pub.3gppnetwork.org^$important
 
+! =========================================================================
+! [38] PORT LOCKDOWN: REMOTE ACCESS TERMINATION (v11.2.0)
+! =========================================================================
 
-! =========================================================================
-! [38] PORT LOCKDOWN: ЗАПРЕТ УДАЛЕННОГО ДОСТУПА
-! =========================================================================
+! --- Уровень 1: Запрет удаленного управления (Remote Desktop & Control) ---
+! Блокируем стандартные порты RDP, VNC и SSH для предотвращения внешних подключений.
 ||*:22$important,network
 ||*:23$important,network
 ||*:3389$important,network
+||*:5800$important,network
 ||*:5900$important,network
+||*:5938$important,network,domain=~teamviewer.com
+
+! --- Уровень 2: Блокировка файловых шлюзов (SMB & NetBIOS) ---
+! Защита от эксплойтов типа EternalBlue и атак вымогателей через локальную сеть.
+||*:135$important,network
+||*:137$important,network
+||*:138$important,network
+||*:139$important,network
 ||*:445$important,network
+
+! --- Уровень 3: Базы данных и удаленные SQL-инъекции ---
+! Запрещаем доступ к портам баз данных, чтобы вредоносные скрипты не могли слить инфо.
+||*:1433$important,network
+||*:3306$important,network
+||*:5432$important,network
+||*:6379$important,network
+
+! --- Уровень 4: IoT & Smart Home Hijacking (Умный дом) ---
+! Блокируем порты, часто используемые ботнетами для захвата умных устройств.
+||*:1900$important,network
+||*:5353$important,network
+||*:8080$important,network,third-party
+||*:8883$important,network
+
+! --- Уровень 5: ПРИОРИТЕТНЫЙ ДОСТУП (System White-Ports) ---
+! Гарантируем работу стандартного веб-серфинга (HTTP/HTTPS).
+@@||*:80$network
+@@||*:443$network
+@@||*:53$network
+
 
 ! =========================================================================
 ! [39] NETWORK SCANNING & SHODAN DEFENSE
