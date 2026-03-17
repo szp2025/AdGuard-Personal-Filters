@@ -114,7 +114,7 @@
 ! Блокировка заголовка авторизации для предотвращения кросс-доменной идентификации
 ||*$header=Authorization,third-party,important
 ! Удаление специфического заголовка Google для отслеживания версий Chrome
-||*$header=X-Client-Data,important
+! ||*$header=X-Client-Data,important
 ! Защита от префетчинга (замена "Do Not Track" на уровне сетевых запросов)
 ||*$header=Purpose,prefetch,important
 ||*$header=X-Purpose,prefetch,important
@@ -335,20 +335,32 @@
 ||*login-verify.*^$important
 
 ! =========================================================================
-! [31] WILDCARD AUTONOMY: ГЛОБАЛЬНЫЕ МАСКИ ЗАЩИТЫ
+! [31] WILDCARD AUTONOMY: ГЛОБАЛЬНЫЕ МАСКИ ЗАЩИТЫ (MODIFIED)
 ! =========================================================================
-! Автоматическая блокировка любых поддоменов, связанных со сбором данных
-||*.analytics.*^$important
-||*.tracking.*^$important
-||*.telemetry.*^$important
-||*.stats.*^$important
-||*.collect.*^$important
-||*.logging.*^$important
-||*.error-report.*^$important
-! Блокировка рекламных и мобильных идентификаторов на уровне сети
-||*advertising-id*.*^$important
-||*device-id*.*^$important
-||*app-measurement*.*^$important
+||*.analytics.*^$important,domain=~google.com|~googleapis.com|~waze.com|~youtube.com
+||*.tracking.*^$important,domain=~google.com|~waze.com
+||*.telemetry.*^$important,domain=~google.com|~samsung.com
+||*.stats.*^$important,domain=~google.com|~googleapis.com|~waze.com
+||*.collect.*^$important,domain=~google.com|~googleapis.com
+||*.logging.*^$important,domain=~google.com|~googleapis.com
+! =========================================================================
+! [FIX] GOOGLE, WAZE & YOUTUBE INFRASTRUCTURE
+! =========================================================================
+! Разрешаем CDN для YouTube и Google Play
+@@||googlevideo.com^$important
+@@||ytimg.com^$important
+@@||ggpht.com^$important
+@@||gvt1.com^$important
+@@||*.gvt1.com^$important
+
+! Разрешаем специфические адреса для Waze
+@@||waze.com^$important
+@@||*.waze.com^$important
+@@||routing-jaws.waze.com^$important
+
+! Разблокировка критического заголовка для Play Market
+@@||play.google.com^$header=X-Client-Data,important
+
 
 ! =========================================================================
 ! [32] THE LAST BASTION: GITHUB & SYSTEM INTEGRITY
