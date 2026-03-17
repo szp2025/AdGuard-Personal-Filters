@@ -8,7 +8,7 @@
 ! [1] OMNI-CORE: DPI-STEALTH & TRAFFIC ISOLATION
 ! =========================================================================
 ! Блокировка QUIC для предотвращения обхода фильтров и защита от DPI
-||*$network,quic,important
+!||*$network,quic,important
 ! Запрет проксирования трафика через сторонние скрипты
 ||*$csp=proxy-src 'none'
 ! Очистка заголовков для анонимизации (убираем данные о пересылке)
@@ -594,7 +594,7 @@
 ! =========================================================================
 ! Запрет на скрытые DNS-запросы и принудительная очистка prefetch
 ||*/dns-query*
-||*$network,quic
+!||*$network,quic
 ||*$csp=proxy-src 'none'
 #%#Object.defineProperty(document, 'dns-prefetch', { value: function(){ return null; } });
 
@@ -649,6 +649,22 @@
 
 ! 3. Gmail: Синхронизация и вложения
 @@||mail.google.com^$important
+
+! =========================================================================
+! [FINAL REPAIR] SMART PROTOCOL CONTROL
+! =========================================================================
+! Блокируем QUIC выборочно, чтобы не ломать Google Play и Gmail
+||*$network,quic,domain=~google.com|~googleapis.com|~gstatic.com|~gvt1.com|~revolut.com|~github.com
+
+! Прямой доступ для системных сервисов Android (Download Manager)
+@@||android.pool.ntp.org^$important
+@@||time.android.com^$important
+
+! Полная разблокировка CDN для загрузки приложений
+@@||*.gvt1.com^$network,important
+@@||*.gvt2.com^$network,important
+@@||*.xn--ngstr-lra8z.com^$network,important
+
 @@||mail-attachment.googleusercontent.com^$important
 @@||*:993$network,important
 @@||*:465$network,important
