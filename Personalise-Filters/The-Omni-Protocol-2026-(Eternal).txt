@@ -718,3 +718,39 @@
 ||*canvas-fingerprint*.*^$important
 ||*webrtc-test*.*^$important
 ||*client-hints*.*^$important
+
+
+! =========================================================================
+! [27] E-WALLET & NFC SECURE SHIELD 2026 (ETERNAL)
+! =========================================================================
+
+! --- Уровень 1: Изоляция платежных токенов (Security First) ---
+! Запрещаем скрытые вызовы к платежным шлюзам на сторонних сайтах
+||pay*.google.com^$important,domain=~google.com
+||wallet*.google.com^$important,domain=~google.com
+||*samsungpay.com^$important,domain=~samsung.com
+||*stripe.com*^$important,domain=~stripe.com
+
+! --- Уровень 2: Анти-фингерпринт банковских карт (BIN & Validation) ---
+! Блокируем сервисы, которые определяют тип твоей карты для фишинга или цен
+||*binlist*.*^$important
+||*binchecker*.*^$important
+||*card-verify*.*^$important
+
+! --- Уровень 3: NFC & Tag Stealth (Защита от сканирования) ---
+! Пресекаем попытки браузерных скриптов взаимодействовать с NFC-модулем
+||*nfc-tag*.*^$important
+||*tag-manager*.*^$important
+||*rfid*.*^$important
+
+! --- Уровень 4: Крипто-изоляция (Anti-Drainer & Leak) ---
+! Защита от дрейнеров: блокируем скрытые мосты к крипто-кошелькам
+||*etherscan.io^$important,domain=~etherscan.io
+||*infura.io*^$important
+||*walletconnect*.*^$important
+||*alchemy.com*^$important
+
+! --- Уровень 5: Транзакционная аналитика (Удаление жучков) ---
+! Вырезаем трекеры, которые следят за тобой в момент оплаты (Checkout)
+||*checkout-analytics*.*^$important
+||*payment-metrics*.*^$important
