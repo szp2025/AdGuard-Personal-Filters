@@ -787,3 +787,45 @@
 @@||github.com^$document
 @@||googleapis.com^$important
 
+! =========================================================================
+! [29] AI & BEHAVIORAL STEALTH SHIELD 2026 (ETERNAL)
+! =========================================================================
+
+! --- Уровень 1: Нейро-аналитика и AI Training (Изоляция моделей) ---
+! Запрещаем использовать твои действия для обучения глобальных нейросетей
+||*vortex.data.microsoft*.*^$important
+||*browser.events.data.microsoft*.*^$important
+||*telemetry.nvidia*.*^$important
+||*openai.com^$important,domain=~openai.com
+||*anthropic.com^$important,domain=~anthropic.com
+||*generativelanguage*.*^$important
+
+! --- Уровень 2: Behavioral Analysis (Поведенческий анти-трекинг) ---
+! Блокируем тех, кто анализирует скорость твоего скроллинга и движения мыши
+||*segment*.*^$important
+||*amplitude*.*^$important
+||*mixpanel*.*^$important
+||*logrocket*.*^$important
+||*hotjar*.*^$important
+||*smartlook*.*^$important
+
+! --- Уровень 3: Анти-скоринг и Risk-Analysis (Security Check) ---
+! Защита от систем, которые скрыто выставляют тебе "рейтинг благонадежности"
+||*sift*.*^$important
+||*threatmetrix*.*^$important
+||*cardinalcommerce*.*^$important
+||*trustarc*.*^$important
+||*forter*.*^$important
+
+! --- Уровень 4: Скрытые пинги и Heartbeat (Heartbeat Shield) ---
+! Пресекаем фоновую проверку активности твоего устройства
+||*heartbeat*.*^$important
+||*ping*.*^$important
+||*chartbeat*.*^$important
+||*telemetry.sdk*.*^$important
+
+! --- Уровень 5: Мониторинг сессий (Session Replay Shield) ---
+! Полная блокировка записи видео твоего экрана внутри сайтов
+||*fullstory*.*^$important
+||*mouseflow*.*^$important
+||*inspectlet*.*^$important
