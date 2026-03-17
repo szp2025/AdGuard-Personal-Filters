@@ -542,3 +542,36 @@
 ! Принудительно блокируем попытки сайта спросить "Разрешить уведомления?"
 #%#//scriptlet("set-constant", "Notification.permission", "denied")
 #%#//scriptlet("set-constant", "navigator.push", "undefined")
+
+
+! =========================================================================
+! [21] SOCIAL MEDIA PURGE (ETERNAL EDITION): ПОЛНАЯ ЗАЧИСТКА СОЦСЕТЕЙ
+! =========================================================================
+! --- Уровень 1: Блокировка скриптов слежки (Маячки) ---
+||facebook.net/en_US/fbevents.js$script,important
+||connect.facebook.net$script,important
+||platform.twitter.com$script,important
+||platform.instagram.com$script,important
+||static.ads-twitter.com$script,important
+||analytics.tiktok.com$script,important
+
+! --- Уровень 2: Удаление визуальных виджетов и кнопок ---
+! Кнопки "Like", "Share", виджеты комментариев и ленты
+##.fb-like
+##.fb-share-button
+##.twitter-share-button
+##.instagram-media
+##div[class*="social-share"]
+##div[id*="facebook-jssdk"]
+##[class*="tiktok-embed"]
+
+! --- Уровень 3: Очистка сторонних авторизаций через соцсети ---
+! Убираем навязчивые предложения "Войти через Facebook/Google"
+##div[id="g_id_onload"]
+##.oauth-login-button
+##[id*="google-signin"]
+#%#//scriptlet("abort-on-property-read", "FB.login")
+
+! --- Уровень 4: Специфические трекеры Meta (Pixel) ---
+||facebook.com/tr/*$pixel,important
+||*pixel.facebook.com$important
