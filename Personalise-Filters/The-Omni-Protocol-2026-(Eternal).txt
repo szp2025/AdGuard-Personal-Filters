@@ -639,41 +639,28 @@
 
 
 ! =========================================================================
-! [25] IMSI & PROTOCOL SHIELD 2026 (ETERNAL) - ADVANCED HARDENING
+! [25] IMSI & PROTOCOL SHIELD 2026 (ETERNAL) - BALANCED HARDENING
 ! =========================================================================
 
-! --- Уровень 1: Защита сертификатов (Анти-перехват MITM) ---
-||ocsp.*^$important,domain=~apple.com|~google.com
+! --- Уровень 1: Защита сертификатов (Смягчено для стабильности) ---
+! Разрешаем OCSP для системных и финансовых нужд
+@@||ocsp.*^$important,domain=apple.com|google.com|yandex.ru|revolut.com|n26.com|loirehabitat.fr
+||ocsp.*^$important
 ||pki.goog*^$important,domain=~google.com
-||*trust*.com^$important,domain=~n26.com|~revolut.com|~apple.com
 
-! --- Уровень 2: Анти-шпион (C&C Control & Spyware) ---
-||*skygo.io*^$important
-||*over-the-air*.*^$important,domain=~samsung.com|~apple.com
-||*buffer-overflow*.*^$important
-||*spyware*.*^$important
-||*c2-server*.*^$important
+! Исправляем блокировку Trust (разрешаем для банков и госуслуг)
+@@||*trust*.com^$important,domain=n26.com|revolut.com|apple.com|loirehabitat.fr
+||*trust*.com^$important
 
-! --- Уровень 3: Защита от триангуляции (Location & Time) ---
-! Мы блокируем общие пулы, но оставляем системные для работы часов
-||*pool.ntp.org*^$important,domain=~android.com
-||*location.services*.*^$important,domain=~google.com|~waze.com
-||*ls.google.com*^$important,domain=~google.com
+! --- Уровень 3: Защита от триангуляции ---
+! Добавляем исключение для Яндекса, чтобы не ломать карты и время
+||*pool.ntp.org*^$important,domain=~android.com|~yandex.ru
+||*location.services*.*^$important,domain=~google.com|~waze.com|~yandex.ru
 
-! --- Уровень 4: Port Hardening (Защита входов) ---
-! Блокируем опасные порты, оставляя 5228-5230 для Google Play и Push
-|*^$important,port=5223
-|*^$important,port=8883
-|*^$important,port=4444
-|*^$important,port=5555
-|*^$important,port=22
-|*^$important,port=23
-
-! --- Уровень 5: Диагностика (Утечка через отчеты об ошибках) ---
-||*events.data.microsoft*.*^$important
-||*diagnostics*.*^$important,domain=~apple.com|~samsung.com
-||*telemetry-service*.*^$important
-
+! --- Уровень 5: Диагностика (Избирательно) ---
+! Блокируем телеметрию, но не трогаем её на важных для тебя доменах
+||*diagnostics*.*^$important,domain=~apple.com|~samsung.com|~loirehabitat.fr|~yandex.ru
+||*telemetry-service*.*^$important,domain=~yandex.ru
 
 ! =========================================================================
 ! [26] METADATA & FINGERPRINT LOCKDOWN 2026 (ETERNAL)
