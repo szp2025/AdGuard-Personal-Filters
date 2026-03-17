@@ -551,3 +551,60 @@
 @@||revolut.com^$important
 @@||n26.com^$important
 @@||stripe.com^$important
+
+! =========================================================================
+! [58] PARANOID CORE: ГЛОБАЛЬНЫЙ ПЕРИМЕТР (FIREBASE/SDK)
+! =========================================================================
+||*firebase*.*^$important
+||*crashlytics*.*^$important
+||*measurement*.*^$important
+||*appsflyer*.*^$important
+||*adjust*.*^$important
+||*branch.io*^$important
+||*datadoghq*.*^$important
+
+! =========================================================================
+! [59] ASIA & RUS TRACKERS: (HICLOUD / XIAOMI / YANDEX)
+! =========================================================================
+||*hicloud*.*^$important
+||*mi.com*^$important,domain=~mi.com
+||*umeng*.*^$important
+||*mc.yandex*.*^$important
+||*adfox.yandex*.*^$important
+||*byteoversea*.*^$important
+
+! =========================================================================
+! [60] THE ETERNAL FR-EXCEPTIONS: (БЕЛЫЙ СПИСОК ТВ И МЕДИА)
+! =========================================================================
+! Сохраняем работоспособность французского ТВ и новостей
+@@||france.tv^$media,script,domain=france.tv|france2.fr|france3.fr|france5.fr|franceinfo.fr
+@@||ftven.fr^$media,script,domain=france.tv|france2.fr|france3.fr|france5.fr
+@@||geo.ftven.fr^$xmlhttprequest,domain=france.tv|franceinfo.fr
+@@||sas.videoplaza.tv^$media,domain=france.tv
+@@||tf1.fr^$media,script
+@@||player.tf1.fr^$media,script
+@@||cdn.tf1.fr^$media
+@@||6play.fr^$media,script
+@@||geo.m6.fr^$xmlhttprequest
+@@||bfmtv.com^$media,script
+@@||leparisien.fr^$media,script
+
+! =========================================================================
+! [61] PARANOID NETWORK LOGIC: (DNS & QUIC LOCKDOWN)
+! =========================================================================
+! Запрет на скрытые DNS-запросы и принудительная очистка prefetch
+||*/dns-query*
+||*$network,quic
+||*$csp=proxy-src 'none'
+#%#Object.defineProperty(document, 'dns-prefetch', { value: function(){ return null; } });
+
+! =========================================================================
+! [62] FINAL SYSTEM ANCHOR: (GITHUB & GOOGLE SERVICES)
+! =========================================================================
+! Разрешаем критические сервисы для работы Android и GitHub
+@@||accounts.google.com^$document,script,xmlhttprequest
+@@||play.google.com^$document,script
+@@||android.clients.google.com^$xmlhttprequest,script
+@@||gstatic.com^$script,domain=google.com|play.google.com
+@@||github.com^$important
+@@||raw.githubusercontent.com^$important
