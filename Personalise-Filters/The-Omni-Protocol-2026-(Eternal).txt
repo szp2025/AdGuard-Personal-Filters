@@ -164,3 +164,27 @@
 #%#//scriptlet("abort-current-inline-script", "google.navigation")
 #%#//scriptlet("abort-current-inline-script", "yandex.metrika")
 #%#//scriptlet("set-constant", "rwt", "undefined")
+
+! =========================================================================
+! [6] HIDE SEARCH QUERIES (ETERNAL EDITION): СКРЫТЬ ПОИСКОВЫЕ ЗАПРОСЫ
+! =========================================================================
+! Очистка заголовка Referer для всех переходов из поисковиков
+! Сайт-получатель увидит только "google.com", но не твой запрос
+||*$referer=~/(^https?:\/\/[^\/]+\/)/,domain=google.*|yandex.*|bing.com|duckduckgo.com|baidu.com|ecosia.org
+
+! Удаление параметров перенаправления (Redirect Tracking)
+! Поисковики часто прогоняют тебя через промежуточную ссылку для записи клика
+||google.*$removeparam=url,domain=google.*
+||google.*$removeparam=q,domain=google.*,important
+||yandex.*$removeparam=url,domain=yandex.*
+||bing.com$removeparam=url
+
+! Скриптлет-блокировщик атрибута 'ping'
+! Запрещает браузеру "стучать" поисковику, на какую ссылку из выдачи ты нажал
+#%#//scriptlet("set-constant", "navigator.sendBeacon", "true")
+#%#//scriptlet("abort-current-inline-script", "window.ping")
+
+! Удаление идентификаторов "клик-фрода" (скрывают твою уникальность для рекламных сетей)
+||*$removeparam=gciid
+||*$removeparam=gckid
+||*$removeparam=gclsrc
