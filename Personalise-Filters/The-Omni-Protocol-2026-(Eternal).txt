@@ -448,3 +448,65 @@
 ||*miner.js$script,third-party
 
 
+! =========================================================================
+! [18] CORE AD REPLACEMENT (ETERNAL): ЗАМЕНА БАЗОВОГО ФИЛЬТРА
+! =========================================================================
+! --- Глобальная блокировка рекламных сетей по маскам ---
+||ad-delivery.*$important
+||ad-serv*.*$important
+||ads-*-*.com$important
+||*-ads.*$important
+||telemetry.*$important
+||stats.*$important
+
+! --- Блокировка рекламных скриптов и фреймворков ---
+||*/ads.js$script,important
+||*/adsbygoogle.js$script,important
+||*/prebid.js$script,important
+||*/amazon-adsystem.com$important
+
+! --- Агрессивная чистка DOM (удаление рекламных контейнеров) ---
+##[id*="-ad-"]
+##[class*="-ad-"]
+##[id*="AdContainer"]
+##iframe[src*="ads"]
+##iframe[id*="google_ads"]
+
+! --- Скриптлеты для поддержания работоспособности сайтов ---
+! Многие сайты ломаются, если реклама не грузится. Мы "симулируем" её наличие.
+#%#//scriptlet("set-constant", "googletag.apiReady", "true")
+#%#//scriptlet("set-constant", "ga.answer", "42")
+#%#//scriptlet("abort-on-property-read", "adBlockerDetected")
+
+! =========================================================================
+! [19] MOBILE AD SHIELD (ETERNAL EDITION): ЗАЩИТА МОБИЛЬНОГО ТРАФИКА
+! =========================================================================
+! --- Уровень 1: Блокировка мобильных рекламных SDK и сетей ---
+||ads.mopub.com^$important
+||mobads.baidu.com^$important
+||ads.flurry.com^$important
+||unityads.unity3d.com^$important
+||app-measurement.com^$important
+
+! --- Уровень 2: Удаление полноэкранных мобильных баннеров ---
+##.mobile-ad-overlay
+##.full-screen-ad
+##div[class*="smartbanner"]
+##[id^="mobile-anchor-ad"]
+
+! --- Уровень 3: Скрытие предложений "Установить приложение" ---
+! Убираем раздражающие плашки "Open in App" (Reddit, Quora, LinkedIn и др.)
+##.amp-app-banner
+##.mobile-app-promo
+##div[class*="app-download-tooltip"]
+#%#//scriptlet("abort-on-property-read", "smartbanner")
+
+! --- Уровень 4: Оптимизация под малые экраны (Anti-Sticky) ---
+! Удаляем липкие (закрепленные) баннеры внизу экрана, которые съедают место
+##[class*="sticky-ad"]
+##[id*="bottom-banner"]
+##div[style*="position: fixed"][style*="bottom: 0"]
+
+! --- Уровень 5: Блокировка мобильной видео-рекламы ---
+||m.doubleclick.net^$important
+||video-ad-stats.googlevideo.com^$important
