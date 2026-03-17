@@ -1,11 +1,12 @@
 [Adblock Plus 2.0]
-! Title: The Omni-Protocol 2026 (Eternal) - GLOBAL RECOVERY
-! Version: 6.1.0 (Stability)
-! Last modified: 2026-03-17 12:00
+! Title: The Omni-Protocol 2026 (Eternal) - RECOVERY EDITION
+! Version: 6.2.0 (Stable)
+! Last modified: 2026-03-17 12:15
 
 ! =========================================================================
-! [0] SYSTEM PRIORITY: ГЛОБАЛЬНЫЙ БЕЛЫЙ СПИСОК (CRITICAL)
+! [0] EMERGENCY BYPASS: КРИТИЧЕСКАЯ ИНФРАСТРУКТУРА
 ! =========================================================================
+! Эти правила имеют высший приоритет, чтобы Play Market и Waze не висели
 @@||google.com^$important
 @@||googleapis.com^$important
 @@||gstatic.com^$important
@@ -13,29 +14,35 @@
 @@||gvt1.com^$important
 @@||*.gvt1.com^$important
 @@||gvt2.com^$important
+@@||*.gvt2.com^$important
+@@||android.com^$important
 @@||waze.com^$important
 @@||youtube.com^$important
 @@||ytimg.com^$important
-@@||ggpht.com^$important
-@@||android.com^$important
 
 ! =========================================================================
-! [1] OMNI-CORE: DPI-STEALTH & TRAFFIC ISOLATION
+! [1] OMNI-CORE: DPI-STEALTH & NETWORK
 ! =========================================================================
 ||*$csp=proxy-src 'none'
 ||*$header=X-Forwarded-For,important
 ||*$header=Via,important
+! Умная блокировка QUIC (Разрешаем только для Google, чтобы работал Play Market)
+@@||google.com^$network,quic
+@@||googleapis.com^$network,quic
+||*$network,quic,domain=~google.com|~googleapis.com|~gstatic.com|~youtube.com
 
 ! =========================================================================
-! [2] API & FINGERPRINT PROTECTION
+! [2] API SHIELD & FINGERPRINTING
 ! =========================================================================
 #%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
 #%#//scriptlet("set-constant", "Notification.permission", "denied")
 #%#//scriptlet("set-constant", "navigator.webdriver", "false")
+#%#Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 });
 
 ! =========================================================================
-! [3] WILDCARD AUTONOMY: (МОДИФИЦИРОВАНО ДЛЯ WAZE/YOUTUBE)
+! [3] WILDCARD AUTONOMY: (ИСПРАВЛЕННЫЕ МАСКИ)
 ! =========================================================================
+! Мы разрешаем поддомены для Google и Waze, иначе приложения не увидят интернет
 ||*.analytics.*^$important,domain=~google.com|~googleapis.com|~waze.com|~youtube.com
 ||*.tracking.*^$important,domain=~google.com|~waze.com|~youtube.com
 ||*.telemetry.*^$important,domain=~google.com|~samsung.com|~waze.com
@@ -44,64 +51,44 @@
 ||*.logging.*^$important,domain=~google.com|~googleapis.com|~youtube.com
 
 ! =========================================================================
-! [4] INFRASTRUCTURE HARDENING (FIX ДЛЯ PLAY MARKET И GMAIL)
+! [4] GOOGLE PLAY & GMAIL PORTS (СИНХРОНИЗАЦИЯ)
 ! =========================================================================
-! Разрешаем системные порты
 @@||*:5228$network,important
 @@||*:5229$network,important
 @@||*:5230$network,important
 @@||*:993$network,important
 @@||*:465$network,important
-
-! Исключения для стабильности аккаунтов и синхронизации
 @@||mtalk.google.com^$important
-@@||alt*-mtalk.google.com^$important
 @@||device-messaging.googleapis.com^$important
 @@||play.googleapis.com^$important
 @@||mail.google.com^$important
 @@||mail-attachment.googleusercontent.com^$important
 
 ! =========================================================================
-! [5] PARANOID CORE (FIREBASE/SDK) - С ИСКЛЮЧЕНИЯМИ
-! =========================================================================
-||*firebase*.*^$important,domain=~google.com|~googleapis.com|~waze.com|~revolut.com|~n26.com
-||*crashlytics*.*^$important,domain=~google.com|~waze.com
-||*measurement*.*^$important,domain=~google.com|~youtube.com
-||*appsflyer*.*^$important,domain=~revolut.com
-||*adjust*.*^$important,domain=~n26.com
-
-! =========================================================================
-! [6] BANKING & FRANCE GOV (БЕЗОПАСНЫЙ ДОСТУП)
+! [5] FINANCIAL & FRANCE GOV (БАНКОВСКИЙ ГАМБИТ)
 ! =========================================================================
 @@||revolut.com^$important
 @@||n26.com^$important
-@@||bnpparibas.net^$important
+@@||stripe.com^$important
 @@||ameli.fr^$important
 @@||caf.fr^$important
 @@||impots.gouv.fr^$important
 
 ! =========================================================================
-! [7] GLOBAL AD-BLOCKING (AD-SERVERS)
+! [6] SOCIAL & TRACKER GENOCIDE
 ! =========================================================================
+||facebook.com/tr/*$important
+||pixel.facebook.com^$important
+||analytics.tiktok.com^$important
 ||*doubleclick.net*^$important,domain=~google.com
-||*googleads.*^$important,domain=~google.com|~youtube.com
-||*ads-delivery*.*^$important
-||*adserver*.*^$important
-||*smartadserver.com*^$important
+||*appsflyer.com*^$important,domain=~revolut.com
+||*firebase*.*^$important,domain=~google.com|~googleapis.com|~waze.com|~revolut.com
 
 ! =========================================================================
-! [8] GITHUB STABILITY
+! [7] GITHUB & SYSTEM STABILITY
 ! =========================================================================
 @@||github.com^$important
 @@||githubassets.com^$important
 @@||raw.githubusercontent.com^$important
 @@||api.github.com^$important
-
-! =========================================================================
-! [9] FINAL NETWORK LOGIC
-! =========================================================================
-! Разрешаем QUIC только для доверенных доменов (чтобы не тормозил YouTube/Gmail)
-@@||google.com^$network,quic
-@@||youtube.com^$network,quic
-@@||googleapis.com^$network,quic
-||*$network,quic,domain=~google.com|~youtube.com|~googleapis.com
+@@||play.google.com^$header=X-Client-Data,important
