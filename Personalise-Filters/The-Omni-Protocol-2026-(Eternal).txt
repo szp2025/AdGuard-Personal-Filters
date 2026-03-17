@@ -1172,6 +1172,15 @@
 @@||yastatic.net^$important
 
 
+! --- Фикс бесконечной загрузки Yandex/Dzen SSO (v11.0.2) ---
+@@||yandex.ru^$removeparam=uuid
+@@||yandex.com^$important
+@@||dzen.ru^$document
+@@||sso.dzen.ru^$important
+@@||sso.yandex.ru^$important
+@@||*.yandex.net^$important
+@@||*.yastatic.net^$important
+
 ! --- Уровень 2: Anti-Adblock (чтобы сайты не видели AdGuard) ---
 ##+js(set-constant, AdGuard, undefined)
 ##+js(set-constant, canRunAds, true)
