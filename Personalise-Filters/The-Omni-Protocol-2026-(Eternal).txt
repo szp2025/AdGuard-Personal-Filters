@@ -1643,12 +1643,43 @@
 
 
 ! =========================================================================
-! [40] HACKING SUPPRESSION (METASPLOIT & KALI)
+! [40] HACKING SUPPRESSION: ARSENAL ISOLATION (v11.2.0)
 ! =========================================================================
-||*kali-linux*.*^$important
-||*metasploit*.*^$important
-||*brute-force*.*^$important
-||*packet-inject*.*^$important
+
+! --- Уровень 1: Exploitation Frameworks (Подавление фреймворков взлома) ---
+! Блокируем связь сторонних скриптов с инфраструктурой Metasploit, Cobalt Strike и др.
+||metasploit.com^$important,third-party
+||offensive-security.com^$important,third-party
+||*cobalt-strike*.*^$important
+||*payload-generator*.*^$important
+
+! --- Уровень 2: Brute-Force & Attack Vectors (Анти-перебор) ---
+! Блокируем доступ к онлайн-словарям паролей и сервисам облачного брутфорса.
+||brute-force.*^$important
+||*password-crack*.*^$important
+||*hash-decrypt*.*^$important
+||*rainbow-tables*.*^$important
+
+! --- Уровень 3: Packet Manipulation & Injection (Инъекции пакетов) ---
+! Пресекаем попытки браузерных скриптов имитировать инструменты инъекции трафика.
+||packet-inject.*^$important
+||*traffic-manipulator*.*^$important
+||*scapy-web*.*^$important
+
+! --- Уровень 4: OS-Specific Attack Tools (Защита от инструментов Kali) ---
+! Блокируем специфические зеркала и репозитории инструментов, заточенных под Kali Linux.
+||kali.org^$important,third-party
+||*kali-linux*.*^$important,third-party
+||*exploit-db.com*^$important,third-party
+
+! --- Уровень 5: Валидация для специалистов (Pentest Whitelist) ---
+! Разрешаем прямой доступ к ресурсам, если ты переходишь на них сам.
+! Это необходимо для обучения и легальной работы в сфере ИБ.
+@@||kali.org^$document
+@@||metasploit.com^$document
+@@||exploit-db.com^$document
+@@||github.com/rapid7/metasploit-framework^$document
+
 
 ! =========================================================================
 ! [41] FINAL SYSTEM INTEGRITY (STABILITY GATE)
