@@ -1,40 +1,50 @@
 [Adblock Plus 2.0]
-! Title: The Omni-Protocol 2026 (Stage 1: CDN Recovery)
-! Version: 7.3.6
+! Title: The Omni-Protocol 2026 (Stage 1: Pure Foundation)
+! Version: 7.4.0
+! Last modified: 2026-03-17
 
 ! =========================================================================
-! [1] SYSTEM BYPASS: ULTIMATE CDN WHITE-LIST (FIX FOR GOOGLE PLAY)
+! [1] INFRASTRUCTURE IMMUNITY: GOOGLE, SAMSUNG, APPLE, WAZE
 ! =========================================================================
-! Разрешаем ЛЮБЫЕ поддомены для серверов загрузки (те самые Rr1---sn...)
+! Разрешаем все CDN для стабильной загрузки (Play Market & Galaxy Store)
 @@||gvt1.com^$important
 @@||*.gvt1.com^$important
 @@||gvt2.com^$important
 @@||*.gvt2.com^$important
 @@||gvt3.com^$important
 @@||*.gvt3.com^$important
-
-! Дополнительные узлы доставки контента Google
 @@||*.googlevideo.com^$important
 @@||*.googleusercontent.com^$important
 @@||*.gstatic.com^$important
 
-! Инфраструктура Apple & Samsung & Waze (оставляем как было)
+! Системные узлы Apple, Samsung и навигация
 @@||*.apple.com^$important
 @@||*.icloud.com^$important
 @@||*.samsung.com^$important
 @@||*.galaxy.store^$important
+@@||*.samsungapps.com^$important
 @@||*.waze.com^$important
+@@||*.youtube.com^$important
 
 ! =========================================================================
-! [2] NETWORK STEALTH: DNS & QUIC (FIXED)
+! [2] NETWORK STEALTH: DPI & QUIC PROTECTION
 ! =========================================================================
-! Разрешаем сетевой доступ и QUIC для GVT1-3 (чтобы скачивание не обрывалось)
-@@||gvt1.com^$network,important
-@@||gvt2.com^$network,important
-@@||gvt1.com^$network,quic
-@@||gvt2.com^$network,quic
-
-! Остальные правила сетевой скрытности
+! Твоя защита от анализа трафика
 ||*$csp=proxy-src 'none'
 ||*$header=X-Forwarded-For,important
 ||*$header=Via,important
+
+! Разрешаем QUIC только для системных нужд, чтобы не блокировать загрузку
+@@||gvt1.com^$network,quic
+@@||gvt2.com^$network,quic
+@@||google.com^$network,quic
+@@||samsung.com^$network,quic
+@@||apple.com^$network,quic
+||*$network,quic,domain=~google.com|~apple.com|~samsung.com|~gvt1.com|~gvt2.com
+
+! Открываем порты для пуш-уведомлений и почты
+@@||*:5228$network,important
+@@||*:5229$network,important
+@@||*:5230$network,important
+@@||*:993$network,important
+@@||*:465$network,important
