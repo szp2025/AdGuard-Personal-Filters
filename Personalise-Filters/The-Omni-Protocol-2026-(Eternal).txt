@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 (Eternal)
-! Version: 7.4.4
+! Version: 7.4.5
 ! Last modified: 2026-03-17
 
 ! =========================================================================
@@ -321,6 +321,11 @@
 #%#//scriptlet("set-constant", "DeviceMotionEvent", "undefined")
 #%#//scriptlet("set-constant", "DeviceOrientationEvent", "undefined")
 
+! Усиленная защита от утечки локального и реального IP
+#%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "undefined")
+#%#//scriptlet("abort-on-property-read", "RTCIceCandidate")
+#%#//scriptlet("abort-on-property-read", "RTCSessionDescription")
+
 
 ! =========================================================================
 ! [13] IDENTITY MASKING (ETERNAL EDITION): REFERER & USER-AGENT
@@ -367,3 +372,16 @@
 ! Защита от передачи данных о состоянии Chrome-экспериментов через JS
 #%#//scriptlet("set-constant", "window.chrome.csi", "undefined")
 #%#//scriptlet("set-constant", "window.chrome.loadTimes", "undefined")
+
+! =========================================================================
+! [15] DPI STEALTH & ANTI-CENSORSHIP (ETERNAL EDITION)
+! =========================================================================
+! Блокировка протокола HTTP/3 (QUIC) для предотвращения быстрого анализа UDP-пакетов
+||*$network,protocol=h3,important
+
+! Запрет на использование незашифрованного DNS через браузер (Force System DNS)
+||*/dns-query$network,important,domain=~google.com|~cloudflare.com
+
+! Удаление заголовков, которые помогают DPI идентифицировать тип трафика
+||*$header=X-Forwarded-For,important
+||*$header=Via,important
