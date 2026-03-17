@@ -1,57 +1,67 @@
 [Adblock Plus 2.0]
-! Title: The Omni-Protocol 2026 (Genesis Layer)
-! Version: 7.0.1
+! Title: The Omni-Protocol 2026 (Stage 1: Core & Tracker Genocide)
+! Version: 7.3.0
 ! Last modified: 2026-03-17
 
-
 ! =========================================================================
-! [1] SYSTEM BYPASS: ЖИЗНЕННО ВАЖНЫЕ КОРИДОРЫ (UPDATED: +YOUTUBE)
+! [1] SYSTEM BYPASS: ЖИЗНЕННО ВАЖНЫЕ КОРИДОРЫ (GOOGLE / SAMSUNG / WAZE)
 ! =========================================================================
-! Google Play, Samsung Store и системные узлы
+! База для стабильной работы Play Market, обновлений ОС и YouTube
 @@||google.com^$important
 @@||googleapis.com^$important
 @@||gstatic.com^$important
 @@||gvt1.com^$important
 @@||*.gvt1.com^$important
-@@||gvt2.com^$important
 @@||android.com^$important
+@@||waze.com^$important
 @@||samsung.com^$important
-@@||samsungcloud.com^$important
 @@||samsungapps.com^$important
 @@||galaxy.store^$important
-
-! YouTube Инфраструктура (Видео, картинки, стриминг)
 @@||youtube.com^$important
-@@||ytimg.com^$important
 @@||googlevideo.com^$important
-@@||ggpht.com^$important
-@@||youtube-ui.l.google.com^$important
-
-! Умный контроль QUIC для YouTube (чтобы видео не буферилось бесконечно)
-@@||youtube.com^$network,quic
-@@||googlevideo.com^$network,quic
-
 
 ! =========================================================================
-! [2] DPI-STEALTH & TRAFFIC ISOLATION
+! [2] NETWORK STEALTH: DPI & PORTS
 ! =========================================================================
-! Защита от DPI и анонимизация трафика
 ||*$csp=proxy-src 'none'
 ||*$header=X-Forwarded-For,important
 ||*$header=Via,important
-
-! Умный контроль QUIC: Блокируем везде, КРОМЕ системных нужд (чтобы Play Market не висел)
+! Умный QUIC (Разрешен только для системной базы)
 @@||google.com^$network,quic
 @@||googleapis.com^$network,quic
 @@||samsung.com^$network,quic
-||*$network,quic,domain=~google.com|~googleapis.com|~samsung.com
+@@||youtube.com^$network,quic
+||*$network,quic,domain=~google.com|~googleapis.com|~samsung.com|~youtube.com
 
 ! =========================================================================
-! [3] NETWORK PORTS: СИНХРОНИЗАЦИЯ GMAIL И МАГАЗИНОВ
+! [3] TRACKER GENOCIDE: БЛОКИРОВКА СИСТЕМ СЛЕЖКИ
 ! =========================================================================
-! Открываем порты для пуш-уведомлений и почты IMAP/SMTP
-@@||*:5228$network,important
-@@||*:5229$network,important
-@@||*:5230$network,important
-@@||*:993$network,important
-@@||*:465$network,important
+! Рекламные биржи и аукционы (RTB)
+||*doubleclick.net*^$important,domain=~google.com
+||*adsystem*.*^$important
+||*adserver*.*^$important
+||*adnxs.com*^$important
+||*openx.net*^$important
+||*rubiconproject.com*^$important
+
+! Системы аналитики и записи поведения
+||*google-analytics.com*^$important,domain=~google.com
+||*hotjar.com*^$important
+||*amplitude.com*^$important
+||*scorecardresearch.com*^$important
+
+! Мобильные SDK трекеры в приложениях
+||*appsflyer.com*^$important,domain=~revolut.com|~n26.com|~lydia-app.com
+||*adjust.com*^$important
+||*branch.io*^$important
+
+! Глобальные маски (Wildcards) с обходом системных доменов
+||*.analytics.*^$important,domain=~google.com|~googleapis.com|~waze.com|~youtube.com|~samsung.com|~revolut.com
+||*.stats.*^$important,domain=~google.com|~googleapis.com|~waze.com|~youtube.com|~samsung.com
+||*.collect.*^$important,domain=~google.com|~googleapis.com|~samsung.com
+||*.metrics.*^$important,domain=~google.com|~youtube.com|~waze.com|~samsung.com
+
+! Невидимые жучки и пиксели
+||*/pixel.gif$important
+||*/track.gif$important
+||*web-beacon*.*^$important
