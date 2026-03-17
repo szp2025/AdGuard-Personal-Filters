@@ -1311,64 +1311,61 @@
 @@||caf.fr^$important
 @@||impots.gouv.fr^$important
 
-
 ! =========================================================================
-! [33] SOVEREIGN SHIELD 2026 (GLOBAL ETERNAL MONOLITH)
+! [33] SOVEREIGN SHIELD: GLOBAL ETERNAL MONOLITH (v11.2.0)
 ! =========================================================================
 
-! --- Уровень 1: Социальный щит (TikTok, Meta, Telegram) ---
-! Обрезаем передачу логов и рекламных пикселей внутри соцсетей
-||*tiktokv.com*^$important
-||*byteoversea.com*^$important
-||*musical.ly*^$important
-||*facebook.com/tr/*^$important
-||*facebook.com/ads/*^$important
-||*instagram.com/logging/*^$important
-||*graph.instagram.com*^$important
-||*whatsapp.com/ppd*^$important
-||*whatsapp.net/cs*^$important
-||*config.telegram.org*^$important
+! --- Уровень 1: Социальный щит (Deep Logic Isolation) ---
+! Обрезаем передачу логов и пикселей. Telegram/WhatsApp работают, но их телеметрия — нет.
+||tiktokv.com^$important,third-party
+||byteoversea.com^$important,third-party
+||facebook.com/tr/*^$important
+||facebook.com/ads/*^$important
+||instagram.com/logging/*^$important
+||graph.instagram.com^$important,third-party
+||whatsapp.com/ppd^$important,third-party
+||whatsapp.net/cs^$important,third-party
+||config.telegram.org^$important,third-party,domain=~telegram.org
 
-! --- Уровень 2: Динамическая блокировка корня (Global) ---
-! Закрываем главные магистрали сбора данных Google, Samsung и Facebook
-||*firebase*.googleapis.com^$important
-||*crashlytics*.com^$important
-||*telemetry*.samsungcloud.com^$important
-||*connectivity*.samsungcloud.com^$important
-||*graph*.facebook.com^$important
-||*measurement*.com^$important
-||*metrics*.googleapis.com^$important
+! --- Уровень 2: Магистральная блокировка (Google/Samsung Core) ---
+! Закрываем главные артерии сбора данных Firebase, Crashlytics и Samsung Cloud.
+||firebase*.googleapis.com^$important,third-party
+||crashlytics.com^$important,third-party
+||telemetry.samsungcloud.com^$important
+||connectivity.samsungcloud.com^$important,third-party,domain=~samsung.com
+||measurement.com^$important
+||metrics.googleapis.com^$important
 
-! --- Уровень 3: Экосистема Yandex & Mail.ru ---
-! Полная зачистка рунета: Метрика, Пиксели и рекламные движки
-||*metrika*.yandex.*^$important
-||*mc.yandex*.ru^$important
-||*clck.yandex*.ru^$important
-||*yandex*.ru/ads/*^$important
-||*itp.mail.ru*^$important
-||*pixel.mail.ru*^$important
-||*top-fwz1.mail.ru*^$important
+! --- Уровень 3: Экосистема RU-NET (Yandex & Mail.ru Purge) ---
+! Тотальная зачистка Метрики, Клик-трекеров и рекламных движков СНГ-сегмента.
+||metrika.yandex.*^$important
+||mc.yandex.ru^$important
+||clck.yandex.ru^$important
+||yandex.ru/ads/*^$important
+||itp.mail.ru^$important
+||pixel.mail.ru^$important
+||top-fwz1.mail.ru^$important
 
-! --- Уровень 4: Блокировка обходных путей (GVT & Redirectors) ---
-! Закрываем технические домены, через которые Google проталкивает рекламу
+! --- Уровень 4: Технические обходы (GVT & DoubleClick) ---
+! Закрываем скрытые домены, через которые Google проталкивает рекламный Payload.
 ||*.gvt1.com^$important
 ||*.googlesyndication.com^$important
 ||*.doubleclick.net^$important
-||*ocsp.pki.goog*^$important
+||ocsp.pki.goog^$important,third-party,domain=~google.com|~android.com
 
-! --- Уровень 5: Изоляция контента и облаков ---
-! Ограничиваем скрытый сбор данных через облачные хранилища
-||*.internal.storage.samsungcloud.com^$important
-||*workspacevideo*.googleapis.com^$important
-||*googleusercontent*.com^$important
-||*picasaweb*.google.com^$important
+! --- Уровень 5: Облачная Изоляция (Cloud Stealth) ---
+! Ограничиваем сбор данных через хранилища, сохраняя доступ к файлам.
+||*.internal.storage.samsungcloud.com^$important,third-party
+||workspacevideo.googleapis.com^$important,third-party
+||picasaweb.google.com^$important,third-party
+||googleusercontent.com^$important,third-party,domain=~google.com|~youtube.com|~android.com
 
-! --- Уровень 6: Анти-идентификация и провижининг ---
-! Запрещаем регистрацию устройства в рекламных базах на уровне железа
-||*fingerprint*.io^$important
-||*fingerprintjs*.com^$important
-||*device-metrics*.com^$important
-||device-provisioning.googleapis.com^$important
+! --- Уровень 6: Аппаратная Анонимность (Device Provisioning) ---
+! Запрещаем регистрацию устройства в рекламных базах фингерпринтинга.
+||fingerprint.io^$important
+||fingerprintjs.com^$important
+||device-metrics.com^$important
+
 
 ! =========================================================================
 ! [34] INBOUND SHIELD 2026 (APEX STABLE)
