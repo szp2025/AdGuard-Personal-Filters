@@ -1911,3 +1911,42 @@ $removeparam=gclid
 @@||maps.yandex.ru^$document
 @@||*.waze.com^$important
 @@||*.ls.apple.com^$important
+
+! =========================================================================
+! [47] HARDWARE SENSOR ISOLATION: MIC & CAMERA GUARD (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: Audio Fingerprinting Defense (Защита от прослушки) ---
+! Блокируем скрипты, которые анализируют фоновый шум через AudioContext 
+! для идентификации твоего уникального устройства.
+||*audio-fingerprint*.*^$important
+||*audiocontext-probe*.*^$important
+||*acoustic-id*.*^$important
+
+! --- Уровень 2: Camera & Video API Lockdown (Защита объектива) ---
+! Запрещаем скрытые вызовы MediaDevices API со сторонних рекламных доменов.
+! Сайт не сможет "спросить" разрешение на камеру без твоего ведома.
+||*camera-access-tracker*.*^$important
+||*webcam-probe*.*^$important
+||*video-stream-telemetry*.*^$important
+
+! --- Уровень 3: Ultrasonic Tracking Defense (Ультразвуковая слежка) ---
+! Блокируем передачу данных через неслышимые человеку частоты, 
+! которые магазины используют для связи твоего ТВ и телефона.
+||*ultrasonic-beacon*.*^$important
+||*silverpush.io*^$important
+||*u-beacon*.*^$important
+
+! --- Уровень 4: Sensor Data Exfiltration (Акселерометр и Гироскоп) ---
+! Блокируем отправку данных о движении и наклоне телефона, по которым 
+! можно восстановить набираемый тобой текст (кейлоггинг по вибрации).
+||*sensor-analytics*.*^$important
+||*gyroscope-log*.*^$important
+||*accelerometer-report*.*^$important
+
+! --- Уровень 5: Communication Whitelist (Валидация связи) ---
+! Гарантируем, что звонки в Telegram, WhatsApp Web и Zoom будут работать.
+@@||*.zoom.us^$important
+@@||*.webex.com^$important
+@@||*.teams.microsoft.com^$important
+@@||*.vitalsource.com^$important
