@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 (Stage 1: Pure Foundation)
-! Version: 7.4.1
+! Version: 7.4.2
 ! Last modified: 2026-03-17
 
 ! =========================================================================
