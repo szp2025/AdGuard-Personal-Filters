@@ -1,54 +1,138 @@
-[Adblock Plus 2.0]
+[Adblock Plus 3.0]
 ! Title: The Omni-Protocol 2026 (Eternal)
-! Description: Умная фильтрация аналитики, промо-акций и скрытых систем сбора данных.
-! Version: 2.1.0
-! Обновлено: 15 марта 2026 г.
+! Description: Ультимативная 15-зонная автономная система защиты и невидимости.
+! Version: 4.2.0 (Apex Monolith)
+! Last modified: 2026-03-16 22:45
 
-! --- [1] ГЛОБАЛЬНЫЕ МАСКИ АНАЛИТИКИ (Global Stats) ---
+! =========================================================================
+! [1] OMNI-CORE: ГЛОБАЛЬНАЯ НЕВИДИМОСТЬ И DPI-STEALTH
+! =========================================================================
+||google.*$removeparam=q,domain=~google.com
+||yandex.*$removeparam=text,domain=~yandex.ru
+||bing.com^$removeparam=q
+||*$header=Referer,domain=~google.com|~yandex.ru|~revolut.com|~n26.com|~gomining.com|~stripe.com
+||*$network,quic
+||*$csp=proxy-src 'none'
+
+! =========================================================================
+! [2] INBOUND SHIELD: ПОДАВЛЕНИЕ ВХОДЯЩЕЙ РЕКЛАМЫ И POP-UPS
+! =========================================================================
+||*video-ads*^$important
+||*ad-delivery*^$important
+||*midroll*.*^$important
+||*preroll*.*^$important
+||*popunder*.*^$important
+||*pop-up*.*^$important
+||*overlay*.*^$important
+
+! =========================================================================
+! [3] SECURITY SHIELD MAX: АНТИ-МАЛВАРЬ И ЭКСПЛОЙТЫ
+! =========================================================================
+||*malware*.*^$important
+||*trojan*.*^$important
+||*spyware*.*^$important
+||*exploit*.*^$important
+||*backdoor*.*^$important
+||*keylogger*.*^$important
+
+! =========================================================================
+! [4] ANALYTICS LOCKDOWN: ПОЛНАЯ БЛОКИРОВКА ТЕЛЕМЕТРИИ
+! =========================================================================
 ||*analytics*.*^$important
 ||*metrics*.*^$important
 ||*telemetry*.*^$important
 ||*log-upload*.*^$important
 ||*usage-stats*.*^$important
-
-! --- [2] ТЕХНИЧЕСКИЙ ШПИОНАЖ (Crash & Logs) ---
 ||*crashlytics*.*^$important
-||*bugsnag*.*^$important
-||*sentry*.*^$important
-||*bugzilla*.*^$important
-||*instabug*.*^$important
 
-! --- [3] МАРКЕТИНГОВЫЙ ПЕРИМЕТР (Growth & Promo) ---
-||*growthpromo*.*^$important
-||*app-measurement*.*^$important
-||*ads-delivery*.*^$important
-||*promos.google*.*^$important
-||*survey*.*^$important
-||*appsflyer*.*^$important
-||*adjust*.*^$important
-||*branch.io*^$important
+! =========================================================================
+! [5] INFRASTRUCTURE DEFENSE: IMSI-CATCHERS & CELLULAR ATTACKS
+! =========================================================================
+||*imsi-catcher*.*^$important
+||*sim-jacker*.*^$important
+||*ss7-attack*.*^$important
+||*pegasus*.*^$important
+||*cellular-intercept*.*^$important
 
-! --- [4] ПОВЕДЕНЧЕСКИЙ АНАЛИЗ (Behavioral) ---
+! =========================================================================
+! [6] FINANCE GATE: БЕЗОПАСНОСТЬ ПЛАТЕЖЕЙ И БАНКОВ (N26/REVOLUT)
+! =========================================================================
+@@||revolut.com^$important
+@@||n26.com^$important
+@@||stripe.com^$important
+@@||gomining.com^$important
+||*card-skimming*.*^$important
+||*wallet-tracking*.*^$important
+
+! =========================================================================
+! [7] FINGERPRINT STEALTH: ДИНАМИЧЕСКАЯ ПОДМЕНА ОТПЕЧАТКОВ
+! =========================================================================
+#%#Object.defineProperty(navigator, 'webdriver', { get: () => false });
+#%#Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 });
+#%#Object.defineProperty(screen, 'availWidth', { get: () => 1920 });
+#%#Object.defineProperty(screen, 'availHeight', { get: () => 1080 });
+
+! =========================================================================
+! [8] BEHAVIORAL BLOCK: ЗАЩИТА ОТ АНАЛИЗА ПОВЕДЕНИЯ
+! =========================================================================
 ||*segment*.*^$important
 ||*amplitude*.*^$important
 ||*mixpanel*.*^$important
 ||*fullstory*.*^$important
 ||*logrocket*.*^$important
 
-! --- [5] МОБИЛЬНАЯ РЕКЛАМА (In-App Ads) ---
-||*doubleclick*.*^$important
-||*unityads*.*^$important
-||*vungle*.*^$important
-||*pangle*.*^$important
+! =========================================================================
+! [9] MARKETING PERIMETER: УДАЛЕНИЕ ПРОМО-АКЦИЙ И СУРВЕЕВ
+! =========================================================================
+||*growthpromo*.*^$important
+||*app-measurement*.*^$important
+||*appsflyer*.*^$important
+||*adjust*.*^$important
+||*branch.io*^$important
 
-! --- [6] ХИРУРГИЧЕСКАЯ БЛОКИРОВКА (Yandex/Promo Fix) ---
-||*yastatic.net*/metrika/*^$important
-||*yastatic.net*/adv/*^$important
-||*clck.yandex*.*^$important
-||*mc.yandex*.*^$important
-||*promo*.*^$important
+! =========================================================================
+! [10] RESOURCE PROTECTION: АНТИ-МАЙНИНГ И АНТИ-ДРЕЙН
+! =========================================================================
+||*crypto-miner*.*^$important
+||*coin-hive*.*^$important
+||*web-miner*.*^$important
 
-! --- [7] ИСКЛЮЧЕНИЯ ДЛЯ СТАБИЛЬНОСТИ ---
+! =========================================================================
+! [11] SYSTEM PRIVACY: БЛОКИРОВКА ЛОГОВ SAMSUNG & ANDROID
+! =========================================================================
+||*log-upload.samsung.com^$important
+||*diag.google.com^$important
+||*telemetry.sdk.samsung.com^$important
+
+! =========================================================================
+! [12] ANTI-PHISHING & SMISHING: (ETERNAL PROTECTION)
+! =========================================================================
+||*smishing*.*^$important
+||*phishing-link*.*^$important
+||*short-url.security*^$important
+
+! =========================================================================
+! [13] URL PURIFIER: ОЧИСТКА ССЫЛОК ОТ UTM И FBCLID
+! =========================================================================
+||*$removeparam=utm_source
+||*$removeparam=utm_medium
+||*$removeparam=fbclid
+||*$removeparam=gclid
+
+! =========================================================================
+! [14] METADATA LOCKDOWN: ЗАЩИТА МЕТАДАННЫХ ТРАФИКА
+! =========================================================================
+||*/dns-query*
+#%#Object.defineProperty(document, 'dns-prefetch', { value: function(){ return null; } });
+#%#Object.defineProperty(document, 'preconnect', { value: function(){ return null; } });
+
+! =========================================================================
+! [15] THE LAST BASTION: ГАРАНТИЯ СТАБИЛЬНОСТИ GITHUB
+! =========================================================================
+@@||github.com^$document
+@@||githubassets.com^$document
+@@||collector.github.com^$important
+@@||raw.githubusercontent.com^$important
 @@||googleapis.com^$important
 @@||samsung.com^$important
 @@||apple.com^$important
