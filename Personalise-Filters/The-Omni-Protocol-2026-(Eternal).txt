@@ -961,3 +961,62 @@
 @@||github.com^$document
 @@||revolut.com^$important
 @@||n26.com^$important
+
+
+! =========================================================================
+! [33] SOVEREIGN SHIELD 2026 (GLOBAL ETERNAL MONOLITH)
+! =========================================================================
+
+! --- Уровень 1: Социальный щит (TikTok, Meta, Telegram) ---
+! Обрезаем передачу логов и рекламных пикселей внутри соцсетей
+||*tiktokv.com*^$important
+||*byteoversea.com*^$important
+||*musical.ly*^$important
+||*facebook.com/tr/*^$important
+||*facebook.com/ads/*^$important
+||*instagram.com/logging/*^$important
+||*graph.instagram.com*^$important
+||*whatsapp.com/ppd*^$important
+||*whatsapp.net/cs*^$important
+||*config.telegram.org*^$important
+
+! --- Уровень 2: Динамическая блокировка корня (Global) ---
+! Закрываем главные магистрали сбора данных Google, Samsung и Facebook
+||*firebase*.googleapis.com^$important
+||*crashlytics*.com^$important
+||*telemetry*.samsungcloud.com^$important
+||*connectivity*.samsungcloud.com^$important
+||*graph*.facebook.com^$important
+||*measurement*.com^$important
+||*metrics*.googleapis.com^$important
+
+! --- Уровень 3: Экосистема Yandex & Mail.ru ---
+! Полная зачистка рунета: Метрика, Пиксели и рекламные движки
+||*metrika*.yandex.*^$important
+||*mc.yandex*.ru^$important
+||*clck.yandex*.ru^$important
+||*yandex*.ru/ads/*^$important
+||*itp.mail.ru*^$important
+||*pixel.mail.ru*^$important
+||*top-fwz1.mail.ru*^$important
+
+! --- Уровень 4: Блокировка обходных путей (GVT & Redirectors) ---
+! Закрываем технические домены, через которые Google проталкивает рекламу
+||*.gvt1.com^$important
+||*.googlesyndication.com^$important
+||*.doubleclick.net^$important
+||*ocsp.pki.goog*^$important
+
+! --- Уровень 5: Изоляция контента и облаков ---
+! Ограничиваем скрытый сбор данных через облачные хранилища
+||*.internal.storage.samsungcloud.com^$important
+||*workspacevideo*.googleapis.com^$important
+||*googleusercontent*.com^$important
+||*picasaweb*.google.com^$important
+
+! --- Уровень 6: Анти-идентификация и провижининг ---
+! Запрещаем регистрацию устройства в рекламных базах на уровне железа
+||*fingerprint*.io^$important
+||*fingerprintjs*.com^$important
+||*device-metrics*.com^$important
+||device-provisioning.googleapis.com^$important
