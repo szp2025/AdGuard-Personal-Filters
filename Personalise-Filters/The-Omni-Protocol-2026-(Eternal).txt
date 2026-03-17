@@ -507,3 +507,47 @@
 ! Удаление скриптов авторизации через соцсети на сторонних сайтах
 ||*facebook.net/en_US/sdk.js*^$important
 ||*connect.facebook.net*^$important
+
+
+! =========================================================================
+! [46] SMS/MMS ANTI-PHISHING: (THE ABSOLUTE ZERO)
+! =========================================================================
+! Защита от фейковых посылок (DHL, La Poste, Chronopost)
+||*dhl-delivery*.*^$important
+||*chronopost-suivi*.*^$important
+||*laposte-info*.*^$important
+||*ups-track*.*^$important
+||*package-pickup*.*^$important
+! Блокировка поддельных банковских уведомлений и штрафов
+||*secure-verification*.*^$important
+||*banking-update*.*^$important
+||*card-security-check*.*^$important
+||*gouv-fr-info*.*^$important
+||*ameli-update*.*^$important
+||*caf-infoconnect*.*^$important
+||*impots-gouv-verif*.*^$important
+
+! =========================================================================
+! [47] SHORT-URL & REDIRECTS: (БЕЗОПАСНЫЙ ПЕРЕХОД)
+! =========================================================================
+! Блокируем сокращатели только как сторонние скрипты, чтобы не ломать прямые ссылки
+||bit.ly^$third-party,important
+||t.co^$third-party,important
+||tinyurl.com^$third-party,important
+||cutt.ly^$third-party,important
+||rb.gy^$third-party,important
+
+! =========================================================================
+! [48] GITHUB & SYSTEM RECOVERY: (ЭКСТРЕННЫЙ ПАТЧ)
+! =========================================================================
+! Полная разблокировка инфраструктуры GitHub
+@@||github.com^$important
+@@||github.com^$js,css,image,important
+@@||githubassets.com^$important
+@@||raw.githubusercontent.com^$important
+@@||api.github.com^$important
+@@||collector.github.com^$important
+! Гарантия работы реальных банков (не путать с фишингом)
+@@||revolut.com^$important
+@@||n26.com^$important
+@@||stripe.com^$important
