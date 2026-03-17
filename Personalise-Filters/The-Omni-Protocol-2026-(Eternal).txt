@@ -158,3 +158,45 @@
 ! Защита от подмены форм оплаты (Anti-Skimming)
 ||*card-skimmer*.*^$important
 ||*payment-hijack*.*^$important
+
+! =========================================================================
+! [15] POP-UP GENOCIDE: ЗАМЕНА ТУМБЛЕРА "ВСПЛЫВАЮЩИЕ ОКНА"
+! =========================================================================
+! Полная блокировка всплывающих окон, не нужных для работы сайтов
+||*$popup,important
+||*$csp=sandbox allow-forms allow-scripts allow-same-origin,important
+! Подавление невидимых слоев, которые открывают рекламу при клике
+##.popup-overlay
+##.modal-backdrop
+
+! =========================================================================
+! [16] ETERNAL SECURITY: ANTI-PHISHING & SMISHING
+! =========================================================================
+! Блокировка ссылок из вредоносных SMS и фишинговых рассылок
+||*smishing*.*^$important
+||*phishing*.*^$important
+||*verify-account-safety*.*^$important
+||*update-bank-info*.*^$important
+! Защита от перехвата данных в публичных сетях
+||*connectivitycheck*.*^$domain=~google.com|~apple.com
+
+! =========================================================================
+! [17] FRANCE INFRASTRUCTURE: (CAF / AMELI / IMPOTS / TV)
+! =========================================================================
+! Белый список для государственных сервисов Франции (чтобы ничего не слетело)
+@@||ameli.fr^$important
+@@||caf.fr^$important
+@@||impots.gouv.fr^$important
+@@||service-public.fr^$important
+! Стабильный доступ к французскому ТВ без блокировок плеера
+@@||france.tv^$media,domain=france.tv
+@@||tf1.fr^$media,domain=tf1.fr
+@@||6play.fr^$media,domain=6play.fr
+
+! =========================================================================
+! [18] THE SYSTEM CLEANUP: ТЕЛЕМЕТРИЯ ЖЕЛЕЗА (SAMSUNG/GOOGLE)
+! =========================================================================
+||log-upload.samsung.com^$important
+||telemetry.sdk.samsung.com^$important
+||diag.google.com^$important
+||firebase-settings.googleapis.com^$important
