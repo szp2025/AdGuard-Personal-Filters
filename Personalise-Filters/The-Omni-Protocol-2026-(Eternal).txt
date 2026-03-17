@@ -333,3 +333,41 @@
 ! Защита от фишинговых поддоменов
 ||*-secure-login.*^$important
 ||*login-verify.*^$important
+
+! =========================================================================
+! [31] WILDCARD AUTONOMY: ГЛОБАЛЬНЫЕ МАСКИ ЗАЩИТЫ
+! =========================================================================
+! Автоматическая блокировка любых поддоменов, связанных со сбором данных
+||*.analytics.*^$important
+||*.tracking.*^$important
+||*.telemetry.*^$important
+||*.stats.*^$important
+||*.collect.*^$important
+||*.logging.*^$important
+||*.error-report.*^$important
+! Блокировка рекламных и мобильных идентификаторов на уровне сети
+||*advertising-id*.*^$important
+||*device-id*.*^$important
+||*app-measurement*.*^$important
+
+! =========================================================================
+! [32] THE LAST BASTION: GITHUB & SYSTEM INTEGRITY
+! =========================================================================
+! Гарантированная работа ресурсов для обновлений и кода
+@@||github.com^$document
+@@||githubassets.com^$document
+@@||raw.githubusercontent.com^$important
+! Исключения для стабильности системы Android/iOS
+@@||googleapis.com^$important
+@@||samsung.com^$important
+@@||apple.com^$important
+@@||gvt1.com^$important
+
+! =========================================================================
+! [33] ETERNAL STABILIZATION: (FINAL CLEARANCE)
+! =========================================================================
+! Запрет на скрытые пиксели размером 1x1
+||*/pixel.gif$important
+||*/track.gif$important
+! Очистка кэша DNS-префетчинга
+#%#Object.defineProperty(document, 'dns-prefetch', { value: function(){ return null; } });
