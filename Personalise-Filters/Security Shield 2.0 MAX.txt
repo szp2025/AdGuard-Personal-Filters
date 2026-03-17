@@ -1,58 +1,82 @@
 [Adblock Plus 2.0]
 ! Title: Security Shield 2026 (Eternal) MAX
-! Description: Умная защита от эксплойтов, малвари, шпионского ПО и атак на сотовые протоколы.
+! Description: Ультимативный заслон против эксплойтов, шпионского ПО (Pegasus/Zero-Click) и сетевых атак.
 ! Version: 2.5.0 (MAX Edition)
-! Last modified: 2026-03-17
+! Last modified: 2026-03-16 22:55
 
-! --- [1] MALWARE & RANSOMWARE (Анти-вирусный заслон) ---
+! =========================================================================
+! [1] MALWARE & RANSOMWARE DEFENSE (Анти-вирусная броня)
+! =========================================================================
 ||*malware*.*^$important
 ||*trojan*.*^$important
 ||*ransomware*.*^$important
 ||*spyware*.*^$important
 ||*keylogger*.*^$important
 ||*rootkit*.*^$important
+||*worm-virus*.*^$important
+||*stealer*.*^$important
 
-! --- [2] EXPLOIT & INJECTION (Защита от взлома) ---
+! =========================================================================
+! [2] EXPLOIT & ZERO-DAY PROTECTION (Защита от взлома системы)
+! =========================================================================
 ||*exploit*.*^$important
 ||*backdoor*.*^$important
 ||*web-shell*.*^$important
 ||*sql-inject*.*^$important
 ||*remote-exec*.*^$important
 ||*zero-day*.*^$important
+||*buffer-overflow*.*^$important
+||*rce-attack*.*^$important
 
-! --- [3] C&C & BOTNETS (Обрыв связи с хакером) ---
+! =========================================================================
+! [3] C&C & BOTNETS BLOCK (Обрыв связи с хакерскими серверами)
+! =========================================================================
 ||*cnc-server*.*^$important
-||*botnet*.*^$important
+||*botnet-control*.*^$important
 ||*cobaltstrike*.*^$important
 ||*meterpreter*.*^$important
 ||*rat-stealer*.*^$important
+||*command-center*.*^$important
 
-! --- [4] MOBILE & NETWORK ATTACKS (Защита от Pegasus и сотовых атак) ---
+! =========================================================================
+! [4] PEGASUS & ZERO-CLICK DEFENSE (Защита от элитного шпионажа)
+! =========================================================================
+||*pegasus-spyware*.*^$important
+||*zero-click*.*^$important
+||*nso-group*.*^$important
+||*targeted-attack*.*^$important
+||*payload-delivery*.*^$important
+||*remote-intercept*.*^$important
+
+! =========================================================================
+! [5] MOBILE INFRASTRUCTURE & SIM (Защита сотовых протоколов)
+! =========================================================================
 ||*imsi-catcher*.*^$important
 ||*sim-jacker*.*^$important
 ||*ss7-attack*.*^$important
-||*pegasus*.*^$important
-||*zero-click*.*^$important
 ||*smpp-exploit*.*^$important
 ||*cellular-intercept*.*^$important
+||*base-station-spoofing*.*^$important
 
-! --- [5] CRYPTO-JACKING & DATA EXFIL (Защита ресурсов и данных) ---
+! =========================================================================
+! [6] ANTI-MINING & RESOURCE STEALTH (Защита батареи и процессора)
+! =========================================================================
 ||*crypto-miner*.*^$important
 ||*coin-hive*.*^$important
-||*data-exfil*.*^$important
-||*cookie-theft*.*^$important
-||*credential-harvesting*.*^$important
-||*identity-theft*.*^$important
+||*web-miner*.*^$important
+||*resource-drainer*.*^$important
 
-! --- [6] SYSTEM & FINANCE WHITELIST ---
-@@||googleapis.com^$important
-@@||samsung.com^$important
-@@||google.com^$important
-@@||apple.com^$important
-@@||revolut.com^$important
-@@||n26.com^$important
-
-! --- [7] GITHUB INTEGRITY ---
-! Исключения для стабильной работы твоего репозитория
+! =========================================================================
+! [7] WHITELIST & SYSTEM INTEGRITY (GitHub & Finance Gate)
+! =========================================================================
+! Критические исключения для стабильности твоего Бункера
 @@||github.com^$document
 @@||githubassets.com^$document
+@@||raw.githubusercontent.com^$important
+@@||revolut.com^$important
+@@||n26.com^$important
+@@||stripe.com^$important
+@@||gomining.com^$important
+@@||googleapis.com^$important
+@@||samsung.com^$important
+@@||apple.com^$important
