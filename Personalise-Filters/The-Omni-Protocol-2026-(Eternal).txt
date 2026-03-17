@@ -1,0 +1,31 @@
+[Adblock Plus 2.0]
+! Title: The Omni-Protocol 2026 (Eternal)
+! Description: Монолитная автономная система. Этап 1: Core Stealth & DPI Defense.
+! Version: 6.0.0 (Genesis)
+! Last modified: 2026-03-17 02:50
+
+! =========================================================================
+! [1] OMNI-CORE: DPI-STEALTH & TRAFFIC ISOLATION
+! =========================================================================
+! Блокировка QUIC для предотвращения обхода фильтров и защита от DPI
+||*$network,quic,important
+! Запрет проксирования трафика через сторонние скрипты
+||*$csp=proxy-src 'none'
+! Очистка заголовков для анонимизации (убираем данные о пересылке)
+||*$header=X-Forwarded-For,important
+||*$header=Via,important
+
+! =========================================================================
+! [2] SEARCH PRIVACY: ЗАМЕНА "СКРЫТИЯ ПОИСКОВЫХ ЗАПРОСОВ"
+! =========================================================================
+! Удаляем параметры запросов в реальном времени (Google, Yandex, Bing)
+||google.*$removeparam=q,domain=~google.com
+||yandex.*$removeparam=text,domain=~yandex.ru
+||bing.com^$removeparam=q
+||duckduckgo.com^$removeparam=q
+
+! =========================================================================
+! [3] REFERER CONTROL: ЗАМЕНА "СКРЫТИЯ REFERER"
+! =========================================================================
+! Скрываем источник перехода, кроме доверенных финансовых и тех. ресурсов
+||*$header=Referer,domain=~google.com|~yandex.ru|~revolut.com|~n26.com|~github.com|~stripe.com
