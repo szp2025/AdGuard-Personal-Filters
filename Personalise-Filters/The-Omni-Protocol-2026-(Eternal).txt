@@ -1366,62 +1366,69 @@
 ||fingerprintjs.com^$important
 ||device-metrics.com^$important
 
-
 ! =========================================================================
-! [34] INBOUND SHIELD 2026 (APEX STABLE)
+! [34] INBOUND SHIELD: APEX STABLE (v11.2.0)
 ! =========================================================================
 
-! --- Уровень 1: Video Ads & Streaming Defense (Анти-роллы и вставки) ---
-||*video-ads*^$important
-||*ad-delivery*^$important
-||*midroll*.*^$important
-||*preroll*.*^$important
-||*postroll*.*^$important
-||*outstream*.*^$important
-||*in-stream*.*^$important
-||*video-overlay*.*^$important
+! --- Уровень 1: Video Ads & Streaming Defense (Anti-Roll Isolation) ---
+! Уничтожаем пре-роллы, мид-роллы и оверлеи в видеоплеерах.
+||video-ads.*^$important,third-party
+||ad-delivery.*^$important,third-party
+||midroll.*^$important
+||preroll.*^$important
+||postroll.*^$important
+||outstream.*^$important
+||in-stream.*^$important
+||video-overlay.*^$important
 
-! --- Уровень 2: Pop-Up & Overlay Control (Защита от перекрытия экрана) ---
-||*popunder*.*^$important
-||*pop-up*.*^$important
-||*overlay*.*^$important
-||*interstitial*.*^$important
-||*notification-spam*.*^$important
-||*sticky-ad*.*^$important
-||*floating-ad*.*^$important
+! --- Уровень 2: Pop-Up & Interface Lockdown (Защита экрана) ---
+! Блокируем всплывающие окна, "липкие" баннеры и межстраничную рекламу.
+||popunder.*^$important
+||pop-up.*^$important
+||overlay.*^$important,third-party,domain=~google.com|~youtube.com
+||interstitial.*^$important
+||notification-spam.*^$important
+||sticky-ad.*^$important
+||floating-ad.*^$important
 
-! --- Уровень 3: Ad-Exchange & RTB (Рекламные биржи и аукционы) ---
-||*adsystem*.*^$important
-||*adserver*.*^$important
-||*doubleclick*.*^$important
-||*taboola*.*^$important
-||*outbrain*.*^$important
-||*adnxs*.*^$important
-||*rubiconproject*.*^$important
+! --- Уровень 3: Ad-Exchange & RTB (Рекламные магистрали) ---
+! Отрезаем доступ к крупнейшим биржам трафика и аукционам рекламы.
+||adsystem.*^$important
+||adserver.*^$important
+||doubleclick.net^$important
+||taboola.com^$important
+||outbrain.com^$important
+||adnxs.com^$important
+||rubiconproject.com^$important
 
-! --- Уровень 4: Beacons & Tracking Pixels (Невидимые жучки) ---
-||*pixel*.*^$important
-||*tracking-pixel*.*^$important
-||*web-beacon*.*^$important
-||*beacons*.*^$important
-||*telemetry-pixel*.*^$important
+! --- Уровень 4: Invisible Beacons & Pixels (Скрытая слежка) ---
+! Блокируем невидимые "жучки", которые сообщают о прочтении страницы.
+||pixel.*^$important,third-party,domain=~facebook.com|~instagram.com
+||tracking-pixel.*^$important
+||web-beacon.*^$important
+||beacons.*^$important
+||telemetry-pixel.*^$important
 
-! --- Уровень 5: Malware & Exploit Delivery (Защита от активных угроз) ---
-||*crypto-miner*.*^$important
-||*web-miner*.*^$important
-||*malvertising*.*^$important
-||*fake-update*.*^$important
-||*phishing*.*^$important
-||*exploit-kit*.*^$important
+! --- Уровень 5: Active Threat Defense (Malware & Exploit Guard) ---
+! Защита от вредоносной рекламы, фальшивых обновлений и майнеров.
+||crypto-miner.*^$important
+||web-miner.*^$important
+||malvertising.*^$important
+||fake-update.*^$important
+||phishing.*^$important
+||exploit-kit.*^$important
 
-! --- Уровень 6: Anti-Shame & Spam Cleaner (Чистка интерфейса) ---
-||*spam-module*.*^$important
-||*newsletter-popup*.*^$important
-||*subscription-wall*.*^$important
+! --- Уровень 6: UX Purge (Anti-Shame & Spam Cleaner) ---
+! Чистим интерфейс от мусорных модулей, подписок и "стен позора".
+||spam-module.*^$important
+||newsletter-popup.*^$important
+||subscription-wall.*^$important
 
-! --- Уровень 7: КРИТИЧЕСКИЙ WHITELIST (Financial & System Stability) ---
+! --- Уровень 7: THE ULTIMATE WHITELIST (Global Infrastructure) ---
+! Гарантируем абсолютную стабильность финансовых и системных сервисов.
+! Эти правила имеют высший приоритет, чтобы ничего не "сломалось".
 @@||github.com^$document
-@@||githubassets.com^$document
+@@||githubassets.com^$important
 @@||raw.githubusercontent.com^$important
 @@||revolut.com^$important
 @@||n26.com^$important
@@ -1430,6 +1437,7 @@
 @@||googleapis.com^$important
 @@||samsung.com^$important
 @@||apple.com^$important
+@@||microsoft.com^$important
 
 
 ! =========================================================================
