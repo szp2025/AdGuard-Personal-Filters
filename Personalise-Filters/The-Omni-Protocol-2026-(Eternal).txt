@@ -48,3 +48,40 @@
 @@||*:5230$network,important
 @@||*:993$network,important
 @@||*:465$network,important
+
+
+! =========================================================================
+! [3] TRACKER GENOCIDE: ТОТАЛЬНОЕ УНИЧТОЖЕНИЕ СЛЕЖКИ
+! =========================================================================
+! Блокировка систем записи поведения (Session Replay)
+||*hotjar.com^$important
+||*amplitude.com^$important
+||*mixpanel.com^$important
+||*clarity.ms^$important
+||*mouseflow.com^$important
+
+! Убийство скрытых API-трекеров (через скриптлеты)
+#%#//scriptlet("abort-current-inline-script", "google-analytics")
+#%#//scriptlet("abort-current-inline-script", "ga")
+#%#//scriptlet("abort-on-property-read", "dataLayer")
+#%#//scriptlet("set-constant", "ga.loaded", "true")
+
+! Блокировка рекламных аукционов (RTB), которые не всегда ловятся DNS
+||*doubleclick.net^$important,domain=~google.com|~youtube.com
+||*adsystem*.*^$important
+||*adserver*.*^$important
+||*adnxs.com^$important
+||*openx.net^$important
+
+! Мобильные аналитические SDK (для защиты приложений)
+||*appsflyer.com^$important,domain=~revolut.com|~n26.com|~apple.com
+||*adjust.com^$important
+||*branch.io^$important
+||*kochava.com^$important
+
+! Очистка от невидимых пикселей (Beacons)
+||*/pixel.gif$important
+||*/track.gif$important
+||*web-beacon*.*^$important
+
+
