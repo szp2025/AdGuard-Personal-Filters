@@ -1,7 +1,8 @@
 [Adblock Plus 2.0]
-! Title: Security Shield 2026 (Eternal)
+! Title: Security Shield 2026 (Eternal) MAX
 ! Description: Умная защита от эксплойтов, малвари, шпионского ПО и атак на сотовые протоколы.
-! Version: 2.0.0
+! Version: 2.5.0 (MAX Edition)
+! Last modified: 2026-03-17
 
 ! --- [1] MALWARE & RANSOMWARE (Анти-вирусный заслон) ---
 ||*malware*.*^$important
@@ -26,22 +27,32 @@
 ||*meterpreter*.*^$important
 ||*rat-stealer*.*^$important
 
-! --- [4] MOBILE & NETWORK ATTACKS (Специфические угрозы) ---
+! --- [4] MOBILE & NETWORK ATTACKS (Защита от Pegasus и сотовых атак) ---
 ||*imsi-catcher*.*^$important
 ||*sim-jacker*.*^$important
 ||*ss7-attack*.*^$important
 ||*pegasus*.*^$important
 ||*zero-click*.*^$important
 ||*smpp-exploit*.*^$important
+||*cellular-intercept*.*^$important
 
-! --- [5] DATA EXFILTRATION (Защита от кражи данных) ---
+! --- [5] CRYPTO-JACKING & DATA EXFIL (Защита ресурсов и данных) ---
+||*crypto-miner*.*^$important
+||*coin-hive*.*^$important
 ||*data-exfil*.*^$important
 ||*cookie-theft*.*^$important
 ||*credential-harvesting*.*^$important
 ||*identity-theft*.*^$important
 
-! --- [6] ИСКЛЮЧЕНИЯ (Whitelist для системных служб) ---
+! --- [6] SYSTEM & FINANCE WHITELIST ---
 @@||googleapis.com^$important
 @@||samsung.com^$important
 @@||google.com^$important
 @@||apple.com^$important
+@@||revolut.com^$important
+@@||n26.com^$important
+
+! --- [7] GITHUB INTEGRITY ---
+! Исключения для стабильной работы твоего репозитория
+@@||github.com^$document
+@@||githubassets.com^$document
