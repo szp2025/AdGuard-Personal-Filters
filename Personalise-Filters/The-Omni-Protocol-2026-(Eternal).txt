@@ -39,17 +39,22 @@
 ||*$header=X-Forwarded-For,important
 ||*$header=Via,important
 
-! Разрешаем DNS-запросы для системных доменов (FIX для Google Play)
+! Разрешаем сетевой доступ для системных CDN (Критично для скачивания)
 @@||google.com^$network,important
 @@||googleapis.com^$network,important
+@@||gstatic.com^$network,important
 @@||gvt1.com^$network,important
+@@||gvt2.com^$network,important
 
-! Умный QUIC
+! Умный QUIC: Расширяем исключения, чтобы не блокировать субдомены обновлений
 @@||google.com^$network,quic
 @@||googleapis.com^$network,quic
+@@||gstatic.com^$network,quic
 @@||youtube.com^$network,quic
-||*$network,quic,domain=~google.com|~googleapis.com|~youtube.com
-
+@@||samsung.com^$network,quic
+@@||gvt1.com^$network,quic
+! Блокируем QUIC для всех остальных (трекеров и левых сайтов)
+||*$network,quic,domain=~google.com|~googleapis.com|~gstatic.com|~youtube.com|~samsung.com|~gvt1.com
 ! =========================================================================
 ! [3] TRACKER GENOCIDE (С ИСКЛЮЧЕНИЕМ ДЛЯ DNS СИСТЕМЫ)
 ! =========================================================================
