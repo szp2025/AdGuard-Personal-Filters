@@ -66,75 +66,95 @@
 
 
 ! =========================================================================
-! [3] TRACKER GENOCIDE (BALANCED EDITION): УМНЫЙ ЩИТ
+! [3] TRACKER GENOCIDE: UNIVERSAL AUTONOMOUS SHIELD (v11.2.0)
 ! =========================================================================
-! --- Уровень 1: Поведенческий щит ---
-! Оставляем блокировку, но даем дышать важным сервисам
-||*hotjar.com^$important,domain=~yandex.ru|~loirehabitat.fr
-||*amplitude.com^$important,domain=~revolut.com|~n26.com
-||*clarity.ms^$important
 
-! --- Уровень 2: Scriptlets (Смягчение) ---
-! Мы отключаем abort-on-property-read для dataLayer, так как это ломает логику входа на многих сайтах
+! --- Уровень 1: Поведенческий щит (Session Replay & Heatmaps) ---
+! Блокируем запись экрана и движений мыши, но не ломаем доверенные сайты из @@
+||hotjar.com^$important
+||amplitude.com^$important
+||mixpanel.com^$important
+||clarity.ms^$important
+||mouseflow.com^$important
+||fullstory.com^$important
+
+! --- Уровень 2: Умные скриптлеты (Обман трекеров) ---
+! Вместо грубой блокировки подменяем функции, чтобы сайты думали, что всё работает
 #%#//scriptlet("set-constant", "ga.loaded", "true")
+#%#//scriptlet("set-constant", "ga", "undefined")
 #%#//scriptlet("prevent-listener", "click", "scorecardresearch.com")
+! Защита от детектора AdGuard (не дает сайтам ныть о блокировщике)
+#%#//scriptlet("set-constant", "navigator.sendBeacon", "true")
 
-! --- Уровень 3: Рекламные биржи ---
-! Добавляем исключение для Яндекса и французских госуслуг
-||*doubleclick.net^$important,domain=~google.com|~youtube.com|~yandex.ru
-||*adsystem*.*^$important,domain=~yandex.ru|~loirehabitat.fr
-||*adserver*.*^$important,domain=~yandex.ru
+! --- Уровень 3: Глобальный бан RTB & Ad Servers ---
+! Блокируем рекламные магистрали, исключая только системные сервисы
+||doubleclick.net^$important,domain=~google.com|~youtube.com
+||adsystem*.*^$important
+||adserver*.*^$important
+||adnxs.com^$important
+||openx.net^$important
+||pubmatic.com^$important
 
-! --- Level 4: Мобильные SDK ---
-! Расширяем список исключений, чтобы приложения не "зависали"
-||*appsflyer.com^$important,domain=~revolut.com|~n26.com|~apple.com|~gomining.com
-||*crashlytics.com^$important,domain=~google.com|~samsung.com|~revolut.com
+! --- Уровень 4: Аналитические SDK (Mobile & Web) ---
+! Уничтожаем сбор логов, сохраняя жизнь банковским и системным приложениям
+||appsflyer.com^$important,domain=~revolut.com|~n26.com|~apple.com|~google.com
+||adjust.com^$important
+||branch.io^$important
+||kochava.com^$important
+||crashlytics.com^$important,domain=~google.com|~samsung.com|~apple.com
 
-! --- Level 5: Очистка от жучков ---
-! Самый важный фикс: разрешаем метрику для Яндекса и системных нужд, иначе будет 404/белая страница
-||*/pixel.gif$important,domain=~yandex.ru|~loirehabitat.fr
-||*web-beacon*.*^$important,domain=~yandex.ru
-||*metrics.*^$important,domain=~google.com|~youtube.com|~samsung.com|~apple.com|~waze.com|~yandex.ru|~loirehabitat.fr
+! --- Уровень 5: Очистка от невидимых "жучков" (Tracking Pixels) ---
+! Блокируем пиксели слежки, но разрешаем их там, где они часть интерфейса через @@
+||*/pixel.gif$important
+||*/track.gif$important
+||web-beacon*.*^$important
+||metrics.*^$important,domain=~google.com|~youtube.com|~samsung.com|~apple.com|~waze.com
+
 
 ! =========================================================================
-! [4] URL CLEANER (ETERNAL EDITION): ОЧИСТКА ССЫЛОК
+! [4] URL CLEANER: UNIVERSAL AUTONOMOUS PURGE (v11.2.0)
 ! =========================================================================
-! Глобальное удаление маркетинговых и аналитических параметров
-||*$removeparam=utm_source
-||*$removeparam=utm_medium
-||*$removeparam=utm_campaign
-||*$removeparam=utm_term
-||*$removeparam=utm_content
-||*$removeparam=utm_id
-||*$removeparam=utm_source_platform
-||*$removeparam=utm_creative_format
-||*$removeparam=utm_marketing_tactic
 
-! Удаление идентификаторов рекламных сетей (Facebook, Google, Microsoft)
+! --- Уровень 1: Глобальный Regex-фильтр UTM-меток ---
+! Удаляем все параметры, начинающиеся на utm_ (source, medium, campaign и т.д.) одной командой
+||*$removeparam=/^utm_/
+
+! --- Уровень 2: Идентификаторы рекламных сетей (Ads ID) ---
+! Чистим клик-айди гигантов (FB, Google, Microsoft, Yandex)
 ||*$removeparam=fbclid
 ||*$removeparam=gclid
 ||*$removeparam=gclsrc
 ||*$removeparam=dclid
 ||*$removeparam=msclkid
 ||*$removeparam=yclid
+||*$removeparam=ttclid
+||*$removeparam=li_fat_id
 
-! Удаление параметров трекинга из специфических платформ
-||*$removeparam=_hsenc,domain=hubspot.com
-||*$removeparam=mc_eid,domain=mailchimp.com
-||*$removeparam=rb_clickid
-||*$removeparam=igsh,domain=instagram.com
+! --- Уровень 3: Социальный и партнерский мусор ---
+! Очищаем ссылки из Instagram, TikTok, Mailchimp и HubSpot
+||*$removeparam=igsh
 ||*$removeparam=t,domain=tiktok.com
-
-! Удаление хвостов перенаправлений и партнерских ссылок
-||*$removeparam=aff_id
-||*$removeparam=aff_sub
-||*$removeparam=click_id
+||*$removeparam=mc_eid
+||*$removeparam=_hsenc
 ||*$removeparam=ref_src
 ||*$removeparam=ref_url
 
-! Очистка поиска (удаление параметров, которые говорят поисковику о твоем устройстве)
-||google.*$removeparam=sourceid,domain=~google.com
-||google.*$removeparam=client,domain=~google.com
+! --- Уровень 4: Умная автономная очистка (Safe Cleaning) ---
+! Удаляем партнерские хвосты, но только если это не ломает функционал (через $important)
+||*$removeparam=aff_id
+||*$removeparam=aff_sub
+||*$removeparam=click_id
+||*$removeparam=ncid
+
+! --- Уровень 5: Глобальный Stealth Поиска (Google & Yandex) ---
+! Очищаем параметры, передающие данные об устройстве, но сохраняем результаты поиска
+||google.*$removeparam=/^(sourceid|client|gs_lcp|sclient|ei|oq|ved|uact)/
+||yandex.*$removeparam=/^(redircnt|src|from|mda|mdo|device_id)/
+
+! --- Уровень 6: Защита от перенаправлений (Redirect Tracking) ---
+! Удаляем хвосты, которые сообщают сайту, откуда именно ты пришел
+||*$removeparam=original_referer
+||*$removeparam=track_id
 
 
 ! =========================================================================
