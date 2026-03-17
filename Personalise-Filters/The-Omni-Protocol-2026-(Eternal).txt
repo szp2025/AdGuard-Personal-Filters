@@ -1950,3 +1950,30 @@ $removeparam=gclid
 @@||*.webex.com^$important
 @@||*.teams.microsoft.com^$important
 @@||*.vitalsource.com^$important
+
+! =========================================================================
+! [48] FINANCIAL GATEWAY INTEGRITY: BANKING & COMMERCE (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: Mercanet & French Banking (Специально для тебя) ---
+@@||mercanet.bnpparibas.net^$important
+@@||vads.bnpparibas.com^$important
+@@||secure.bnpparibas.com^$important
+@@||paylib.fr^$important
+
+! --- Уровень 2: Global Payment Gateways (Мировые шлюзы) ---
+@@||mercanet.com^$important
+@@||stripe.com^$important
+@@||adyen.com^$important
+@@||worldpay.com^$important
+@@||klarna.com^$important
+
+! --- Уровень 3: 3D Secure & Verification (Анти-фрод системы) ---
+@@||arcot.com^$important
+@@||cardinalcommerce.com^$important
+@@||verifiedbyvisa.com^$important
+@@||mastercard.com/securecode^$important
+
+! --- Уровень 4: Apple/Google Pay Bridge ---
+@@||apple-pay-gateway.apple.com^$important
+@@||pay.google.com^$important
