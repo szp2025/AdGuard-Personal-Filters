@@ -1768,3 +1768,36 @@ $removeparam=utm_medium
 $removeparam=utm_campaign
 $removeparam=fbclid
 $removeparam=gclid
+
+! =========================================================================
+! [43] FINAL GOOGLE PATCH: SEARCH INTEGRITY (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: Разблокировка поискового движка (Google Search Fix) ---
+! Разрешаем загрузку основных скриптов поиска, чтобы выдача не была пустой.
+@@||google.com^$document
+@@||www.google.com^$document
+@@||google.com/search^$important
+@@||google.com/complete/search^$important
+
+! --- Уровень 2: Статика и Библиотеки (Core Assets) ---
+! Без этих доменов Google не может отрисовать интерфейс и кнопки.
+@@||gstatic.com^$important
+@@||apis.google.com^$important
+@@||www.gstatic.com^$important
+@@||fonts.googleapis.com^$important
+
+! --- Уровень 3: Защита от бесконечной Капчи (Recaptcha Fix) ---
+! Позволяем проходить проверку "Я не робот", блокируя при этом сбор данных.
+@@||google.com/recaptcha^$important
+@@||gstatic.com/recaptcha^$important
+@@||www.google.com/recaptcha^$important
+
+! --- Уровень 4: Очистка поисковой выдачи (Search Stealth) ---
+! Мы разрешаем поиск, но продолжаем вырезать рекламные ссылки в самом верху.
+||google.com/aclk^$important
+||googleadservices.com^$important
+||adservice.google.com^$important
+
+! --- Уровень 5: Исправление для региональных доменов (Global Fix) ---
+@@||google.*^$document
