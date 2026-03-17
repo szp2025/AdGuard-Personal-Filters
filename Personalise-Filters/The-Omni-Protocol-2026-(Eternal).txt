@@ -1,60 +1,40 @@
 [Adblock Plus 2.0]
-! Title: The Omni-Protocol 2026 (Stage 1: Triple-Store & Infrastructure)
-! Version: 7.3.5 (Apple Integrated)
-! Last modified: 2026-03-17
+! Title: The Omni-Protocol 2026 (Stage 1: CDN Recovery)
+! Version: 7.3.5
 
 ! =========================================================================
-! [1] SYSTEM BYPASS: GLOBAL CDN & INFRASTRUCTURE
+! [1] SYSTEM BYPASS: ULTIMATE CDN WHITE-LIST (FIX FOR GOOGLE PLAY)
 ! =========================================================================
-! Google Play & Services CDN
+! Разрешаем ЛЮБЫЕ поддомены для серверов загрузки (те самые Rr1---sn...)
+@@||gvt1.com^$important
 @@||*.gvt1.com^$important
+@@||gvt2.com^$important
 @@||*.gvt2.com^$important
+@@||gvt3.com^$important
 @@||*.gvt3.com^$important
-@@||*.googlevideo.com^$important
-@@||android.clients.google.com^$important
-@@||play.google.com^$important
-@@||play.googleapis.com^$important
 
-! Apple Infrastructure (Music, iCloud, Updates)
+! Дополнительные узлы доставки контента Google
+@@||*.googlevideo.com^$important
+@@||*.googleusercontent.com^$important
+@@||*.gstatic.com^$important
+
+! Инфраструктура Apple & Samsung & Waze (оставляем как было)
 @@||*.apple.com^$important
 @@||*.icloud.com^$important
-@@||*.itunes.apple.com^$important
-@@||*.mzstatic.com^$important
-@@||*.apple-cloudkit.com^$important
-
-! Samsung & Galaxy Store
 @@||*.samsung.com^$important
-@@||*.samsungapps.com^$important
 @@||*.galaxy.store^$important
-@@||*.samsungcloud.com^$important
-
-! YouTube & Waze
-@@||*.youtube.com^$important
-@@||*.ytimg.com^$important
 @@||*.waze.com^$important
 
 ! =========================================================================
-! [2] NETWORK STEALTH: DNS & QUIC
+! [2] NETWORK STEALTH: DNS & QUIC (FIXED)
 ! =========================================================================
+! Разрешаем сетевой доступ и QUIC для GVT1-3 (чтобы скачивание не обрывалось)
+@@||gvt1.com^$network,important
+@@||gvt2.com^$network,important
+@@||gvt1.com^$network,quic
+@@||gvt2.com^$network,quic
+
+! Остальные правила сетевой скрытности
 ||*$csp=proxy-src 'none'
 ||*$header=X-Forwarded-For,important
 ||*$header=Via,important
-
-! Разрешаем QUIC для всей тройки гигантов
-@@||google.com^$network,quic
-@@||apple.com^$network,quic
-@@||samsung.com^$network,quic
-@@||gvt1.com^$network,quic
-||*$network,quic,domain=~google.com|~apple.com|~samsung.com|~gvt1.com
-
-! =========================================================================
-! [3] TRACKER GENOCIDE (WHITELISTED FOR INFRASTRUCTURE)
-! =========================================================================
-||*doubleclick.net*^$important,domain=~google.com
-||*adsystem*.*^$important
-||*adserver*.*^$important
-
-! Исключаем Apple, Google и Samsung из масок аналитики
-||*.analytics.*^$important,domain=~google.com|~apple.com|~samsung.com|~gvt1.com|~waze.com
-||*.stats.*^$important,domain=~google.com|~apple.com|~samsung.com|~gvt1.com|~waze.com
-||*.metrics.*^$important,domain=~google.com|~apple.com|~samsung.com|~youtube.com
