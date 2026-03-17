@@ -51,37 +51,116 @@
 
 
 ! =========================================================================
-! [3] TRACKER GENOCIDE: ТОТАЛЬНОЕ УНИЧТОЖЕНИЕ СЛЕЖКИ
+! [3] TRACKER GENOCIDE (ETERNAL EDITION): ТОТАЛЬНОЕ УНИЧТОЖЕНИЕ СЛЕЖКИ
 ! =========================================================================
-! Блокировка систем записи поведения (Session Replay)
+! --- Уровень 1: Поведенческий щит (Session Replay & Heatmaps) ---
+! Уничтожаем тех, кто записывает твои клики и движения пальца
 ||*hotjar.com^$important
 ||*amplitude.com^$important
 ||*mixpanel.com^$important
 ||*clarity.ms^$important
 ||*mouseflow.com^$important
+||*fullstory.com^$important
 
-! Убийство скрытых API-трекеров (через скриптлеты)
+! --- Уровень 2: JS-Инъекции и обман (Scriptlets) ---
+! Подменяем функции трекеров "пустышками", чтобы сайты не ломались, думая что всё ок
 #%#//scriptlet("abort-current-inline-script", "google-analytics")
 #%#//scriptlet("abort-current-inline-script", "ga")
-#%#//scriptlet("abort-on-property-read", "dataLayer")
 #%#//scriptlet("set-constant", "ga.loaded", "true")
+#%#//scriptlet("abort-on-property-read", "dataLayer")
+#%#//scriptlet("prevent-listener", "click", "scorecardresearch.com")
 
-! Блокировка рекламных аукционов (RTB), которые не всегда ловятся DNS
+! --- Уровень 3: Агрессивный бан рекламных бирж (RTB) ---
+! Блокируем даже скрытые цепочки перепродажи твоих данных
 ||*doubleclick.net^$important,domain=~google.com|~youtube.com
 ||*adsystem*.*^$important
 ||*adserver*.*^$important
 ||*adnxs.com^$important
 ||*openx.net^$important
+||*rubiconproject.com^$important
+||*pubmatic.com^$important
 
-! Мобильные аналитические SDK (для защиты приложений)
+! --- Уровень 4: Мобильные SDK (Защита внутри приложений) ---
+! Вырезаем аналитику из приложений, оставляя только критический функционал
 ||*appsflyer.com^$important,domain=~revolut.com|~n26.com|~apple.com
 ||*adjust.com^$important
 ||*branch.io^$important
 ||*kochava.com^$important
+||*crashlytics.com^$important
 
-! Очистка от невидимых пикселей (Beacons)
+! --- Уровень 5: Очистка от "жучков" (Tracking Pixels) ---
+! Уничтожаем невидимые картинки размером 1х1 пиксель
 ||*/pixel.gif$important
 ||*/track.gif$important
 ||*web-beacon*.*^$important
+||*beacons*.*^$important
+||*metrics.*^$important,domain=~google.com|~youtube.com|~samsung.com|~apple.com|~waze.com
+
+! =========================================================================
+! [4] URL CLEANER (ETERNAL EDITION): ОЧИСТКА ССЫЛОК
+! =========================================================================
+! Глобальное удаление маркетинговых и аналитических параметров
+||*$removeparam=utm_source
+||*$removeparam=utm_medium
+||*$removeparam=utm_campaign
+||*$removeparam=utm_term
+||*$removeparam=utm_content
+||*$removeparam=utm_id
+||*$removeparam=utm_source_platform
+||*$removeparam=utm_creative_format
+||*$removeparam=utm_marketing_tactic
+
+! Удаление идентификаторов рекламных сетей (Facebook, Google, Microsoft)
+||*$removeparam=fbclid
+||*$removeparam=gclid
+||*$removeparam=gclsrc
+||*$removeparam=dclid
+||*$removeparam=msclkid
+||*$removeparam=yclid
+
+! Удаление параметров трекинга из специфических платформ
+||*$removeparam=_hsenc,domain=hubspot.com
+||*$removeparam=mc_eid,domain=mailchimp.com
+||*$removeparam=rb_clickid
+||*$removeparam=igsh,domain=instagram.com
+||*$removeparam=t,domain=tiktok.com
+
+! Удаление хвостов перенаправлений и партнерских ссылок
+||*$removeparam=aff_id
+||*$removeparam=aff_sub
+||*$removeparam=click_id
+||*$removeparam=ref_src
+||*$removeparam=ref_url
+
+! Очистка поиска (удаление параметров, которые говорят поисковику о твоем устройстве)
+||google.*$removeparam=sourceid,domain=~google.com
+||google.*$removeparam=client,domain=~google.com
 
 
+! =========================================================================
+! [5] GLOBAL SEARCH PRIVACY (ETERNAL EDITION): ВСЕ ПОИСКОВИКИ МИРА
+! =========================================================================
+! Удаление идентификаторов клиента, устройства и версий из поисковых запросов
+||google.*$removeparam=/^(sourceid|client|gs_lcp|sclient|ei|oq|ved|uact|source|biw|bih)/
+||yandex.*$removeparam=/^(lr|redircnt|src|from|mda|mdo|uuid|device_id)/
+||bing.com$removeparam=/^(cvid|form|sk|sp|qs|pq|sc|qs|sk|cvid)/
+||duckduckgo.com$removeparam=/^(t|atb|kai|kad|kn|kp)/
+||yahoo.com$removeparam=/^(p|ei|fr|fr2|v)/
+||baidu.com$removeparam=/^(from|rsv_pq|rsv_t|rqlang|rsv_enter|rsv_sug3)/
+||ecosia.org$removeparam=/^(tt|q)/
+
+! Скрытие источника перехода (Referer) — поисковик не узнает, где ты был до него
+||google.*$header=Referer,important,domain=~google.com
+||yandex.*$header=Referer,important,domain=~yandex.ru
+||bing.com$header=Referer,important,domain=~bing.com
+||duckduckgo.com$header=Referer,important,domain=~duckduckgo.com
+||baidu.com$header=Referer,important,domain=~baidu.com
+
+! Блокировка скрытой предзагрузки результатов (Prefetch tracking)
+||google.*/search?*$network,important,domain=~google.com
+||yandex.*/search?*$network,important,domain=~yandex.ru
+
+! Удаление скриптов, которые отслеживают "куда ты нажал" в выдаче
+#%#//scriptlet("abort-current-inline-script", "google.navigation")
+#%#//scriptlet("abort-current-inline-script", "yandex.metrika")
+#%#//scriptlet("set-constant", "rwt", "undefined")
