@@ -232,3 +232,68 @@
 ||*ads-delivery*.*^$important
 ||*adserver*.*^$important
 ||*marketing-api*.*^$important
+
+
+! =========================================================================
+! [22] VIDEO AD-SHIELD: ПОДАВЛЕНИЕ ВИДЕО-РЕКЛАМЫ (YouTube/Twitch/TF1)
+! =========================================================================
+! Блокировка рекламных инъекций в потоковое видео
+||googlesyndication.com/pagead/js/adsbygoogle.js$important
+||*doubleclick.net/pagead/adview*^$important,media
+||*midroll*.*^$important,media
+||*preroll*.*^$important,media
+! Очистка интерфейса плееров от рекламных плашек
+##.ad-interrupting
+##.ytp-ad-overlay-container
+
+! =========================================================================
+! [23] APP-ADS & FRAME PROTECTION: РЕКЛАМА В ПРИЛОЖЕНИЯХ
+! =========================================================================
+! Блокировка SDK рекламных сетей для чистоты бесплатных приложений
+||ads.mopub.com^$important
+||unityads.unity3d.com^$important
+||vungle.com^$important
+||app-measurement.com^$important
+! Скрытие рекламных фреймов и "пустых мест" после блокировки
+##iframe[id^="google_ads_frame"]
+##div[id^="ad-unit"]
+##[class*="-advertisement-"]
+
+! =========================================================================
+! [24] COSMETIC PURIFIER: УДАЛЕНИЕ МУСОРА И СКРЫТЫХ ЭЛЕМЕНТОВ
+! =========================================================================
+! Убираем пустые блоки, которые остаются на месте рекламы
+##.adsbygoogle
+##div[data-ad-unit]
+##[id^="div-gpt-ad"]
+
+
+! =========================================================================
+! [25] ANTI-REDIRECT & SCRIPT INJECTION: ЗАЩИТА ОТ УВОДА НА САЙТЫ
+! =========================================================================
+! Блокировка автоматических перенаправлений на рекламные и фишинговые ресурсы
+||*$popup,third-party,domain=~google.com|~yandex.ru|~github.com
+! Запрет исполнения вредоносных скриптов, имитирующих действия пользователя
+#%#//scriptlet("abort-current-inline-script", "window.open")
+#%#//scriptlet("abort-on-stack-trace", "eval", "/adblock|tracking/i")
+
+! =========================================================================
+! [26] REGIONAL AD-CLEANER (FRANCE & GLOBAL): РЕГИОНАЛЬНАЯ РЕКЛАМА
+! =========================================================================
+! Блокировка французских и европейских рекламных агрегаторов
+||smartadserver.com^$important
+||ligatus.com^$important
+||outbrain.com^$important
+||taboola.com^$important
+||clicmanager.fr^$important
+||publicite.fr^$important
+
+! =========================================================================
+! [27] COSMETIC REFINEMENT: УДАЛЕНИЕ "СКЕЛЕТОВ" РЕКЛАМЫ
+! =========================================================================
+! Скрываем блоки, которые часто остаются пустыми после удаления баннеров
+##.ad-container
+##.advertising_layer
+##aside[class*="sidebar-ad"]
+##div[id^="ad_slot_"]
+##[data-testid="ad-item"]
