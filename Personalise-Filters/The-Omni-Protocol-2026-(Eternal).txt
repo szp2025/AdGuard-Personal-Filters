@@ -868,3 +868,50 @@
 @@||googleapis.com^$important
 @@||samsung.com^$important
 @@||google.com^$important
+
+
+! =========================================================================
+! [31] THE LAST BASTION ULTIMATE 2026 (ETERNAL)
+! =========================================================================
+
+! --- Уровень 1: Умная защита от маячков (Beacons & Proximity) ---
+! Блокируем микро-передачи данных о твоем окружении и истории перемещений
+||*proximity*.google.com^$important
+||*beacons*.gvt*^$important
+||*location-history*.*^$important
+
+! --- Уровень 2: Глубокая телеметрия Samsung (Adobe & MS Analytics) ---
+! Вырезаем глубокие аналитические модули, маскирующиеся под системные узлы
+||*samsung-com*.*.net^$important
+||*omtrdc.net^$important
+||*msecnd.net^$important
+||*samsungcloud*.com^$important,domain=~samsung.com
+
+! --- Уровень 3: Анти-майнинг (Crypto-Jacking Shield) ---
+! Запрещаем использование твоего процессора для добычи крипты в браузере
+||*coin-hive*.*^$important
+||*minr*.*^$important
+||*crypto-locker*.*^$important
+||*miner.js*^$important
+
+! --- Уровень 4: Сетевое закрытие (Port Hardening) ---
+! Блокируем опасные порты (SMB, RDP, NetBIOS), через которые идут атаки вымогателей
+|*^$important,port=135
+|*^$important,port=137
+|*^$important,port=138
+|*^$important,port=139
+|*^$important,port=445
+|*^$important,port=3389
+
+! --- Уровень 5: Тайм-стек (Anti-Fingerprint Time) ---
+! Запрещаем трекинг через микро-разницу во времени (NTP-триангуляция)
+||*time*.google.com^$important
+||*time*.windows.com^$important
+||*ntp*.org^$important
+||*time*.samsung.com^$important
+
+! --- Уровень 6: Блокировка скрытых зеркал (GVT & Static) ---
+! Закрываем альтернативные пути загрузки аналитики Google
+||*.gvt2.com^$important
+||*.gvt3.com^$important
+
