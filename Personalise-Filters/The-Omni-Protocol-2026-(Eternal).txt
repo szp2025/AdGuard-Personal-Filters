@@ -915,3 +915,49 @@
 ||*.gvt2.com^$important
 ||*.gvt3.com^$important
 
+! =========================================================================
+! [32] SMS/MMS ANTI-PHISHING 2026 (THE ABSOLUTE ZERO)
+! =========================================================================
+
+! --- Уровень 1: Delivery Phishing (Защита от фейковых посылок: DHL, La Poste, UPS) ---
+! Блокируем ссылки из СМС о "недоставленных посылках"
+||*dhl-delivery*.*^$important
+||*chronopost-suivi*.*^$important
+||*laposte-info*.*^$important
+||*ups-track*.*^$important
+||*package-pickup*.*^$important
+
+! --- Уровень 2: Financial & Banking Fraud (СМС-фишинг банков) ---
+! Защита от поддельных страниц входа Revolut, N26 и других банков
+||*secure-verification*.*^$important
+||*banking-update*.*^$important
+||*card-security-check*.*^$important
+||*revolut-verify*.*^$important,domain=~revolut.com
+||*n26-login*.*^$important,domain=~n26.com
+
+! --- Уровень 3: Short-URL & Hidden Redirects (Скрытые ссылки в СМС) ---
+! Блокируем опасные сокращатели ссылок, которые скрывают реальный адрес вируса
+||bit.ly^$important,third-party
+||t.co^$important,third-party
+||tinyurl.com^$important,third-party
+||cutt.ly^$important,third-party
+||rb.gy^$important,third-party
+
+! --- Уровень 4: Government & Tax Phishing (Фейковые штрафы и выплаты) ---
+! Защита от "государственных" уведомлений (Ameli, CAF, Impots)
+||*gouv-fr-info*.*^$important
+||*ameli-update*.*^$important
+||*caf-infoconnect*.*^$important
+||*impots-gouv-verif*.*^$important
+
+! --- Уровень 5: Malware Payload Delivery (Блокировка загрузки вирусов из СМС) ---
+! Запрещаем автоматическую загрузку .apk и фальшивых обновлений системы
+||*apk-download*.*^$important
+||*update-system-security*.*^$important
+||*install-flash-player*.*^$important
+
+! --- Уровень 6: Whitelist For Stability (Критические исключения) ---
+! Гарантируем работу реальных банковских доменов
+@@||github.com^$document
+@@||revolut.com^$important
+@@||n26.com^$important
