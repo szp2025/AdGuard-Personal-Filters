@@ -1,8 +1,9 @@
 [Adblock Plus 3.0]
 ! Title: The Omni-Protocol 2026 (Eternal)
-! Description: Ультимативная 15-зонная автономная система защиты и невидимости.
-! Version: 4.2.0 (Apex Monolith)
-! Last modified: 2026-03-16 22:45
+! Description: Ультимативная 15-зонная автономная система защиты и невидимости. Полная стабилизация.
+! Version: 4.5.5 (Apex Monolith)
+! Last modified: 2026-03-17 00:16
+! Rules count: 165
 
 ! =========================================================================
 ! [1] OMNI-CORE: ГЛОБАЛЬНАЯ НЕВИДИМОСТЬ И DPI-STEALTH
@@ -11,7 +12,7 @@
 ||yandex.*$removeparam=text,domain=~yandex.ru
 ||bing.com^$removeparam=q
 ||*$header=Referer,domain=~google.com|~yandex.ru|~revolut.com|~n26.com|~gomining.com|~stripe.com
-||*$network,quic
+||*$network,quic,important
 ||*$csp=proxy-src 'none'
 
 ! =========================================================================
@@ -24,6 +25,7 @@
 ||*popunder*.*^$important
 ||*pop-up*.*^$important
 ||*overlay*.*^$important
+||*interstitial*.*^$important
 
 ! =========================================================================
 ! [3] SECURITY SHIELD MAX: АНТИ-МАЛВАРЬ И ЭКСПЛОЙТЫ
@@ -34,6 +36,7 @@
 ||*exploit*.*^$important
 ||*backdoor*.*^$important
 ||*keylogger*.*^$important
+||*rootkit*.*^$important
 
 ! =========================================================================
 ! [4] ANALYTICS LOCKDOWN: ПОЛНАЯ БЛОКИРОВКА ТЕЛЕМЕТРИИ
@@ -44,6 +47,8 @@
 ||*log-upload*.*^$important
 ||*usage-stats*.*^$important
 ||*crashlytics*.*^$important
+||*sentry.io*^$important
+||*bugsnag.com*^$important
 
 ! =========================================================================
 ! [5] INFRASTRUCTURE DEFENSE: IMSI-CATCHERS & CELLULAR ATTACKS
@@ -80,6 +85,7 @@
 ||*mixpanel*.*^$important
 ||*fullstory*.*^$important
 ||*logrocket*.*^$important
+||*hotjar*.*^$important
 
 ! =========================================================================
 ! [9] MARKETING PERIMETER: УДАЛЕНИЕ ПРОМО-АКЦИЙ И СУРВЕЕВ
@@ -89,6 +95,7 @@
 ||*appsflyer*.*^$important
 ||*adjust*.*^$important
 ||*branch.io*^$important
+||*doubleclick.net*^$important
 
 ! =========================================================================
 ! [10] RESOURCE PROTECTION: АНТИ-МАЙНИНГ И АНТИ-ДРЕЙН
@@ -98,11 +105,17 @@
 ||*web-miner*.*^$important
 
 ! =========================================================================
-! [11] SYSTEM PRIVACY: БЛОКИРОВКА ЛОГОВ SAMSUNG & ANDROID
+! [11] SYSTEM PRIVACY & STABILIZATION (SAMSUNG/GOOGLE LOGS)
 ! =========================================================================
-||*log-upload.samsung.com^$important
-||*diag.google.com^$important
-||*telemetry.sdk.samsung.com^$important
+||log-upload.samsung.com^$important
+||diag.google.com^$important
+||telemetry.sdk.samsung.com^$important
+||fido.android.clients.google.com^$important
+||location-history.google.com^$important
+||firebase-settings.googleapis.com^$important
+@@||services.googleapis.com^$important
+@@||accounts.google.com^$important
+@@||update.googleapis.com^$important
 
 ! =========================================================================
 ! [12] ANTI-PHISHING & SMISHING: (ETERNAL PROTECTION)
@@ -116,18 +129,22 @@
 ! =========================================================================
 ||*$removeparam=utm_source
 ||*$removeparam=utm_medium
+||*$removeparam=utm_campaign
 ||*$removeparam=fbclid
 ||*$removeparam=gclid
+||*$removeparam=msclkid
 
 ! =========================================================================
 ! [14] METADATA LOCKDOWN: ЗАЩИТА МЕТАДАННЫХ ТРАФИКА
 ! =========================================================================
-||*/dns-query*
+||*/dns-query*$important
+||*/metadata/v1/*$important
+||*connectivitycheck.gstatic.com^$domain=~google.com
 #%#Object.defineProperty(document, 'dns-prefetch', { value: function(){ return null; } });
 #%#Object.defineProperty(document, 'preconnect', { value: function(){ return null; } });
 
 ! =========================================================================
-! [15] THE LAST BASTION: ГАРАНТИЯ СТАБИЛЬНОСТИ GITHUB
+! [15] THE LAST BASTION: GITHUB INTEGRITY & WILDCARDS (AUTONOMOUS)
 ! =========================================================================
 @@||github.com^$document
 @@||githubassets.com^$document
@@ -136,3 +153,13 @@
 @@||googleapis.com^$important
 @@||samsung.com^$important
 @@||apple.com^$important
+! --- Глобальные маски автономности ---
+||*.analytics.*^$important
+||*.tracking.*^$important
+||*.telemetry.*^$important
+||*.stats.*^$important
+||*.collect.*^$important
+||*.logging.*^$important
+||*.error-report.*^$important
+||*advertising-id*.*^$important
+||*device-id*.*^$important
