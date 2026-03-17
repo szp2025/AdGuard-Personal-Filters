@@ -829,3 +829,42 @@
 ||*fullstory*.*^$important
 ||*mouseflow*.*^$important
 ||*inspectlet*.*^$important
+
+
+! =========================================================================
+! [30] DNS & TUNNEL STEALTH 2026 (ETERNAL)
+! =========================================================================
+
+! --- Уровень 1: Заслон от скрытых DNS-каналов (DoH/DoT) ---
+! Принуждаем приложения использовать системный безопасный DNS
+||*dns-over-https*^$important
+||*dns-over-tls*^$important
+||*doh-proxy*^$important
+||*dot-proxy*^$important
+
+! --- Уровень 2: Блокировка анонимайзеров и туннелей (VPN/Tor) ---
+! Пресекаем попытки вредоносного ПО создать скрытый канал связи
+||*onion-gateway*^$important
+||*exit-node*^$important
+||*tor-node*^$important
+||*proxy-bypass*^$important
+||*vpn-tunnel*^$important
+
+! --- Уровень 3: Защита от DNS-отравления и Hijacking ---
+! Блокировка инструментов подмены доменных имен
+||*dns-poisoning*^$important
+||*nxdomain-hijack*^$important
+||*ddns*.*^$important
+
+! --- Уровень 4: Подозрительные зоны (Suspicious TLDs) ---
+! Закрываем доступ к теневым доменным зонам, где часто живет C&C софт
+||*.bit^$important
+||*.onion^$important
+||*.lib^$important
+||*.bazar^$important
+
+! --- Уровень 5: Исключения для стабильности (Whitelist) ---
+! Гарантируем, что базовые сервисы не будут заблокированы этой жесткой политикой
+@@||googleapis.com^$important
+@@||samsung.com^$important
+@@||google.com^$important
