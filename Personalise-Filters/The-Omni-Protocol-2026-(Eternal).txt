@@ -403,6 +403,21 @@
 ! =========================================================================
 ! [37] SYSTEM STABILITY: (WHITE-LIST ДЛЯ ЖИЗНЕННО ВАЖНЫХ СЛУЖБ)
 ! =========================================================================
+
+! =========================================================================
+! [FIX] GITHUB INFRASTRUCTURE RECOVERY
+! =========================================================================
+! Разрешаем все критические домены GitHub для корректной работы кода и обновлений
+@@||github.com^$important
+@@||githubassets.com^$important
+@@||raw.githubusercontent.com^$important
+@@||github-production-release-asset-2e65be.s3.amazonaws.com^$important
+@@||api.github.com^$important
+@@||collector.github.com^$important
+! Разрешаем скрипты и контент, чтобы интерфейс не рассыпался
+@@||github.com^$js,css,image,important
+
+
 ! Чтобы всё вышеперечисленное не сломало телефон и оплату
 @@||connectivitycheck.gstatic.com^$important
 @@||clients3.google.com^$important
