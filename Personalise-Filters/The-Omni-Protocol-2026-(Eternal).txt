@@ -409,3 +409,53 @@
 @@||play.google.com^$important
 @@||itunes.apple.com^$important
 @@||icloud.com^$important
+
+! =========================================================================
+! [38] INBOUND SHIELD: VIDEO & STREAMING DEFENSE
+! =========================================================================
+! Глубокое подавление видео-вставок, которые пытаются "пролезть" через плеер
+||*video-ads*^$important
+||*ad-delivery*^$important
+||*midroll*.*^$important
+||*preroll*.*^$important
+||*postroll*.*^$important
+||*outstream*.*^$important
+||*in-stream*.*^$important
+||*video-overlay*.*^$important
+
+! =========================================================================
+! [39] INBOUND SHIELD: POP-UP & FLOATING AD CONTROL
+! =========================================================================
+! Блокировка "липких" баннеров и плавающих окон, перекрывающих контент
+||*pop-up*.*^$important
+||*notification-spam*.*^$important
+||*sticky-ad*.*^$important
+||*floating-ad*.*^$important
+||*interstitial*.*^$important
+
+! =========================================================================
+! [40] INBOUND SHIELD: BEACONS & TRACKING PIXELS
+! =========================================================================
+! Уничтожение невидимых "жучков", которые следят за чтением писем и страниц
+||*pixel*.*^$important
+||*tracking-pixel*.*^$important
+||*web-beacon*.*^$important
+||*beacons*.*^$important
+||*telemetry-pixel*.*^$important
+
+! =========================================================================
+! [41] INBOUND SHIELD: AD-EXCHANGE & RTB GENOCIDE
+! =========================================================================
+! Блокировка рекламных бирж на корню (Doubleclick, Taboola, Rubicon)
+||*adsystem*.*^$important
+||*adserver*.*^$important
+||*rubiconproject*.*^$important
+||*adnxs*.*^$important
+
+! =========================================================================
+! [42] ANTI-SHAME & SPAM CLEANER (Deep Interface Clean)
+! =========================================================================
+! Удаление модулей стыда, навязчивых рассылок и стен подписки
+||*spam-module*.*^$important
+||*newsletter-popup*.*^$important
+||*subscription-wall*.*^$important
