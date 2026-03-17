@@ -385,3 +385,66 @@
 ! Удаление заголовков, которые помогают DPI идентифицировать тип трафика
 ||*$header=X-Forwarded-For,important
 ||*$header=Via,important
+
+! =========================================================================
+! [16] AD ANNIHILATION (ETERNAL EDITION): ТИТАНОВАЯ БЛОКИРОВКА РЕКЛАМЫ
+! =========================================================================
+! --- Уровень 1: Уничтожение "Нативной" рекламы и спонсорства ---
+||*$image,third-party,domain=~google.com|~apple.com|~samsung.com
+||*-ad-*.jpg$image,third-party
+||*/ads/*$image,third-party
+||*/banners/*$image,third-party
+||*/sponsored/*$image,third-party
+
+! --- Уровень 2: Скриптлеты против Anti-Adblock (Анти-детект) ---
+! Мы заставляем сайты верить, что реклама загружена успешно
+#%#//scriptlet("abort-on-property-read", "canRunAds")
+#%#//scriptlet("abort-on-property-read", "AdBlockDetected")
+#%#//scriptlet("set-constant", "google_ad_status", "1")
+#%#//scriptlet("set-constant", "adsbygoogle.push", "undefined")
+
+! --- Уровень 3: Косметическая зачистка (Скрытие пустых мест) ---
+! Удаляем пустые блоки и надписи "Реклама", которые остаются после блокировки
+##.ad-box
+##.ads-container
+##div[id*="google_ads"]
+##div[class*="sponsored-post"]
+##[id^="ad-banner"]
+
+! --- Уровень 4: Блокировка видео-рекламы и прероллов ---
+||*googlevideo.com/videoplayback?*ad_type=*$important
+||*dailymotion.com/cdn/manifest/video/*ad-config*$important
+
+! --- Уровень 5: Блокировка всплывающих окон (Pop-ups) ---
+! Запрещаем создание новых окон без явного клика пользователя
+||*$popup,third-party,domain=~google.com|~apple.com
+#%#//scriptlet("abort-on-property-write", "window.open")
+
+
+! =========================================================================
+! [17] AD ENHANCEMENT (ETERNAL): УСИЛЕНИЕ БАЗОВЫХ ФИЛЬТРОВ
+! =========================================================================
+! --- Уровень 1: Удаление межстраничной рекламы (Interstitial) ---
+! Блокируем рекламу, которая перекрывает весь экран при загрузке страницы
+||*$interstitial,third-party,domain=~google.com|~apple.com
+
+! --- Уровень 2: Борьба с рекламными инъекциями в тексте ---
+! Вырезаем ссылки, которые рекламные сети вставляют прямо в слова в статьях
+##.entry-content a[href*="target="]
+##.post-content a[onmousedown]
+
+! --- Уровень 3: Глобальный анти-баннер (расширение EasyList) ---
+! Удаляем блоки, которые часто маскируются под элементы дизайна
+##aside[class*="sidebar"] div[class*="promo"]
+##div[class*="wrapper"] > div[class*="ad-"]
+##[class^="adv-block"]
+##[id^="ad_slot"]
+
+! --- Уровень 4: Защита от криптомайнеров в браузере ---
+! Если реклама пытается использовать твой процессор для майнинга
+||*coin-hive.com^$important
+||*coinhive.com^$important
+||*crypto-loot.com^$important
+||*miner.js$script,third-party
+
+
