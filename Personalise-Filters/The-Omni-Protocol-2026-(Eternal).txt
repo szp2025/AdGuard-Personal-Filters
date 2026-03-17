@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 (Stage 1: Triple-Store & Infrastructure)
-! Version: 7.3.4 (Apple Integrated)
+! Version: 7.3.5 (Apple Integrated)
 ! Last modified: 2026-03-17
 
 ! =========================================================================
