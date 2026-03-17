@@ -158,32 +158,42 @@
 
 
 ! =========================================================================
-! [5] GLOBAL SEARCH PRIVACY (ETERNAL EDITION): ВСЕ ПОИСКОВИКИ МИРА
+! [5] GLOBAL SEARCH PRIVACY: UNIVERSAL SEARCH SHIELD (v11.2.0)
 ! =========================================================================
-! Удаление идентификаторов клиента, устройства и версий из поисковых запросов
-||google.*$removeparam=/^(sourceid|client|gs_lcp|sclient|ei|oq|ved|uact|source|biw|bih)/
-||yandex.*$removeparam=/^(lr|redircnt|src|from|mda|mdo|device_id)/
+
+! --- Уровень 1: Тотальная очистка параметров запроса (Regex Purge) ---
+! Удаляем мусор, который выдает твое устройство, разрешение экрана и ID сессии
+||google.*$removeparam=/^(sourceid|client|gs_lcp|sclient|ei|oq|ved|uact|source|biw|bih)/,domain=~google.com
+||yandex.*$removeparam=/^(lr|redircnt|src|from|mda|mdo|device_id)/,domain=~yandex.ru
 ||bing.com$removeparam=/^(cvid|form|sk|sp|qs|pq|sc|qs|sk|cvid)/
 ||duckduckgo.com$removeparam=/^(t|atb|kai|kad|kn|kp)/
 ||yahoo.com$removeparam=/^(p|ei|fr|fr2|v)/
 ||baidu.com$removeparam=/^(from|rsv_pq|rsv_t|rqlang|rsv_enter|rsv_sug3)/
 ||ecosia.org$removeparam=/^(tt|q)/
 
-! Скрытие источника перехода (Referer) — поисковик не узнает, где ты был до него
-||google.*$header=Referer,important,domain=~google.com
-||yandex.*$header=Referer,important,domain=~yandex.ru
-||bing.com$header=Referer,important,domain=~bing.com
-||duckduckgo.com$header=Referer,important,domain=~duckduckgo.com
-||baidu.com$header=Referer,important,domain=~baidu.com
+! --- Уровень 2: Скрытие источника (Referer Masking) ---
+! Поисковик не узнает, с какого сайта ты пришел. Маскируем Referer под корень домена.
+||*$header=Referer,important,domain=google.*|yandex.*|bing.com|duckduckgo.com|baidu.com|yahoo.com
 
-! Блокировка скрытой предзагрузки результатов (Prefetch tracking)
+! --- Уровень 3: Блокировка Prefetch & Beacon (Защита от предсказаний) ---
+! Запрещаем поисковикам заранее загружать сайты из выдачи (это экономит трафик и скрывает интерес)
 ||google.*/search?*$network,important,domain=~google.com
 ||yandex.*/search?*$network,important,domain=~yandex.ru
+! Запрещаем скрытую отправку статистики кликов через Beacon API
+#%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
 
-! Удаление скриптов, которые отслеживают "куда ты нажал" в выдаче
+! --- Уровень 4: Истребление Click-Tracking (Скриптлеты) ---
+! Убиваем функции, которые сообщают поисковику, на какую ссылку ты нажал
 #%#//scriptlet("abort-current-inline-script", "google.navigation")
 #%#//scriptlet("abort-current-inline-script", "yandex.metrika")
 #%#//scriptlet("set-constant", "rwt", "undefined")
+#%#//scriptlet("set-constant", "window.ping", "undefined")
+#%#//scriptlet("prevent-listener", "click", "yandex.ru/clck")
+
+! --- Уровень 5: Чистая выдача (Anti-Redirect) ---
+! Заставляем браузер открывать прямые ссылки, а не ссылки-редиректы поисковиков
+||google.*$removeparam=url,domain=google.*
+||yandex.*/clck/*$network,important
 
 ! =========================================================================
 ! [6] HIDE SEARCH QUERIES (ETERNAL EDITION): СКРЫТЬ ПОИСКОВЫЕ ЗАПРОСЫ
