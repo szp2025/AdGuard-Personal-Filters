@@ -62,3 +62,38 @@
 #%#//scriptlet("set-constant", "navigator.webdriver", "false")
 #%#Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 });
 #%#Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 });
+
+! =========================================================================
+! [7] ANNOYANCE BUSTER: ЗАМЕНА МОДУЛЯ "РАЗДРАЖИТЕЛИ"
+! =========================================================================
+! Блокировка уведомлений о Cookie и GDPR (универсальные маски)
+||*cookie-banner*^$important
+||*cookie-consent*^$important
+||*gdpr-privacy*.*^$important
+! Подавление всплывающих окон подписок и "оцените наше приложение"
+||*subscription-wall*.*^$important
+||*pop-up-overlay*.*^$important
+||*newsletter-popup*.*^$important
+! Убираем раздражающие чаты поддержки и виджеты обратной связи
+||*customer-chat*.*^$important
+||*intercom.io*^$important
+
+! =========================================================================
+! [8] SOCIAL SHIELD: ЗАМЕНА "ВИДЖЕТОВ СОЦСЕТЕЙ"
+! =========================================================================
+! Блокировка кнопок "Like", "Share" и пикселей отслеживания
+||facebook.com/tr/*$important
+||pixel.facebook.com^$important
+||platform.twitter.com^$important
+||widgets.pinterest.com^$important
+||connect.ok.ru^$important
+||vk.com/rtrg^$important
+||analytics.tiktok.com^$important
+
+! =========================================================================
+! [9] INBOUND CLEANER: ВСПЛЫВАЮЩИЕ ЭЛЕМЕНТЫ (Pop-ups)
+! =========================================================================
+! Жесткое подавление Pop-under и Overlay элементов
+||*popunder*.*^$important
+||*overlay-ads*.*^$important
+||*midroll*.*^$important
