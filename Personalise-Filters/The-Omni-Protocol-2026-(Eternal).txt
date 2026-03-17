@@ -1,67 +1,64 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 (Stage 1: Core & Tracker Genocide)
-! Version: 7.3.0
+! Version: 7.3.1 (Google Play Fix)
 ! Last modified: 2026-03-17
 
 ! =========================================================================
 ! [1] SYSTEM BYPASS: ЖИЗНЕННО ВАЖНЫЕ КОРИДОРЫ (GOOGLE / SAMSUNG / WAZE)
 ! =========================================================================
-! База для стабильной работы Play Market, обновлений ОС и YouTube
+! Разрешаем базу и проверку связи
 @@||google.com^$important
 @@||googleapis.com^$important
 @@||gstatic.com^$important
+@@||android.com^$important
+@@||connectivitycheck.gstatic.com^$important
+@@||connectivitycheck.android.com^$important
+
+! Разрешаем ВСЕ CDN для загрузки приложений (GVT1, GVT2, GVT3)
 @@||gvt1.com^$important
 @@||*.gvt1.com^$important
-@@||android.com^$important
-@@||waze.com^$important
+@@||gvt2.com^$important
+@@||*.gvt2.com^$important
+@@||gvt3.com^$important
+
+! Системные узлы Samsung & Waze
 @@||samsung.com^$important
 @@||samsungapps.com^$important
 @@||galaxy.store^$important
+@@||waze.com^$important
+
+! YouTube Инфраструктура
 @@||youtube.com^$important
 @@||googlevideo.com^$important
+@@||ytimg.com^$important
 
 ! =========================================================================
-! [2] NETWORK STEALTH: DPI & PORTS
+! [2] NETWORK STEALTH: DNS & QUIC & PORTS
 ! =========================================================================
 ||*$csp=proxy-src 'none'
 ||*$header=X-Forwarded-For,important
 ||*$header=Via,important
-! Умный QUIC (Разрешен только для системной базы)
+
+! Разрешаем DNS-запросы для системных доменов (FIX для Google Play)
+@@||google.com^$network,important
+@@||googleapis.com^$network,important
+@@||gvt1.com^$network,important
+
+! Умный QUIC
 @@||google.com^$network,quic
 @@||googleapis.com^$network,quic
-@@||samsung.com^$network,quic
 @@||youtube.com^$network,quic
-||*$network,quic,domain=~google.com|~googleapis.com|~samsung.com|~youtube.com
+||*$network,quic,domain=~google.com|~googleapis.com|~youtube.com
 
 ! =========================================================================
-! [3] TRACKER GENOCIDE: БЛОКИРОВКА СИСТЕМ СЛЕЖКИ
+! [3] TRACKER GENOCIDE (С ИСКЛЮЧЕНИЕМ ДЛЯ DNS СИСТЕМЫ)
 ! =========================================================================
-! Рекламные биржи и аукционы (RTB)
+! Рекламные биржи
 ||*doubleclick.net*^$important,domain=~google.com
 ||*adsystem*.*^$important
 ||*adserver*.*^$important
-||*adnxs.com*^$important
-||*openx.net*^$important
-||*rubiconproject.com*^$important
 
-! Системы аналитики и записи поведения
-||*google-analytics.com*^$important,domain=~google.com
-||*hotjar.com*^$important
-||*amplitude.com*^$important
-||*scorecardresearch.com*^$important
-
-! Мобильные SDK трекеры в приложениях
-||*appsflyer.com*^$important,domain=~revolut.com|~n26.com|~lydia-app.com
-||*adjust.com*^$important
-||*branch.io*^$important
-
-! Глобальные маски (Wildcards) с обходом системных доменов
-||*.analytics.*^$important,domain=~google.com|~googleapis.com|~waze.com|~youtube.com|~samsung.com|~revolut.com
-||*.stats.*^$important,domain=~google.com|~googleapis.com|~waze.com|~youtube.com|~samsung.com
-||*.collect.*^$important,domain=~google.com|~googleapis.com|~samsung.com
-||*.metrics.*^$important,domain=~google.com|~youtube.com|~waze.com|~samsung.com
-
-! Невидимые жучки и пиксели
-||*/pixel.gif$important
-||*/track.gif$important
-||*web-beacon*.*^$important
+! Аналитика (Wildcards теперь не трогают системные DNS)
+||*.analytics.*^$important,domain=~google.com|~googleapis.com|~waze.com|~samsung.com|~gvt1.com
+||*.stats.*^$important,domain=~google.com|~googleapis.com|~waze.com|~samsung.com
+||*.metrics.*^$important,domain=~google.com|~youtube.com|~waze.com
