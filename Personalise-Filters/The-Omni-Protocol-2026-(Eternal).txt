@@ -510,3 +510,35 @@
 ! --- Уровень 5: Блокировка мобильной видео-рекламы ---
 ||m.doubleclick.net^$important
 ||video-ad-stats.googlevideo.com^$important
+
+! =========================================================================
+! [20] ANNOYANCE EXTERMINATOR (ETERNAL EDITION): УНИЧТОЖИТЕЛЬ РАЗДРАЖИТЕЛЕЙ
+! =========================================================================
+! --- Уровень 1: Cookie-банеры и GDPR-уведомления ---
+! Скрываем окна "Мы используем куки", которые теперь бесполезны (мы и так их чистим)
+##.cookie-banner
+##.cookie-notice
+##div[class*="cookie-consent"]
+##[id^="cookie-law-"]
+#%#//scriptlet("abort-on-property-read", "cookie_consent")
+
+! --- Уровень 2: Всплывающие окна "Подпишитесь / Оцените" ---
+! Блокируем модальные окна, мешающие чтению
+##.newsletter-popup
+##.subscribe-modal
+##div[class*="popover-content"]
+##[id*="email-capture"]
+#%#//scriptlet("abort-current-inline-script", "setTimeout", "subscribe")
+
+! --- Уровень 3: Виджеты чатов и техподдержки ---
+! Скрываем кнопки "Нужна помощь?", которые грузятся на каждом сайте
+##.intercom-launcher
+##.zendesk-chat-widget
+##iframe[title*="Chat"]
+||js.intercomcdn.com^$important
+||widget.intercom.io^$important
+
+! --- Уровень 4: Запросы на отправку уведомлений ---
+! Принудительно блокируем попытки сайта спросить "Разрешить уведомления?"
+#%#//scriptlet("set-constant", "Notification.permission", "denied")
+#%#//scriptlet("set-constant", "navigator.push", "undefined")
