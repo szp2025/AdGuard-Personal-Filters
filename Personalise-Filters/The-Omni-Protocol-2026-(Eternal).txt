@@ -232,3 +232,91 @@
 ||*$removeparam=uuid
 ||*$removeparam=uid
 
+
+! =========================================================================
+! [9] ETAG STEALTH (ETERNAL EDITION): ЗАЩИТА ОТ КЭШ-ИДЕНТИФИКАТОРОВ
+! =========================================================================
+! Удаление входящих ETag от сторонних ресурсов (запрещаем вешать метку)
+||*$header=ETag,important,domain=~google.com|~apple.com|~samsung.com|~youtube.com|~waze.com|~n26.com|~revolut.com|~github.com
+
+! Удаление исходящих меток If-None-Match (запрещаем браузеру "стучать")
+||*$header=If-None-Match,important,domain=~google.com|~apple.com|~samsung.com|~youtube.com|~waze.com|~n26.com|~revolut.com|~github.com
+
+! Удаление меток If-Modified-Since (дополнительный вектор фингерпринтинга)
+||*$header=If-Modified-Since,important,domain=~google.com|~apple.com|~samsung.com|~youtube.com|~waze.com|~n26.com|~revolut.com
+
+! Скриптлет для предотвращения кэш-аналитики через Service Workers
+#%#//scriptlet("set-constant", "navigator.serviceWorker.register", "undefined")
+
+! =========================================================================
+! [10] HEADER PURGE (ETERNAL EDITION): БЛОКИРОВКА СТОРОННИХ ЗАГОЛОВКОВ
+! =========================================================================
+! Удаление заголовка X-Requested-With (часто выдает ID приложения или тип браузера)
+||*$header=X-Requested-With,important,domain=~google.com|~apple.com|~samsung.com|~n26.com|~revolut.com
+
+! Жесткая очистка стороннего Referer (сайт Б не узнает, с какой страницы сайта А пришел запрос)
+||*$referer=~/(^https?:\/\/[^\/]+\/)/,third-party,domain=~google.com|~apple.com|~samsung.com|~youtube.com
+
+! Блокировка заголовков Client-Hints (современный способ узнать модель твоего CPU и версию ОС)
+||*$header=Sec-CH-UA,important,domain=~google.com|~apple.com|~samsung.com
+||*$header=Sec-CH-UA-Mobile,important,domain=~google.com|~apple.com|~samsung.com
+||*$header=Sec-CH-UA-Platform,important,domain=~google.com|~apple.com|~samsung.com
+||*$header=Sec-CH-UA-Model,important,domain=~google.com|~apple.com|~samsung.com
+
+! Удаление специфических трекинг-заголовков
+||*$header=X-Fb-Http-Engine,important
+||*$header=X-Amzn-Trace-Id,important
+||*$header=X-NewRelic-ID,important
+
+! Скриптлет для подмены данных о User-Agent в JS-запросах
+#%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+
+
+! =========================================================================
+! [11] AUTH SHIELD (ETERNAL EDITION): ЗАЩИТА ЗАГОЛОВКОВ АВТОРИЗАЦИИ
+! =========================================================================
+! Блокировка передачи заголовков Authorization на сторонние (third-party) домены
+! Это предотвращает утечку токенов сессии рекламным сетям
+||*$header=Authorization,third-party,domain=~google.com|~apple.com|~samsung.com|~n26.com|~revolut.com|~github.com|~microsoft.com
+
+! Блокировка заголовка Proxy-Authorization для сторонних ресурсов
+||*$header=Proxy-Authorization,third-party
+
+! Защита от утечки куки-авторизации в заголовках запросов (X-Auth-Token и др.)
+||*$header=X-Auth-Token,third-party
+||*$header=X-CSRF-Token,third-party,domain=~google.com|~apple.com
+
+! Скриптлет для предотвращения перехвата учетных данных через API (Credential Management API)
+! Запрещает сайтам автоматически запрашивать сохраненные в браузере пароли без твоего ведома
+#%#//scriptlet("set-constant", "navigator.credentials.get", "undefined")
+
+! Блокировка Basic Auth на незащищенных (HTTP) сторонних ресурсах
+||*$header=WWW-Authenticate,third-party
+
+! =========================================================================
+! [12] SENSOR & IP SHIELD (ETERNAL EDITION): WebRTC, LOCATION, PUSH
+! =========================================================================
+! --- WebRTC Shield (Защита от утечки реального IP) ---
+! Блокируем STUN/TURN серверы, которые используются для "пробива" IP
+||stun.l.google.com^$important
+||stun?.l.google.com^$important
+||stun.services.mozilla.com^$important
+||*.stun.twilio.com^$important
+! Скриптлет для подмены WebRTC API (сайты будут думать, что функций звонков нет)
+#%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
+#%#//scriptlet("set-constant", "webkitRTCPeerConnection", "undefined")
+
+! --- Location API (Запрет на отслеживание координат) ---
+! Подменяем функцию геолокации, чтобы сайт всегда получал "Доступ запрещен" на уровне JS
+#%#//scriptlet("set-constant", "navigator.geolocation.getCurrentPosition", "undefined")
+#%#//scriptlet("set-constant", "navigator.geolocation.watchPosition", "undefined")
+
+! --- Push & Notification API (Анти-фингерпринтинг уведомлений) ---
+! Запрещаем сайтам регистрировать Service Workers для пуш-слежки
+#%#//scriptlet("set-constant", "navigator.serviceWorker.register", "undefined")
+#%#//scriptlet("set-constant", "Notification.requestPermission", "undefined")
+#%#//scriptlet("set-constant", "PushManager.subscribe", "undefined")
+
+! --- Дополнительно: Запрет на доступ к датчикам (Акселерометр, Магнетометр) ---
+#%#//scriptlet("set-constant", "DeviceMotionEvent", "undefined")
+#%#//scriptlet("set-constant", "DeviceOrientationEvent", "undefined")
