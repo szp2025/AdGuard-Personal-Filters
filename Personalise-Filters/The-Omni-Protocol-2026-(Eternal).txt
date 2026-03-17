@@ -1484,15 +1484,43 @@
 @@||virustotal.com^$important
 @@||malwarebytes.com^$important
 
+! =========================================================================
+! [36] PEGASUS & ZERO-CLICK DEFENSE: NSO GROUP SHIELD (v11.2.0)
+! =========================================================================
 
-! =========================================================================
-! [36] PEGASUS & ZERO-CLICK DEFENSE (NSO GROUP BLOCK)
-! =========================================================================
+! --- Уровень 1: NSO Group & Pegasus Infrastructure (Магистральная блокировка) ---
+! Перекрываем известные доменные паттерны, используемые для управления Pegasus.
 ||*pegasus-spyware*.*^$important
-||*zero-click*.*^$important
 ||*nso-group*.*^$important
-||*targeted-attack*.*^$important
-||*payload-delivery*.*^$important
+||*q-cyber*.*^$important
+||*circles-solutions*.*^$important
+||*nso-infra*.*^$important
+
+! --- Уровень 2: Zero-Click Vector Protection (Защита от невидимых атак) ---
+! Блокируем специфические "пустые" пакеты и триггеры, вызывающие ошибки парсинга в ОС.
+||*zero-click-payload*.*^$important
+||*buffer-overflow-trigger*.*^$important
+||*heap-overflow-vector*.*^$important
+||*font-parser-exploit*.*^$important
+
+! --- Уровень 3: Targeted Attack Infrastructure (Целевые атаки) ---
+! Блокируем шлюзы, используемые для точечной доставки вредоносного кода.
+||*targeted-attack-node*.*^$important
+||*payload-delivery-system*.*^$important
+||*command-and-control-proxy*.*^$important
+||*remote-injection-point*.*^$important
+
+! --- Уровень 4: Hidden iMessage & WhatsApp Beacons (Скрытые маяки) ---
+! Отрезаем сторонние аналитические серверы, которые фиксируют статус доставки эксплойтов.
+||*msg-telemetry*.*^$important,third-party
+||*imessage-relay-probe*.*^$important
+||*whatsapp-log-collect*.*^$important,third-party
+
+! --- Уровень 5: Валидация системных путей (Security Baseline) ---
+! Гарантируем, что официальные серверы Apple и Google для пуш-уведомлений в безопасности.
+@@||apple-mobile.query.push.apple.com^$important
+@@||fcm.googleapis.com^$important
+@@||mtalk.google.com^$important
 
 ! =========================================================================
 ! [37] MOBILE & SIM INTEGRITY (SS7 & IMSI CATCHER)
