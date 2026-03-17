@@ -118,3 +118,43 @@
 ! Защита от префетчинга (замена "Do Not Track" на уровне сетевых запросов)
 ||*$header=Purpose,prefetch,important
 ||*$header=X-Purpose,prefetch,important
+
+! =========================================================================
+! [12] TRACKER GENOCIDE: ЗАМЕНА ФУНКЦИИ "БЛОКИРОВАТЬ ТРЕКЕРЫ"
+! =========================================================================
+! Глобальная блокировка систем аналитики и сбора данных
+||*doubleclick.net*^$important
+||*google-analytics.com*^$important
+||*appsflyer.com*^$important
+||*adjust.com*^$important
+||*scorecardresearch.com*^$important
+||*adnxs.com*^$important
+
+! =========================================================================
+! [13] DEEP ANTI-MINING: УЛЬТИМАТИВНАЯ ЗАЩИТА ПРОЦЕССОРА
+! =========================================================================
+! Блокировка всех скриптов, использующих ресурсы телефона для майнинга
+||*coin-hive.com*^$important
+||*coinhive.com*^$important
+||*authedmine.com*^$important
+||*cryptoloot.pro*^$important
+||*coinimp.com*^$important
+||*minero.cc*^$important
+||*web-miner.com*^$important
+||*monerominer.rocks*^$important
+
+! =========================================================================
+! [14] FINANCIAL APEX: МИРОВЫЕ И ФРАНЦУЗСКИЕ ПЛАТЕЖИ
+! =========================================================================
+! Белый список для стабильности Mercanet, Lydia и международных шлюзов
+@@||mercanet.bnpparibas.net^$important
+@@||lydia-app.com^$important
+@@||paylib.fr^$important
+@@||stripe.com^$important
+@@||revolut.com^$important
+@@||paypal.com^$important
+@@||visa.com^$important
+@@||mastercard.com^$important
+! Защита от подмены форм оплаты (Anti-Skimming)
+||*card-skimmer*.*^$important
+||*payment-hijack*.*^$important
