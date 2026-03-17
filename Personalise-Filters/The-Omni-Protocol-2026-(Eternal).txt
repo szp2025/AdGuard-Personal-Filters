@@ -651,3 +651,41 @@
 ! --- Уровень 6: Блокировка вредоносных сокращателей ссылок ---
 ||*bit.ly*$subdocument,third-party
 ||*cutt.ly*$subdocument,third-party
+
+
+! =========================================================================
+! [25] IMSI & PROTOCOL SHIELD 2026 (ETERNAL) - ADVANCED HARDENING
+! =========================================================================
+
+! --- Уровень 1: Защита сертификатов (Анти-перехват MITM) ---
+||ocsp.*^$important,domain=~apple.com|~google.com
+||pki.goog*^$important,domain=~google.com
+||*trust*.com^$important,domain=~n26.com|~revolut.com|~apple.com
+
+! --- Уровень 2: Анти-шпион (C&C Control & Spyware) ---
+||*skygo.io*^$important
+||*over-the-air*.*^$important,domain=~samsung.com|~apple.com
+||*buffer-overflow*.*^$important
+||*spyware*.*^$important
+||*c2-server*.*^$important
+
+! --- Уровень 3: Защита от триангуляции (Location & Time) ---
+! Мы блокируем общие пулы, но оставляем системные для работы часов
+||*pool.ntp.org*^$important,domain=~android.com
+||*location.services*.*^$important,domain=~google.com|~waze.com
+||*ls.google.com*^$important,domain=~google.com
+
+! --- Уровень 4: Port Hardening (Защита входов) ---
+! Блокируем опасные порты, оставляя 5228-5230 для Google Play и Push
+|*^$important,port=5223
+|*^$important,port=8883
+|*^$important,port=4444
+|*^$important,port=5555
+|*^$important,port=22
+|*^$important,port=23
+
+! --- Уровень 5: Диагностика (Утечка через отчеты об ошибках) ---
+||*events.data.microsoft*.*^$important
+||*diagnostics*.*^$important,domain=~apple.com|~samsung.com
+||*telemetry-service*.*^$important
+
