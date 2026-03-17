@@ -1874,3 +1874,40 @@ $removeparam=gclid
 ! Гарантируем, что музыка в наушниках и связь с часами не прервутся.
 @@||*bt-audio-handshake*.*^$important
 @@||*system-bt-manager*.*^$important
+
+! =========================================================================
+! [46] GEOLOCATION PRIVACY & IP-GEOTAG SHIELD (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: Anti-IP Geolocation (Защита от вычисления по IP) ---
+! Блокируем сервисы, которые сопоставляют твой IP с точным домашним адресом.
+||ipstack.com^$important
+||ipapi.co^$important
+||maxmind.com^$important,third-party
+||*geoip*.*^$important
+
+! --- Уровень 2: Background Location Leak (Фоновая утечка координат) ---
+! Запрещаем приложениям отправлять GPS-данные в фоновом режиме на аналитические домены.
+||*location-provider*.*^$important
+||*gps-stats*.*^$important
+||*positioning-system*.*^$important
+||*places-api.google.com*^$important,third-party
+
+! --- Уровень 3: Wi-Fi & Cell Tower Triangulation (Защита от триангуляции) ---
+! Блокируем сбор данных о соседних Wi-Fi сетях, который используется для поиска 
+! тебя без включенного GPS.
+||*wifi-positioning*.*^$important
+||*cell-location-database*.*^$important
+||*location-history*.*^$important
+
+! --- Уровень 4: Photo & Exif Metadata Guard (Защита снимков) ---
+! Пресекаем попытки сайтов считать геотеги из загружаемых тобой фотографий.
+||*exif-data-extractor*.*^$important
+||*image-metadata-parser*.*^$important
+
+! --- Уровень 5: Navigation Stability (Валидация Карт) ---
+! Гарантируем, что Google Maps, Yandex Maps и Waze будут работать, когда ты их открываешь.
+@@||maps.google.com^$document
+@@||maps.yandex.ru^$document
+@@||*.waze.com^$important
+@@||*.ls.apple.com^$important
