@@ -634,3 +634,9 @@
 
 ! Гарантия работы вложений в Gmail
 @@||mail-attachment.googleusercontent.com^$important
+
+! === [FIX] GVT1 INFRASTRUCTURE (ОБНОВЛЕНИЯ GOOGLE PLAY) ===
+@@||gvt1.com^$important
+@@||*.gvt1.com^$important
+@@||gvt2.com^$important
+@@||*.gvt2.com^$important
