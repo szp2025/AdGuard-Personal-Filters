@@ -209,3 +209,26 @@
 
 ! Блокировка попыток сайтов игнорировать сигналы GPC
 #%#//scriptlet("abort-on-property-read", "window.optOut")
+
+! =========================================================================
+! [8] COOKIE ANNIHILATION (ETERNAL EDITION): СМЕРТЬ СТОРОННИМ ТРЕКЕРАМ
+! =========================================================================
+! Блокировка передачи куки на сторонние рекламные и аналитические домены
+||*$cookie,domain=~google.com|~samsung.com|~apple.com|~youtube.com|~waze.com|~n26.com|~revolut.com
+
+! Принудительное удаление заголовка Set-Cookie от известных трекер-сетей
+||*doubleclick.net^$header=Set-Cookie,important
+||*adnxs.com^$header=Set-Cookie,important
+||*scorecardresearch.com^$header=Set-Cookie,important
+
+! Скриптлеты для очистки хранилищ (защита от "вечных куки")
+! Чистим попытки сайтов сохранить ID через JS вне обычных куки
+#%#//scriptlet("re-map-web-storage", "tracking_id", "null")
+#%#//scriptlet("re-map-web-storage", "user_id", "null")
+#%#//scriptlet("abort-on-property-write", "document.cookie")
+
+! Защита от Cookie-Syncing (когда сайты обмениваются твоими ID)
+||*$removeparam=cookie_id
+||*$removeparam=uuid
+||*$removeparam=uid
+
