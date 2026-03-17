@@ -1723,36 +1723,48 @@
 
 
 ! =========================================================================
-! [42] FINAL REFINEMENT: YANDEX FIX & ANTI-ADBLOCK KILLER (v11.0.0)
+! [42] FINAL REFINEMENT: ECOSYSTEM FIX & ANTI-ADBLOCK KILLER (v11.2.0)
 ! =========================================================================
 
-! --- Уровень 1: Разблокировка Yandex.ru (чтобы сайт открывался) ---
+! --- Уровень 1: Yandex & Dzen Core Integrity (Стабильность сервисов) ---
+! Разрешаем базовую загрузку документов и статических файлов.
+! Это гарантирует, что страницы не будут "белыми" или бесконечно загружающимися.
 @@||yandex.ru^$document
 @@||yandex.com^$document
+@@||dzen.ru^$document
 @@||yastatic.net^$important
 @@||yandex.st^$important
-
-! --- Специальное исправление для Яндекс UUID (v11.0.1) ---
-@@||yandex.ru^$removeparam=uuid
-@@||yandex.com^$removeparam=uuid
-@@||yandex.ru/api/v2/uuid$important
-@@||yastatic.net^$important
-
-
-! --- Фикс бесконечной загрузки Yandex/Dzen SSO (v11.0.2) ---
-@@||yandex.ru^$removeparam=uuid
-@@||yandex.com^$important
-@@||dzen.ru^$document
-@@||sso.dzen.ru^$important
-@@||sso.yandex.ru^$important
 @@||*.yandex.net^$important
 @@||*.yastatic.net^$important
 
-! --- Уровень 2: Anti-Adblock (чтобы сайты не видели AdGuard) ---
+! --- Уровень 2: SSO & UUID Fix (Магия авторизации) ---
+! Исправляем проблемы с логином. Мы разрешаем UUID для системных API, 
+! но вырезаем их из рекламных трекеров в других разделах.
+@@||yandex.ru^$removeparam=uuid
+@@||yandex.com^$removeparam=uuid
+@@||yandex.ru/api/v2/uuid$important
+@@||sso.dzen.ru^$important
+@@||sso.yandex.ru^$important
+@@||passport.yandex.ru^$important
+
+! --- Уровень 3: Anti-Adblock Killer (Протокол "Невидимка") ---
+! Обманываем скрипты детекции. Сайт "думает", что реклама разрешена.
 ##+js(set-constant, AdGuard, undefined)
 ##+js(set-constant, canRunAds, true)
 ##+js(set-constant, abp, false)
+##+js(set-constant, google_ad_status, 1)
 
-! --- Уровень 3: Дополнительный Whitelist ---
+! --- Уровень 4: Critical Infrastructure Whitelist (Master Priority) ---
+! Финальное подтверждение стабильности для ключевых финансовых систем.
 @@||*.gomining.com^$important
 @@||*.revolut.com^$important
+@@||*.n26.com^$important
+@@||*.stripe.com^$important
+
+! --- Уровень 5: Удаление параметров слежки (URL Cleanup) ---
+! Очищаем ссылки от мусора, сохраняя работоспособность переходов.
+$removeparam=utm_source
+$removeparam=utm_medium
+$removeparam=utm_campaign
+$removeparam=fbclid
+$removeparam=gclid
