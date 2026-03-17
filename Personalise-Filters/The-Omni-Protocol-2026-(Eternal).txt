@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 (Eternal)
-! Version: 7.4.6
+! Version: 7.4.7
 ! Last modified: 2026-03-17
 
 ! =========================================================================
