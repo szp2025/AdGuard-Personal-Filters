@@ -1,7 +1,8 @@
 [Adblock Plus 2.0]
 ! Title: Inbound Shield 2026 (Eternal)
 ! Description: Умная блокировка всплывающих окон, видео-рекламы и вредоносных модулей.
-! Version: 2.0.0
+! Version: 2.1.0 (Final Stable)
+! Last modified: 2026-03-17
 
 ! --- [1] VIDEO & DISPLAY ADS (Анти-роллы и вставки) ---
 ||*video-ads*^$important
@@ -43,3 +44,11 @@
 @@||samsung.com^$important
 @@||google.com^$important
 @@||apple.com^$important
+
+! --- [7] КРИТИЧЕСКИЕ ИСКЛЮЧЕНИЯ (GitHub & Payments) ---
+! Чтобы скрипты GitHub и банковские шлюзы не принимались за "входящие угрозы"
+@@||github.com^$document
+@@||githubassets.com^$document
+@@||revolut.com^$important
+@@||n26.com^$important
+@@||stripe.com^$important
