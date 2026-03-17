@@ -1801,3 +1801,76 @@ $removeparam=gclid
 
 ! --- Уровень 5: Исправление для региональных доменов (Global Fix) ---
 @@||google.*^$document
+
+
+! =========================================================================
+! [44] WIRELESS & HOTSPOT INTEGRITY: LINK HARDENING (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: Hotspot & Tethering Protection (Защита точки доступа) ---
+! Блокируем аналитику, которую устройства-клиенты (например, Samsung на фото) 
+! пытаются отправить через твой интернет-канал.
+||*tethering.samsung.*^$important
+||*hotspot-analytics*.*^$important
+||*knox-selfupdate.samsung.com*^$important,third-party
+
+! --- Уровень 2: Wi-Fi Calling & VoLTE Security (Безопасность звонков) ---
+! Защищаем туннель Wi-Fi звонков от перехвата метаданных сторонними трекерами.
+@@||epdg.epc.mnc*.mcc*.pub.3gppnetwork.org^$important
+||*vowifi-stats*.*^$important
+||*voip-telemetry*.*^$important
+
+! --- Уровень 3: NFC & Contactless Shield (Защита платежей и меток) ---
+! Блокируем попытки приложений скрыто считывать NFC-метки и отправлять их в облако.
+||*nfc-services*.*^$important
+||*contactless-analytics*.*^$important
+||*payment-gateway-tracking*.*^$important
+
+! --- Уровень 4: Bluetooth Modem & Tethering Guard (Синий щит) ---
+! Закрываем порты и шлюзы, используемые для атак через Bluetooth-модем.
+||*:623$important,network
+||*:2000$important,network
+||*bt-tracking-pixel*.*^$important
+
+! --- Уровень 5: Валидация для стабильности (Connectivity Whitelist) ---
+! Гарантируем, что сама раздача интернета и звонки через Wi-Fi не прервутся.
+@@||connectivity.samsung.com^$important,domain=~samsung.com
+@@||connectivity.google.com^$important,domain=~google.com
+
+
+
+! =========================================================================
+! [45] BLUETOOTH STEALTH & BEACON DEFENSE (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: Anti-Beacon Tracking (Защита от магазинной слежки) ---
+! Блокируем SDK, которые используют Bluetooth для определения твоего 
+! точного местоположения внутри ТЦ и магазинов через маячки (Beacons).
+||*altbeacon*.*^$important
+||*ibeacon-scanning*.*^$important
+||*proximity-beacon*.*^$important
+||*bluetooth-ads*.*^$important
+
+! --- Уровень 2: Blueborne & Remote Attack Shield (Защита протокола) ---
+! Блокируем сигнатуры запросов, характерные для попыток удаленного 
+! захвата управления через уязвимости стека Bluetooth.
+||*bt-exploit-vector*.*^$important
+||*l2cap-injection*.*^$important
+||*sdp-scan-flood*.*^$important
+
+! --- Уровень 3: Audio & Wearable Privacy (Конфиденциальность аксессуаров) ---
+! Запрещаем приложениям отправлять серийные номера и статус батареи 
+! твоих наушников или часов на рекламные серверы.
+||*wearable-telemetry*.*^$important
+||*headset-id-collector*.*^$important
+||*gadgetbridge-bridge*.*^$important,third-party
+
+! --- Уровень 4: Bluetooth Pairing Guard (Защита сопряжения) ---
+! Блокируем фишинговые запросы на сопряжение от неизвестных устройств.
+||*bt-pairing-interceptor*.*^$important
+||*auth-bypass-check*.*^$important
+
+! --- Уровень 5: Валидация аудио-потока (Media Whitelist) ---
+! Гарантируем, что музыка в наушниках и связь с часами не прервутся.
+@@||*bt-audio-handshake*.*^$important
+@@||*system-bt-manager*.*^$important
