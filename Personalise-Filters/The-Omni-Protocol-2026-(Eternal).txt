@@ -459,3 +459,36 @@
 ||*spam-module*.*^$important
 ||*newsletter-popup*.*^$important
 ||*subscription-wall*.*^$important
+
+! =========================================================================
+! [43] PUBLIC WI-FI & SMART CITY: ЗАЩИТА В ГОРОДСКИХ СЕТЯХ
+! =========================================================================
+! Блокировка порталов захвата и аналитики умных городов
+||*city-wifi-portal*.*^$important
+||*public-hotspot-auth*.*^$important
+||*smart-city-tracker*.*^$important
+||*iot-analytics*.*^$important
+! Защита от перехвата данных в открытых точках доступа
+||*connectivitycheck*.*^$domain=~google.com|~apple.com|~android.com
+
+! =========================================================================
+! [44] QR-CODE & PHYSICAL STEALTH: ЦИФРОВЫЕ СЛЕДЫ В РЕАЛЬНОСТИ
+! =========================================================================
+! Блокировка трекеров, встроенных в динамические QR-коды и маячки (Beacons)
+||*qr-tracker*.*^$important
+||*dynamic-qr-stats*.*^$important
+||*location-beacon*.*^$important
+||*proximity-sensor-api*.*^$important
+
+! =========================================================================
+! [45] SOCIAL HARDENING: ГЛУБОКАЯ ИЗОЛЯЦИЯ СОЦСЕТЕЙ
+! =========================================================================
+! Полная остановка обмена данными с графами и пикселями соцсетей
+||graph.facebook.com^$important
+||pixel.facebook.com^$important
+||analytics.tiktok.com^$important
+||connect.ok.ru^$important
+||vk.com/rtrg^$important
+! Удаление скриптов авторизации через соцсети на сторонних сайтах
+||*facebook.net/en_US/sdk.js*^$important
+||*connect.facebook.net*^$important
