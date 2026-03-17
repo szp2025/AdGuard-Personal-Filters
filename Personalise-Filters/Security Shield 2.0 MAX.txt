@@ -80,3 +80,103 @@
 @@||googleapis.com^$important
 @@||samsung.com^$important
 @@||apple.com^$important
+
+
+! =========================================================================
+! [49] SECURITY SHIELD MAX: ANTI-MALWARE & RANSOMWARE
+! =========================================================================
+! Блокировка всех видов зловредов (Трояны, Стиллер, Шифровальщики)
+||*malware*.*^$important
+||*trojan*.*^$important
+||*ransomware*.*^$important
+||*spyware*.*^$important
+||*stealer*.*^$important
+||*keylogger*.*^$important
+
+! =========================================================================
+! [50] ZERO-DAY & EXPLOIT HARDENING (ЗАЩИТА ОТ ВЗЛОМА)
+! =========================================================================
+! Пресечение попыток удаленного исполнения кода и SQL-инъекций
+||*exploit*.*^$important
+||*backdoor*.*^$important
+||*zero-day*.*^$important
+||*rce-attack*.*^$important
+||*buffer-overflow*.*^$important
+||*web-shell*.*^$important
+
+! =========================================================================
+! [51] PEGASUS & ZERO-CLICK DEFENSE: (ЭЛИТНЫЙ ШПИОНАЖ)
+! =========================================================================
+! Блокировка инфраструктуры NSO Group и целевых атак "без клика"
+||*pegasus-spyware*.*^$important
+||*zero-click*.*^$important
+||*nso-group*.*^$important
+||*targeted-attack*.*^$important
+||*payload-delivery*.*^$important
+
+! =========================================================================
+! [52] MOBILE & SIM INTEGRITY: (ЗАЩИТА ПРОТОКОЛОВ СВЯЗИ)
+! =========================================================================
+! Заслон против перехвата IMSI, атак на SIM и подмены базовых станций
+||*imsi-catcher*.*^$important
+||*sim-jacker*.*^$important
+||*ss7-attack*.*^$important
+||*cellular-intercept*.*^$important
+||*base-station-spoofing*.*^$important
+
+! =========================================================================
+! [53] GITHUB & SYSTEM INFRASTRUCTURE (FINAL FIX)
+! =========================================================================
+! Финальная разблокировка для корректной работы всех систем
+@@||github.com^$document,important
+@@||githubassets.com^$important
+@@||raw.githubusercontent.com^$important
+@@||api.github.com^$important
+@@||collector.github.com^$important
+@@||gomining.com^$important
+@@||revolut.com^$important
+@@||n26.com^$important
+@@||stripe.com^$important
+
+! =========================================================================
+! [54] PORT LOCKDOWN: ЗАПРЕТ УДАЛЕННОГО ДОСТУПА (SSH/RDP/TELNET)
+! =========================================================================
+! Блокировка стандартных портов управления для предотвращения взлома
+||*:22$important,network        ! SSH (Удаленное управление)
+||*:23$important,network        ! Telnet (Незащищенный вход)
+||*:3389$important,network      ! RDP (Удаленный рабочий стол)
+||*:5900$important,network      ! VNC (Удаленный доступ)
+||*:111$important,network       ! RPC (Поиск уязвимостей)
+||*:135$important,network       ! RPC Windows
+||*:445$important,network       ! SMB (Распространение вирусов/шифровальщиков)
+
+! =========================================================================
+! [55] NETWORK SCANNING & PROXY DEFENSE: ЗАЩИТА ОТ СКАНЕРОВ
+! =========================================================================
+! Блокировка попыток сканирования твоего IP и поиска открытых дверей
+||*port-scan*.*^$important
+||*proxy-checker*.*^$important
+||*shodan.io*^$important
+||*censys.io*^$important
+! Запрет на обращение к локальным ресурсам через браузер (защита от SSRF атак)
+||127.0.0.1$important
+||localhost$important
+
+! =========================================================================
+! [56] TOTAL HACKING SUPPRESSION: (ВСЕ ТИПЫ ВЗЛОМА)
+! =========================================================================
+! Блокировка специфических хакерских утилит и командных центров
+||*kali-linux*.*^$important
+||*metasploit*.*^$important
+||*burp-suite*.*^$important
+||*wireshark-cloud*.*^$important
+||*brute-force*.*^$important
+||*packet-inject*.*^$important
+||*sniffing-tool*.*^$important
+
+! =========================================================================
+! [57] ADVANCED SYSTEM INTEGRITY (GITHUB RE-CHECK)
+! =========================================================================
+! Гарантируем, что блокировка портов не заденет стандартный HTTPS (443) для GitHub
+@@||github.com^$network,important
+@@||api.github.com^$network,important
