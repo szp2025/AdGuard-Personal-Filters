@@ -628,6 +628,35 @@
 @@||play.googleapis.com^$important
 @@||*gvt1.com^$important
 
+! =========================================================================
+! [FIX] GOOGLE PLAY & GMAIL RECOVERY (ULTIMATE REVIVE)
+! =========================================================================
+! 1. Разрешаем UDP/QUIC и порты для Google Services (Критично для начала загрузки)
+@@||google.com^$network,important
+@@||googleapis.com^$network,important
+@@||gstatic.com^$network,important
+@@||*:5228$network,important
+@@||*:5229$network,important
+@@||*:5230$network,important
+
+! 2. Полная разблокировка CDN-серверов, которые ты нашел (GVT1/GVT2)
+@@||gvt1.com^$important
+@@||*.gvt1.com^$important
+@@||gvt2.com^$important
+@@||*.gvt2.com^$important
+@@||*.gvt3.com^$important
+@@||*.xn--ngstr-lra8z.com^$important
+
+! 3. Gmail: Синхронизация и вложения
+@@||mail.google.com^$important
+@@||mail-attachment.googleusercontent.com^$important
+@@||*:993$network,important
+@@||*:465$network,important
+
+! 4. Исключения из Wildcards для стабильности аккаунта
+@@||services.google.com^$important
+@@||accounts.google.com^$important
+
 ! Отключаем блокировку QUIC именно для Google (чтобы Gmail не тормозил)
 @@||google.com^$network,quic,important
 @@||googleapis.com^$network,quic,important
