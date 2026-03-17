@@ -142,7 +142,7 @@
 ! =========================================================================
 ! Удаление идентификаторов клиента, устройства и версий из поисковых запросов
 ||google.*$removeparam=/^(sourceid|client|gs_lcp|sclient|ei|oq|ved|uact|source|biw|bih)/
-||yandex.*$removeparam=/^(lr|redircnt|src|from|mda|mdo|uuid|device_id)/
+||yandex.*$removeparam=/^(lr|redircnt|src|from|mda|mdo|device_id)/
 ||bing.com$removeparam=/^(cvid|form|sk|sp|qs|pq|sc|qs|sk|cvid)/
 ||duckduckgo.com$removeparam=/^(t|atb|kai|kad|kn|kp)/
 ||yahoo.com$removeparam=/^(p|ei|fr|fr2|v)/
@@ -1164,6 +1164,13 @@
 @@||yandex.com^$document
 @@||yastatic.net^$important
 @@||yandex.st^$important
+
+! --- Специальное исправление для Яндекс UUID (v11.0.1) ---
+@@||yandex.ru^$removeparam=uuid
+@@||yandex.com^$removeparam=uuid
+@@||yandex.ru/api/v2/uuid$important
+@@||yastatic.net^$important
+
 
 ! --- Уровень 2: Anti-Adblock (чтобы сайты не видели AdGuard) ---
 ##+js(set-constant, AdGuard, undefined)
