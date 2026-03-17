@@ -608,3 +608,29 @@
 @@||gstatic.com^$script,domain=google.com|play.google.com
 @@||github.com^$important
 @@||raw.githubusercontent.com^$important
+
+! =========================================================================
+! [FIX] GOOGLE PLAY & GMAIL RECOVERY (ЭКСТРЕННЫЙ ПАТЧ)
+! =========================================================================
+! Разрешаем порты для синхронизации почты и работы магазина (IMAP/SMTPS/GCM)
+@@||*:5228$network,important    ! Google Play Services
+@@||*:5229$network,important    ! Google Play Services
+@@||*:5230$network,important    ! Google Play Services
+@@||*:993$network,important     ! Gmail IMAP
+@@||*:465$network,important     ! Gmail SMTP
+
+! Разрешаем специфические домены Google, которые попали под Wildcards
+@@||mtalk.google.com^$important
+@@||alt*-mtalk.google.com^$important
+@@||device-messaging.googleapis.com^$important
+@@||android.apis.google.com^$important
+@@||connectivitycheck.android.com^$important
+@@||play.googleapis.com^$important
+@@||gvt1.com^$important
+
+! Отключаем блокировку QUIC именно для Google (чтобы Gmail не тормозил)
+@@||google.com^$network,quic,important
+@@||googleapis.com^$network,quic,important
+
+! Гарантия работы вложений в Gmail
+@@||mail-attachment.googleusercontent.com^$important
