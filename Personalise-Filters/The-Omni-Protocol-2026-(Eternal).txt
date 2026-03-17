@@ -1,69 +1,68 @@
 [Adblock Plus 2.0]
-! Title: The Omni-Protocol 2026 (Stage 1: Core & Tracker Genocide)
+! Title: The Omni-Protocol 2026 (Stage 1: Multi-Store Fix)
 ! Version: 7.3.2
 ! Last modified: 2026-03-17
 
 ! =========================================================================
-! [1] SYSTEM BYPASS: ЖИЗНЕННО ВАЖНЫЕ КОРИДОРЫ (GOOGLE / SAMSUNG / WAZE)
+! [1] SYSTEM BYPASS: GOOGLE & SAMSUNG INFRASTRUCTURE
 ! =========================================================================
-! Разрешаем базу и проверку связи
+! База Google Play
 @@||google.com^$important
 @@||googleapis.com^$important
 @@||gstatic.com^$important
+@@||googleusercontent.com^$important
 @@||android.com^$important
-@@||connectivitycheck.gstatic.com^$important
-@@||connectivitycheck.android.com^$important
-
-! Разрешаем ВСЕ CDN для загрузки приложений (GVT1, GVT2, GVT3)
 @@||gvt1.com^$important
 @@||*.gvt1.com^$important
 @@||gvt2.com^$important
 @@||*.gvt2.com^$important
-@@||gvt3.com^$important
+@@||connectivitycheck.gstatic.com^$important
 
-! Системные узлы Samsung & Waze
+! База Samsung Galaxy Store & System Updates
 @@||samsung.com^$important
+@@||samsungcloud.com^$important
 @@||samsungapps.com^$important
+@@||samsungosp.com^$important
+@@||samsung-com.akamaized.net^$important
 @@||galaxy.store^$important
-@@||waze.com^$important
+@@||osp-v2.samsung.com^$important
 
-! YouTube Инфраструктура
+! YouTube & Waze
 @@||youtube.com^$important
 @@||googlevideo.com^$important
 @@||ytimg.com^$important
+@@||waze.com^$important
 
 ! =========================================================================
-! [2] NETWORK STEALTH: DNS & QUIC & PORTS
+! [2] NETWORK STEALTH: DNS & QUIC (SAFE MODE)
 ! =========================================================================
 ||*$csp=proxy-src 'none'
 ||*$header=X-Forwarded-For,important
 ||*$header=Via,important
 
-! Разрешаем сетевой доступ для системных CDN (Критично для скачивания)
+! Разрешаем сетевую активность для магазинов (чтобы не висела загрузка)
 @@||google.com^$network,important
 @@||googleapis.com^$network,important
-@@||gstatic.com^$network,important
+@@||samsung.com^$network,important
 @@||gvt1.com^$network,important
-@@||gvt2.com^$network,important
 
-! Умный QUIC: Расширяем исключения, чтобы не блокировать субдомены обновлений
+! Исправленный QUIC: Расширенный список исключений
 @@||google.com^$network,quic
 @@||googleapis.com^$network,quic
 @@||gstatic.com^$network,quic
-@@||youtube.com^$network,quic
 @@||samsung.com^$network,quic
 @@||gvt1.com^$network,quic
-! Блокируем QUIC для всех остальных (трекеров и левых сайтов)
-||*$network,quic,domain=~google.com|~googleapis.com|~gstatic.com|~youtube.com|~samsung.com|~gvt1.com
+@@||youtube.com^$network,quic
+||*$network,quic,domain=~google.com|~googleapis.com|~gstatic.com|~samsung.com|~gvt1.com|~youtube.com
+
 ! =========================================================================
-! [3] TRACKER GENOCIDE (С ИСКЛЮЧЕНИЕМ ДЛЯ DNS СИСТЕМЫ)
+! [3] TRACKER GENOCIDE (С УМНЫМИ ИСКЛЮЧЕНИЯМИ)
 ! =========================================================================
-! Рекламные биржи
 ||*doubleclick.net*^$important,domain=~google.com
 ||*adsystem*.*^$important
 ||*adserver*.*^$important
 
-! Аналитика (Wildcards теперь не трогают системные DNS)
-||*.analytics.*^$important,domain=~google.com|~googleapis.com|~waze.com|~samsung.com|~gvt1.com
-||*.stats.*^$important,domain=~google.com|~googleapis.com|~waze.com|~samsung.com
-||*.metrics.*^$important,domain=~google.com|~youtube.com|~waze.com
+! Маски теперь обходят системные CDN Samsung и Google
+||*.analytics.*^$important,domain=~google.com|~googleapis.com|~waze.com|~samsung.com|~gvt1.com|~samsungapps.com
+||*.stats.*^$important,domain=~google.com|~googleapis.com|~waze.com|~samsung.com|~samsungapps.com
+||*.metrics.*^$important,domain=~google.com|~youtube.com|~waze.com|~samsung.com
