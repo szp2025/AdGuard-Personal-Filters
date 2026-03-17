@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 (Stage 1: CDN Recovery)
-! Version: 7.3.5
+! Version: 7.3.6
 
 ! =========================================================================
 ! [1] SYSTEM BYPASS: ULTIMATE CDN WHITE-LIST (FIX FOR GOOGLE PLAY)
