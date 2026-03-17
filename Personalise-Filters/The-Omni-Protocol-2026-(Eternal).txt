@@ -1604,13 +1604,43 @@
 
 
 ! =========================================================================
-! [39] NETWORK SCANNING & SHODAN DEFENSE
+! [39] NETWORK SCANNING & SHODAN DEFENSE: STEALTH INFRASTRUCTURE (v11.2.0)
 ! =========================================================================
+
+! --- Уровень 1: IoT Search Engines Isolation (Ослепление сканеров) ---
+! Блокируем доступ сторонних скриптов к поисковикам по уязвимым устройствам.
+! Ты сможешь зайти на них сам, но сайты не смогут проверить твой IP через них.
+||shodan.io^$important,third-party
+||censys.io^$important,third-party
+||zoomeye.org^$important,third-party
+||fofa.info^$important,third-party
+||leakix.net^$important,third-party
+
+! --- Уровень 2: Localhost & Loopback Guard (Защита внутреннего контура) ---
+! Запрещаем внешним сайтам обращаться к твоему компьютеру напрямую.
+! Это предотвращает кражу данных из локальных API и веб-интерфейсов.
+||127.0.0.1^$important,third-party
+||localhost^$important,third-party
+||[::1]^$important,third-party
+
+! --- Уровень 3: Anti-Port Scanning (Защита от сканирования портов) ---
+! Блокируем веб-инструменты и JS-библиотеки, специализирующиеся на поиске открытых дверей.
 ||*port-scan*.*^$important
-||*shodan.io*^$important
-||*censys.io*^$important
-||127.0.0.1$important
-||localhost$important
+||*network-scanner*.*^$important
+||*masscan*.*^$important,third-party
+||*nmap-online*.*^$important
+
+! --- Уровень 4: LAN Probing Defense (Защита домашней сети) ---
+! Пресекаем попытки браузера "прощупать" другие устройства в твоем Wi-Fi.
+||192.168.*^$important,third-party
+||10.0.*^$important,third-party
+||172.16.*^$important,third-party
+
+! --- Уровень 5: Валидация системных служб (Stability Whitelist) ---
+! Разрешаем локальные запросы только для проверенных системных процессов.
+@@||127.0.0.1^$domain=cups-pdf.local|localhost.localstack.cloud
+@@||localhost^$domain=jetbrains.com|docker.com
+
 
 ! =========================================================================
 ! [40] HACKING SUPPRESSION (METASPLOIT & KALI)
