@@ -297,3 +297,39 @@
 ##aside[class*="sidebar-ad"]
 ##div[id^="ad_slot_"]
 ##[data-testid="ad-item"]
+
+! =========================================================================
+! [28] THE BANKING GAMBIT: ФИНАНСОВЫЙ ЗАСЛОН (FR & GLOBAL)
+! =========================================================================
+! Белый список для стабильности банковских операций (защита от ложных срабатываний)
+@@||revolut.com^$important
+@@||n26.com^$important
+@@||bnpparibas.net^$important
+@@||mercanet.bnpparibas.net^$important
+@@||lydia-app.com^$important
+@@||paylib.fr^$important
+@@||stripe.com^$important
+! Защита государственных выплат Франции
+@@||ameli.fr^$important
+@@||caf.fr^$important
+@@||impots.gouv.fr^$important
+
+! =========================================================================
+! [29] ANTI-FINANCIAL TRACKING: ЗАЩИТА ОТ МОШЕННИКОВ
+! =========================================================================
+! Блокировка скриптов, крадущих данные карт (Anti-Skimming)
+||*card-skimmer*.*^$important
+||*form-grabber*.*^$important
+||*magento-secure*.*^$important
+! Блокировка поддельных страниц подтверждения транзакций
+||*verify-transaction*.*^$important
+||*3d-secure-verification*.*^$important
+
+! =========================================================================
+! [30] INFRASTRUCTURE HARDENING: (SSL & CERTIFICATE DEFENSE)
+! =========================================================================
+! Запрет на загрузку подозрительных сертификатов и подмену SSL
+||*$csp=require-trusted-types-for 'script',important
+! Защита от фишинговых поддоменов
+||*-secure-login.*^$important
+||*login-verify.*^$important
