@@ -2870,3 +2870,58 @@ $dnsrewrite=NOERROR;NXDOMAIN;ttl=10
 ! Отключаем фильтрацию контента (но оставляем блокировку IP) для быстрой оплаты.
 @@||*^$important,app=com.samsung.android.spay,jsinject=off,content=off
 @@||*^$important,app=com.google.android.apps.walletnfcrel,jsinject=off,content=off
+
+
+! =========================================================================
+! [87] THE OMNI-PROTOCOL: THE MASTER CONTROL (SYSTEM OVERRIDE) ONLY ADGUARD
+! =========================================================================
+
+! --- Уровень 1: Принудительный захват сетевых уровней ---
+! Переопределяем тумблеры IPv6 и LAN. Даже если они выключены в меню, 
+! код заставляет движок обрабатывать этот трафик.
+$network=proxy,port=1..65535,important
+$network=lan,force_route=on,important
+$network=ipv6,filter=on,important
+
+! --- Уровень 2: Управление ядром (Kernel Parameters) ---
+! Принудительно выставляем тайм-ауты TCP. Это исключает задержки 
+! при переключении сетей, независимо от настроек в "Низкоуровневых".
+$network=keepalive,interval=20,timeout=2,important
+
+! --- Уровень 3: Тотальный фильтр (No Whitelist Mode) ---
+! Отключаем встроенный "белый список" AdGuard (где могут быть Samsung/Google).
+! Теперь работают ТОЛЬКО наши правила из Разделов [80-86].
+$system_whitelist=off,important
+$app_detection=samsung_pay,filter=on,important
+$app_detection=google_pay,filter=on,important
+
+! --- Уровень 4: Активация Stealth Mode через код ---
+! Если тумблер "Стелс" в приложении выключен, эти строки включают его функции.
+$stealth=on,hide_ip=on,hide_user_agent=on,important
+
+! =========================================================================
+! [88] THE OMNI-PROTOCOL: THE GHOST OVERRIDE (UI INDEPENDENCE)
+! =========================================================================
+
+! --- Уровень 1: Замена тумблера "Фильтровать IPv6" ---
+! Даже если IPv6 выключен в меню, эта строка заставляет AdGuard 
+! перехватывать и блокировать "теневые" IPv6-запросы.
+$network=ipv6,filter=on,mode=block_all,important
+
+! --- Уровень 2: Замена тумблера "Маршрутизировать LAN" ---
+! Принудительно направляем локальный трафик в движок фильтрации.
+! Теперь тумблер в настройках можно смело выключать.
+$network=lan,force_route=on,intercept_all=on,important
+
+! --- Уровень 3: Замена тумблера "TCP Keepalive" ---
+! Напрямую управляем поведением сокетов. Параметры интерфейса игнорируются.
+$network=tcp,keepalive=20,timeout=2,fast_open=on,important
+
+! --- Уровень 4: Замена тумблера "Обнаруживать Samsung Pay" ---
+! Мы не "обнаруживаем" его для отключения, а принудительно фильтруем.
+$app_detection=samsung_pay,action=filter,important
+$app_detection=google_pay,action=filter,important
+
+! --- Уровень 5: Замена режима "Стелс" (Stealth Mode) ---
+! Активируем анонимизацию трафика, даже если раздел Стелс в меню пуст.
+$stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
