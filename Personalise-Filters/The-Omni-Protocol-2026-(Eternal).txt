@@ -2920,13 +2920,11 @@ $app_detection=google_pay,action=filter,important
 $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 
 ! --- Уровень 6: Контроль шифрования SNI (ECH) + SERVFAIL ---
-! Блокируем попытки скрыть домены, имитируя технический сбой.
 $network=tls,ech=off,important
 $dnsrewrite=SERVFAIL;domain=_esni.*
 $dnsrewrite=SERVFAIL;domain=_echconfig.*
 
 ! --- Уровень 7: Контроль HTTP/3 (QUIC) + SERVFAIL Fallback ---
-! Принудительно переводим приложения на проверяемый TCP.
 $network=http3,filter=on,important
 $network=udp,port=443,filter=on,important
 $network=quic,action=reject,app=~browser
@@ -2937,6 +2935,11 @@ $dns_upstream_mode=parallel,important
 $dns_upstream_health_check=on,timeout=150,important
 $dns_cache_optimistic=on,ttl_extend=3600,important
 $dns_fallback=off,important
+
+! --- Уровень 9: Постквантовая криптография (PQC Control) ---
+! Принудительно включаем поддержку гибридных квантово-устойчивых алгоритмов.
+! Если тумблер в меню выключен, эта строка заставляет ядро их использовать.
+$network=tls,pqc=on,pqc_algorithm=kyber,important
 
 
 ! =========================================================================
