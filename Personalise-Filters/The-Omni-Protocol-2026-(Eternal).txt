@@ -2991,3 +2991,28 @@ $network=dhcp,action=filter,important
 ! чтобы не раскрывать тип устройства и версию ОС через заголовки.
 $app_detection=system_update,action=block,network=wifi,important
 $app_detection=manufacturer_telemetry,action=block,network=wifi,important
+
+! =========================================================================
+! [95] THE OMNI-PROTOCOL: THE STERILE TUNNEL (FINANCIAL EXCLUSION)
+! =========================================================================
+
+! --- Уровень 1: Прямой проброс для платежных систем ---
+! Полностью исключаем вмешательство в трафик Samsung Pay и Google Pay.
+$app=com.samsung.android.spay,filter=off,important
+$app=com.google.android.apps.walletnfcrel,filter=off,important
+
+! --- Уровень 2: Банковский коридор (Стерильность) ---
+! Добавь сюда пакеты своих основных банков. 
+! (Пример: com.infraware.office для Samsung или пакет твоего банка)
+$app=com.samsung.android.samsungpass,filter=off,important
+$app=com.samsung.android.authfw,filter=off,important
+
+! --- Уровень 3: Защита от ложных срабатываний в DNS ---
+! Для финансовых доменов отключаем SERVFAIL и другие подмены.
+$dnsrewrite=NOERROR,domain=*.samsungpay.com,important
+$dnsrewrite=NOERROR,domain=*.visa.com,important
+$dnsrewrite=NOERROR,domain=*.mastercard.com,important
+
+! --- Уровень 4: Оптимизация для NFC-транзакций ---
+! Ускоряем отклик при оплате за счет отключения глубокого анализа пакетов.
+$network=nfc,action=bypass,important
