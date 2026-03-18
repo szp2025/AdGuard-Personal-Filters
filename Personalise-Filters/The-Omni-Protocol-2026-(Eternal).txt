@@ -2474,3 +2474,21 @@ $removeparam=promo,domain=~mercanet.bnpparibas.net
 ! --- Уровень 3: Стабилизация для Samsung/Android Service ---
 ! Оставляем только критические системные проверки, чтобы не упал сервис уведомлений.
 @@||connectivitycheck.gstatic.com^$important,dnstype=A
+
+! =========================================================================
+! [69] THE OMNI-PROTOCOL: UPSTREAM INTEGRITY & HEALTH CHECK
+! =========================================================================
+
+! --- Уровень 1: Анонимизация проверочных пингов ---
+! Запрещаем отправку метаданных устройства при проверке доступности DNS.
+||*.dns.adguard-dns.com^$important,dnstype=A,domain=~system
+||*.cloudflare-dns.com^$important,dnstype=A,domain=~system
+
+! --- Уровень 2: Блокировка подставных апстримов ---
+! Если система пытается проверить "левый" сервер, не входящий в наш список — отказ.
+||8.8.8.8^$important,reject,domain=~system
+||8.8.4.4^$important,reject,domain=~system
+
+! --- Уровень 3: Оптимизация задержек (Latency Fix) ---
+! Разрешаем быстрые ICMP-подобные проверки только для доверенных магистралей.
+@@||1.1.1.1^$important,dnstype=A
