@@ -2925,3 +2925,26 @@ $app_detection=google_pay,action=filter,important
 ! --- Уровень 5: Замена режима "Стелс" (Stealth Mode) ---
 ! Активируем анонимизацию трафика, даже если раздел Стелс в меню пуст.
 $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
+
+
+! =========================================================================
+! [89] THE OMNI-PROTOCOL: UNIVERSAL HYBRID (DNS-LEVEL STEALTH)
+! =========================================================================
+
+! --- Уровень 1: Принудительное "зануление" (DNS Sinkhole) ---
+! Эти правила работают в любом приложении. Мы подменяем IP шпионов на 0.0.0.0.
+! Это не грузит систему, так как запрос просто обрывается.
+0.0.0.0 connectivitycheck.gstatic.com
+0.0.0.0 connectivitycheck.android.com
+0.0.0.0 mtalk.google.com
+
+! --- Уровень 2: Блокировка утечек через локальные домены ---
+! Универсальный способ запретить поиск устройств в сети по именам.
+||*.local^$important
+||*.lan^$important
+||*.home^$important
+
+! --- Уровень 3: Анти-фишинг перенаправление ---
+! Если приложение пытается уйти на фальшивый DNS, мы возвращаем его в "пустоту".
+$dnsrewrite=NOERROR;NXDOMAIN;domain=*.proxy.google.com
+$dnsrewrite=NOERROR;NXDOMAIN;domain=*.vpn.samsung.com
