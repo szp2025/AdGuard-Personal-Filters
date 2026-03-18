@@ -2904,27 +2904,40 @@ $stealth=on,hide_ip=on,hide_user_agent=on,important
 ! =========================================================================
 
 ! --- Уровень 1: Замена тумблера "Фильтровать IPv6" ---
-! Даже если IPv6 выключен в меню, эта строка заставляет AdGuard 
-! перехватывать и блокировать "теневые" IPv6-запросы.
 $network=ipv6,filter=on,mode=block_all,important
 
 ! --- Уровень 2: Замена тумблера "Маршрутизировать LAN" ---
-! Принудительно направляем локальный трафик в движок фильтрации.
-! Теперь тумблер в настройках можно смело выключать.
 $network=lan,force_route=on,intercept_all=on,important
 
 ! --- Уровень 3: Замена тумблера "TCP Keepalive" ---
-! Напрямую управляем поведением сокетов. Параметры интерфейса игнорируются.
 $network=tcp,keepalive=20,timeout=2,fast_open=on,important
 
-! --- Уровень 4: Замена тумблера "Обнаруживать Samsung Pay" ---
-! Мы не "обнаруживаем" его для отключения, а принудительно фильтруем.
+! --- Уровень 4: Замена тумблера "Платежные системы" ---
 $app_detection=samsung_pay,action=filter,important
 $app_detection=google_pay,action=filter,important
 
-! --- Уровень 5: Замена режима "Стелс" (Stealth Mode) ---
-! Активируем анонимизацию трафика, даже если раздел Стелс в меню пуст.
+! --- Уровень 5: Режим Стелс (Анонимизация) ---
 $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
+
+! --- Уровень 6: Контроль шифрования SNI (ECH) ---
+$network=tls,ech=off,important
+$dnsrewrite=NOERROR;NXDOMAIN;domain=_esni.*
+$dnsrewrite=NOERROR;NXDOMAIN;domain=_echconfig.*
+
+! --- Уровень 7: Контроль HTTP/3 (QUIC) & Fallback ---
+$network=http3,filter=on,important
+$network=udp,port=443,filter=on,important
+$network=quic,action=reject,app=~browser
+$dnsrewrite=NOERROR;NXDOMAIN;domain=*.quic-p2p.google.com
+
+! --- Уровень 8: Стабильность DNS Upstream (Health Check) ---
+! Принудительно включаем проверку серверов и параллельный опрос.
+! Заменяет настройки "Низкоуровневого движка".
+$dns_upstream_mode=parallel,important
+$dns_upstream_health_check=on,timeout=150,important
+$dns_cache_optimistic=on,ttl_extend=3600,important
+$dns_fallback=off,important
+
 
 
 ! =========================================================================
