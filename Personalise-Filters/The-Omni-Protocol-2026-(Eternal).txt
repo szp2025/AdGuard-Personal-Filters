@@ -2046,3 +2046,39 @@ $removeparam=gclid
 ! Гарантируем работу мультипоинта (подключение к двум устройствам) и микрофона.
 @@||*solix-audio-handshake*.*^$important
 @@||*nexus-anc-firmware-check*.*^$important
+
+! =========================================================================
+! [51] TRAFFIC PURIFICATION & DNS-STEALTH (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: Facebook Graph & Shadow Profiles (Убийца графов) ---
+! Блокируем главный узел сбора данных Facebook, который встроен почти в каждое приложение.
+||graph.facebook.com^$important
+||graph.instagram.com^$important
+||connect.facebook.net^$important
+
+! --- Уровень 2: DNS Hijack Prevention (Защита от обхода фильтров) ---
+! Запрещаем приложениям использовать Cloudflare DNS напрямую, чтобы они 
+! не могли обойти твой AdGuard через зашифрованные запросы (DoH).
+||cloudflare-dns.com^$important
+||dns.google^$important
+||1.1.1.1^$important,network
+||8.8.8.8^$important,network
+
+! --- Уровень 3: Global Promo & Marketing Purge (Тотальное Промо) ---
+! Уничтожаем всё, что помечено как "promo", во всех ссылках и скриптах.
+||*promo*.*^$important,third-party
+||*-promo-*^$important
+||*/promo/*^$important
+||*promotion*.*^$important
+
+! --- Уровень 4: Tracking Parameter Stripping (Очистка URL) ---
+! Вырезаем рекламные хвосты "promo" из адресов страниц на лету.
+$removeparam=promo
+$removeparam=promotion
+$removeparam=utm_promo
+
+! --- Уровень 5: CDN Whitelist (Стабильность контента) ---
+! Разрешаем Cloudflare только как службу доставки картинок и стилей, но не как DNS.
+@@||cdnjs.cloudflare.com^$important
+@@||ajax.cloudflare.com^$important
