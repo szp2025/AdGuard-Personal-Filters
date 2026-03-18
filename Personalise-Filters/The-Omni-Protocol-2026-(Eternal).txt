@@ -2012,3 +2012,37 @@ $removeparam=gclid
 ! Гарантируем, что сам кодек (LDAC, aptX, AAC) и управление (Play/Pause) не пострадают.
 @@||*bluetooth-audio-stack*.*^$important
 @@||*avrcp-media-control*.*^$important
+
+! =========================================================================
+! [50] SOLIX NEXUS ANC: HARDWARE ISOLATION (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: Solix Nexus Device Masking (Скрытие ID) ---
+! Блокируем передачу уникальных аппаратных идентификаторов Nexus ANC.
+||*solix*.*^$important,third-party
+||*nexus-anc-id*.*^$important
+||*solix-audio-telemetry*.*^$important
+
+! --- Уровень 2: ANC & Ambient Mode Privacy (Защита режимов) ---
+! Запрещаем отправку данных о том, как часто ты переключаешь шумоподавление.
+! Это предотвращает анализ твоей звуковой среды (шумно/тихо) рекламными ботами.
+||*anc-state-report*.*^$important
+||*ambient-mode-logs*.*^$important
+||*solix-anc-controller*.*^$important,third-party
+
+! --- Уровень 3: Solix App Companion Guard (Защита приложения) ---
+! Если ты используешь приложение для настройки EQ, этот фильтр режет 
+! встроенные в него трекеры (Adjust, AppsFlyer, Firebase).
+||*solix-app-analytics*.*^$important
+||*solix-cloud-sync*.*^$important
+@@||solix.com/firmware^$important
+
+! --- Уровень 4: Battery & Status Privacy (Защита статуса) ---
+! Блокируем передачу точного уровня заряда и времени работы в облако.
+||*solix-battery-stats*.*^$important
+||*nexus-power-log*.*^$important
+
+! --- Уровень 5: Audio Stream Integrity (Стабильность Nexus) ---
+! Гарантируем работу мультипоинта (подключение к двум устройствам) и микрофона.
+@@||*solix-audio-handshake*.*^$important
+@@||*nexus-anc-firmware-check*.*^$important
