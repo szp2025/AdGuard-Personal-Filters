@@ -1,4 +1,4 @@
-[Adblock Plus 2.0]
+u[Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 (Eternal)
 ! Version: 7.4.8
 ! Last modified: 2026-03-17
@@ -2082,3 +2082,33 @@ $removeparam=utm_promo
 ! Разрешаем Cloudflare только как службу доставки картинок и стилей, но не как DNS.
 @@||cdnjs.cloudflare.com^$important
 @@||ajax.cloudflare.com^$important
+
+! =========================================================================
+! [52] GOOGLE INFRASTRUCTURE LOCKDOWN (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: Google Robin & Frontend Isolation ---
+! Блокируем систему Robin, которая собирает данные о поведении в поиске.
+||robinfrontend-pa.googleapis.com^$important
+||frontend-pa.googleapis.com^$important
+||play-lh.googleusercontent.com^$important,third-party
+
+! --- Уровень 2: System App Telemetry (Скрытые отчеты) ---
+! Блокируем домены, через которые системные приложения шлют отчеты об ошибках и использовании.
+||telemetry-pa.googleapis.com^$important
+||metadatalearning-pa.googleapis.com^$important
+||chip-pa.googleapis.com^$important
+
+! --- Уровень 3: Background Connectivity Check (Удаление лишних пингов) ---
+! Ограничиваем "пустые" запросы, которые телефон шлет каждые несколько секунд.
+||connectivitycheck.gstatic.com^$important,domain=~google.com
+||connectivitycheck.android.com^$important
+
+! --- Уровень 4: Firebase & Cloud Messaging Tracking ---
+! Режем аналитические модули внутри системы доставки пуш-уведомлений.
+||firebase-settings.crashlytics.com^$important
+||firebaselogging-pa.googleapis.com^$important
+
+! --- Уровень 5: SafetyNet & Integrity Verification ---
+! Оставляем только критические проверки для работы банковских приложений.
+@@||android.googleapis.com/v1/safetynet^$important
