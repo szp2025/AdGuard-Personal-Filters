@@ -2900,7 +2900,7 @@ $app_detection=google_pay,filter=on,important
 $stealth=on,hide_ip=on,hide_user_agent=on,important
 
 ! =========================================================================
-! [88] THE OMNI-PROTOCOL: THE GHOST OVERRIDE (UI INDEPENDENCE)
+! [88] THE OMNI-PROTOCOL: THE GHOST OVERRIDE (MAXIMUM DISGUISE)
 ! =========================================================================
 
 ! --- Уровень 1: Замена тумблера "Фильтровать IPv6" ---
@@ -2919,32 +2919,24 @@ $app_detection=google_pay,action=filter,important
 ! --- Уровень 5: Режим Стелс (Анонимизация) ---
 $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 
-! --- Уровень 6: Контроль шифрования SNI (ECH) ---
+! --- Уровень 6: Контроль шифрования SNI (ECH) + SERVFAIL ---
+! Блокируем попытки скрыть домены, имитируя технический сбой.
 $network=tls,ech=off,important
-$dnsrewrite=NOERROR;NXDOMAIN;domain=_esni.*
-$dnsrewrite=NOERROR;NXDOMAIN;domain=_echconfig.*
+$dnsrewrite=SERVFAIL;domain=_esni.*
+$dnsrewrite=SERVFAIL;domain=_echconfig.*
 
-! --- Уровень 7: Контроль HTTP/3 (QUIC) & Fallback + SERVFAIL ---
-! Принудительно включаем фильтрацию UDP.
+! --- Уровень 7: Контроль HTTP/3 (QUIC) + SERVFAIL Fallback ---
+! Принудительно переводим приложения на проверяемый TCP.
 $network=http3,filter=on,important
 $network=udp,port=443,filter=on,important
-
-! Для всех приложений (кроме браузера) отклоняем QUIC, заставляя их перейти на TCP.
 $network=quic,action=reject,app=~browser
-
-! Вместо "Домен не найден", отвечаем "Ошибка сервера". 
-! Это имитирует нестабильность сети для рекламных доменов Google.
 $dnsrewrite=SERVFAIL;domain=*.quic-p2p.google.com
 
-
 ! --- Уровень 8: Стабильность DNS Upstream (Health Check) ---
-! Принудительно включаем проверку серверов и параллельный опрос.
-! Заменяет настройки "Низкоуровневого движка".
 $dns_upstream_mode=parallel,important
 $dns_upstream_health_check=on,timeout=150,important
 $dns_cache_optimistic=on,ttl_extend=3600,important
 $dns_fallback=off,important
-
 
 
 ! =========================================================================
