@@ -2492,3 +2492,21 @@ $removeparam=promo,domain=~mercanet.bnpparibas.net
 ! --- Уровень 3: Оптимизация задержек (Latency Fix) ---
 ! Разрешаем быстрые ICMP-подобные проверки только для доверенных магистралей.
 @@||1.1.1.1^$important,dnstype=A
+
+! =========================================================================
+! [70] THE OMNI-PROTOCOL: ENCRYPTED DNS INSPECTION (ON-THE-FLY)
+! =========================================================================
+
+! --- Уровень 1: Принудительный перехват скрытых DoH/DoQ каналов ---
+! Если приложение пытается использовать встроенный DoH-клиент для телеметрии
+||*^$dnstype=HTTPS,reject,domain=~system,~browser
+||*^$dnstype=QUIC,reject,domain=~system,~browser
+
+! --- Уровень 2: Блокировка резолверов-шпионов ---
+! Не даем приложениям использовать скрытые адреса Google DNS для обхода Omni-Protocol
+||dns.google/dns-query^$important,reject
+||dns.google/resolve^$important,reject
+
+! --- Уровень 3: Защита "белого списка" (DoH Whitelist) ---
+! Разрешаем зашифрованные запросы только для браузеров, где важна приватность.
+@@||dns.adguard-dns.com^$important,domain=browser
