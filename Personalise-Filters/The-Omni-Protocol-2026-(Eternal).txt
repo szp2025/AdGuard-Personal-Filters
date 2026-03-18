@@ -2456,3 +2456,21 @@ $removeparam=promo,domain=~mercanet.bnpparibas.net
 ! --- Уровень 3: Изоляция системных "стукачей" при сбое ---
 ! Если сеть падает, блокируем попытки GMS отправить отчет о сбое через резерв.
 ||connectivity-check.gstatic.com^$important,reject,domain=~system
+
+! =========================================================================
+! [68] THE OMNI-PROTOCOL: SEARCH-DOMAIN ISOLATION & INTEGRITY
+! =========================================================================
+
+! --- Уровень 1: Блокировка суффиксов локального поиска ---
+! Запрещаем автоматическое дополнение доменов через скрытые search-пути.
+||.local^$important,reject
+||.lan^$important,reject
+||.home.arpa^$important,reject
+
+! --- Уровень 2: Защита от перенаправления на резервные DNS ---
+! Если система пытается "уйти" на поиск через сторонние узлы — обрываем.
+||_dns.resolver.arpa^$important,reject
+
+! --- Уровень 3: Стабилизация для Samsung/Android Service ---
+! Оставляем только критические системные проверки, чтобы не упал сервис уведомлений.
+@@||connectivitycheck.gstatic.com^$important,dnstype=A
