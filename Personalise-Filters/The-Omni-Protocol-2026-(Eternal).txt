@@ -1977,3 +1977,38 @@ $removeparam=gclid
 ! --- Уровень 4: Apple/Google Pay Bridge ---
 @@||apple-pay-gateway.apple.com^$important
 @@||pay.google.com^$important
+
+! =========================================================================
+! [49] WEARABLE PRIVACY & AUDIO-ISOLATION (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: Device ID Masking (Скрытие серийных номеров) ---
+! Блокируем передачу уникальных идентификаторов наушников (Hardware ID).
+||*accessory-id-reporting*.*^$important
+||*serial-number-leak*.*^$important
+||*wearable-identity-check*.*^$important
+
+! --- Уровень 2: Headphone Telemetry Suppression (Анти-аналитика) ---
+! Запрещаем приложениям-компаньонам (Galaxy Wearable, Sony Headphones и др.) 
+! отправлять отчеты о том, как часто и на какой громкости ты слушаешь музыку.
+||*earbuds-analytics*.*^$important
+||*headphone-usage-stats*.*^$important
+||*wearable-log-collector*.*^$important
+||*samsung-wearable-api*.*^$important,third-party
+
+! --- Уровень 3: Motion & Biometric Lockdown (Защита сенсоров) ---
+! Блокируем передачу данных с гироскопов наушников (отслеживание поворота головы) 
+! и датчиков сердечного ритма, если они есть.
+||*head-tracking-telemetry*.*^$important
+||*biometric-sensor-cloud*.*^$important
+||*spatial-audio-analytics*.*^$important
+
+! --- Уровень 4: Firmware Update Tracking (Защита обновлений) ---
+! Позволяем скачивать прошивки, но блокируем "шпионские отчеты" при обновлении.
+@@||*firmware-update*.*^$important,domain=~samsung.com|~apple.com
+||*update-feedback-tracker*.*^$important
+
+! --- Уровень 5: Audio Stream Integrity (Стабильность звука) ---
+! Гарантируем, что сам кодек (LDAC, aptX, AAC) и управление (Play/Pause) не пострадают.
+@@||*bluetooth-audio-stack*.*^$important
+@@||*avrcp-media-control*.*^$important
