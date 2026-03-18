@@ -2112,3 +2112,34 @@ $removeparam=utm_promo
 ! --- Уровень 5: SafetyNet & Integrity Verification ---
 ! Оставляем только критические проверки для работы банковских приложений.
 @@||android.googleapis.com/v1/safetynet^$important
+
+! =========================================================================
+! [53] TOTAL PA-ISOLATION & API HARDENING (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: The PA-Blocker (Глобальная маска) ---
+! Блокируем абсолютно все поддомены "Personalized Assistant".
+||*-pa.googleapis.com^$important
+||*-pa.google.com^$important
+
+! --- Уровень 2: Specific PA-Leaks (Конкретные цели) ---
+! Дополнительная защита для самых активных узлов сбора данных.
+||assistant-pa.googleapis.com^$important
+||location-pa.googleapis.com^$important
+||people-pa.googleapis.com^$important
+||daily-pa.googleapis.com^$important
+
+! --- Уровень 3: Google Client Signals (Очистка заголовков) ---
+! Запрещаем передачу X-Goog-Api-Key и других заголовков идентификации.
+$removeheader=x-goog-api-client,domain=google.com|googleapis.com
+$removeheader=x-goog-api-key,domain=google.com|googleapis.com
+
+! --- Уровень 4: Play Integrity & GMS (Системный баланс) ---
+! Мы оставляем проход для GMS (Google Mobile Services), чтобы телефон 
+! не выдавал ошибку "Сервисы Google Play недоступны".
+@@||play.googleapis.com^$important
+@@||update.googleapis.com^$important
+
+! --- Уровень 5: Search Quality Whitelist (Для работы Google Search) ---
+! Гарантируем, что базовый поиск (который мы подправили) не пострадает.
+@@||www.google.com/complete/search?authuser*^$important
