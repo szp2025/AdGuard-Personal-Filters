@@ -2788,4 +2788,85 @@ $removeparam=promo,domain=~mercanet.bnpparibas.net
 ||*.error.google.com^$important,reject
 ||*.firebaseio.com^$important,reject,domain=~browser
 
+! =========================================================================
+! [83] THE OMNI-PROTOCOL: TOTAL IPV4 LAN ROUTING & INTERCEPT
+! =========================================================================
 
+! --- Уровень 1: Принудительный перехват DNS в локальной сети ---
+! Запрещаем приложениям использовать DNS вашего роутера напрямую (порт 53).
+! Весь DNS-трафик должен идти только через наш защищенный протокол.
+||192.168.0.1^$important,port=53,reject
+||192.168.1.1^$important,port=53,reject
+||10.0.0.1^$important,port=53,reject
+
+! --- Уровень 2: Блокировка утечек через локальные HTTP-прокси ---
+! Некоторые SDK ищут "прозрачные" прокси в сети для обхода фильтрации.
+||192.168.0.0/16^$important,port=80,reject,domain=~system,~browser
+||192.168.0.0/16^$important,port=8080,reject,domain=~system,~browser
+
+! --- Уровень 3: Защита от UPnP и автоматического проброса портов ---
+! Запрещаем приложениям просить роутер открыть порты наружу (безопасность изнутри).
+||239.255.255.250^$important,port=1900,reject
+||192.168.0.0/16^$important,port=5000,reject,domain=~system
+
+! --- Уровень 4: Стабилизация локальных адресов (Whitelist) ---
+! Разрешаем доступ к самому роутеру только для системных настроек,
+! чтобы вы могли зайти в админку, но приложения этого не видели.
+@@||192.168.0.1^$important,domain=system|browser
+@@||192.168.1.1^$important,domain=system|browser
+
+
+! =========================================================================
+! [85] THE OMNI-PROTOCOL: SYSTEM OVERHEAD OPTIMIZATION & QUIET LOGGING
+! =========================================================================
+
+! --- Уровень 1: Подавление повторных системных шумов ---
+! Блокируем запись в лог для бесконечных запросов проверки связи.
+! Это экономит заряд батареи и место в памяти устройства.
+||connectivitycheck.gstatic.com^$important,nolog
+||connectivitycheck.android.com^$important,nolog
+||*.googlevideo.com/generate_204^$important,nolog
+
+! --- Уровень 2: Скрытие технических запросов к портам ---
+! Не засоряем журнал фильтрации техническими отказами по портам 5222-5228.
+! Мы знаем, что они заблокированы — смотреть на них каждый раз не нужно.
+||*^$important,port=5222..5228,nolog
+
+! --- Уровень 3: Оптимизация обработки LAN-трафика ---
+! Чтобы принудительная маршрутизация LAN не тормозила сеть,
+! отключаем глубокую проверку контента для известных локальных IP.
+@@||192.168.0.0/16^$important,domain=~system,jsinject=off,content=off
+@@||10.0.0.0/8^$important,domain=~system,jsinject=off,content=off
+
+! --- Уровень 4: Авто-очистка метаданных DNS ---
+! Указываем системе не кэшировать отрицательные ответы (NXDOMAIN) дольше 10 сек.
+! Это позволяет быстрее восстанавливать связь при смене сети.
+$dnsrewrite=NOERROR;NXDOMAIN;ttl=10
+
+! =========================================================================
+! [86] THE OMNI-PROTOCOL: UNIVERSAL FINTECH & PAYMENT INTEGRITY
+! =========================================================================
+
+! --- Уровень 1: Безопасные шлюзы токенизации (Whitelist) ---
+! Разрешаем только критические узлы для проверки карт и оплаты.
+! Работает для Samsung Pay, Google Pay (G-Pay) и Mir Pay.
+@@||samsungpay.com^$important
+@@||google.com/pay^$important
+@@||nspk.ru^$important,app=ru.nspk.mirpay
+@@||mironline.ru^$important,app=ru.nspk.mirpay
+
+! --- Уровень 2: Блокировка платежной аналитики (Anti-Profiling) ---
+! Запрещаем сервисам собирать данные о том, в каком магазине ты стоишь.
+||ads.samsung.com^$important,reject
+||googleads.g.doubleclick.net^$important,reject,app=com.google.android.apps.walletnfcrel
+||telemetry.mirpay.ru^$important,reject
+
+! --- Уровень 3: Защита от межпрограммного "подглядывания" ---
+! Не даем другим приложениям узнать статус твоих платежных аккаунтов.
+||wallet.google.com/api/v1/frontend/analytics^$important,reject
+||api.samsungpay.com/v1/eventlog^$important,reject
+
+! --- Уровень 4: Оптимизация NFC-соединения ---
+! Отключаем фильтрацию контента (но оставляем блокировку IP) для быстрой оплаты.
+@@||*^$important,app=com.samsung.android.spay,jsinject=off,content=off
+@@||*^$important,app=com.google.android.apps.walletnfcrel,jsinject=off,content=off
