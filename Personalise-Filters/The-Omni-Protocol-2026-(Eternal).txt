@@ -2229,3 +2229,32 @@ $removeheader=x-goog-api-key,domain=google.com|googleapis.com
 ! --- Уровень 5: GitHub Collector Confirmation (По следам скриншота 4) ---
 ! Усиливаем блокировку коллектора, чтобы он не пробовал альтернативные пути.
 ||collector.github.com^$important,all
+
+! =========================================================================
+! [56] DPI ENFORCED REJECTION: HARD REFUSAL (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: Hard Reject для PA-доменов (По следам Google) ---
+||*-pa.googleapis.com^$important,reject
+||robinfrontend-pa.googleapis.com^$important,reject
+||spot-pa.googleapis.com^$important,reject
+
+! --- Уровень 2: Hard Reject для DNS-обхода (Cloudflare/Google) ---
+||cloudflare-dns.com^$important,reject
+||dns.google^$important,reject
+||1.1.1.1^$important,reject
+||8.8.8.8^$important,reject
+
+! --- Уровень 3: Hard Reject для Аналитики (ChatGPT/GitHub) ---
+||ab.chatgpt.com^$important,reject
+||collector.github.com^$important,reject
+||events.statsigapi.net^$important,reject
+
+! --- Уровень 4: DPI Tunneling Defense ---
+! Отвергаем попытки проброса трафика через нестандартные порты.
+||*telemetry*.*^$important,reject
+||*analytics*.*^$important,reject
+
+! --- Уровень 5: Fallback Whitelist (Безопасность системы) ---
+! Никогда не ставим reject на системные критические узлы, чтобы не "окирпичить" ОС.
+@@||android.clients.google.com^$important
