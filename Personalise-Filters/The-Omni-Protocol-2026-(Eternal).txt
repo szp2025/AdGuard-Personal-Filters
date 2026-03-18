@@ -2387,3 +2387,22 @@ $removeparam=promo,domain=~mercanet.bnpparibas.net
 @@||*.zoom.us^$important
 @@||*.teams.microsoft.com^$important
 @@||*.webex.com^$important
+
+
+! =========================================================================
+! [64] THE OMNI-PROTOCOL: ECH & TLS TRANSPARENCY CORE
+! =========================================================================
+
+! --- Уровень 1: Принудительная прозрачность SNI ---
+! Блокируем HTTPS-записи DNS, которые содержат инструкции ECH
+||*^$dnstype=HTTPS,reject
+||*^$dnstype=65,reject
+
+! --- Уровень 2: Изоляция зашифрованных хендшейков ---
+! Если приложение пытается использовать зашифрованный Hello, делаем отказ
+||_esni.*^$important,reject
+||_ech.*^$important,reject
+
+! --- Уровень 3: Исключения для стабильности (Safety) ---
+! Не блокируем системные запросы проверки безопасности Android
+@@||connectivitycheck.android.com^$dnstype=HTTPS
