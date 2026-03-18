@@ -40,7 +40,10 @@ $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 $app=com.google.android.apps.walletnfcrel|com.samsung.android.spay|com.apple.wallet,filter=off,important
 $app=ru.nspk.mirpay|com.huawei.wallet,filter=off,important
 $app=com.samsung.android.samsungpass|com.android.settings.biometric,filter=off,important
-@@||*.visa.com|*.mastercard.com|*.nspk.ru|*.mironline.ru^$important
+@@||visa.com^$important
+@@||mastercard.com^$important
+@@||nspk.ru^$important
+@@||mironline.ru^$important
 $network=nfc,action=bypass,important
 $network=biometric,action=bypass,important
 
