@@ -2438,3 +2438,21 @@ $removeparam=promo,domain=~mercanet.bnpparibas.net
 ! --- Уровень 3: Стабилизация для OpenAI/ChatGPT ---
 ! Чтобы ChatGPT не зависал при блокировке AB-тестов, даем быстрый пустой ответ.
 ||ab.chatgpt.com^$dnstype=A,empty
+
+
+! =========================================================================
+! [67] THE OMNI-PROTOCOL: FAILSAFE ARCHITECTURE & NO-LEAK POLICY
+! =========================================================================
+
+! --- Уровень 1: Запрет отката на небезопасные DNS (Anti-Fallback) ---
+! Блокируем стандартные DNS-порты, если они не принадлежат нашим доверенным узлам.
+||*^$dnstype=A,port=53,reject,domain=~system
+
+! --- Уровень 2: Приоритет зашифрованных магистралей ---
+! Разрешаем резерв только на проверенные DoH/DoQ адреса.
+@@||dns.quad9.net^$important,dnstype=HTTPS
+@@||dns.google^$important,dnstype=HTTPS,domain=~system
+
+! --- Уровень 3: Изоляция системных "стукачей" при сбое ---
+! Если сеть падает, блокируем попытки GMS отправить отчет о сбое через резерв.
+||connectivity-check.gstatic.com^$important,reject,domain=~system
