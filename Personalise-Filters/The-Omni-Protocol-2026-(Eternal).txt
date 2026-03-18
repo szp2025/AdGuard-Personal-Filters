@@ -2906,7 +2906,8 @@ $stealth=on,hide_ip=on,hide_user_agent=on,important
 ! --- Уровень 1: Замена тумблера "Фильтровать IPv6" ---
 $network=ipv6,filter=on,mode=block_all,important
 
-! --- Уровень 2: Замена тумблера "Маршрутизировать LAN" ---
+! --- Уровень 2: Замена тумблера "Маршрутизировать LAN, WIFI & IPv4" ---
+! Принудительно захватывает все локальные IPv4-маршруты и трафик шлюза.
 $network=lan,force_route=on,intercept_all=on,important
 
 ! --- Уровень 3: Замена тумблера "TCP Keepalive" ---
