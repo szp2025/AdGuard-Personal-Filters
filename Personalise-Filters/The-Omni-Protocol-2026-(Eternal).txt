@@ -2406,3 +2406,35 @@ $removeparam=promo,domain=~mercanet.bnpparibas.net
 ! --- Уровень 3: Исключения для стабильности (Safety) ---
 ! Не блокируем системные запросы проверки безопасности Android
 @@||connectivitycheck.android.com^$dnstype=HTTPS
+
+
+! =========================================================================
+! [65] THE OMNI-PROTOCOL: UPSTREAM OPTIMIZATION & DNS-STABILITY
+! =========================================================================
+
+! --- Уровень 1: Безопасный коридор для системного DNS-over-HTTP/3 ---
+! Разрешаем самому AdGuard использовать HTTP/3 для связи с вышкой.
+@@||dns.adguard-dns.com^$important,dnstype=HTTPS
+@@||dns.cloudflare.com^$important,dnstype=HTTPS
+
+! --- Уровень 2: Блокировка попыток подмены Upstream (Anti-Hijacking) ---
+! Не даем шпионским модулям прикидываться DNS-серверами.
+||*-dns-*-pa.googleapis.com^$important,reject
+
+! =========================================================================
+! [66] THE OMNI-PROTOCOL: RESPONSE OPTIMIZATION (ANTI-RETRY)
+! =========================================================================
+
+! --- Уровень 1: Подавление агрессивных повторов (Anti-Flood) ---
+! Если Google-телеметрия долбится слишком часто после отказа, блокируем её жестко.
+||*-pa.googleapis.com^$important,reject
+||*-analytics.google.com^$important,reject
+
+! --- Уровень 2: Принудительный NXDOMAIN для рекламных сетей ---
+! Вместо ошибки сервера (SERVFAIL) отдаем "домен не найден", чтобы сэкономить заряд.
+||ads.*^$dnstype=A,empty
+||metrics.*^$dnstype=A,empty
+
+! --- Уровень 3: Стабилизация для OpenAI/ChatGPT ---
+! Чтобы ChatGPT не зависал при блокировке AB-тестов, даем быстрый пустой ответ.
+||ab.chatgpt.com^$dnstype=A,empty
