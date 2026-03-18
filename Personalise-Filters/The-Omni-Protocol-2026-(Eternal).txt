@@ -2170,3 +2170,62 @@ $removeheader=x-goog-api-key,domain=google.com|googleapis.com
 ! --- Уровень 5: Mega-Payload Suppression (Защита от утечек как на скриншоте 3) ---
 ! Ограничиваем размер фоновых запросов к Google API, чтобы они не качали десятки МБ.
 ||robinfrontend-pa.googleapis.com^$important,all
+
+! =========================================================================
+! [54] THE FINAL CLEANUP: LOGS & COLLECTORS (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: GitHub & Dev-Tracking (По следам скриншота 4) ---
+||collector.github.com^$important
+||analytics.github.com^$important
+
+! --- Уровень 2: OpenAI & ChatGPT Privacy (По следам скриншота 6) ---
+! Блокируем телеметрию внутри чат-ботов, не мешая самим ответам.
+||events.statsigapi.net^$important,domain=openai.com
+||browser-intake-datadoghq.com^$important,domain=openai.com
+
+! --- Уровень 3: Spot & Contextual PA (По следам скриншота 5) ---
+! Уничтожаем spot-pa и другие контекстные узлы Google.
+||spot-pa.googleapis.com^$important
+||nearby-pa.googleapis.com^$important
+
+! --- Уровень 4: Forced DNS Integrity (Cloudflare Bypass) ---
+! Запрещаем приложениям напрямую обращаться к Cloudflare DNS по любым протоколам.
+||cloudflare-dns.com^$important,all
+||1dot1dot1dot1.cloudflare-dns.com^$important
+
+! --- Уровень 5: Mega-Payload Suppression (Защита от утечек как на скриншоте 3) ---
+! Ограничиваем размер фоновых запросов к Google API, чтобы они не качали десятки МБ.
+||robinfrontend-pa.googleapis.com^$important,all
+
+
+! =========================================================================
+! [55] TUNNEL & AB-TESTING SUPPRESSION (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: ChatGPT & OpenAI Stealth Analytics (По следам скриншота 7) ---
+! Блокируем поддомены A/B тестирования и сбора данных о поведении в чате.
+||ab.chatgpt.com^$important
+||api-iam.intercom.io^$important,domain=openai.com
+||ios.chat.openai.com^$important
+
+! --- Уровень 2: Google PA-Spotting (Зачистка по скриншоту 5) ---
+! Теперь гарантированно блокируем spot-pa, который проскочил "зеленым".
+||spot-pa.googleapis.com^$important,all
+||*-pa.googleapis.com^$important,all
+
+! --- Уровень 3: Forced DNS Rejection (По следам скриншота 6) ---
+! ChatGPT больше не сможет "стучаться" в Cloudflare напрямую. 
+! Мы переводим этот статус из "Обработан" в "Заблокировано".
+||cloudflare-dns.com^$important,reject
+||dns.google^$important,reject
+
+! --- Уровень 4: Tracking via HTTPS Tunnels (Защита от туннелирования) ---
+! Блокируем передачу логов, скрытых внутри HTTPS-туннелей аналитики.
+||*-intake.com^$important
+||*-logs.com^$important
+||*telemetry*.*^$important,third-party
+
+! --- Уровень 5: GitHub Collector Confirmation (По следам скриншота 4) ---
+! Усиливаем блокировку коллектора, чтобы он не пробовал альтернативные пути.
+||collector.github.com^$important,all
