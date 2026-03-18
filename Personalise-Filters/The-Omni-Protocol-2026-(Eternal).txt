@@ -2964,3 +2964,28 @@ $network=tls,pqc=on,pqc_algorithm=kyber,important
 ! Если приложение пытается уйти на фальшивый DNS, мы возвращаем его в "пустоту".
 $dnsrewrite=NOERROR;NXDOMAIN;domain=*.proxy.google.com
 $dnsrewrite=NOERROR;NXDOMAIN;domain=*.vpn.samsung.com
+
+! =========================================================================
+! [90] SMART ADAPTIVE PROTECTION: THE CITADEL (PUBLIC WI-FI MODE)
+! =========================================================================
+
+! --- Уровень 1: Режим "Черная Дыра" (Stealth Mode) ---
+! Запрещаем устройству обнаруживать себя в публичных сетях.
+$network=icmp,action=drop,important
+$network=discovery,action=reject,important
+
+! --- Уровень 2: Изоляция входящего трафика ---
+! Блокируем любые попытки инициации соединения ИЗВНЕ.
+! Твой телефон может "спрашивать", но ему никто не может "предлагать".
+$network=inbound,action=block,app=~system,important
+
+! --- Уровень 3: Защита от подмены (Anti-Spoofing) ---
+! Запрещаем принимать настройки маршрутизации от недоверенных узлов в LAN.
+$network=arp,action=filter,important
+$network=dhcp,action=filter,important
+
+! --- Уровень 4: Ограничение фонового шума ---
+! В публичных сетях блокируем фоновую активность системных служб 
+! (обновления, телеметрия производителя), оставляя канал только для твоих задач.
+$app_detection=system_update,action=block,network=wifi,important
+$app_detection=manufacturer_telemetry,action=block,network=wifi,important
