@@ -2924,11 +2924,18 @@ $network=tls,ech=off,important
 $dnsrewrite=NOERROR;NXDOMAIN;domain=_esni.*
 $dnsrewrite=NOERROR;NXDOMAIN;domain=_echconfig.*
 
-! --- Уровень 7: Контроль HTTP/3 (QUIC) & Fallback ---
+! --- Уровень 7: Контроль HTTP/3 (QUIC) & Fallback + SERVFAIL ---
+! Принудительно включаем фильтрацию UDP.
 $network=http3,filter=on,important
 $network=udp,port=443,filter=on,important
+
+! Для всех приложений (кроме браузера) отклоняем QUIC, заставляя их перейти на TCP.
 $network=quic,action=reject,app=~browser
-$dnsrewrite=NOERROR;NXDOMAIN;domain=*.quic-p2p.google.com
+
+! Вместо "Домен не найден", отвечаем "Ошибка сервера". 
+! Это имитирует нестабильность сети для рекламных доменов Google.
+$dnsrewrite=SERVFAIL;domain=*.quic-p2p.google.com
+
 
 ! --- Уровень 8: Стабильность DNS Upstream (Health Check) ---
 ! Принудительно включаем проверку серверов и параллельный опрос.
