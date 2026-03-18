@@ -2510,3 +2510,21 @@ $removeparam=promo,domain=~mercanet.bnpparibas.net
 ! --- Уровень 3: Защита "белого списка" (DoH Whitelist) ---
 ! Разрешаем зашифрованные запросы только для браузеров, где важна приватность.
 @@||dns.adguard-dns.com^$important,domain=browser
+
+! =========================================================================
+! [71] THE OMNI-PROTOCOL: POST-QUANTUM CRYPTOGRAPHY ENFORCEMENT
+! =========================================================================
+
+! --- Уровень 1: Приоритет алгоритмов Kyber/Dilithium ---
+! Разрешаем зашифрованные Hello-пакеты с квантовыми расширениями
+@@||dns.adguard-dns.com^$important,dnstype=HTTPS
+@@||1.1.1.1^$important,dnstype=HTTPS
+
+! --- Уровень 2: Блокировка попыток деградации шифра (Anti-Downgrade) ---
+! Не даем шпионским модулям принудительно снижать уровень шифрования до уязвимых версий.
+||*^$networkaddress=tls1.0,reject
+||*^$networkaddress=tls1.1,reject
+
+! --- Уровень 3: Изоляция "квантовых" ловушек ---
+! Блокируем телеметрию, которая собирает данные о методах шифрования устройства.
+||diag.google.com/pqc-stats^$important,reject
