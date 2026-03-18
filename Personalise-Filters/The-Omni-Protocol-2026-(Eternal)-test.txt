@@ -1,149 +1,59 @@
-[Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 (Eternal)
-! Version: 7.4.8
-! Last modified: 2026-03-17
+! Version: 15.0.0
+! Last modified: 2026-03-18
+! Status: SUPREME ARCH-DEFENSE ACTIVATED
 
 ! =========================================================================
-! [1] INFRASTRUCTURE IMMUNITY: CORE SYSTEMS & STABILITY
+! [1] INFRASTRUCTURE IMMUNITY (CDN & STABILITY)
 ! =========================================================================
-
-! --- Уровень 1: Google Infrastructure & CDN ---
-! Объединяем зеркала доставки контента (GVT) и системные ресурсы Google.
 @@||gvt1.com^$important
 @@||gvt2.com^$important
-@@||gvt3.com^$important
-@@||googleusercontent.com^$important
 @@||gstatic.com^$important
-@@||googlevideo.com^$important
-
-! --- Уровень 2: Apple, Samsung & Navigation ---
-! Системные узлы производителей и критические карты.
+@@||googleusercontent.com^$important
 @@||apple.com^$important
-@@||icloud.com^$important
 @@||samsung.com^$important
-@@||galaxy.store^$important
-@@||samsungapps.com^$important
 @@||waze.com^$important
-@@||youtube.com^$important
-@@||ggpht.com^$important
 
 ! =========================================================================
-! [2/88/90] NETWORK & STEALTH: DPI, QUIC, TLS & CITADEL (MAX-EFFICIENCY)
+! [2] GHOST MODE: KERNEL & STEALTH OVERRIDE
 ! =========================================================================
-
-! --- Уровень 1: Защита от DPI и Скрытие заголовков ---
-! Ограничиваем передачу IP и прокси-заголовков везде, кроме доверенных узлов.
-||*$csp=proxy-src 'none',domain=~github.com|~google.com,important
-||*$header=X-Forwarded-For|Via|X-Real-IP,domain=~github.com|~google.com,important
-||*$referer=~/(^https?:\/\/[^\/]+\/)/,important
-
-! --- Уровень 2: Контроль утечек (WebRTC, QUIC, ECH) ---
-! Блокируем WebRTC и имитируем сбой сети для систем слежки (SERVFAIL).
-||*$webrtc,important
-$dnsrewrite=SERVFAIL;domain=_esni.*|_echconfig.*|*.quic-p2p.google.com,important
-||quic-p2p.google.com^$important
-
-! --- Уровень 3: Управление протоколами (QUIC, HTTP/3, UDP) ---
-! Блокируем QUIC везде, но сохраняем исключения для стабильности систем.
-||*$network,quic,important
-$network=http3,filter=on,important
-$network=udp,port=443,filter=on,important
-$network=quic,action=reject,app=~browser,important
-@@||gvt1.com^$network,quic
-@@||gvt2.com^$network,quic
-@@||google.com^$network,quic
-@@||samsung.com^$network,quic
-@@||apple.com^$network,quic
-
-! --- Уровень 4: Стелс-порты (Push & Mail) ---
-! Открываем только необходимые каналы для уведомлений и почты (IMAP/SMTP).
-@@||*:5228|5229|5230|993|465|587$network,important
-
-! --- Уровень 5: Силовое ядро и Режим "Крепость" (IPv4/6, TCP, ICMP) ---
-! Объединяем маршрутизацию и режим "невидимки" для полной тишины.
 $network=ipv6,filter=on,mode=block_all,important
 $network=lan,force_route=on,intercept_all=on,important
-$network=tcp,keepalive=20,timeout=2,fast_open=on,important
-$network=tls,ech=off,pqc=on,pqc_algorithm=kyber,important
+$network=tls,pqc=on,pqc_algorithm=kyber,ech=off,important
 $network=icmp,action=drop,important
-$network=discovery,action=reject,important
 $network=inbound,action=block,app=~system,important
-
-! --- Уровень 6: Глобальная Анонимизация ---
 $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 
 ! =========================================================================
-! [3] THE OMNI-MONOLITH: FINAL ARCH-DEFENSE SUPREME (v15.0.0)
+! [3] THE OMNI-MONOLITH (SINKHOLE & REJECT)
 ! =========================================================================
-
-! --- [MASTER CONTROL: GHOST & KERNEL OVERRIDE] ---
-$network=proxy,port=1..65535,important
-$network=lan,force_route=on,intercept_all=on,important
-$network=ipv6,filter=on,mode=block_all,important
-$network=tls,pqc=on,pqc_algorithm=kyber,ech=off,important
-$network=icmp,action=drop,important
-$network=discovery,action=reject,important
-$stealth=on,hide_ip=on,hide_user_agent=on,important
-
-! --- Уровень 1: Протокольный Щит & DNS Sinkhole ---
 0.0.0.0 connectivitycheck.gstatic.com
 0.0.0.0 connectivitycheck.android.com
 0.0.0.0 mtalk.google.com
-$dnsrewrite=NOERROR;NXDOMAIN;domain=_esni.*|_echconfig.*|*.proxy.google.com
-
-! --- Уровень 2: LAN Citadel & Public Wi-Fi Shield ---
-||192.168.0.0/16|10.0.0.0/8^$important,port=53|80|1080|8080,reject,domain=~system
-||[fe80::*]|[ff02::*]^$important,reject,domain=~system
-$network=inbound,action=block,app=~system,important
-$network=arp,action=filter,important
-
-! --- Уровень 3: Кинетическое Подавление (Google & AI) ---
-||*-pa.googleapis.com|*-pa.google.com^$important,reject
-||ab.chatgpt.com|events.statsigapi.net^$important,reject,domain=openai.com
-||diag.google.com/pqc-stats|collector.github.com^$important,reject
-
-! --- Уровень 4: DNS Stealth & IPv6 Hard-Refusal ---
+||*-pa.googleapis.com^$important,reject
+||ab.chatgpt.com|events.statsigapi.net^$important,reject
 ||cloudflare-dns.com|dns.google|1.1.1.1|8.8.8.8^$important,reject
-||[2001:4860:4860::*]|[2607:f8b0:4000::*]^$important,reject
-||_dns.resolver.arpa|.local|.lan^$important,reject
 
-! --- Уровень 5: [95] STERILE TUNNEL (UNIVERSAL FINTECH) ---
-! -- G-Pay, Samsung Pay, Apple Pay --
+! =========================================================================
+! [4] UNIVERSAL FINTECH STERILE TUNNEL (NFC/PAY)
+! =========================================================================
 $app=com.google.android.apps.walletnfcrel|com.samsung.android.spay|com.apple.wallet,filter=off,important
-! -- Mir Pay (NSPK) --
-$app=ru.nspk.mirpay,filter=off,important
-! -- Huawei Pay & Wallet --
-$app=com.huawei.wallet,filter=off,important
-! -- Банковские сервисы аутентификации & Biometrics --
-$app=com.samsung.android.samsungpass|com.samsung.android.authfw|com.android.settings.biometric,filter=off,important
-! -- Глобальные шлюзы (Visa, MC, Amex) --
-@@||*.visa.com|*.mastercard.com|*.americanexpress.com|*.nspk.ru|*.mironline.ru^$important
-@@||mercanet.bnpparibas.net|vads.bnpparibas.com|paylib.fr^$important
-! -- NFC & Biometric Bypass --
+$app=ru.nspk.mirpay|com.huawei.wallet,filter=off,important
+$app=com.samsung.android.samsungpass|com.android.settings.biometric,filter=off,important
+@@||*.visa.com|*.mastercard.com|*.nspk.ru|*.mironline.ru^$important
 $network=nfc,action=bypass,important
 $network=biometric,action=bypass,important
 
-! --- Уровень 6: Глобальная очистка URL & Query ---
-||*$removeparam=/^(utm_|fbclid|gclid|gclsrc|dclid|msclkid|yclid|ttclid|igsh|mc_eid|_ga|_gl|ref_src|ref_url|aff_id|click_id|track_id|uuid|promo|promotion)/,important
-$removeheader=x-goog-api-client,domain=google.com|googleapis.com
+! =========================================================================
+! [5] ZERO-TRUST & PUBLIC WI-FI CITADEL
+! =========================================================================
+||192.168.0.0/16|10.0.0.0/8^$important,port=53|80|1080|8080,reject,domain=~system
+$network=arp,action=filter,important
+||*.top|*.click|*.zip|*.mov^$important,reject
+||*secure-verification*|*banking-update*|*revolut-verify*^$important,reject
 
-! --- Уровень 7: Инфраструктурная Гигиена (NOLOG & Anti-Wake) ---
-||connectivitycheck.gstatic.com|connectivitycheck.android.com^$important,nolog,reject
-||*.gvt1.com|*.gvt2.com|*.firebaseio.com^$important,reject
-||*^$important,port=5222..5228,nolog,reject,domain=~system
-
-! --- Уровень 8: Zero-Trust & Anti-Phishing ---
-||*.top|*.click|*.monster|*.zip|*.mov^$important,reject
-||*secure-verification*|*banking-update*|*verify-identity*|*revolut-verify*|*n26-login*^$important,reject
-||*dhl-delivery*|*chronopost*|*laposte*|*ameli*|*caf-info*|*impots-gouv*^$important,reject
-
-! --- Уровень 9: Infrastructure Master Whitelist ---
-@@||google.com/search|gstatic.com|apis.google.com|www.google.com/recaptcha^$important
-@@||github.com|api.github.com|raw.githubusercontent.com^$document,important
-@@||revolut.com|n26.com|stripe.com|ameli.fr|caf.fr|impots.gouv.fr^$important
-@@||dns.adguard-dns.com|dns.cloudflare.com^$dnstype=HTTPS
-@@||127.0.0.1|[::1]|192.168.0.1|192.168.1.1^$important,domain=system|browser
-
-! --- Уровень 10: Cosmetic Cleanup ---
-##.ad-box, .ads-container, .sponsored-post, .yandex-ad, .yandex-rtb
-##.cookie-banner, .cookie-notice, #onetrust-banner-sdk, .newsletter-popup
+! =========================================================================
+! [6] CLEANUP & COSMETICS
+! =========================================================================
+||*$removeparam=/^(utm_|fbclid|gclid|igsh|ref_src|track_id)/,important
+##.ad-box, .ads-container, .cookie-banner, .newsletter-popup
