@@ -2143,3 +2143,30 @@ $removeheader=x-goog-api-key,domain=google.com|googleapis.com
 ! --- Уровень 5: Search Quality Whitelist (Для работы Google Search) ---
 ! Гарантируем, что базовый поиск (который мы подправили) не пострадает.
 @@||www.google.com/complete/search?authuser*^$important
+
+! =========================================================================
+! [54] THE FINAL CLEANUP: LOGS & COLLECTORS (v11.2.0)
+! =========================================================================
+
+! --- Уровень 1: GitHub & Dev-Tracking (По следам скриншота 4) ---
+||collector.github.com^$important
+||analytics.github.com^$important
+
+! --- Уровень 2: OpenAI & ChatGPT Privacy (По следам скриншота 6) ---
+! Блокируем телеметрию внутри чат-ботов, не мешая самим ответам.
+||events.statsigapi.net^$important,domain=openai.com
+||browser-intake-datadoghq.com^$important,domain=openai.com
+
+! --- Уровень 3: Spot & Contextual PA (По следам скриншота 5) ---
+! Уничтожаем spot-pa и другие контекстные узлы Google.
+||spot-pa.googleapis.com^$important
+||nearby-pa.googleapis.com^$important
+
+! --- Уровень 4: Forced DNS Integrity (Cloudflare Bypass) ---
+! Запрещаем приложениям напрямую обращаться к Cloudflare DNS по любым протоколам.
+||cloudflare-dns.com^$important,all
+||1dot1dot1dot1.cloudflare-dns.com^$important
+
+! --- Уровень 5: Mega-Payload Suppression (Защита от утечек как на скриншоте 3) ---
+! Ограничиваем размер фоновых запросов к Google API, чтобы они не качали десятки МБ.
+||robinfrontend-pa.googleapis.com^$important,all
