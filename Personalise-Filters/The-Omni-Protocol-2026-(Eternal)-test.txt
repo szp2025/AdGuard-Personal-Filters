@@ -1,92 +1,134 @@
-! Title: The Omni-Protocol 2026 (Eternal) test
-! Version: 17.0.0
+! Title: The Omni-Protocol 2026 (Eternal)
+! Version: 22.0.0
 ! Last modified: 2026-03-18
-! Status: SUPREME PLATINUM ARCH-DEFENSE (FULL SUITE)
+! Status: SUPREME MONOLITH (v14.5.0 BASE + PQC MAX + ORIGINAL RECOVERY)
+
 ! =========================================================================
-
-! --- [1] INFRASTRUCTURE IMMUNITY: CORE SYSTEMS & STABILITY ---
+! [1] INFRASTRUCTURE IMMUNITY (CDN & SYSTEM NODES - v7.4.8 RECOVERY)
+! =========================================================================
 @@||gvt1.com^$important
+@@||*.gvt1.com^$important
 @@||gvt2.com^$important
+@@||*.gvt2.com^$important
 @@||gvt3.com^$important
+@@||*.gvt3.com^$important
 @@||googleusercontent.com^$important
+@@||*.googleusercontent.com^$important
 @@||gstatic.com^$important
+@@||*.gstatic.com^$important
 @@||googlevideo.com^$important
+@@||*.googlevideo.com^$important
 @@||apple.com^$important
+@@||*.apple.com^$important
 @@||icloud.com^$important
+@@||*.icloud.com^$important
 @@||samsung.com^$important
+@@||*.samsung.com^$important
 @@||galaxy.store^$important
+@@||*.galaxy.store^$important
 @@||samsungapps.com^$important
+@@||*.samsungapps.com^$important
 @@||waze.com^$important
+@@||*.waze.com^$important
 @@||youtube.com^$important
+@@||*.youtube.com^$important
 @@||ggpht.com^$important
+@@||*.ggpht.com^$important
 
-! --- [2] GHOST MODE: ULTRA-QUANTUM KERNEL OVERRIDE ---
-$network=ipv6,filter=on,mode=block_all,important
+! =========================================================================
+! [2] GHOST MODE: MASTER CONTROL & QUANTUM CORE (v22.0.0)
+! =========================================================================
+$network=proxy,port=1..65535,important
 $network=lan,force_route=on,intercept_all=on,important
+$network=ipv6,filter=on,mode=block_all,important
 $network=tcp,keepalive=20,timeout=2,fast_open=on,important
 $network=icmp,action=drop,important
 $network=discovery,action=reject,important
-$network=inbound,action=block,app=~system,important
-$stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
+$stealth=on,hide_ip=on,hide_user_agent=on,important
 
-! --- [3] PQC SUPREME SUITE (QUANTUM DEFENSE) ---
-$network=tls,pqc=on,pqc_algorithm=kyber|dilithium|falcon,important
-$network=tls,pqc_heavy_mode=on,pqc_algorithm=mceliece|bike|hqc,domain=github.com|revolut.com|binance.com,important
-$network=tls,pqc_signature=sphincs+|slh-dsa,important
-$network=tls,pqc_fallback=off,min_tls_version=1.3,important
-$network=tls,ech=off,pqc_hybrid=on,important
+! --- [2.1] QUANTUM SUPREME SUITE (PQC FULL POWER) ---
+$network=tls,pqc=on,pqc_algorithm=kyber|ml-kem|dilithium|ml-dsa|falcon,important
+$network=tls,pqc_heavy_mode=on,pqc_algorithm=mceliece|bike|hqc|frodokem|ntru,domain=github.com|revolut.com|binance.com|kraken.com|ledger.com,important
+$network=tls,pqc_signature=sphincs+|slh-dsa|xmss|lms,important
+$network=tls,pqc_hybrid=on,pqc_hybrid_algorithm=x25519_kyber768|x25519_mlkem768,important
+$network=tls,pqc_fallback=off,min_tls_version=1.3,pqc_priority=ultra,important
+$network=tls,ech=off,important
 
-! --- [4] THE OMNI-MONOLITH (SINKHOLE & SYSTEM REJECT) ---
+! =========================================================================
+! [3] THE OMNI-MONOLITH: SINKHOLE & DNS STEALTH
+! =========================================================================
 0.0.0.0 connectivitycheck.gstatic.com
 0.0.0.0 connectivitycheck.android.com
 0.0.0.0 mtalk.google.com
-||*-pa.googleapis.com^$important,reject
+$dnsrewrite=NOERROR;NXDOMAIN;domain=_esni.*|_echconfig.*|*.proxy.google.com
+||*-pa.googleapis.com|*-pa.google.com^$important,reject
 ||ab.chatgpt.com|events.statsigapi.net^$important,reject,domain=openai.com
 ||diag.google.com/pqc-stats|collector.github.com^$important,reject
 ||cloudflare-dns.com|dns.google|1.1.1.1|8.8.8.8^$important,reject
 ||[2001:4860:4860::*]|[2607:f8b0:4000::*]^$important,reject
 ||_dns.resolver.arpa|.local|.lan^$important,reject
-||*.gvt1.com|*.gvt2.com|*.firebaseio.com^$important,reject
-||*^$important,port=5222..5228,nolog,reject,domain=~system
 
-! --- [5] UNIVERSAL FINTECH STERILE TUNNEL (NFC/PAY) ---
+! =========================================================================
+! [4] STERILE TUNNEL: FINTECH, NFC & HARDWARE (v7.4.8 + v14.5.0)
+! =========================================================================
 $app=com.google.android.apps.walletnfcrel|com.samsung.android.spay|com.apple.wallet,filter=off,important
 $app=ru.nspk.mirpay|com.huawei.wallet,filter=off,important
 $app=com.samsung.android.samsungpass|com.samsung.android.authfw|com.android.settings.biometric,filter=off,important
+$app=com.infraware.office,filter=off,important
+
 @@||visa.com^$important
 @@||mastercard.com^$important
 @@||nspk.ru^$important
 @@||mironline.ru^$important
-@@||mercanet.bnpparibas.net|vads.bnpparibas.com|paylib.fr^$important
+$dnsrewrite=NOERROR,domain=*.samsungpay.com|*.visa.com|*.mastercard.com,important
+
 $network=nfc,action=bypass,important
 $network=biometric,action=bypass,important
 
-! --- [6] ZERO-TRUST & CITADEL (PUBLIC WI-FI & LAN) ---
+! =========================================================================
+! [5] LAN CITADEL & SMART CITY SHIELD (ZERO-TRUST)
+! =========================================================================
 ||192.168.0.0/16|10.0.0.0/8^$important,port=53|80|1080|8080,reject,domain=~system
 ||[fe80::*]|[ff02::*]^$important,reject,domain=~system
-||239.255.255.250|224.0.0.251^$important,port=1900|5353,reject
+$network=inbound,action=block,app=~system,important
 $network=arp,action=filter,important
-$network=dhcp,action=filter,important
 $app_detection=system_update,action=block,network=wifi,important
 $app_detection=manufacturer_telemetry,action=block,network=wifi,important
+
 ||*.top|*.click|*.monster|*.zip|*.mov^$important,reject
-||*secure-verification*|*banking-update*|*revolut-verify*|*n26-login*^$important,reject
+||*secure-verification*|*banking-update*|*verify-identity*|*revolut-verify*|*n26-login*^$important,reject
 ||*dhl-delivery*|*chronopost*|*laposte*|*ameli*|*caf-info*|*impots-gouv*^$important,reject
 
-! --- [7] CLEANUP & SCRIPTLET INJECTION (GHOST OPS) ---
-||*$removeparam=/^(utm_|fbclid|gclid|gclsrc|dclid|msclkid|yclid|ttclid|igsh|mc_eid|_ga|_gl|ref_src|ref_url|aff_id|click_id|track_id|uuid|promo|promotion)/,important
+! =========================================================================
+! [6] CLEANUP & GHOST OPS (FULL RECOVERY + SCRIPTLETS)
+! =========================================================================
+||*$removeparam=/^(utm_|fbclid|gclid|gclsrc|dclid|msclkid|yclid|ttclid|igsh|mc_eid|_ga|_gl|ref_src|ref_url|aff_id|click_id|track_id|uuid|promo|promotion|fb_action_ids|fb_action_types|fb_source)/,important
 $removeheader=x-goog-api-client,domain=google.com|googleapis.com
+
 #%#//scriptlet('abort-current-inline-script', 'atob', 'setTimeout')
 #%#//scriptlet('set-constant', 'AdBlock', 'undefined')
 #%#//scriptlet('prevent-window-open', 'popup')
 #%#//scriptlet('set-constant', 'canRunAds', 'true')
+#%#//scriptlet('abort-on-stack-trace', 'FingerprintJS')
+#%#//scriptlet('xmlhttprequest-mock', 'log-ad-click')
 ##.ad-box, .ads-container, .sponsored-post, .yandex-ad, .yandex-rtb
 ##.cookie-banner, .cookie-notice, #onetrust-banner-sdk, .newsletter-popup
 ##[id^="ad_"], [class*="sponsored"], [class*="ad-"]
 
-! --- [8] INFRASTRUCTURE MASTER WHITELIST ---
+
+
+! --- Косметика (Полный список) ---
+##.ad-box, .ads-container, .sponsored-post, .yandex-ad, .yandex-rtb
+##.cookie-banner, .cookie-notice, #onetrust-banner-sdk, .newsletter-popup
+##.social-share-buttons, .fb-like-box, .app-download-banner
+##[id^="ad_"], [id*="-ad-"], [class*="sponsored"], [class*="ad-"]
+
+! =========================================================================
+! [7] INFRASTRUCTURE MASTER WHITELIST
+! =========================================================================
 @@||google.com/search|gstatic.com|apis.google.com|www.google.com/recaptcha^$important
 @@||github.com|api.github.com|raw.githubusercontent.com^$document,important
 @@||revolut.com|n26.com|stripe.com|ameli.fr|caf.fr|impots.gouv.fr^$important
+@@||mercanet.bnpparibas.net|vads.bnpparibas.com|paylib.fr^$important
 @@||dns.adguard-dns.com|dns.cloudflare.com^$dnstype=HTTPS
 @@||127.0.0.1|[::1]|192.168.0.1|192.168.1.1^$important,domain=system|browser
