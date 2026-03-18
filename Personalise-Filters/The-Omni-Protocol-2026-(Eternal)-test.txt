@@ -73,7 +73,7 @@ $network=inbound,action=block,app=~system,important
 $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 
 ! =========================================================================
-! [3] THE OMNI-MONOLITH: FINAL ARCH-DEFENSE SUPREME (v14.5.0)
+! [3] THE OMNI-MONOLITH: FINAL ARCH-DEFENSE SUPREME (v15.0.0)
 ! =========================================================================
 
 ! --- [MASTER CONTROL: GHOST & KERNEL OVERRIDE] ---
@@ -107,11 +107,21 @@ $network=arp,action=filter,important
 ||[2001:4860:4860::*]|[2607:f8b0:4000::*]^$important,reject
 ||_dns.resolver.arpa|.local|.lan^$important,reject
 
-! --- Уровень 5: Sterile Tunnel (Fintech & Hardware) ---
-||*solix*.*|*nexus-anc*.*|telemetry.solix.com^$important,reject
-$app=com.samsung.android.spay|com.google.android.apps.walletnfcrel,filter=off,important
-$app=com.samsung.android.samsungpass|com.samsung.android.authfw,filter=off,important
+! --- Уровень 5: [95] STERILE TUNNEL (UNIVERSAL FINTECH) ---
+! -- G-Pay, Samsung Pay, Apple Pay --
+$app=com.google.android.apps.walletnfcrel|com.samsung.android.spay|com.apple.wallet,filter=off,important
+! -- Mir Pay (NSPK) --
+$app=ru.nspk.mirpay,filter=off,important
+! -- Huawei Pay & Wallet --
+$app=com.huawei.wallet,filter=off,important
+! -- Банковские сервисы аутентификации & Biometrics --
+$app=com.samsung.android.samsungpass|com.samsung.android.authfw|com.android.settings.biometric,filter=off,important
+! -- Глобальные шлюзы (Visa, MC, Amex) --
+@@||*.visa.com|*.mastercard.com|*.americanexpress.com|*.nspk.ru|*.mironline.ru^$important
+@@||mercanet.bnpparibas.net|vads.bnpparibas.com|paylib.fr^$important
+! -- NFC & Biometric Bypass --
 $network=nfc,action=bypass,important
+$network=biometric,action=bypass,important
 
 ! --- Уровень 6: Глобальная очистка URL & Query ---
 ||*$removeparam=/^(utm_|fbclid|gclid|gclsrc|dclid|msclkid|yclid|ttclid|igsh|mc_eid|_ga|_gl|ref_src|ref_url|aff_id|click_id|track_id|uuid|promo|promotion)/,important
@@ -122,7 +132,7 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com
 ||*.gvt1.com|*.gvt2.com|*.firebaseio.com^$important,reject
 ||*^$important,port=5222..5228,nolog,reject,domain=~system
 
-! --- Уровень 8: Zero-Trust & Smart City Shield ---
+! --- Уровень 8: Zero-Trust & Anti-Phishing ---
 ||*.top|*.click|*.monster|*.zip|*.mov^$important,reject
 ||*secure-verification*|*banking-update*|*verify-identity*|*revolut-verify*|*n26-login*^$important,reject
 ||*dhl-delivery*|*chronopost*|*laposte*|*ameli*|*caf-info*|*impots-gouv*^$important,reject
@@ -131,7 +141,6 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com
 @@||google.com/search|gstatic.com|apis.google.com|www.google.com/recaptcha^$important
 @@||github.com|api.github.com|raw.githubusercontent.com^$document,important
 @@||revolut.com|n26.com|stripe.com|ameli.fr|caf.fr|impots.gouv.fr^$important
-@@||mercanet.bnpparibas.net|vads.bnpparibas.com|paylib.fr^$important
 @@||dns.adguard-dns.com|dns.cloudflare.com^$dnstype=HTTPS
 @@||127.0.0.1|[::1]|192.168.0.1|192.168.1.1^$important,domain=system|browser
 
