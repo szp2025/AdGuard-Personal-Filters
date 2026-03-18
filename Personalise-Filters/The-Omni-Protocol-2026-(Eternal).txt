@@ -2258,3 +2258,42 @@ $removeheader=x-goog-api-key,domain=google.com|googleapis.com
 ! --- Уровень 5: Fallback Whitelist (Безопасность системы) ---
 ! Никогда не ставим reject на системные критические узлы, чтобы не "окирпичить" ОС.
 @@||android.clients.google.com^$important
+
+! =========================================================================
+! [57] MONOLITH KINETIC REJECTION: HARD REFUSAL (v11.5.0)
+! =========================================================================
+
+! --- Уровень 1: Google PA & Frontend Execution (По следам скриншотов 3, 5) ---
+||*-pa.googleapis.com^$important,reject
+||robinfrontend-pa.googleapis.com^$important,reject
+||spot-pa.googleapis.com^$important,reject
+||frontend-pa.googleapis.com^$important,reject
+
+! --- Уровень 2: AI Stealth & AB-Testing (По следам скриншота 7) ---
+||ab.chatgpt.com^$important,reject
+||events.statsigapi.net^$important,reject,domain=openai.com
+||browser-intake-datadoghq.com^$important,reject,domain=openai.com
+
+! --- Уровень 3: Forced DNS Rejection (По следам скриншота 6) ---
+||cloudflare-dns.com^$important,reject
+||dns.google^$important,reject
+||1.1.1.1^$important,reject
+||8.8.8.8^$important,reject
+
+! --- Уровень 4: Hardware & Solix Isolation (Твои наушники и датчики) ---
+||*solix*.*^$important,reject
+||*nexus-anc*.*^$important,reject
+||*audio-fingerprint*.*^$important,reject
+||*accessory-id-reporting*.*^$important,reject
+
+! --- Уровень 5: Global Promo & Collector Purge (По следам скриншота 4) ---
+||collector.github.com^$important,reject
+||*promo*.*^$important,third-party,reject
+||*-promo-*^$important,reject
+$removeparam=promo,domain=~mercanet.bnpparibas.net
+
+! --- Финансовый Мост (White-List для Mercanet и BNP) ---
+@@||mercanet.bnpparibas.net^$important
+@@||vads.bnpparibas.com^$important
+@@||secure.bnpparibas.com^$important
+@@||pay.google.com^$important
