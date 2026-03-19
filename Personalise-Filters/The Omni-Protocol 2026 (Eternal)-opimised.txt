@@ -118,34 +118,6 @@ $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 
 
 ! =========================================================================
-! [4] URL CLEANER: UNIVERSAL AUTONOMOUS PURGE (v11.2.0)
-! =========================================================================
-
-! --- Уровень 1: Глобальный Regex-фильтр UTM-меток ---
-! Удаляем все параметры, начинающиеся на utm_ (source, medium, campaign и т.д.) одной командой
-||*$removeparam=/^utm_/
-
-! --- Уровень 2: Идентификаторы рекламных сетей (Ads ID) ---
-! Чистим клик-айди гигантов (FB, Google, Microsoft, Yandex)
-||*$removeparam=fbclid
-||*$removeparam=gclid
-||*$removeparam=gclsrc
-||*$removeparam=dclid
-||*$removeparam=msclkid
-||*$removeparam=yclid
-||*$removeparam=ttclid
-||*$removeparam=li_fat_id
-
-! --- Уровень 3: Социальный и партнерский мусор ---
-! Очищаем ссылки из Instagram, TikTok, Mailchimp и HubSpot
-||*$removeparam=igsh
-||*$removeparam=t,domain=tiktok.com
-||*$removeparam=mc_eid
-||*$removeparam=_hsenc
-||*$removeparam=ref_src
-||*$removeparam=ref_url
-
-! =========================================================================
 ! [4] URL CLEANER: UNIVERSAL AUTONOMOUS PURGE (v2026.1-OPT)
 ! =========================================================================
 ! Оптимизация: Группировка параметров (Batch Processing). 
