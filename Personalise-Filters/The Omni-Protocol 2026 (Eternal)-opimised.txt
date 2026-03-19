@@ -1314,34 +1314,36 @@ ty
 
 
 ! =========================================================================
-! [34] INBOUND SHIELD: APEX STABLE (v11.2.0)
+! [34] INBOUND SHIELD: APEX STABLE (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Хэш-блокировка RTB-магистралей и очистка UX-мусора.
+! Нагрузка на CPU: Минимальная. Идеальная отрисовка страниц и видео.
 
 ! --- Уровень 1: Video Ads & Streaming Defense (Anti-Roll Isolation) ---
-! Уничтожаем пре-роллы, мид-роллы и оверлеи в видеоплеерах.
-||video-ads.*^$important,third-party
-||ad-delivery.*^$important,third-party
-||midroll.*^$important
-||preroll.*^$important
-||postroll.*^$important
-||outstream.*^$important
-||in-stream.*^$important
-||video-overlay.*^$important
+! Уничтожаем видео-рекламу всех типов. Схлопнуто для скорости.
+||video-ads.^$important,third-party
+||ad-delivery.^$important,third-party
+||midroll.^$important
+||preroll.^$important
+||postroll.^$important
+||outstream.^$important
+||in-stream.^$important
+||video-overlay.^$important
 
 ! --- Уровень 2: Pop-Up & Interface Lockdown (Защита экрана) ---
-! Блокируем всплывающие окна, "липкие" баннеры и межстраничную рекламу.
-||popunder.*^$important
-||pop-up.*^$important
-||overlay.*^$important,third-party,domain=~google.com|~youtube.com
-||interstitial.*^$important
-||notification-spam.*^$important
-||sticky-ad.*^$important
-||floating-ad.*^$important
+! Блокируем всплывающие окна и "липкие" баннеры.
+||popunder.^$important
+||pop-up.^$important
+||overlay.^$important,third-party
+||interstitial.^$important
+||notification-spam.^$important
+||sticky-ad.^$important
+||floating-ad.^$important
 
 ! --- Уровень 3: Ad-Exchange & RTB (Рекламные магистрали) ---
-! Отрезаем доступ к крупнейшим биржам трафика и аукционам рекламы.
-||adsystem.*^$important
-||adserver.*^$important
+! Отрезаем рекламные биржи. Прямые хэш-маски.
+||adsystem.^$important
+||adserver.^$important
 ||doubleclick.net^$important
 ||taboola.com^$important
 ||outbrain.com^$important
@@ -1349,31 +1351,31 @@ ty
 ||rubiconproject.com^$important
 
 ! --- Уровень 4: Invisible Beacons & Pixels (Скрытая слежка) ---
-! Блокируем невидимые "жучки", которые сообщают о прочтении страницы.
-||pixel.*^$important,third-party,domain=~facebook.com|~instagram.com
-||tracking-pixel.*^$important
-||web-beacon.*^$important
-||beacons.*^$important
-||telemetry-pixel.*^$important
+! Блокируем "жучки". Раздел [1] защищает FB/Instagram.
+||pixel.^$important,third-party
+||tracking-pixel.^$important
+||web-beacon.^$important
+||beacons.^$important
+||telemetry-pixel.^$important
 
 ! --- Уровень 5: Active Threat Defense (Malware & Exploit Guard) ---
-! Защита от вредоносной рекламы, фальшивых обновлений и майнеров.
-||crypto-miner.*^$important
-||web-miner.*^$important
-||malvertising.*^$important
-||fake-update.*^$important
-||phishing.*^$important
-||exploit-kit.*^$important
+! Защита от майнеров и фальшивых обновлений.
+||crypto-miner.^$important
+||web-miner.^$important
+||malvertising.^$important
+||fake-update.^$important
+||phishing.^$important
+||exploit-kit.^$important
 
 ! --- Уровень 6: UX Purge (Anti-Shame & Spam Cleaner) ---
-! Чистим интерфейс от мусорных модулей, подписок и "стен позора".
-||spam-module.*^$important
-||newsletter-popup.*^$important
-||subscription-wall.*^$important
+! Чистим интерфейс от подписок и "стен позора".
+||spam-module.^$important
+||newsletter-popup.^$important
+||subscription-wall.^$important
 
 ! --- Уровень 7: THE ULTIMATE WHITELIST (Global Infrastructure) ---
-! Гарантируем абсолютную стабильность финансовых и системных сервисов.
-! Эти правила имеют высший приоритет, чтобы ничего не "сломалось".
+! Гарантируем абсолютную стабильность. 
+! Высший приоритет для работы GitHub, Банков и Системных API.
 @@||github.com^$document
 @@||githubassets.com^$important
 @@||raw.githubusercontent.com^$important
