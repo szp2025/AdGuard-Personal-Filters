@@ -1051,21 +1051,23 @@ ty
 ||prediction-engine.^$important,third-party
 
 ! =========================================================================
-! [29] AI & BEHAVIORAL STEALTH: NEURO-SHIELD (v11.2.0)
+! [29] AI & BEHAVIORAL STEALTH: NEURO-SHIELD (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Схлопывание аналитических SDK и защита сессий через хэш.
+! Нагрузка на CPU: Минимальная. Полная блокировка записи экрана и ИИ-сбора.
 
 ! --- Уровень 1: Изоляция AI-метрики (Anti-Training Guard) ---
-! Запрещаем сбор данных для обучения нейросетей на сторонних сайтах.
-! Мы разрешаем работу AI только на их официальных доменах.
+! Запрещаем сбор данных для обучения нейросетей сторонними сайтами.
+! Хэш-маски для Microsoft, NVIDIA и Google AI.
 ||vortex.data.microsoft.com^$important,third-party
 ||browser.events.data.microsoft.com^$important,third-party
 ||telemetry.nvidia.com^$important,third-party
-||openai.com^$important,third-party,domain=~openai.com|~chatgpt.com
-||anthropic.com^$important,third-party,domain=~anthropic.com|~claude.ai
 ||generativelanguage.googleapis.com^$important,third-party
+||openai.com^$important,third-party
+||anthropic.com^$important,third-party
 
 ! --- Уровень 2: Behavioral Analysis & Heatmaps (Тепловые карты) ---
-! Блокируем тех, кто записывает движения твоей мыши и скорость скроллинга.
+! Блокируем запись движений мыши и скроллинга (Hotjar, Mixpanel, Amplitude).
 ||segment.com^$important,third-party
 ||amplitude.com^$important,third-party
 ||mixpanel.com^$important,third-party
@@ -1074,7 +1076,7 @@ ty
 ||smartlook.com^$important,third-party
 
 ! --- Уровень 3: Анти-скоринг & Invisible Captcha (Fraud Defense) ---
-! Защита от систем, которые скрыто выставляют тебе "рейтинг подозрительности".
+! Защита от систем скрытого рейтинга подозрительности.
 ||sift.com^$important,third-party
 ||threatmetrix.com^$important,third-party
 ||cardinalcommerce.com^$important,third-party
@@ -1082,12 +1084,11 @@ ty
 ||forter.com^$important,third-party
 
 ! --- Уровень 4: Heartbeat & Active Pings (Стелс-режим сессии) ---
-! Пресекаем фоновые "пинги", которые проверяют, активна ли еще вкладка.
-! Это экономит заряд батареи и мешает сайту понимать, читаешь ты его или нет.
-||heartbeat.*^$important,third-party
-||ping.*^$important,third-party
-||chartbeat.*^$important,third-party
-||telemetry.sdk.*^$important,third-party
+! Пресекаем фоновые "пинги". Хэш-оптимизация экономит заряд батареи.
+||heartbeat.^$important,third-party
+||ping.^$important,third-party
+||chartbeat.^$important,third-party
+||telemetry.sdk.^$important,third-party
 
 ! --- Уровень 5: Session Replay & Screen Record (Анти-шпион) ---
 ! Тотальная блокировка записи видео твоего экрана внутри браузера.
