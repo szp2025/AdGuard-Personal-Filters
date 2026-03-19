@@ -804,8 +804,10 @@ ty
 
 
 ! =========================================================================
-! [23] HARDWARE & FINGERPRINT MASKING: UNIFORM IDENTITY (v11.2.0)
+! [23] HARDWARE & FINGERPRINT MASKING: UNIFORM IDENTITY (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Группировка экранных параметров и очистка аудио-исключений.
+! Нагрузка на CPU: Минимальная. Идеальный "цифровой камуфляж".
 
 ! --- Уровень 1: Унификация аппаратных ресурсов (CPU/RAM/Screen) ---
 ! Мы заставляем сайты верить, что у тебя стандартный ПК: 8 ядер, 8 ГБ RAM, Full HD.
@@ -817,25 +819,25 @@ ty
 #%#//scriptlet("set-constant", "screen.availHeight", "1040")
 
 ! --- Уровень 2: Canvas & WebGL Stealth (Anti-Graphic ID) ---
-! Вместо блокировки функций (что ломает карты и игры), мы подменяем методы чтения данных.
-! Сайт получает "пустой" ответ вместо уникального отпечатка видеокарты.
+! Подменяем методы чтения графических данных. 
+! Вместо ошибки (которая подозрительна), сайт получает пустой ответ.
 #%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.toDataURL", "function() { return ''; }")
 #%#//scriptlet("set-constant", "CanvasRenderingContext2D.prototype.getImageData", "function() { return new ImageData(1,1); }")
 #%#//scriptlet("set-constant", "WebGLRenderingContext.prototype.getParameter", "undefined")
 
 ! --- Уровень 3: AudioContext Guard (Звуковая анонимность) ---
-! Запрещаем детальный анализ характеристик звуковой подсистемы. 
-! Используем безопасный метод, чтобы не ломать воспроизведение аудио/видео.
-#%#//scriptlet("set-constant", "AudioContext", "undefined", "domain=~youtube.com|~spotify.com|~soundcloud.com")
-#%#//scriptlet("set-constant", "webkitAudioContext", "undefined", "domain=~youtube.com|~spotify.com")
+! Блокируем анализ звуковой подсистемы. 
+! Исключения из Раздела [1] защищают YouTube, Spotify и SoundCloud.
+#%#//scriptlet("set-constant", "AudioContext", "undefined")
+#%#//scriptlet("set-constant", "webkitAudioContext", "undefined")
 
-! --- Уровень 4: Battery & Sensor Masking (Защита от слежки за питанием) ---
-! Сайты не смогут следить за процентом заряда (это часто используется для связки сессий).
+! --- Уровень 4: Battery & Sensor Masking (Защита от слежки) ---
+! Сайты не смогут следить за уровнем заряда и датчиками.
 #%#//scriptlet("set-constant", "navigator.getBattery", "undefined")
 #%#//scriptlet("set-constant", "BatteryManager.prototype", "undefined")
 
 ! --- Уровень 5: Font & Language Fingerprinting ---
-! Запрещаем сайтам перечислять все установленные шрифты в системе.
+! Запрещаем перечисление шрифтов и стандартизируем язык.
 #%#//scriptlet("set-constant", "document.fonts.query", "undefined")
 #%#//scriptlet("set-constant", "document.fonts.values", "undefined")
 #%#//scriptlet("set-constant", "navigator.languages", "['en-US', 'en']")
