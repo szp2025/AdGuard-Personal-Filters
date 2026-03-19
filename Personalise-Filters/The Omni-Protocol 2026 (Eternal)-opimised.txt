@@ -1255,59 +1255,63 @@ ty
 @@||impots.gouv.fr^$important
 
 ! =========================================================================
-! [33] SOVEREIGN SHIELD: GLOBAL ETERNAL MONOLITH (v11.2.0)
+! [33] SOVEREIGN SHIELD: GLOBAL ETERNAL MONOLITH (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Схлопывание Firebase/GVT и тотальная зачистка RU-метрик.
+! Нагрузка на CPU: Минимальная. Финальный заслон глобальной слежки.
 
 ! --- Уровень 1: Социальный щит (Deep Logic Isolation) ---
-! Обрезаем передачу логов и пикселей. Telegram/WhatsApp работают, но их телеметрия — нет.
+! Telegram/WhatsApp/FB/TikTok. Хэш-оптимизация телеметрии.
 ||tiktokv.com^$important,third-party
 ||byteoversea.com^$important,third-party
-||facebook.com/tr/*^$important
-||facebook.com/ads/*^$important
-||instagram.com/logging/*^$important
+||facebook.com/tr/^$important
+||facebook.com/ads/^$important
+||instagram.com/logging/^$important
 ||graph.instagram.com^$important,third-party
 ||whatsapp.com/ppd^$important,third-party
 ||whatsapp.net/cs^$important,third-party
-||config.telegram.org^$important,third-party,domain=~telegram.org
+||config.telegram.org^$important,third-party
 
 ! --- Уровень 2: Магистральная блокировка (Google/Samsung Core) ---
-! Закрываем главные артерии сбора данных Firebase, Crashlytics и Samsung Cloud.
-||firebase*.googleapis.com^$important,third-party
+! Закрываем каналы Firebase и Crashlytics. Схлопнуто для скорости.
+||firebaseio.com^$important,third-party
+||firebase.googleapis.com^$important,third-party
 ||crashlytics.com^$important,third-party
 ||telemetry.samsungcloud.com^$important
-||connectivity.samsungcloud.com^$important,third-party,domain=~samsung.com
+||connectivity.samsungcloud.com^$important,third-party
 ||measurement.com^$important
 ||metrics.googleapis.com^$important
 
 ! --- Уровень 3: Экосистема RU-NET (Yandex & Mail.ru Purge) ---
-! Тотальная зачистка Метрики, Клик-трекеров и рекламных движков СНГ-сегмента.
-||metrika.yandex.*^$important
+! Тотальная зачистка Метрики и Клик-трекеров СНГ.
+||metrika.yandex.^$important
 ||mc.yandex.ru^$important
 ||clck.yandex.ru^$important
-||yandex.ru/ads/*^$important
+||yandex.ru/ads/^$important
 ||itp.mail.ru^$important
 ||pixel.mail.ru^$important
 ||top-fwz1.mail.ru^$important
 
 ! --- Уровень 4: Технические обходы (GVT & DoubleClick) ---
-! Закрываем скрытые домены, через которые Google проталкивает рекламный Payload.
-||*.gvt1.com^$important
-||*.googlesyndication.com^$important
-||*.doubleclick.net^$important
-||ocsp.pki.goog^$important,third-party,domain=~google.com|~android.com
+! Закрываем рекламные артерии Google.
+||gvt1.com^$important
+||googlesyndication.com^$important
+||doubleclick.net^$important
+||ocsp.pki.goog^$important,third-party
 
 ! --- Уровень 5: Облачная Изоляция (Cloud Stealth) ---
-! Ограничиваем сбор данных через хранилища, сохраняя доступ к файлам.
-||*.internal.storage.samsungcloud.com^$important,third-party
+! Ограничиваем сбор данных через хранилища.
+||internal.storage.samsungcloud.com^$important,third-party
 ||workspacevideo.googleapis.com^$important,third-party
 ||picasaweb.google.com^$important,third-party
-||googleusercontent.com^$important,third-party,domain=~google.com|~youtube.com|~android.com
+||googleusercontent.com^$important,third-party
 
 ! --- Уровень 6: Аппаратная Анонимность (Device Provisioning) ---
-! Запрещаем регистрацию устройства в рекламных базах фингерпринтинга.
+! Запрет регистрации в базах фингерпринтинга.
 ||fingerprint.io^$important
 ||fingerprintjs.com^$important
 ||device-metrics.com^$important
+
 
 ! =========================================================================
 ! [34] INBOUND SHIELD: APEX STABLE (v11.2.0)
