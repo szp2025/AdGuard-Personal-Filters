@@ -296,35 +296,33 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 ||metrics.^$cookie,important
 ||stats.^$cookie,important
 
-
 ! =========================================================================
-! [9] ETAG STEALTH: CACHE ISOLATION (v11.2.0)
+! [9] ETAG STEALTH: CACHE ISOLATION (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Удаление избыточных исключений. Нативная работа с кэшем.
+! Нагрузка на CPU: Минимальная. Полная защита от "Zombie Cookies".
 
-! --- Уровень 1: Блокировка сторонних ETag (Third-Party Tracking) ---
-! Удаляем входящие метки ETag, если они приходят не от основного сайта.
-! Это убивает возможность рекламных сетей вешать на тебя "кэш-куку".
-||*$header=ETag,third-party,important,domain=~google.com|~apple.com|~yandex.ru
+! --- Уровень 1: Блокировка входящих/исходящих ETag (Third-Party) ---
+! Удаляем метки кэша для всех сторонних ресурсов. 
+! Доверенные сайты из Раздела [1] (Google, Apple) игнорируют это правило автоматически.
+||*$header=ETag,third-party,important
+||*$header=If-None-Match,third-party,important
 
-! --- Уровень 2: Блокировка исходящих проверок (If-None-Match) ---
-! Запрещаем браузеру отправлять метку обратно сторонним ресурсам.
-! Модификатор third-party гарантирует, что кэш самого сайта (иконки, стили) будет работать быстро.
-||*$header=If-None-Match,third-party,important,domain=~google.com|~apple.com|~yandex.ru
+! --- Уровень 2: Защита от временного фингерпринтинга ---
+! Ограничиваем передачу времени изменения ресурсов для сторонних запросов.
+||*$header=If-Modified-Since,third-party,important
 
-! --- Уровень 3: Защита от временного фингерпринтинга (If-Modified-Since) ---
-! Удаляем точное время изменения ресурсов для сторонних запросов.
-||*$header=If-Modified-Since,third-party,important,domain=~google.com|~apple.com
-
-! --- Уровень 4: Умный контроль Service Workers (Anti-Zombie Cookie) ---
-! Вместо полной блокировки (которая ломает PWA-приложения и пуши), 
-! мы запрещаем регистрацию воркеров только на сторонних (аналитических) доменах.
-||*^$websocket,third-party,important
+! --- Уровень 3: Умный контроль Service Workers & WebSockets ---
+! Блокируем сторонние сокеты и регистрацию шпионских воркеров.
+||*$websocket,third-party,important
 #%#//scriptlet("set-constant", "navigator.serviceWorker.register", "undefined", "domain=doubleclick.net|google-analytics.com|hotjar.com|yandex.ru/metrika")
 
-! --- Уровень 5: Очистка кэша API (Cache-Control Hardening) ---
-! Заставляем браузер всегда запрашивать свежие данные от рекламных сетей, не используя их кэш.
-||*$header=Cache-Control:no-store,important,domain=doubleclick.net|adnxs.com|scorecardresearch.com
-
+! --- Уровень 4: Очистка кэша API (Cache-Control Hardening) ---
+! Принудительный запрет на хранение данных от рекламных сетей.
+! Схлопнуто: точные домены вместо масок для мгновенного хэш-поиска.
+||doubleclick.net^$header=Cache-Control:no-store,important
+||adnxs.com^$header=Cache-Control:no-store,important
+||scorecardresearch.com^$header=Cache-Control:no-store,important
 
 
 ! =========================================================================
