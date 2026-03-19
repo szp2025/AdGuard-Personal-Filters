@@ -356,36 +356,28 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 
 
 ! =========================================================================
-! [11] AUTH SHIELD: CREDENTIAL ISOLATION (v11.2.0)
+! [11] AUTH SHIELD: CREDENTIAL ISOLATION (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Группировка токенов и удаление избыточных исключений (~).
+! Нагрузка на CPU: Минимальная. Полная защита сессий.
 
-! --- Уровень 1: Изоляция токенов сессии (Authorization Header) ---
-! Запрещаем передачу заголовков авторизации на сторонние (third-party) домены.
-! Это гарантирует, что твой токен от банка или почты не утечет в рекламную сеть.
-||*$header=Authorization,third-party,important,domain=~google.com|~apple.com|~yandex.ru|~microsoft.com
+! --- Уровень 1: Изоляция токенов и CSRF (Групповая очистка) ---
+! Мы объединили Authorization, CSRF и XSRF. 
+! Доверенные сайты из Раздела [1] автоматически игнорируют это правило.
+||*$header=/^(Authorization|X-CSRF-Token|X-XSRF-TOKEN)/,third-party,important
 
-! --- Уровень 2: Защита от Cross-Site Request Forgery (CSRF) ---
-! Блокируем передачу защитных токенов сторонним ресурсам. 
-! Разрешаем только системным гигантам для работы SSO-авторизации (вход через Google/Yandex).
-||*$header=X-CSRF-Token,third-party,important,domain=~google.com|~apple.com|~yandex.ru
-||*$header=X-XSRF-TOKEN,third-party,important,domain=~google.com|~yandex.ru
+! --- Уровень 2: Защита кастомных токенов (X-Auth & Proxy) ---
+! Блокируем передачу ID сессий и прокси-данных сторонним ресурсам.
+||*$header=/^(X-Auth-Token|Proxy-Authorization|X-Session-ID)/,third-party,important
 
-! --- Уровень 3: Защита кастомных токенов (X-Auth & Proxy) ---
-! Блокируем специфические заголовки авторизации и прокси-данные для сторонних запросов.
-||*$header=X-Auth-Token,third-party,important
-||*$header=Proxy-Authorization,third-party,important
-||*$header=X-Session-ID,third-party,important
-
-! --- Уровень 4: JS-Блокировка автозапроса паролей (Credential API) ---
-! Запрещаем сайтам скрыто запрашивать сохраненные в браузере пароли через Credential Management API.
-! Это не ломает ручной ввод, но блокирует автоматический "тихий" сбор данных.
+! --- Уровень 3: JS-Блокировка автозапроса паролей (Credential API) ---
+! Запрещаем скрытый сбор сохраненных паролей через браузерное API.
 #%#//scriptlet("set-constant", "navigator.credentials.get", "undefined")
 #%#//scriptlet("set-constant", "PasswordCredential", "undefined")
 
-! --- Уровень 5: Anti-Phishing & Basic Auth Control ---
-! Блокирует всплывающие окна авторизации от сторонних ресурсов, часто используемые в фишинге.
+! --- Уровень 4: Anti-Phishing & Basic Auth Control ---
+! Блокировка сторонних окон авторизации (защита от фишинговых инъекций).
 ||*$header=WWW-Authenticate,third-party,important
-
 
 ! =========================================================================
 ! [12] SENSOR & IP SHIELD: HARDWARE ISOLATION (v11.2.0)
