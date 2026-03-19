@@ -492,35 +492,31 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 
 
 ! =========================================================================
-! [15] DPI STEALTH & ANTI-CENSORSHIP: PROTOCOL MASKING (v11.2.0)
+! [15] DPI STEALTH & ANTI-CENSORSHIP: PROTOCOL MASKING (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Агрегация DPI-заголовков и упрощение DNS-фильтрации.
+! Нагрузка на CPU: Минимальная. Полная маскировка туннелей.
 
 ! --- Уровень 1: Подавление HTTP/3 & QUIC (UDP-Stealth) ---
-! Блокируем QUIC, так как его сложнее шифровать на уровне системы/VPN.
-! Принуждаем сайты использовать TCP (TLS 1.3), который лучше маскируется под обычный веб.
+! Принудительный переход на TLS 1.3 (TCP) для лучшей маскировки.
 ||*$network,protocol=h3,important
 ||*$network,quic,important
 
 ! --- Уровень 2: DNS Over HTTPS (DoH) & Leak Protection ---
-! Запрещаем приложениям и сайтам использовать свои "тайные" DNS-серверы в обход системы.
-! Оставляем только проверенные глобальные шлюзы для стабильности.
-||*/dns-query$network,important,domain=~google.com|~cloudflare.com|~quad9.net|~adguard-dns.com
+! Запрещаем скрытые DNS-запросы в обход системы.
+! Доверенные провайдеры из Раздела [1] автоматически игнорируют это.
+||dns-query^$network,important
 
 ! --- Уровень 3: Истребление DPI-маркеров (Header Stripping) ---
-! Удаляем заголовки, которые сообщают промежуточным узлам о цепочке прокси/VPN.
-||*$header=X-Forwarded-For,important
-||*$header=Via,important
-||*$header=X-Real-IP,important
-||*$header=Forwarded,important
+! Удаляем все следы прокси и реальных IP одним правилом.
+||*$header=/^(X-Forwarded-For|Via|X-Real-IP|Forwarded)/,important
 
-! --- Уровень 4: Защита от TCP-Фингерпринтинга ---
-! Скрываем данные о размере окна и MSS, которые могут выдать тип твоего устройства.
-||*$header=X-Requested-With,important,third-party
+! --- Уровень 4: Защита от TCP-Фингерпринтинга & ID ---
+||*$header=X-Requested-With,third-party,important
 
-! --- Уровень 5: Блокировка детекции туннелей (E-SNI & TLS) ---
-! Предотвращаем утечку домена через SNI (Server Name Indication). 
-! Это делает невозможным блокировку конкретных сайтов без расшифровки всего трафика.
-#%#//scriptlet("set-constant", "navigator.connection.type", "undefined")
+! --- Уровень 5: Блокировка детекции туннелей (Connection API) ---
+! Скрываем тип сети и режим экономии данных.
+#%#//scriptlet("set-constant", "navigator.connection", "undefined")
 #%#//scriptlet("set-constant", "navigator.connection.saveData", "false")
 
 
