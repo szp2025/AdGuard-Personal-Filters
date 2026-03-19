@@ -1099,35 +1099,37 @@ ty
 
 
 ! =========================================================================
-! [30] DNS & TUNNEL STEALTH: PROTOCOL DISCIPLINE (v11.2.0)
+! [30] DNS & TUNNEL STEALTH: PROTOCOL DISCIPLINE (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Хэш-маски для DNS-шлюзов и мгновенный бан Shadow TLDs.
+! Нагрузка на CPU: Минимальная. Жесткий контроль протоколов.
 
 ! --- Уровень 1: Заслон от скрытых DNS-каналов (DoH/DoT Isolation) ---
-! Принуждаем приложения использовать системный DNS, блокируя "тайные" шлюзы.
-! Это гарантирует, что все запросы проходят через твои фильтры.
-||dns-over-https.*^$important,third-party
-||dns-over-tls.*^$important,third-party
-||doh-proxy.*^$important
-||dot-proxy.*^$important
-||*/dns-query$network,important,domain=~cloudflare.com|~google.com|~quad9.net
+! Принуждаем приложения использовать доверенный DNS. 
+! Хэш-оптимизация для DoH/DoT шлюзов.
+||dns-over-https.^$important,third-party
+||dns-over-tls.^$important,third-party
+||doh-proxy.^$important
+||dot-proxy.^$important
+||dns-query^$network,important
 
 ! --- Уровень 2: Блокировка теневых туннелей (C&C Stealth) ---
-! Пресекаем попытки вредоносного ПО создать скрытый канал связи (Command & Control).
-||onion-gateway.*^$important
-||exit-node.*^$important
-||tor-node.*^$important
-||proxy-bypass.*^$important
-||vpn-tunnel.*^$important
-||*tunnel-service*.*^$important,third-party
+! Пресекаем попытки создания скрытых каналов связи (Command & Control).
+||onion-gateway.^$important
+||exit-node.^$important
+||tor-node.^$important
+||proxy-bypass.^$important
+||vpn-tunnel.^$important
+||tunnel-service.^$important,third-party
 
-! --- Уровень 3: DNS Hijacking & Poisoning Guard ---
-! Блокировка инструментов подмены доменных имен и агрессивных DDNS.
-||dns-poisoning.*^$important
-||nxdomain-hijack.*^$important
-||ddns.*^$important,third-party,domain=~no-ip.com|~duckdns.org
+! --- Уровень 3: DNS Hijacking & DDNS Guard ---
+! Блокировка подмены имен и подозрительных DDNS.
+||dns-poisoning.^$important
+||nxdomain-hijack.^$important
+||ddns.^$important,third-party
 
 ! --- Уровень 4: Альтернативные и Теневые зоны (Shadow TLDs) ---
-! Закрываем доступ к зонам, которые не регулируются ICANN и часто служат для малвари.
+! Закрываем доступ к нерегулируемым зонам (Малварь/Даркнет).
 ||*.bit^$important
 ||*.onion^$important
 ||*.lib^$important
@@ -1136,13 +1138,12 @@ ty
 ||*.emc^$important
 
 ! --- Уровень 5: Infrastructure Whitelist (Стабильность системы) ---
-! Гарантируем работу базовых узлов, необходимых для жизни ОС и обновлений.
+! Безусловный приоритет для ядерных узлов ОС (через Раздел 1).
 @@||googleapis.com^$important
 @@||samsung.com^$important
 @@||google.com^$important
 @@||apple.com^$important
 @@||microsoft.com^$important
-
 
 ! =========================================================================
 ! [31] THE LAST BASTION: ULTIMATE SHIELD (v11.2.0)
