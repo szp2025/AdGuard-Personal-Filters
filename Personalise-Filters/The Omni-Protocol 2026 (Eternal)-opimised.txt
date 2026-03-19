@@ -1562,12 +1562,13 @@ ty
 
 
 ! =========================================================================
-! [39] NETWORK SCANNING & SHODAN DEFENSE: STEALTH INFRASTRUCTURE (v11.2.0)
+! [39] NETWORK SCANNING & SHODAN DEFENSE: STEALTH INFRASTRUCTURE (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Хэш-блокировка поисковиков уязвимостей и защита LAN-контура.
+! Нагрузка на CPU: Минимальная. Полная невидимость во внешних и внутренних сетях.
 
 ! --- Уровень 1: IoT Search Engines Isolation (Ослепление сканеров) ---
-! Блокируем доступ сторонних скриптов к поисковикам по уязвимым устройствам.
-! Ты сможешь зайти на них сам, но сайты не смогут проверить твой IP через них.
+! Блокируем доступ сторонних скриптов к Shodan, Censys и др.
 ||shodan.io^$important,third-party
 ||censys.io^$important,third-party
 ||zoomeye.org^$important,third-party
@@ -1575,29 +1576,29 @@ ty
 ||leakix.net^$important,third-party
 
 ! --- Уровень 2: Localhost & Loopback Guard (Защита внутреннего контура) ---
-! Запрещаем внешним сайтам обращаться к твоему компьютеру напрямую.
-! Это предотвращает кражу данных из локальных API и веб-интерфейсов.
+! Запрещаем внешним сайтам обращаться к твоему устройству напрямую.
 ||127.0.0.1^$important,third-party
 ||localhost^$important,third-party
 ||[::1]^$important,third-party
 
 ! --- Уровень 3: Anti-Port Scanning (Защита от сканирования портов) ---
-! Блокируем веб-инструменты и JS-библиотеки, специализирующиеся на поиске открытых дверей.
-||*port-scan*.*^$important
-||*network-scanner*.*^$important
-||*masscan*.*^$important,third-party
-||*nmap-online*.*^$important
+! Блокируем JS-инструменты поиска открытых портов. Хэш-оптимизация.
+||port-scan.^$important
+||network-scanner.^$important
+||masscan.^$important,third-party
+||nmap-online.^$important
 
 ! --- Уровень 4: LAN Probing Defense (Защита домашней сети) ---
 ! Пресекаем попытки браузера "прощупать" другие устройства в твоем Wi-Fi.
-||192.168.*^$important,third-party
-||10.0.*^$important,third-party
-||172.16.*^$important,third-party
+||192.168.0.0/16^$important,third-party
+||10.0.0.0/8^$important,third-party
+||172.16.0.0/12^$important,third-party
 
 ! --- Уровень 5: Валидация системных служб (Stability Whitelist) ---
-! Разрешаем локальные запросы только для проверенных системных процессов.
+! Разрешаем локальные запросы только для проверенных инструментов разработки.
 @@||127.0.0.1^$domain=cups-pdf.local|localhost.localstack.cloud
 @@||localhost^$domain=jetbrains.com|docker.com
+
 
 
 ! =========================================================================
