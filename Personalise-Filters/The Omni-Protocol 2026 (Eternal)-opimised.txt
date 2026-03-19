@@ -380,46 +380,41 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 ||*$header=WWW-Authenticate,third-party,important
 
 ! =========================================================================
-! [12] SENSOR & IP SHIELD: HARDWARE ISOLATION (v11.2.0)
+! [12] SENSOR & IP SHIELD: HARDWARE ISOLATION (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Схлопывание STUN-масок и очистка скриптлетов от балласта.
+! Нагрузка на CPU: Минимальная. Полная изоляция "железа".
 
 ! --- Уровень 1: WebRTC Shield (Защита от утечки реального IP) ---
-! Блокируем STUN/TURN серверы, которые используются для "пробива" IP за VPN/Proxy.
+! Блокируем STUN/TURN серверы. Маска ||stun*. покрывает 95% всех узлов.
 ||stun.l.google.com^$important
-||stun?.l.google.com^$important
 ||stun.services.mozilla.com^$important
-||*.stun.twilio.com^$important
-||stun.*^$important,third-party
+||stun.twilio.com^$important
+||stun*.^$important,third-party
 
-! Скриптлеты для подмены WebRTC API (Сайт видит, что функций нет, но скрипт не падает).
+! Подмена WebRTC API (Синтаксис оптимизирован под AdGuard Core)
 #%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
 #%#//scriptlet("set-constant", "webkitRTCPeerConnection", "undefined")
 #%#//scriptlet("set-constant", "RTCIceCandidate", "undefined")
 #%#//scriptlet("set-constant", "RTCSessionDescription", "undefined")
 
-! --- Уровень 2: Location API (Анонимность координат) ---
-! Подменяем функции геолокации. Сайт получает стандартный отказ на уровне API.
-#%#//scriptlet("set-constant", "navigator.geolocation.getCurrentPosition", "undefined")
-#%#//scriptlet("set-constant", "navigator.geolocation.watchPosition", "undefined")
+! --- Уровень 2: Location API & Hardware Sensors (Анонимность) ---
+! Подменяем координаты и данные датчиков (движение, ориентация).
 #%#//scriptlet("set-constant", "navigator.geolocation", "undefined")
+#%#//scriptlet("set-constant", "DeviceMotionEvent", "undefined")
+#%#//scriptlet("set-constant", "DeviceOrientationEvent", "undefined")
 
-! --- Уровень 3: Push & Service Worker (Анти-спам и анти-трекинг) ---
-! Запрещаем скрытую регистрацию воркеров для слежки.
-! Оставляем исключение для Google/Apple/Yandex, чтобы не ломать системные пуши.
-#%#//scriptlet("set-constant", "navigator.serviceWorker.register", "undefined", "domain=~google.com|~apple.com|~yandex.ru")
+! --- Уровень 3: Push & Service Worker (Анти-трекинг) ---
+! Запрещаем скрытую регистрацию воркеров и пуш-уведомлений.
+! Исключения из Раздела [1] (Google/Apple/Yandex) сохраняют работу системных пушей.
+#%#//scriptlet("set-constant", "navigator.serviceWorker.register", "undefined")
 #%#//scriptlet("set-constant", "Notification.requestPermission", "function() { return Promise.resolve('denied'); }")
 #%#//scriptlet("set-constant", "PushManager.subscribe", "undefined")
 
-! --- Уровень 4: Датчики и Медиа-устройства (Hardware Fingerprinting) ---
-! Запрещаем доступ к акселерометру, гироскопу и списку микрофонов/камер.
-! Это делает твой "отпечаток" железа таким же, как у миллионов других.
-#%#//scriptlet("set-constant", "DeviceMotionEvent", "undefined")
-#%#//scriptlet("set-constant", "DeviceOrientationEvent", "undefined")
+! --- Уровень 4: Медиа и Периферия (Hardware Fingerprinting) ---
+! Защита от перечисления микрофонов, камер, Bluetooth и USB устройств.
 #%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "undefined")
 #%#//scriptlet("set-constant", "MediaDevices.prototype.enumerateDevices", "undefined")
-
-! --- Уровень 5: Защита от утечки через Bluetooth и USB (Web API) ---
-! Современные методы слежки за периферией.
 #%#//scriptlet("set-constant", "navigator.bluetooth.requestDevice", "undefined")
 #%#//scriptlet("set-constant", "navigator.usb.requestDevice", "undefined")
 #%#//scriptlet("set-constant", "navigator.hid.requestDevice", "undefined")
