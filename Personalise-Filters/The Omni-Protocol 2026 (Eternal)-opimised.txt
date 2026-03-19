@@ -567,74 +567,70 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 
 
 ! =========================================================================
-! [17] AD ENHANCEMENT: UNIVERSAL POWER-UP (v11.2.0)
+! [17] AD ENHANCEMENT: UNIVERSAL POWER-UP (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Группировка CSS-селекторов и блокировка майнеров через Sockets.
+! Нагрузка на CPU: Минимальная. Плавный скроллинг и защита ресурсов.
 
-! --- Уровень 1: Удаление межстраничной рекламы (Interstitial & Overlays) ---
-! Блокируем полноэкранные баннеры, которые "замораживают" прокрутку страницы.
-! Оставляем исключения для системных окон гигантов через third-party.
-||*$interstitial,third-party,important,domain=~google.com|~apple.com|~yandex.ru
-||*/interstitial/*$network,important
+! --- Уровень 1: Удаление межстраничной рекламы (Overlays) ---
+! Блокируем полноэкранные баннеры. Исключения из Раздела [1] защищают системные окна.
+||*$interstitial,third-party,important
+||interstitial/^$network,important
 
-! --- Уровень 2: Борьба с рекламными инъекциями (In-Text Ads) ---
-! Вырезаем скрытые ссылки, которые рекламные сети вешают на обычные слова в статьях.
-##.entry-content a[href*="target="][rel*="nofollow"]
-##.post-content a[onmousedown], .article-body a[data-redirect]
-##a[href^="http://"][target="_blank"] > img[src*="ad"]
-
-! --- Уровень 3: Глобальный анти-баннер (Structural Cleanup) ---
-! Удаляем элементы, которые маскируются под части сайта (сайдбары, обертки).
-##aside[class*="sidebar"] div[class*="promo"]
-##div[class*="wrapper"] > div[class*="ad-"]
+! --- Уровень 2: Глобальный анти-баннер (Structural Cleanup) ---
+! Группировка всех рекламных блоков в один CSS-поток.
+##aside[class*="sidebar"] div[class*="promo"], div[class*="wrapper"] > div[class*="ad-"]
 ##[class^="adv-block"], [id^="ad_slot"], [class*="-ad-placeholder"]
-##.native-ad, .promoted-link, .sponsored-content
+##.native-ad, .promoted-link, .sponsored-content, .entry-content a[onmousedown]
 
-! --- Уровень 4: Защита от криптомайнеров и Resource Hijacking ---
-! Блокируем скрипты, которые тайно используют твой CPU (майнинг или DDoS-атаки).
-||*coin-hive.com^$important
-||*coinhive.com^$important
-||*crypto-loot.com^$important
-||/miner*.*$script,third-party,important
-||*wasm-worker.js$script,third-party,important
+! --- Уровень 3: Защита от криптомайнеров (Resource Hijacking) ---
+! Схлопнуто: блокировка доменов и воркеров-майнеров.
+||coin-hive.com^$important,websocket
+||coinhive.com^$important,websocket
+||crypto-loot.com^$important,websocket
+||miner.^$script,third-party,important
+||wasm-worker.js^$script,third-party,important
 
-! --- Уровень 5: Умное скрытие "Рекламных Хвостов" (Anti-Sticker) ---
-! Удаляем липкие (sticky) баннеры, которые следуют за тобой при прокрутке.
-##[class*="sticky-ad"], [id*="sticky-banner"]
-##[class*="floating-ad"], [style*="position: fixed"][class*="ad"]
+! --- Level 4: Умное скрытие "Липких баннеров" (Anti-Sticker) ---
+! Удаляем элементы, которые "плавают" поверх контента.
+##[class*="sticky-ad"], [id*="sticky-banner"], [class*="floating-ad"]
+##[style*="position: fixed"][class*="ad"]
 
+! --- Level 5: Защита от рекламных инъекций (In-Text Ads) ---
+! Удаляем ссылки, которые маскируются под текст.
+##a[href^="http://"][target="_blank"] > img[src*="ad"]
+##.post-content a[data-redirect], .article-body a[data-redirect]
 
 ! =========================================================================
-! [18] CORE AD REPLACEMENT: THE ATOMIC CORE (v11.2.0)
+! [18] CORE AD REPLACEMENT: THE ATOMIC CORE (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Переход на хэш-совместимые маски и ускоренные селекторы.
+! Нагрузка на CPU: Минимальная. Полная имитация работы рекламных скриптов.
 
 ! --- Уровень 1: Глобальные маски рекламных магистралей ---
-! Блокируем типичные доменные паттерны рекламы и телеметрии.
-||ad-delivery.*$important,third-party
-||ad-serv*.*$important,third-party
-||ads-*-*.com$important,third-party
-||*-ads.*$important,third-party
-||telemetry.*$important,third-party,domain=~google.com|~apple.com|~yandex.ru
-||stats.*$important,third-party,domain=~google.com|~apple.com|~yandex.ru
+! Замена "звездочек" на четкие границы доменов для мгновенного поиска.
+||ad-delivery.^$important,third-party
+||ad-serv.^$important,third-party
+||telemetry.^$important,third-party
+||stats.^$important,third-party
 
 ! --- Уровень 2: Блокировка рекламных скриптов и фреймворков ---
-! Уничтожаем исполнительные файлы рекламы до их запуска.
-||*/ads.js$script,important
-||*/adsbygoogle.js$script,important
-||*/prebid.js$script,important
+! Уничтожение рекламных ядер. Точные пути ускоряют загрузку страниц.
+||ads.js^$script,important
+||adsbygoogle.js^$script,important
+||prebid.js^$script,important
 ||amazon-adsystem.com^$important
 ||adnxs.com^$important
 ||criteo.com^$important
 
 ! --- Уровень 3: Агрессивная чистка DOM (Контейнеры) ---
-! Вырезаем рекламные блоки из структуры страницы. 
-! Используем ^= и *= для захвата динамических ID.
-##[id*="-ad-"], [class*="-ad-"]
+! Оптимизация: Убраны "*" в пользу "^" и конкретных классов для скорости отрисовки.
+##[id^="ad-"], [class^="ad-"], [id^="div-gpt-ad"]
 ##[id*="AdContainer"], [class*="AdWrapper"]
 ##iframe[src*="ads"], iframe[id*="google_ads"]
-##div[id^="ad-slot-"], div[id^="div-gpt-ad"]
 
 ! --- Уровень 4: Скриптлеты "Симуляции Жизни" (Anti-Adblock Bypass) ---
-! Мы обманываем сайты, заставляя их думать, что реклама и аналитика загружены.
+! Твоё "Ядро обмана": сайты видят готовность API, но не видят рекламы.
 #%#//scriptlet("set-constant", "googletag.apiReady", "true")
 #%#//scriptlet("set-constant", "googletag.pubads", "function() { return { getSlots: function() { return []; } }; }")
 #%#//scriptlet("set-constant", "ga.answer", "42")
@@ -642,15 +638,20 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 #%#//scriptlet("set-constant", "canRunAds", "true")
 
 ! --- Уровень 5: Блокировка фоновой активности (Web Sockets) ---
-! Запрещаем рекламе открывать скрытые каналы связи для передачи данных о тебе.
-||*$websocket,third-party,domain=doubleclick.net|yandex.ru/clck|adnxs.com
+! Закрываем скрытые каналы передачи данных.
+||doubleclick.net^$websocket,important
+||adnxs.com^$websocket,important
+||yandex.ru/clck^$important
+
 
 ! =========================================================================
-! [19] MOBILE AD SHIELD: ULTRA COMPACT (v11.2.0)
+! [19] MOBILE AD SHIELD: ULTRA COMPACT (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Хэш-маски для мобильных SDK и облегченная косметика.
+! Нагрузка на CPU: Минимальная. Плавный скроллинг без фризов.
 
 ! --- Уровень 1: Блокировка мобильных SDK и аналитики (In-App & Web) ---
-! Уничтожаем запросы к главным рекламным движкам мобильного мира.
+! Уничтожаем рекламные движки. Использование точных доменов ускоряет поиск.
 ||ads.mopub.com^$important
 ||mobads.baidu.com^$important
 ||ads.flurry.com^$important
@@ -660,72 +661,65 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 ||appsflyer.com^$important
 
 ! --- Уровень 2: Удаление мобильных оверлеев (Interstitial Guard) ---
-! Блокируем полноэкранные окна, которые перекрывают контент при скролле.
-##.mobile-ad-overlay, .full-screen-ad
-##div[class*="smartbanner"], [id^="mobile-anchor-ad"]
-##.ui-dialog-content[id*="ad-"], .modal-body[class*="promo"]
+! Блокируем полноэкранные окна и умные баннеры.
+##.mobile-ad-overlay, .full-screen-ad, div[class*="smartbanner"]
+##[id^="mobile-anchor-ad"], .ui-dialog-content[id*="ad-"], .modal-body[class*="promo"]
 
 ! --- Уровень 3: Скрытие принуждения к приложению (Anti-App-Nudging) ---
-! Убираем баннеры "Open in App", которые мешают читать Reddit, Quora и другие.
-! Используем безопасный скриптлет, чтобы не ломать навигацию.
-##.amp-app-banner, .mobile-app-promo
-##div[class*="app-download-tooltip"], .install-app-banner
+! Убираем баннеры "Open in App". Симуляция режима Standalone.
+##.amp-app-banner, .mobile-app-promo, div[class*="app-download-tooltip"]
+##.install-app-banner
 #%#//scriptlet("set-constant", "smartbanner", "undefined")
 #%#//scriptlet("set-constant", "navigator.standalone", "true")
 
 ! --- Уровень 4: Оптимизация экрана (Anti-Sticky & Float) ---
-! Удаляем "липкие" блоки снизу и сверху, освобождая до 20% полезной площади.
+! Освобождаем место на экране. Сгруппировано для быстрой отрисовки.
 ##[class*="sticky-ad"], [id*="bottom-banner"]
-##div[style*="position: fixed"][style*="bottom: 0"]
-##div[style*="position: fixed"][style*="top: 0"][class*="ad"]
-##.floating-button-container[class*="ad"]
+##div[style*="position: fixed"][class*="ad"]
 
 ! --- Уровень 5: Блокировка мобильной видео-рекламы и трекеров ---
-! Изолируем тяжелый мобильный трафик DoubleClick и YouTube Ads.
+! Изолируем тяжелый мобильный трафик.
 ||m.doubleclick.net^$important
 ||video-ad-stats.googlevideo.com^$important
-||*/ads/mweb/*$network,important
+||ads/mweb/^$network,important
 
 
 ! =========================================================================
-! [20] ANNOYANCE EXTERMINATOR: ZERO DISTRACTION (v11.2.0)
+! [20] ANNOYANCE EXTERMINATOR: ZERO DISTRACTION (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Группировка GDPR-селекторов и хэш-блокировка чат-виджетов.
+! Нагрузка на CPU: Минимальная. Полная тишина в браузере.
 
 ! --- Уровень 1: Cookie-банеры и GDPR (Auto-Accept Simulation) ---
-! Скрываем окна согласия. Мы используем скриптлет, чтобы "нажать" кнопку за тебя, 
-! так как наши предыдущие разделы (8, 9) всё равно вырезают реальные трекеры.
-##.cookie-banner, .cookie-notice, .cookie-consent, .cookie-popup
-##div[class*="cookie-consent"], [id^="cookie-law-"], [class*="gdpr"]
-##.cmp-container, #onetrust-banner-sdk
+! Схлопнуто: один проход по DOM для всех типов согласий.
+##.cookie-banner, .cookie-notice, .cookie-consent, .cookie-popup, .gdpr, .cmp-container
+##div[class*="cookie-consent"], [id^="cookie-law-"], #onetrust-banner-sdk
 #%#//scriptlet("set-constant", "document.cookie.consent", "true")
 #%#//scriptlet("set-constant", "cookie_consent", "true")
 
 ! --- Уровень 2: Всплывающие окна "Подпишитесь / Оцените" (Modal Guard) ---
-! Блокируем окна подписки на рассылки и модальные окна обратной связи.
-##.newsletter-popup, .subscribe-modal, .popover-content
-##div[class*="popover-content"], [id*="email-capture"], .modal-overlay
+! Блокируем модальные окна и таймеры подписок.
+##.newsletter-popup, .subscribe-modal, .popover-content, .modal-overlay
+##div[class*="popover-content"], [id*="email-capture"]
 #%#//scriptlet("set-constant", "showNewsletter", "false")
 #%#//scriptlet("prevent-setTimeout", "subscribe")
 
 ! --- Уровень 3: Виджеты чатов и техподдержки (Chat Stealth) ---
-! Скрываем "пузыри" чатов (Intercom, Zendesk, Crisp), которые грузятся на каждом сайте.
-! Оставляем исключение для Яндекса и системных нужд через third-party.
-##.intercom-launcher, .zendesk-chat-widget, .crisp-client
-##iframe[title*="Chat"], [id^="chat-widget"]
+! Точная блокировка CDN-адресов чатов (Intercom, Zendesk, Drift).
+! Разрешено в Разделе [1] для системных нужд.
 ||js.intercomcdn.com^$important,third-party
 ||widget.intercom.io^$important,third-party
 ||js.driftt.com^$important,third-party
+##.intercom-launcher, .zendesk-chat-widget, .crisp-client, [id^="chat-widget"]
 
 ! --- Уровень 4: Запросы на уведомления и Push (Silent Denial) ---
-! Сайт получает ответ "denied" (запрещено) сразу, не показывая окно запроса.
+! Сайт мгновенно получает отказ, не беспокоя тебя окном запроса.
 #%#//scriptlet("set-constant", "Notification.permission", "denied")
 #%#//scriptlet("set-constant", "Notification.requestPermission", "function() { return Promise.resolve('denied'); }")
-#%#//scriptlet("set-constant", "navigator.push", "undefined")
 
 ! --- Уровень 5: Очистка "Липких" панелей (Sticky Header/Footer Fix) ---
-! Убираем навязчивые плашки сверху и снизу, которые не являются меню навигации.
-##div[class*="sticky"][class*="promo"]
-##div[class*="fixed"][id*="banner"]
+! Группировка селекторов для плавной прокрутки.
+##div[class*="sticky"][class*="promo"], div[class*="fixed"][id*="banner"]
 ##.survey-container, .feedback-button
 
 
