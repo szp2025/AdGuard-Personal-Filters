@@ -766,18 +766,19 @@ ty
 
 
 ! =========================================================================
-! [22] ANTI-ADBLOCK REPLENISHMENT: STEALTH OVERRIDE (v11.2.0)
+! [22] ANTI-ADBLOCK REPLENISHMENT: STEALTH OVERRIDE (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Группировка модальных селекторов и превентивный Scroll-Unlock.
+! Нагрузка на CPU: Минимальная. Полный обход блокировщиков "на лету".
 
 ! --- Уровень 1: Визуальное подавление модальных окон (Modal Guard) ---
-! Прячем оверлеи и сообщения, которые перекрывают экран при обнаружении фильтра.
-##.ab-test-modal, .adblock-overlay, .adblock-message
-##div[class*="adblock-overlay"], section[id*="adblock-message"]
-##div[class*="ad-blocker-detected"], .blocking-notice-container
-##div[id*="sp-message-container"]
+! Схлопнуто: один CSS-поток для всех типов оверлеев.
+##.ab-test-modal, .adblock-overlay, .adblock-message, .ad-blocker-detected
+##div[class*="adblock-overlay"], section[id*="adblock-message"], [id*="sp-message-container"]
+##.blocking-notice-container
 
 ! --- Уровень 2: Умная мимикрия (Deception Mode) ---
-! Сообщаем скриптам сайта, что рекламные функции работают штатно.
+! Твоё "Ядро обмана": сайты видят готовность рекламных API.
 #%#//scriptlet("set-constant", "canRunAds", "true")
 #%#//scriptlet("set-constant", "isAdBlockActive", "false")
 #%#//scriptlet("set-constant", "adblock", "false")
@@ -785,24 +786,21 @@ ty
 #%#//scriptlet("set-constant", "googletag.pubads.getSlots", "function() { return []; }")
 
 ! --- Уровень 3: Прерывание скриптов обнаружения (JS-Silent Stop) ---
-! Вместо блокировки чтения, мы используем prevent-setTimeout, 
-! чтобы таймеры проверки "зависали" навсегда, не ломая страницу.
+! "Замораживаем" таймеры проверок.
 #%#//scriptlet("prevent-setTimeout", "detectAdBlock")
 #%#//scriptlet("prevent-setInterval", "checkAdBlock")
-#%#//scriptlet("abort-on-property-read", "window.blockerDetected", "domain=~google.com|~yandex.ru")
+#%#//scriptlet("abort-on-property-read", "window.blockerDetected")
 
 ! --- Уровень 4: Восстановление прокрутки (Scroll Lock Bypass) ---
-! Многие сайты убирают возможность скроллить, пока не выключишь блок.
-! Возвращаем стандартное поведение браузера.
-#%#//scriptlet("set-attribute", "body", "style", "overflow: auto !important;")
-#%#//scriptlet("set-attribute", "html", "style", "overflow: auto !important;")
+! Вместо постоянного set-attribute, используем точечный стиль.
+! Это не нагружает CPU при скроллинге.
+##html, body:style(overflow: auto !important; height: auto !important;)
 
 ! --- Уровень 5: Блокировка внешних сервисов обнаружения (Detection APIs) ---
-! Отрезаем доступ к популярным "анти-адблокам как услуга".
+! Отрезаем доступ к "анти-адблокам как услуга".
 ||blockadblock.com^$important
 ||admiral.com^$important,third-party
 ||fundingchoicesmessages.google.com^$important
-
 
 
 ! =========================================================================
