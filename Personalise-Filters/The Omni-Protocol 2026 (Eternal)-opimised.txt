@@ -142,45 +142,49 @@ $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 ! Удаляем технический заголовок Google, который сообщает о версии клиента.
 $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 
-
-
 ! =========================================================================
-! [5] GLOBAL SEARCH PRIVACY: UNIVERSAL SEARCH SHIELD (v11.2.0)
+! [5] GLOBAL SEARCH PRIVACY: UNIVERSAL SEARCH SHIELD (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Точные домены (Fast-Match) вместо регулярных масок .*
+! Нагрузка на CPU: Минимальная. Исключена двойная проверка доменов.
 
-! --- Уровень 1: Тотальная очистка параметров запроса (Regex Purge) ---
-! Удаляем мусор, который выдает твое устройство, разрешение экрана и ID сессии
-||google.*$removeparam=/^(sourceid|client|gs_lcp|sclient|ei|oq|ved|uact|source|biw|bih)/,domain=~google.com
-||yandex.*$removeparam=/^(lr|redircnt|src|from|mda|mdo|device_id)/,domain=~yandex.ru
-||bing.com$removeparam=/^(cvid|form|sk|sp|qs|pq|sc|qs|sk|cvid)/
-||duckduckgo.com$removeparam=/^(t|atb|kai|kad|kn|kp)/
-||yahoo.com$removeparam=/^(p|ei|fr|fr2|v)/
-||baidu.com$removeparam=/^(from|rsv_pq|rsv_t|rqlang|rsv_enter|rsv_sug3)/
-||ecosia.org$removeparam=/^(tt|q)/
+! --- Уровень 1: Тотальная очистка параметров (Search Clean) ---
+! Мы схлопнули параметры и указали точные домены для мгновенной обработки.
+||google.com^$removeparam=/^(sourceid|client|gs_lcp|sclient|ei|oq|ved|uact|source|biw|bih)/,important
+||yandex.ru^$removeparam=/^(lr|redircnt|src|from|mda|mdo|device_id)/,important
+||yandex.com^$removeparam=/^(lr|redircnt|src|from|mda|mdo|device_id)/,important
+||bing.com^$removeparam=/^(cvid|form|sk|sp|qs|pq|sc|qs|sk|cvid)/,important
+||duckduckgo.com^$removeparam=/^(t|atb|kai|kad|kn|kp)/,important
+||baidu.com^$removeparam=/^(from|rsv_pq|rsv_t|rqlang|rsv_enter|rsv_sug3)/,important
 
-! --- Уровень 2: Скрытие источника (Referer Masking) ---
-! Поисковик не узнает, с какого сайта ты пришел. Маскируем Referer под корень домена.
-||*$header=Referer,important,domain=google.*|yandex.*|bing.com|duckduckgo.com|baidu.com|yahoo.com
+! --- Уровень 2: Скрытие источника (Referer Stealth) ---
+! Используем нативный модификатор origin — это в разы быстрее для батареи.
+||google.com^$referer=origin,important
+||yandex.ru^$referer=origin,important
+||yandex.com^$referer=origin,important
+||bing.com^$referer=origin,important
+||duckduckgo.com^$referer=origin,important
 
-! --- Уровень 3: Блокировка Prefetch & Beacon (Защита от предсказаний) ---
-! Запрещаем поисковикам заранее загружать сайты из выдачи (это экономит трафик и скрывает интерес)
-||google.*/search?*$network,important,domain=~google.com
-||yandex.*/search?*$network,important,domain=~yandex.ru
-! Запрещаем скрытую отправку статистики кликов через Beacon API
+! --- Level 3: Защита от предсказаний (Anti-Prefetch) ---
+! Блокируем скрытую предзагрузку ссылок, экономя трафик и ресурс CPU.
+||google.com/search?*$network,important
+||yandex.ru/search?*$network,important
+||yandex.com/search?*$network,important
+
+! --- Level 4: Истребление Click-Tracking (Скриптлеты) ---
+! Убиваем функции слежки за кликами без нагрузки на JS-движок.
 #%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
-
-! --- Уровень 4: Истребление Click-Tracking (Скриптлеты) ---
-! Убиваем функции, которые сообщают поисковику, на какую ссылку ты нажал
-#%#//scriptlet("abort-current-inline-script", "google.navigation")
-#%#//scriptlet("abort-current-inline-script", "yandex.metrika")
 #%#//scriptlet("set-constant", "rwt", "undefined")
 #%#//scriptlet("set-constant", "window.ping", "undefined")
+#%#//scriptlet("abort-current-inline-script", "google.navigation")
 #%#//scriptlet("prevent-listener", "click", "yandex.ru/clck")
 
-! --- Уровень 5: Чистая выдача (Anti-Redirect) ---
-! Заставляем браузер открывать прямые ссылки, а не ссылки-редиректы поисковиков
-||google.*$removeparam=url,domain=google.*
-||yandex.*/clck/*$network,important
+! --- Level 5: Чистая выдача (Anti-Redirect) ---
+! Убираем промежуточные ссылки-шпионы.
+||google.com^$removeparam=url,important
+||yandex.ru/clck/*$network,important
+||yandex.com/clck/*$network,important
+
 
 ! =========================================================================
 ! [6] HIDE SEARCH QUERIES: UNIVERSAL STEALTH BYPASS (v11.2.0)
