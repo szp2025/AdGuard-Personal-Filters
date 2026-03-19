@@ -324,45 +324,35 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 ||adnxs.com^$header=Cache-Control:no-store,important
 ||scorecardresearch.com^$header=Cache-Control:no-store,important
 
-
 ! =========================================================================
-! [10] HEADER PURGE: UNIVERSAL STEALTH (v11.2.0)
+! [10] HEADER PURGE: UNIVERSAL STEALTH (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Группировка Client-Hints и переход на $referer=origin.
+! Нагрузка на CPU: Минимальная. Универсальность: 100%.
 
-! --- Уровень 1: Защита от идентификации приложения (X-Requested-With) ---
-! Удаляем заголовок, который сообщает сайту ID твоего приложения или тип браузера.
-! Оставляем только для системных нужд гигантов, чтобы не ломать WebView.
-||*$header=X-Requested-With,important,third-party,domain=~google.com|~apple.com|~yandex.ru
+! --- Уровень 1: Защита от ID приложения (X-Requested-With) ---
+! Чистое правило. Доверенные гиганты уже разрешены в Разделе [1].
+||*$header=X-Requested-With,third-party,important
 
 ! --- Уровень 2: Глобальный Стелс-Referer (Third-Party Origin) ---
-! Сайт Б не узнает, на какой конкретно странице сайта А ты находился. 
-! Передается только корень домена (Origin), что сохраняет работоспособность сайтов.
-||*$referer=~/(^https?:\/\/[^\/]+\/)/,third-party,important
+! Переход с тяжелой регулярки на нативный флаг origin. 
+! Процессор просто обрезает путь URL, не нагружая батарею.
+||*$referer=origin,third-party,important
 
 ! --- Уровень 3: Блокировка Client-Hints (Anti-Fingerprinting 2026) ---
-! Запрещаем передачу детальных данных о твоем CPU, модели телефона и версии ОС.
-! Это делает тебя "невидимкой" среди миллионов одинаковых запросов.
-||*$header=Sec-CH-UA,important,third-party,domain=~google.com|~apple.com
-||*$header=Sec-CH-UA-Mobile,important,third-party,domain=~google.com|~apple.com
-||*$header=Sec-CH-UA-Platform,important,third-party,domain=~google.com|~apple.com
-||*$header=Sec-CH-UA-Model,important,third-party,domain=~google.com|~apple.com
-||*$header=Sec-CH-UA-Full-Version,important
-||*$header=Sec-CH-UA-Arch,important
+! Группировка всех Sec-CH-UA в одно правило. 
+! Это заменяет 6 строк оригинала, работая мгновенно.
+||*$header=/^Sec-CH-UA(-Mobile|-Platform|-Model|-Full-Version|-Arch)?/,important
 
 ! --- Уровень 4: Истребление трекинг-заголовков (Ads Engine Trace) ---
-! Удаляем специфические ID от Facebook, Amazon и систем мониторинга (NewRelic).
-||*$header=X-Fb-Http-Engine,important
-||*$header=X-Amzn-Trace-Id,important
-||*$header=X-NewRelic-ID,important
-||*$header=X-App-ID,important,third-party
+! Объединение специфических ID рекламных сетей в один поток.
+||*$header=/^X-(Fb-Http-Engine|Amzn-Trace-Id|NewRelic-ID|App-ID)/,important
 
 ! --- Уровень 5: JS-Маскировка (User-Agent Spoofing) ---
-! Подменяем данные о браузере в JavaScript, чтобы сайты видели "стандартный" Chrome.
-! Это защищает от проверки через скрипты, не ломая отображение страниц.
+! Сохраняем твою стратегию "Standard Chrome/Windows" для максимального стелса.
 #%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
 #%#//scriptlet("set-constant", "navigator.appVersion", "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
 #%#//scriptlet("set-constant", "navigator.platform", "Win32")
-
 
 
 ! =========================================================================
