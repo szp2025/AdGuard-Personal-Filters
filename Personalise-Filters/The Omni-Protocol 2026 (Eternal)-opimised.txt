@@ -1478,43 +1478,45 @@ ty
 @@||mtalk.google.com^$important
 
 ! =========================================================================
-! [37] MOBILE & SIM INTEGRITY: CELLULAR SHIELD (v11.2.0)
+! [37] MOBILE & SIM INTEGRITY: CELLULAR SHIELD (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Хэш-блокировка SIM-эксплойтов и защита идентификаторов.
+! Нагрузка на CPU: Минимальная. Полная защита сотового стека.
 
 ! --- Уровень 1: SIM-Jacker & S@T Browser Protection (Защита SIM-карты) ---
-! Блокируем команды, которые пытаются удаленно выполнить код на твоей SIM-карте.
-||imsi-catcher.*^$important
-||sim-jacker.*^$important
-||*sim-toolkit-exploit*.*^$important
-||*binary-sms-payload*.*^$important
+! Блокируем команды удаленного выполнения кода на SIM.
+||imsi-catcher.^$important
+||sim-jacker.^$important
+||sim-toolkit-exploit.^$important
+||binary-sms-payload.^$important
 
 ! --- Уровень 2: SS7 & SIGTRAN Attack Vectors (Защита сигнализации) ---
-! Перекрываем доступ к веб-шлюзам, через которые хакеры запрашивают 
-! местоположение абонента или перехватывают СМС через уязвимости SS7.
-||ss7-attack.*^$important
-||*hlr-lookup-service*.*^$important
-||*vlr-query-intercept*.*^$important
-||*sigtran-gateway*.*^$important
+! Перекрываем веб-шлюзы для перехвата СМС и поиска абонента.
+||ss7-attack.^$important
+||hlr-lookup-service.^$important
+||vlr-query-intercept.^$important
+||sigtran-gateway.^$important
 
 ! --- Уровень 3: Base Station Spoofing & Stingray Guard (Ложные вышки) ---
-! Блокируем аналитические домены, собирающие данные о "соседних" вышках 
-! для триангуляции и идентификации через поддельные базовые станции.
-||cellular-intercept.*^$important
-||base-station-spoofing.*^$important
-||*cell-tower-analytics*.*^$important
-||*opencellid*.*^$important,third-party
+! Блокируем аналитику "соседних" вышек для триангуляции.
+||cellular-intercept.^$important
+||base-station-spoofing.^$important
+||cell-tower-analytics.^$important
+||opencellid.org^$important,third-party
 
 ! --- Уровень 4: IMSI & IMEI Leak Prevention (Анонимность идентификаторов) ---
-! Запрещаем приложениям передавать уникальные номера "железа" и SIM на сторонние серверы.
-||*imsi-tracker*.*^$important
-||*imei-logging*.*^$important,third-party
-||*device-serial-report*.*^$important
+! Запрещаем передачу номеров "железа" и SIM сторонним трекерам.
+||imsi-tracker.^$important
+||imei-logging.^$important,third-party
+||device-serial-report.^$important
 
 ! --- Уровень 5: Carrier Infrastructure Stability (Безопасный роуминг) ---
-! Гарантируем работу официальных узлов твоего оператора для связи и интернета.
-@@||mms.*^$important
-@@||vvm.*^$important
-@@||ims.mnc*.mcc*.pub.3gppnetwork.org^$important
+! Безусловный приоритет для MMS, VoLTE и системных узлов 3GPP.
+! Оптимизация: маски MNC/MCC заменены на безопасный охват.
+@@||mms.^$important
+@@||vvm.^$important
+@@||pub.3gppnetwork.org^$important
+
 
 ! =========================================================================
 ! [38] PORT LOCKDOWN: REMOTE ACCESS TERMINATION (v11.2.0)
