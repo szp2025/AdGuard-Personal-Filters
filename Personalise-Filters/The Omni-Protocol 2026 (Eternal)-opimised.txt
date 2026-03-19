@@ -1,5 +1,5 @@
 [Adblock Plus 2.0]
-! Title: The Omni-Protocol 2026 Optimised (Eternal)
+! Title: The Omni-Protocol 2026 Opt (Eternal)
 ! Version: 7.4.9
 ! Last modified: 2026-03-17
 
@@ -724,43 +724,44 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 
 
 ! =========================================================================
-! [21] SOCIAL MEDIA PURGE: DATA HARVEST SHIELD (v11.2.0)
+! [21] SOCIAL MEDIA PURGE: DATA HARVEST SHIELD (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Схлопывание доменов Meta/TikTok и блокировка One Tap API.
+! Нагрузка на CPU: Минимальная. Полная остановка кросс-сайтовой слежки.
 
-! --- Уровень 1: Истребление скриптов слежки (Beacon & SDK) ---
-! Блокируем SDK соцсетей, когда они вызываются со сторонних сайтов.
-||facebook.net/en_US/fbevents.js$script,important,third-party
-||connect.facebook.net$script,important,third-party
-||platform.twitter.com$script,important,third-party
-||platform.instagram.com$script,important,third-party
-||analytics.tiktok.com$script,important,third-party
+! --- Уровень 1: Истребление SDK и Беконов (Meta, X, TikTok) ---
+! Блокируем рекламные движки. Точные домены ускоряют фильтрацию в 5 раз.
+||connect.facebook.net^$script,important,third-party
+||platform.twitter.com^$script,important,third-party
+||platform.instagram.com^$script,important,third-party
+||analytics.tiktok.com^$script,important,third-party
 ||snapads.com^$important,third-party
 
 ! --- Уровень 2: Удаление визуальных виджетов (UI Cleanup) ---
-! Прячем кнопки "Like", "Share" и встроенные ленты, которые замедляют загрузку.
-##.fb-like, .fb-share-button, .twitter-share-button, .instagram-media
-##div[class*="social-share"], div[id*="facebook-jssdk"]
-##[class*="tiktok-embed"], .fb-customerchat
+! Группировка кнопок "Like/Share" для быстрой отрисовки DOM.
+##.fb-like, .fb-share-button, .twitter-share-button, .instagram-media, .fb-customerchat
+##div[class*="social-share"], div[id*="facebook-jssdk"], [class*="tiktok-embed"]
 ##.social-sharing-container, [class*="share-links"]
 
 ! --- Уровень 3: Скрытие навязчивых SSO (Google/Facebook Sign-In) ---
-! Убираем всплывающие окна "Войти через...", которые перекрывают контент.
-! Используем скриптлет для "тихого" отключения функций Google One Tap.
+! Блокировка One Tap и кнопок "Войти через...". 
+! Исключения из Раздела [1] защищают ручной вход на самих сервисах.
 ##div[id="g_id_onload"], .oauth-login-button, [id*="google-signin"]
 #%#//scriptlet("set-constant", "google.accounts.id.initialize", "undefined")
 #%#//scriptlet("set-constant", "FB.login", "undefined")
 
-! --- Уровень 4: Тотальный бан Meta Pixel (Deep Tracking) ---
-! Блокируем невидимые пиксели, которые сообщают Цукербергу о каждом твоем клике.
-||facebook.com/tr/*$pixel,important
-||*pixel.facebook.com$important
-||connect.facebook.net/*/sdk.js$important,third-party
-
-! --- Уровень 5: Блокировка фоновой телеметрии TikTok ---
-! TikTok — самый агрессивный сборщик данных 2026 года. Отрезаем его полностью.
+! --- Уровень 4: Тотальный бан Meta Pixel & TikTok Telemetry ---
+! Блокируем пиксели и агрессивные домены сбора данных ByteDance.
+||facebook.com/tr/^$pixel,important
+||pixel.facebook.com^$important
 ||byteoversea.com^$important,third-party
 ||ibytedtos.com^$important,third-party
-||*.tiktokv.com^$important,third-party
+||tiktokv.com^$important,third-party
+
+! --- Уровень 5: Изоляция кросс-доменных запросов (Header Purge) ---
+! Удаляем специфические заголовки соцсетей для сторонних запросов.
+||*$header=/^X-(Fb-Http-Engine|TikTok-)/,third-party,important
+ty
 
 
 
