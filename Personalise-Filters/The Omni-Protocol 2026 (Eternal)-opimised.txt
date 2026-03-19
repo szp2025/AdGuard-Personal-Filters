@@ -33,6 +33,29 @@ $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 #%#//scriptlet("set-constant", "navigator.globalPrivacyControl|window.optOut", "true")
 
 
+! --- Мгновенный сброс DNS для мусора ---
+||ads.^$dnstype=A,empty
+||metrics.^$dnstype=A,empty
+||telemetry.^$dnstype=A,empty
+||tracking.^$dnstype=A,empty
+||analytics.^$dnstype=A,empty
+
+! --- Оптимизация отрисовки ---
+||/^(fonts.gstatic|fonts.googleapis).com$/^$important,third-party,content=off
+! Отключаем предварительную загрузку (Preconnect), которая ест ресурсы
+||*$dnstype=HTTPS,domain=~system,~google.com
+
+! --- Разрыв фоновых соединений ---
+||$websocket,third-party,important,reject
+||$ping,third-party,important,reject
+
+! --- Ускорение отрисовки в Saint-Étienne ---
+||/^(consent|cookie-law|trustarc|onetrust|quantcast)./^$important,reject
+||/^(privacy-center|user-report)./^$important,reject
+
+! --- TLS Speed-Up ---
+$network=tls,pqc=off,domain=~google.com|~github.com|~revolut.com
+
 
 ! =========================================================================
 ! [MEGA-BLOCK II] TRACKER GENOCIDE & URL PURGE (v2026.1-HYPER)
