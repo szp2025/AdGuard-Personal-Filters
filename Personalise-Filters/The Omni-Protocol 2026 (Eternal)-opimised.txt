@@ -53,6 +53,8 @@ $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 ! --- TLS Speed-Up ---
 $network=tls,pqc=off,domain=~google.com|~github.com|~revolut.com
 
+! --- Мгновенное зануление (Speed-Focus + Cloudflare & AI) ---
+||/^(ads|metrics|telemetry|tracking|analytics|stats|events|adservice|cloudflareinsights|browser-intake-datadoghq|events.statsigapi)\./^$dnstype=A,empty,important
 
 ! =========================================================================
 ! [MEGA-BLOCK II] TRACKER GENOCIDE & URL PURGE (v2026.1-HYPER)
