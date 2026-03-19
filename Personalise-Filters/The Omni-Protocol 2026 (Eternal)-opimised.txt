@@ -227,38 +227,37 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 #%#//scriptlet("prevent-listener", "click", "yandex.com/clck")
 
 ! =========================================================================
-! [7] PRIVACY HEADERS: SUPREME PRIVACY CONTROL (v11.2.0)
+! [7] PRIVACY HEADERS: SUPREME PRIVACY CONTROL (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Группировка Client Hints и переход на $referer=origin.
+! Нагрузка на CPU: Минимальная. Полная универсальность.
 
-! --- Уровень 1: Глобальные сигналы приватности (HTTP Headers) ---
-! Принудительно вставляем сигналы DNT и GPC во все исходящие запросы
+! --- Уровень 1: Глобальные сигналы и Client Hints (Групповая очистка) ---
+! Применяем сигналы DNT/GPC и вырезаем данные об устройстве одним блоком.
 ||*$header=DNT,1,important
 ||*$header=Sec-GPC,1,important
-! Запрещаем передачу данных о твоем устройстве через User-Agent Client Hints
-||*$header=Sec-CH-UA,important
-||*$header=Sec-CH-UA-Model,important
-||*$header=Sec-CH-UA-Platform,important
+||*$header=/^Sec-CH-UA(-Model|-Platform)?/,important
 
 ! --- Уровень 2: JS-Анонимизация (Браузерное API) ---
-! Маскируем настройки браузера под режим "Максимальная Приватность"
+! Маскируем API под режим "Max Privacy" через быстрые константы.
 #%#//scriptlet("set-constant", "navigator.doNotTrack", "1")
 #%#//scriptlet("set-constant", "navigator.msDoNotTrack", "1")
 #%#//scriptlet("set-constant", "window.doNotTrack", "1")
 #%#//scriptlet("set-constant", "navigator.globalPrivacyControl", "true")
 
-! --- Уровень 3: Защита от Fingerprinting (Перехват попыток слежки) ---
-! Подменяем функции, которыми сайты проверяют, запретил ли ты слежку
+! --- Уровень 3: Защита от Fingerprinting (Anti-Trace) ---
 #%#//scriptlet("set-constant", "window.optOut", "true")
 #%#//scriptlet("set-constant", "navigator.donottrack", "1")
 
-! --- Уровень 4: Скрытый Referer (Глобальный Стелс) ---
-! Ограничиваем передачу Referer только до базового домена (Origin) для всех сайтов.
-! Это не ломает авторизацию, но скрывает конкретные страницы, которые ты посещал.
-||*$referer=~/(^https?:\/\/[^\/]+\/)/,important
+! --- Уровень 4: Скрытый Referer (Global Origin Stealth) ---
+! Переход с тяжелой регулярки на нативный флаг origin. 
+! Процессор теперь просто обрезает путь, не парся строку.
+||*$referer=origin,important
 
-! --- Уровень 5: Умный "No-Cache" (Защита от E-Tags) ---
-! Метод отслеживания через кэш браузера. Заставляем сайты обновлять заголовки.
-||*$header=If-None-Match,important,domain=~google.com|~apple.com|~yandex.ru|~revolut.com
+! --- Уровень 5: Защита от E-Tags (Оптимизированный кэш) ---
+! Мы убрали длинный список исключений (~), так как доверенные домены 
+! уже в белом списке Раздела [1] и [9]. Это экономит память.
+||*$header=If-None-Match,important
 
 
 ! =========================================================================
