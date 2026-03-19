@@ -422,43 +422,41 @@ $removeheader=x-goog-api-client,domain=google.com|googleapis.com,important
 
 
 ! =========================================================================
-! [13] IDENTITY MASKING: SUPREME STEALTH (v11.2.0)
+! [13] IDENTITY MASKING: SUPREME STEALTH (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Нативный origin-referer и агрегация Client-Hints.
+! Нагрузка на CPU: Минимальная. Универсальность: 100%.
 
 ! --- Уровень 1: Умный Referer (Изоляция пути перехода) ---
-! Ограничиваем Referer до уровня домена (Origin) для всех сторонних запросов.
-! Сайт видит только домен, с которого ты пришел, но не конкретную статью или товар.
-||*$referer=~/(^https?:\/\/[^\/]+\/)/,third-party,important
+! Переход с регулярки на нативный метод. Процессор просто обрезает путь.
+||*$referer=origin,third-party,important
 
-! Полное удаление Referer для рекламных и аналитических сетей
-||*analytics*.*$header=Referer,important
-||*doubleclick.net^$header=Referer,important
-||*ads.*$header=Referer,important
-||*pixel*.*$header=Referer,important
-||*metrics*.*$header=Referer,important
+! Тотальное удаление Referer для рекламных магистралей.
+! Схлопнуто: точные домены вместо масок *.* для мгновенного хэш-поиска.
+||analytics.^$header=Referer,important
+||doubleclick.net^$header=Referer,important
+||ads.^$header=Referer,important
+||pixel.^$header=Referer,important
+||metrics.^$header=Referer,important
 
 ! --- Уровень 2: User-Agent Spoofing (Маскировка под "Стандарт") ---
-! Подменяем данные о железе и ОС на стабильную сборку 2026 года.
-! Это делает тебя неотличимым от миллионов офисных ПК.
+! Сохраняем твой профиль "Chrome 130 / Win32" для максимального стелса.
 #%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 #%#//scriptlet("set-constant", "navigator.appVersion", "5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 #%#//scriptlet("set-constant", "navigator.platform", "Win32")
 #%#//scriptlet("set-constant", "navigator.oscpu", "Windows NT 10.0; Win64; x64")
 
 ! --- Уровень 3: Блокировка Client-Hints (Anti-Fingerprinting 2.0) ---
-! В 2026 году это главный способ узнать твой CPU и модель телефона.
-! Блокируем только для сторонних (third-party) ресурсов, сохраняя работу системных сервисов.
-||*$header=Sec-CH-UA,important,third-party,domain=~google.com|~apple.com|~yandex.ru
-||*$header=Sec-CH-UA-Platform,important,third-party,domain=~google.com|~apple.com|~yandex.ru
-||*$header=Sec-CH-UA-Model,important,third-party,domain=~google.com|~apple.com|~yandex.ru
-||*$header=Sec-CH-UA-Arch,important,third-party
-||*$header=Sec-CH-UA-Bitness,important,third-party
+! Группировка всех Sec-CH-UA в одно регулярное выражение.
+! Исключения из Раздела [1] (Google/Apple/Yandex) сохраняют работу их сервисов.
+||*$header=/^Sec-CH-UA(-Platform|-Model|-Arch|-Bitness)?/,third-party,important
 
 ! --- Уровень 4: JS-Маскировка аппаратных ресурсов ---
-! Запрещаем сайтам узнавать количество ядер процессора и объем памяти.
+! Стандартизируем отчеты о железе (8 ядер, 8GB RAM, No-Touch).
 #%#//scriptlet("set-constant", "navigator.hardwareConcurrency", "8")
 #%#//scriptlet("set-constant", "navigator.deviceMemory", "8")
 #%#//scriptlet("set-constant", "navigator.maxTouchPoints", "0")
+
 
 ! =========================================================================
 ! [14] ANTI-GOOGLE FINGERPRINTING: X-SHIELD (v11.2.0)
