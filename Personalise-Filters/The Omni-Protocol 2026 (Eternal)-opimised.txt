@@ -4,30 +4,38 @@
 ! Last modified: 2026-03-17
 
 ! =========================================================================
-! [1] INFRASTRUCTURE IMMUNITY: CORE SYSTEMS (v2026.1-OPT)
+! [1] INFRASTRUCTURE IMMUNITY: CORE SYSTEMS (v2026.1-FINAL)
 ! =========================================================================
 ! Оптимизация: схлопывание масок. @@|| покрывает корень и все поддомены.
 ! Нагрузка на CPU: Минимальная. Нагрузка на RAM: -40% от оригинала.
 
-! --- Google & Android Infrastructure ---
-@@||gvt1.com^$important
-@@||gvt2.com^$important
-@@||gvt3.com^$important
+! --- Google, YouTube & Android Infrastructure ---
+! Разрешаем доставку контента, видео-потоки и системные ресурсы.
 @@||googlevideo.com^$important
 @@||googleusercontent.com^$important
 @@||gstatic.com^$important
 @@||youtube.com^$important
 @@||ggpht.com^$important
+@@||ytimg.com^$important
+@@||android.com^$important
+@@||gvt1.com^$important,domain=~system
+@@||gvt2.com^$important,domain=~system
 
 ! --- Apple Ecosystem ---
+! Базовые домены для работы iCloud, AppStore и обновлений iOS.
 @@||apple.com^$important
 @@||icloud.com^$important
+@@||mzstatic.com^$important
+@@||apple-dns.net^$important
 
 ! --- Samsung & Navigation ---
+! Домены для прошивок, Galaxy Store и навигации.
 @@||samsung.com^$important
 @@||galaxy.store^$important
 @@||samsungapps.com^$important
+@@||samsungcloud.com^$important
 @@||waze.com^$important
+@@||mapquest.com^$important
 
 ! =========================================================================
 ! [2] NETWORK STEALTH: KERNEL & DPI PROTECTION (v2026.1-OPT)
