@@ -34,11 +34,8 @@ $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 
 
 ! --- Мгновенный сброс DNS для мусора ---
-||ads.^$dnstype=A,empty
-||metrics.^$dnstype=A,empty
-||telemetry.^$dnstype=A,empty
-||tracking.^$dnstype=A,empty
-||analytics.^$dnstype=A,empty
+||/^(ads|metrics|telemetry|tracking|analytics)\./^$dnstype=A,empty,important
+
 
 ! --- Оптимизация отрисовки ---
 ||/^(fonts.gstatic|fonts.googleapis).com$/^$important,third-party,content=off
