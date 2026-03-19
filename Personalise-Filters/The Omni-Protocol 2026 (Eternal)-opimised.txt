@@ -921,53 +921,47 @@ ty
 ||crashlytics.^$important,third-party
 
 ! =========================================================================
-! [26] METADATA & FINGERPRINT LOCKDOWN: THE FINAL SEAL (v11.2.0)
+! [26] METADATA & FINGERPRINT LOCKDOWN (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Переход на хэш-маски и очистка URL-параметров.
+! Нагрузка на CPU: Минимальная. Полный разрыв связей между сайтами.
 
 ! --- Уровень 1: Истребление коммерческих Fingerprint-движков ---
-! Блокируем запросы к сервисам, которые продают данные о твоей уникальности.
-||*fingerprint*.*^$important,third-party
-||*fpjs*.*^$important,third-party
-||*h-sdk*.*^$important,third-party
-||*measurement*.*^$important,third-party
-||*device-metrics*.*^$important,third-party
-||*fingerprintjs*.*^$important
-||*threatmetrix*.*^$important,third-party
+! Блокируем сервисы продажи данных. Хэш-совместимые маски.
+||fingerprint.^$important,third-party
+||fpjs.^$important,third-party
+||h-sdk.^$important,third-party
+||measurement.^$important,third-party
+||device-metrics.^$important,third-party
+||threatmetrix.^$important,third-party
 
 ! --- Уровень 2: Hardware & Sensor Stealth (Сетевой уровень) ---
-! Блокируем передачу данных о датчиках и "железе" на сторонние сервера.
-||*hardware-stats*.*^$important,third-party
-||*pixel-metrics*.*^$important,third-party
-||*sensor-data*.*^$important,third-party
-||*metrics.icloud*.*^$important,domain=~apple.com
-||*edge-metrics*.*^$important,third-party
+! Блокируем передачу данных о датчиках.
+||hardware-stats.^$important,third-party
+||pixel-metrics.^$important,third-party
+||sensor-data.^$important,third-party
+||metrics.icloud.^$important
+||edge-metrics.^$important,third-party
 
 ! --- Уровень 3: Автономный SDK-заслон (Tracking & Deep Linking) ---
-! Уничтожаем инструменты, которые связывают твои клики в вебе с приложениями.
-||*crashlytics*.*^$important,third-party
-||*bugsnag*.*^$important,third-party
-||*branch.io*^$important,third-party
-||*criteo*.*^$important,third-party
-||*doubleclick*.*^$important,third-party
-||*mixpanel.com*^$important,third-party
-||*amplitude.com*^$important,third-party
+! Уничтожаем инструменты связи Веб -> Приложение.
+||crashlytics.^$important,third-party
+||bugsnag.com^$important,third-party
+||branch.io^$important,third-party
+||mixpanel.com^$important,third-party
+||amplitude.com^$important,third-party
 
 ! --- Уровень 4: Блокировка утечек через скрытые API (Leak Guard) ---
-! Отрезаем доступ к тестовым полигонам Canvas и WebRTC, через которые пробивают IP.
-||*canvas-fingerprint*.*^$important
-||*webrtc-test*.*^$important
-||*client-hints*.*^$important,third-party
-||*get-canvas-id*.*^$important
-||*audio-fingerprint*.*^$important
+! Отрезаем доступ к Canvas и WebRTC тестам.
+||canvas-fingerprint.^$important
+||webrtc-test.^$important
+||client-hints.^$important,third-party
+||audio-fingerprint.^$important
 
 ! --- Уровень 5: Блокировка динамических параметров (Anti-Query ID) ---
-! Удаляем уникальные ID из URL-адресов, которые используются для сквозного трекинга.
-||*$removeparam=fbclid,important
-||*$removeparam=gclid,important
-||*$removeparam=msclkid,important
-||*$removeparam=mc_eid,important
-||*$removeparam=utm_source,important
-
+! Очищаем ссылки от рекламных ID (FB, Google, Microsoft).
+! Это делает невозможным "сквозной" трекинг при переходах.
+||*$removeparam=/^(fbclid|gclid|msclkid|mc_eid|utm_)/,important
 
 
 ! =========================================================================
