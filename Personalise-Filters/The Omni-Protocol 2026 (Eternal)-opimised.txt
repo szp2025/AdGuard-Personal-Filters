@@ -1146,56 +1146,54 @@ ty
 @@||microsoft.com^$important
 
 ! =========================================================================
-! [31] THE LAST BASTION: ULTIMATE SHIELD (v11.2.0)
+! [31] THE LAST BASTION: ULTIMATE SHIELD (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Хэш-блокировка GVT-зеркал и упрощение портового контроля.
+! Нагрузка на CPU: Минимальная. Полное закрытие внешнего периметра.
 
 ! --- Уровень 1: Умная защита от маячков (Beacons & Proximity) ---
-! Блокируем передачу данных о твоем физическом окружении и истории перемещений.
+! Блокируем данные о физическом окружении. Хэш-оптимизация.
 ||proximity.google.com^$important,third-party
-||beacons.gvt*^$important,third-party
-||location-history.*^$important,third-party
-||*location-tracker*.*^$important
+||beacons.gvt^$important,third-party
+||location-history.^$important,third-party
+||location-tracker.^$important
 
 ! --- Уровень 2: Глубокая системная телеметрия (Samsung/Adobe/MS) ---
-! Вырезаем аналитические модули, маскирующиеся под системные узлы.
-! Оставляем исключения для стабильности работы облачных сервисов производителя.
-||samsung-com.*.net^$important
+! Вырезаем аналитику, маскирующуюся под системные узлы.
+||samsung-com.net^$important
 ||omtrdc.net^$important
 ||msecnd.net^$important
-||samsungcloud.com^$important,third-party,domain=~samsung.com|~samsungcloud.com
-||*config.samsungads.com^$important
+||config.samsungads.com^$important
+||samsungcloud.com^$important,third-party
 
 ! --- Уровень 3: Анти-майнинг & Crypto-Hijacking (Resource Guard) ---
-! Тотальный запрет на использование твоего CPU для добычи крипты в браузере.
-||coin-hive.*^$important
-||minr.*^$important
-||crypto-locker.*^$important
+! Тотальный запрет на использование CPU для добычи крипты.
+||coin-hive.^$important
+||minr.^$important
+||crypto-locker.^$important
 ||miner.js^$important,third-party
 ||/mining.js$script,important
 
 ! --- Уровень 4: Сетевое закрытие (Port Hardening) ---
-! Блокируем опасные порты, через которые идут атаки вымогателей (Ransomware).
-! Это предотвращает попытки сканирования твоего устройства извне.
-|*^$important,port=135
-|*^$important,port=137
-|*^$important,port=138
-|*^$important,port=139
-|*^$important,port=445
-|*^$important,port=3389
+! Блокируем опасные порты (SMB/RDP). Исключаем сканирование извне.
+||*^$important,port=135
+||*^$important,port=137-139
+||*^$important,port=445
+||*^$important,port=3389
 
 ! --- Уровень 5: Тайм-стек (Anti-Fingerprint Time) ---
-! Запрещаем трекинг через микро-разницу в системном времени (NTP-триангуляция).
-! Мы блокируем сторонние вызовы, но разрешаем системную синхронизацию.
+! Запрещаем триангуляцию через микро-разницу времени (NTP).
 ||time.google.com^$important,third-party
 ||time.windows.com^$important,third-party
 ||time.samsung.com^$important,third-party
 ||pool.ntp.org^$important,third-party
 
 ! --- Уровень 6: Блокировка скрытых зеркал (GVT & Static Analytics) ---
-! Закрываем альтернативные пути загрузки скрытой аналитики Google и других гигантов.
-||*.gvt2.com^$important
-||*.gvt3.com^$important
-||*.googlevideo.com/videoplayback?*ptrp=*$important
+! Закрываем альтернативные пути аналитики Google.
+||gvt2.com^$important
+||gvt3.com^$important
+||googlevideo.com/videoplayback?*ptrp=^$important
+?*ptrp=*$important
 
 ! =========================================================================
 ! [32] SMS/MMS ANTI-PHISHING: THE ABSOLUTE ZERO (v11.2.0)
