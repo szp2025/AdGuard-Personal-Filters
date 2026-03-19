@@ -73,11 +73,12 @@ $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 
 
 ! =========================================================================
-! [3] TRACKER GENOCIDE: UNIVERSAL AUTONOMOUS SHIELD (v11.2.0)
+! [3] TRACKER GENOCIDE: UNIVERSAL AUTONOMOUS SHIELD (v2026.1-OPT)
 ! =========================================================================
+! Оптимизация: Хэш-совместимость (Hash-matching). Удалены тяжелые ~ исключения.
+! Нагрузка на CPU: Низкая. Совместимость: AdGuard, uBlock, DNS (кроме скриптлетов).
 
 ! --- Уровень 1: Поведенческий щит (Session Replay & Heatmaps) ---
-! Блокируем запись экрана и движений мыши, но не ломаем доверенные сайты из @@
 ||hotjar.com^$important
 ||amplitude.com^$important
 ||mixpanel.com^$important
@@ -85,37 +86,35 @@ $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
 ||mouseflow.com^$important
 ||fullstory.com^$important
 
-! --- Уровень 2: Умные скриптлеты (Обман трекеров) ---
-! Вместо грубой блокировки подменяем функции, чтобы сайты думали, что всё работает
+! --- Уровень 2: Умные скриптлеты (Обман трекеров & Anti-Adblock) ---
+! Используем нативные методы подмены для экономии ресурсов батареи
 #%#//scriptlet("set-constant", "ga.loaded", "true")
 #%#//scriptlet("set-constant", "ga", "undefined")
-#%#//scriptlet("prevent-listener", "click", "scorecardresearch.com")
-! Защита от детектора AdGuard (не дает сайтам ныть о блокировщике)
 #%#//scriptlet("set-constant", "navigator.sendBeacon", "true")
+#%#//scriptlet("prevent-listener", "click", "scorecardresearch.com")
 
 ! --- Уровень 3: Глобальный бан RTB & Ad Servers ---
-! Блокируем рекламные магистрали, исключая только системные сервисы
-||doubleclick.net^$important,domain=~google.com|~youtube.com
-||adsystem*.*^$important
-||adserver*.*^$important
+! Оптимизировано: убраны лишние ~ исключения, так как они в белом списке Раздела [1]
+||doubleclick.net^$important
+||adsystem.^$important
+||adserver.^$important
 ||adnxs.com^$important
 ||openx.net^$important
 ||pubmatic.com^$important
 
 ! --- Уровень 4: Аналитические SDK (Mobile & Web) ---
-! Уничтожаем сбор логов, сохраняя жизнь банковским и системным приложениям
-||appsflyer.com^$important,domain=~revolut.com|~n26.com|~apple.com|~google.com
+||appsflyer.com^$important
 ||adjust.com^$important
 ||branch.io^$important
 ||kochava.com^$important
-||crashlytics.com^$important,domain=~google.com|~samsung.com|~apple.com
+||crashlytics.com^$important
 
 ! --- Уровень 5: Очистка от невидимых "жучков" (Tracking Pixels) ---
-! Блокируем пиксели слежки, но разрешаем их там, где они часть интерфейса через @@
-||*/pixel.gif$important
-||*/track.gif$important
-||web-beacon*.*^$important
-||metrics.*^$important,domain=~google.com|~youtube.com|~samsung.com|~apple.com|~waze.com
+! Замена тяжелых масок *.* на эффективные доменные блокировки
+||pixel.gif^$important
+||track.gif^$important
+||web-beacon.^$important
+||metrics.^$important
 
 
 ! =========================================================================
