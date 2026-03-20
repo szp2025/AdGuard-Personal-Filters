@@ -43,6 +43,10 @@ $network=tls,pqc=off,important,domain=~google.com|~github.com|~revolut.com|~appl
 ! --- Compatibility Whitelist ---
 @@||/^(accounts\.google\.com|appleid\.apple\.com|login\.microsoftonline\.com|.*\.bank)$/^$important,domain=~browser
 
+! --- Critical compatibility
+@@||recaptcha.net^$important
+@@||hcaptcha.com^$important
+
 ! =========================================================================
 ! [MEGA-BLOCK II] TRACKER GENOCIDE & URL PURGE (v2026.1-HYPER)
 ! =========================================================================
@@ -210,6 +214,11 @@ youtube.com##ytd-display-ad-renderer,ytd-promoted-video-renderer,ytd-player-lega
 ! --- 13.1: OMNI-WIRELESS-SHIELD ---
 ||/^(tethering\.samsung|hotspot-analytics|knox-selfupdate|bt-tracking|altbeacon|ibeacon|proximity-beacon|bluetooth-ads|bt-pairing-interceptor|auth-bypass|ipstack|ipapi|maxmind|geoip|location-provider|gps-stats|positioning-system|wifi-positioning|cell-location|exif-data|image-metadata)\./^$important,third-party,port=623|2000;||places-api\.google\.com^$important,third-party;@@||/^(maps\.google|googleusercontent|maps\.yandex|waze|ls\.apple|connectivity\.samsung|connectivity\.google)\.(com|ru|fr)$/^$important;@@||/^(pub\.3gppnetwork|bt-audio-handshake|system-bt-manager)\./^$important
 
+! --- Smart Fingerprint Spoof (вместо disable)
+#%#//scriptlet("spoof-css", "canvas", "random")
+#%#//scriptlet("spoof-css", "webgl", "random")
+
+
 ! =========================================================================
 ! [MEGA-BLOCK XIV] HARDWARE ISOLATION: MIC, CAM & AUDIO (v2026.1-HYPER)
 ! =========================================================================
@@ -231,6 +240,11 @@ youtube.com##ytd-display-ad-renderer,ytd-promoted-video-renderer,ytd-player-lega
 ! --- 15.2: OMNI-HEADER-STRIPPER ---
 $removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com;$removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net,important
 
+! --- Fallback для CDN
+@@||challenges.cloudflare.com^$important
+@@||*.akamaihd.net^$important
+
+
 ! =========================================================================
 ! [MEGA-BLOCK XVI] NETWORK ARMOR: QUIC, DoH & IPv6 (v2026.1-HYPER)
 ! =========================================================================
@@ -239,6 +253,11 @@ $removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com;$remo
 
 ! --- 16.1: OMNI-PROTOCOL-DISCIPLINE ---
 ||$networkaddress=quic,reject;||$networkaddress=http3,reject,tag=ad;||play-fe\.googleapis\.com^$networkaddress=http3,reject;@@||/(googlevideo\.com|\.ytimg\.com)$/^$networkaddress=http3;||/^(cloudflare-dns|dns\.google|1dot1dot1dot1|8\.8\.8\.8|8\.8\.4\.4)\.(com|net)$/^$important,reject;||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system,~browser;||/(_esni|_ech)\./^$important,reject;||[2a00:1450:4009:c04::5f]^$important,reject;||[2a06:98c1:3100::6812:202f]^$important,reject;||/.*-(intake|logs)\.com$/^$important,reject
+
+! --- Anti-adblock advanced
+#%#//scriptlet("trusted-suppress-native-method", "setTimeout")
+#%#//scriptlet("trusted-suppress-native-method", "setInterval")
+
 
 ! =========================================================================
 ! [MEGA-BLOCK XVII] FAILSAFE & QUANTUM OMEGA (v2026.1-HYPER)
