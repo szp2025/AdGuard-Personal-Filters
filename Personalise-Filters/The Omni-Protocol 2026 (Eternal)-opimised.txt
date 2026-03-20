@@ -366,6 +366,15 @@ $removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net
 @@||www.google.*/complete/search^$important
 @@||/^(mercanet.bnpparibas|vads.bnpparibas|secure.bnpparibas|pay.google).(net|com)$/^$important
 
+! --- Уровень 6: CDN Anti-Profiling ---
+||*/cdn-cgi/trace$important
+||*/cdn-cgi/beacon$important
+||*/cdn-cgi/challenge-platform/*$important
+
+! --- Уровень 7: Server-Side Tracking Kill ---
+||*/collect?$xmlhttprequest,third-party,important
+||*/track?$xmlhttprequest,third-party,important
+||*/events?$xmlhttprequest,third-party,important
 
 ! =========================================================================
 ! [MEGA-BLOCK XVI] NETWORK ARMOR: QUIC, DoH & IPv6 (v2026.1-HYPER)
