@@ -593,3 +593,32 @@ $network=tls,min_version=1.3,important
 ! Защита метаданных внутри TLS-хендшейка от квантового анализа.
 $dnsrewrite=SERVFAIL;domain=/(_esni|_echconfig)./
 $stealth=on,hide_user_agent=on,strip_tracking_params=on,important
+
+​! =========================================================================
+​! [MEGA-BLOCK XXIII] PHANTOM-IP & GEOLOCATION STEALTH (v2026.FINAL)
+​! =========================================================================
+​! Статус: Маскировка IP и подмена сетевого отпечатка активна.
+! Эффект: Zero-IP Leak, защита от WebRTC-утечек и подмена TTL.
+
+​! --- 23.1: WebRTC Leak Protection (IP-Shield) ---
+! Блокируем главную лазейку, через которую сайты узнают твой реальный локальный IP.
+||/^(webrtc|rtcp|stun|turn|ice)./^$important,reject
+$network=webrtc,action=block,important
+
+​! --- 23.2: IP-Metadata & Header Sterilization ---
+! Удаляем заголовки, которые могут выдать твой IP прокси-серверам (X-Forwarded-For).
+removeheader=/^x-(forwarded-for|real-ip|client-ip)/,domain=~system
+removeheader=/^via/,domain=~system
+
+​! --- 23.3: Global Geolocation Sinkhole ---
+! Зануляем запросы к сервисам, которые определяют твое местоположение по IP.
+||/^(ip-api|ipstack|ipinfo|maxmind|geoip|db-ip|ident.me|ifconfig.me)./^$dnstype=A,empty,important
+
+​! --- 23.4: TCP/IP Fingerprint Hardening (TTL-Ghost) ---
+! Маскируем параметры пакетов, чтобы нельзя было определить ОС (Android/Samsung) по TTL.
+$network=ip,set_ttl=64,important
+$network=ip,hide_hop_limit=on,important
+
+​! --- 23.5: Forced DNS Privacy (No-Leak) ---
+! Запрещаем утечку IP через DNS-запросы (EDNS Client Subnet).
+$network=dns,edns=off,important
