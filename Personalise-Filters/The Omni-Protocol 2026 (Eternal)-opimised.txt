@@ -218,6 +218,25 @@ $network=tls,pqc=off,domain=~google.com|~github.com|~revolut.com
 ||^$important,port=5938,domain=~teamviewer.com
 @@||^$port=53|80|443
 
+! --- Уровень 5: Canvas & WebGL Fingerprint ---
+#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.toDataURL", "undefined")
+#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.getContext", "undefined")
+#%#//scriptlet("set-constant", "WebGLRenderingContext.prototype.getParameter", "undefined")
+#%#//scriptlet("set-constant", "WebGL2RenderingContext.prototype.getParameter", "undefined")
+
+! --- Уровень 6: Behavioral Tracking Kill ---
+#%#//scriptlet("set-constant", "navigator.sendBeacon", "undefined")
+#%#//scriptlet("set-constant", "window._paq", "undefined")
+#%#//scriptlet("set-constant", "window.dataLayer", "undefined")
+
+! --- Уровень 7: Advanced Anti-Adblock ---
+#%#//scriptlet("set-constant", "window.BlockAdBlock", "undefined")
+#%#//scriptlet("set-constant", "window.FuckAdBlock", "undefined")
+#%#//scriptlet("set-constant", "window.adblock", "false")
+
+! --- Уровень 8: Identity Reduction (Aggressive Mode) ---
+||*$header=User-Agent,third-party
+||*$header=Accept-Language,third-party
 ! =========================================================================
 ! [MEGA-BLOCK IX] FINANCIAL VAULT & TRANSACTION GUARD (v2026.1-HYPER)
 ! =========================================================================
