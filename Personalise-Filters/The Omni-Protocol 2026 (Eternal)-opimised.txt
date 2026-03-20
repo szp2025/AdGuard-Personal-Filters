@@ -607,8 +607,8 @@ $network=webrtc,action=block,important
 
 ​! --- 23.2: IP-Metadata & Header Sterilization ---
 ! Удаляем заголовки, которые могут выдать твой IP прокси-серверам (X-Forwarded-For).
-removeheader=/^x-(forwarded-for|real-ip|client-ip)/,domain=~system
-removeheader=/^via/,domain=~system
+$removeheader=/^x-(forwarded-for|real-ip|client-ip)/,domain=~system
+$removeheader=/^via/,domain=~system
 
 ​! --- 23.3: Global Geolocation Sinkhole ---
 ! Зануляем запросы к сервисам, которые определяют твое местоположение по IP.
