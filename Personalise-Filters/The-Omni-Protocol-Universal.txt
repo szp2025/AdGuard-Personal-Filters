@@ -47,8 +47,12 @@ $network=tls,pqc=off,important,domain=~google.com|~github.com|~revolut.com|~appl
 ||googlevideo.com/videoplayback?*&ptracking=*^$important
 ||googlevideo.com^$dnsrewrite=0.0.0.0
 ||googleads.g.doubleclick.net^$important
-||youtubei.googleapis.com^$important
 ||yt3.ggpht.com^$important
+
+||youtubei.googleapis.com^$important
+||googlevideo.com/videoplayback?*&ptracking=*^$important
+||youtube.com/get_midroll_info*^$important
+||samsungads.com^$important
 
 
 ! =========================================================================
