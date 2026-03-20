@@ -8,7 +8,9 @@
 ! =========================================================================
 
 ! --- 1.1: Белый список критической инфраструктуры (Универсально) ---
-@@||/^(googlevideo|googleusercontent|gstatic|youtube|ggpht|ytimg|android|apple|icloud|mzstatic|samsung|samsungapps|samsungcloud|galaxy\.store|waze|mapquest|apple-dns|gvt[1-3])\.(com|net)$/^$important,domain=~browser
+!@@||/^(googlevideo|googleusercontent|gstatic|youtube|ggpht|ytimg|android|apple|icloud|mzstatic|samsung|samsungapps|samsungcloud|galaxy\.store|waze|mapquest|apple-dns|gvt[1-3])\.(com|net)$/^$important,domain=~browser
+
+@@||/^(.*\.)?(googlevideo|googleusercontent|gstatic|youtube|ggpht|ytimg)\.(com|net)$/^$important
 @@||/^(accounts\.google\.com|appleid\.apple\.com|login\.microsoftonline\.com|recaptcha\.net|hcaptcha\.com|.*\.bank)$/^$important
 
 ! --- 1.2: Параметры скрытности AdGuard (Эксклюзивно для системного уровня) ---
