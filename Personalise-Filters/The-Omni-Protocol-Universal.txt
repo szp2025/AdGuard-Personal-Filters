@@ -39,24 +39,6 @@ $network=tls,pqc=off,important,domain=~google.com|~github.com|~revolut.com|~appl
 ##+js(set-constant, navigator.globalPrivacyControl, true)
 ##+js(set-constant, window.optOut, true)
 
-||ads-api.samsungads.com^
-||config.samsungads.com^
-||samsungotn.net^
-||samsungrm.net^
-||samsungads.com^
-||googlevideo.com/videoplayback?*&ptracking=*^$important
-||googlevideo.com^$dnsrewrite=0.0.0.0
-||googleads.g.doubleclick.net^$important
-||yt3.ggpht.com^$important
-
-||youtubei.googleapis.com^$important
-||googlevideo.com/videoplayback?*&ptracking=*^$important
-||youtube.com/get_midroll_info*^$important
-||samsungads.com^$important
-
-||youtube.com^$dnsrewrite=0.0.0.0
-||samsung-com.112.2o7.net^$important
-
 ! =========================================================================
 ! [MEGA-BLOCK II] TRACKING ANNIHILATION CORE (v2026.UNIVERSAL)
 ! =========================================================================
@@ -825,3 +807,32 @@ $network=dns,edns=off,important
 ! --- 26.5: Anti-Spam Clean (Очистка от навязчивых определителей) ---
 ! Блокируем внешние "пробивы" номера через веб-инструменты
 ||/^(spamblock|callfilter|numverify|phone-validator)\./^$dnstype=A,empty,important
+
+! === [START] THE OMNI-PROTOCOL: VIDEO & TV SHIELD ===
+! --- YouTube API & Ad-Injections ---
+||youtubei.googleapis.com^$important
+||youtube.com/get_midroll_info*^$important
+||googlevideo.com/videoplayback?*&ptracking=*^$important
+||s.youtube.com^$important
+||youtube.com/api/stats/ads*^$important
+
+! --- YouTube DNS & Visual Cleanup ---
+||youtube.com^$dnsrewrite=0.0.0.0
+||googleads.g.doubleclick.net^$important
+||yt3.ggpht.com^$important
+||googlevideo.com^$dnsrewrite=0.0.0.0
+
+! --- Smart TV (Samsung & Universal) Telemetry & Ads ---
+||ads-api.samsungads.com^
+||config.samsungads.com^
+||samsungads.com^$important
+||samsungotn.net^
+||samsungrm.net^
+||samsung-com.112.2o7.net^$important
+||log-config.samsungcloudsolution.com^
+||static.doubleclick.net^$important
+
+! --- Global Video Ad-Servers ---
+||ad.doubleclick.net^$important
+||vpaid.ads^$important
+! === [END] THE OMNI-PROTOCOL: VIDEO & TV SHIELD ===
