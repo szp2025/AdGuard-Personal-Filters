@@ -501,3 +501,26 @@ $network=dhcp,action=filter,important
 $network=nfc,action=bypass,important
 $app_detection=manufacturer_telemetry,action=block,important
 @@||/^(samsungpay|visa|mastercard)\.com$/^$dnstype=A,ttl=3600
+
+​! =========================================================================
+​! [MEGA-BLOCK XXI] THE OMNI-TIF: THREAT & MALWARE SINKHOLE (v2026.1)
+​! =========================================================================
+​! Содержит: Защиту от фишинга, малвари, криптоджекинга и рекламных сетей.
+! Оптимизация: Схлопывание 700к правил в высокоскоростной Regex.
+
+! --- 21.1: The Speed-Focus Sinkhole (Zero-Latency) ---
+||/^(ads|metrics|telemetry|tracking|analytics|stats|events|adservice|cloudflareinsights|pqc-stats|dpi-analysis|connectivity-stats|app-measurement|crashlytics|luckyorange|hotjar|click|pixel|collect|track)./^$dnstype=A,empty,important
+
+​! --- 21.2: Malware & Phishing High-Priority Reject ---
+||/^(antivirus|malware|phishing|scam|spyware|trojan|virus|worm|exploit|ransomware|botnet|c2-server|dga-domain)./^$important,reject
+||/^(bit.ly|tinyurl.com|t.co|goo.gl|clck.ru|cutt.ly|is.gd|shorturl.at|bit.do)/.*/^$important,reject,domain=~social_media
+
+​! --- 21.3: Cryptojacking & Resource Stealth ---
+||/^(coin-hive|coinhive|cryptoloot|miner|authedmine|webmine|monerominer|cryptonight|mining-pool)./^$important,reject
+
+​! --- 21.4: Threat Intelligence Wildcard (The Ghost Net) ---
+||/^(-intake|-logs|-analytics|-telemetry|-collector|-stats|-report|-track|-tracker|-tracker-api)./^$important,reject
+
+​! --- 21.5: Universal DPI & ECH Hard-Reject (Anti-Detection) ---
+||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system,~browser
+||/(_esni|_echconfig)./^$important,rejec
