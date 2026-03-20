@@ -56,6 +56,12 @@ $network=tls,pqc=off,domain=~google.com|~github.com|~revolut.com
 ! --- Мгновенное зануление (Speed-Focus + Cloudflare & AI) ---
 ||/^(ads|metrics|telemetry|tracking|analytics|stats|events|adservice|cloudflareinsights|browser-intake-datadoghq|events.statsigapi)\./^$dnstype=A,empty,important
 
+! --- Compatibility Whitelist ---
+@@||accounts.google.com^$important
+@@||appleid.apple.com^$important
+@@||login.microsoftonline.com^$important
+@@||*.bank^$important
+
 ! =========================================================================
 ! [MEGA-BLOCK II] TRACKER GENOCIDE & URL PURGE (v2026.1-HYPER)
 ! =========================================================================
