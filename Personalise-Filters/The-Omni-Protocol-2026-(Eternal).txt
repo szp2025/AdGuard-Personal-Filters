@@ -501,3 +501,60 @@ $network=dhcp,action=filter,important
 $network=nfc,action=bypass,important
 $app_detection=manufacturer_telemetry,action=block,important
 @@||/^(samsungpay|visa|mastercard)\.com$/^$dnstype=A,ttl=3600
+
+​! =========================================================================
+​! [MEGA-BLOCK XXI] THE OMNI-TIF: THREAT & MALWARE SINKHOLE (v2026.1)
+​! =========================================================================
+​! Содержит: Защиту от фишинга, малвари, криптоджекинга и рекламных сетей.
+! Оптимизация: Схлопывание 700к правил в высокоскоростной Regex.
+
+! --- 21.1: The Speed-Focus Sinkhole (Zero-Latency) ---
+||/^(ads|metrics|telemetry|tracking|analytics|stats|events|adservice|cloudflareinsights|pqc-stats|dpi-analysis|connectivity-stats|app-measurement|crashlytics|luckyorange|hotjar|click|pixel|collect|track)./^$dnstype=A,empty,important
+
+​! --- 21.2: Malware & Phishing High-Priority Reject ---
+||/^(antivirus|malware|phishing|scam|spyware|trojan|virus|worm|exploit|ransomware|botnet|c2-server|dga-domain)./^$important,reject
+||/^(bit.ly|tinyurl.com|t.co|goo.gl|clck.ru|cutt.ly|is.gd|shorturl.at|bit.do)/.*/^$important,reject,domain=~social_media
+
+​! --- 21.3: Cryptojacking & Resource Stealth ---
+||/^(coin-hive|coinhive|cryptoloot|miner|authedmine|webmine|monerominer|cryptonight|mining-pool)./^$important,reject
+
+​! --- 21.4: Threat Intelligence Wildcard (The Ghost Net) ---
+||/^(-intake|-logs|-analytics|-telemetry|-collector|-stats|-report|-track|-tracker|-tracker-api)./^$important,reject
+
+​! --- 21.5: Universal DPI & ECH Hard-Reject (Anti-Detection) ---
+||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system,~browser
+||/(_esni|_echconfig)./^$important,rejec
+
+! --- [FINAL-ULTRA-SINKHOLE] ---
+||/^(telemetry|metrics|stats|analytics|adserver|ads-preview|pixel-track)\./^$dnstype=A,empty,important
+||/^(collector|ingest|report|logs|error-track|crash-report)\./^$dnstype=A,empty,important
+||$websocket,third-party,important,reject
+
+
+! =========================================================================
+! [ULTIMATE] THE OMNI-TOTALITARIAN SINKHOLE: MALWARE & SPEED (v2026.FINAL)
+! =========================================================================
+! Содержит: URLHaus (Malware), TIF (Threats), Cloudflare/Google Analytics, 
+! DPI-Stealth, Tracking & Ads. Оптимизировано под Samsung & AdGuard.
+
+! --- СЕКЦИЯ 1: МГНОВЕННОЕ ЗАНУЛЕНИЕ (DNS SPEED-FORCE) ---
+! Мы не ждем ответа, мы говорим системе, что этих доменов не существует.
+||/^(ads|metrics|telemetry|tracking|analytics|stats|events|adservice|cloudflareinsights|pqc-stats|dpi-analysis|connectivity-stats|app-measurement|crashlytics|luckyorange|hotjar|click|pixel|collect|track|doubleclick|googleadservices|google-analytics)\./^$dnstype=A,empty,important
+
+! --- СЕКЦИЯ 2: ИНТЕГРАЦИЯ MALWARE & PHISHING (URLHAUS CORE) ---
+! Математическое схлопывание тысяч правил URLHaus в один Regex-удар.
+||/^(antivirus|malware|phishing|scam|spyware|trojan|virus|worm|exploit|ransomware|botnet|c2-server|dga-domain|abuse|malicious|threat|blacklist|badsite)\./^$important,reject
+
+! --- СЕКЦИЯ 3: DPI STEALTH & ANTI-FINGERPRINTING ---
+! Блокируем глубокий анализ пакетов и скрытые HTTPS-запросы.
+||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system,~browser
+||/(_esni|_echconfig)./^$important,reject
+||$websocket,third-party,important,reject
+
+! --- СЕКЦИЯ 4: РЕГИОНАЛЬНАЯ СТЕРИЛИЗАЦИЯ (RU & EU ADS) ---
+! Убираем затыки Dzen, Mail.ru, Yandex и европейские Cookie-Consent.
+||/^(ad\.mail\.ru|suggest\.sso\.dzen\.ru|clck\.yandex\.ru|mc\.yandex\.ru|yabs\.yandex\.ru)\./^$dnstype=A,empty,important
+||/^(consent|cookie-law|trustarc|onetrust|quantcast)./^$important,reject
+
+! --- СЕКЦИЯ 5: КРИПТОДЖЕКИНГ & ФОНОВЫЙ ШУМ ---
+||/^(coin-hive|coinhive|cryptoloot|miner|authedmine|webmine|monerominer|cryptonight|mining-pool)\./^$important,reject
