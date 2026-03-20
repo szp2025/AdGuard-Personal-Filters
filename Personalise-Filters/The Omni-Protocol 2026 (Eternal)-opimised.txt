@@ -56,16 +56,6 @@ $network=tls,pqc=off,domain=~google.com|~github.com|~revolut.com
 ! --- Мгновенное зануление (Speed-Focus + Cloudflare & AI) ---
 ||/^(ads|metrics|telemetry|tracking|analytics|stats|events|adservice|cloudflareinsights|browser-intake-datadoghq|events.statsigapi)\./^$dnstype=A,empty,important
 
-! --- Уровень X: CDN Anti-Profiling ---
-||*/cdn-cgi/trace$important
-||*/cdn-cgi/beacon$important
-||*/cdn-cgi/challenge-platform/*$important
-
-! --- Уровень X: Server-Side Tracking Kill ---
-||*/collect?$xmlhttprequest,third-party,important
-||*/track?$xmlhttprequest,third-party,important
-||*/events?$xmlhttprequest,third-party,important
-
 ! =========================================================================
 ! [MEGA-BLOCK II] TRACKER GENOCIDE & URL PURGE (v2026.1-HYPER)
 ! =========================================================================
@@ -162,25 +152,6 @@ $network=tls,pqc=off,domain=~google.com|~github.com|~revolut.com
 #%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=()=>''; CanvasRenderingContext2D.prototype.getImageData=()=>new ImageData(1,1); WebGLRenderingContext.prototype.getParameter=undefined; window.AudioContext=undefined; window.webkitAudioContext=undefined;")
 
 
-! --- Уровень X: Canvas & WebGL Fingerprint ---
-#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.toDataURL", "undefined")
-#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.getContext", "undefined")
-#%#//scriptlet("set-constant", "WebGLRenderingContext.prototype.getParameter", "undefined")
-#%#//scriptlet("set-constant", "WebGL2RenderingContext.prototype.getParameter", "undefined")
-
-! --- Уровень X: Behavioral Tracking Kill ---
-#%#//scriptlet("set-constant", "navigator.sendBeacon", "undefined")
-#%#//scriptlet("set-constant", "window._paq", "undefined")
-#%#//scriptlet("set-constant", "window.dataLayer", "undefined")
-
-! --- Уровень X: Advanced Adblock Detection ---
-#%#//scriptlet("set-constant", "window.BlockAdBlock", "undefined")
-#%#//scriptlet("set-constant", "window.FuckAdBlock", "undefined")
-#%#//scriptlet("set-constant", "window.adblock", "false")
-
-! --- Уровень X: Identity Reduction (Aggressive Mode) ---
-||*$header=User-Agent,third-party
-||*$header=Accept-Language,third-party
 
 ! =========================================================================
 ! [MEGA-BLOCK VI] AD ANNIHILATION & MOBILE SHIELD (v2026.1-HYPER)
