@@ -826,6 +826,8 @@ $network=dns,edns=off,important
 ||s.youtube.com^$important
 ||youtube.com/api/stats/ads*^$important
 
+@@||youtubei.googleapis.com^$app=com.google.android.youtube
+
 ! --- YouTube DNS & Visual Cleanup ---
 ||youtube.com^$dnsrewrite=0.0.0.0
 ||googleads.g.doubleclick.net^$important
