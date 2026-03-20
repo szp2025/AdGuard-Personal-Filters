@@ -39,6 +39,10 @@ $network=tls,pqc=off,important,domain=~google.com|~github.com|~revolut.com|~appl
 ##+js(set-constant, navigator.globalPrivacyControl, true)
 ##+js(set-constant, window.optOut, true)
 
+||googlevideo.com^$dnsrewrite=0.0.0.0
+||googleads.g.doubleclick.net^$important
+||youtubei.googleapis.com^$important
+||yt3.ggpht.com^$important
 
 
 ! =========================================================================
