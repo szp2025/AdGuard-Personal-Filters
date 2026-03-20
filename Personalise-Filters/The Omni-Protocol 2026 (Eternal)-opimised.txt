@@ -4,20 +4,20 @@
 ! Last modified: 2026-03-17
 
 ! =========================================================================
-! [MEGA-BLOCK I] INFRASTRUCTURE & KERNEL STEALTH (v2026.1-HYPER)
+! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE
 ! =========================================================================
-! Фокус: Глобальная связность, анонимность заголовков и QUIC-контроль.
 
-! --- 1.1: OMNI-CORE-ENGINE-MONOLITH ---
-@@||/^(googlevideo|googleusercontent|gstatic|youtube|ggpht|ytimg|android|apple|icloud|mzstatic|samsung|samsungapps|samsungcloud|galaxy\.store|waze|mapquest|apple-dns|gvt[1-3])\.(com|net)$/^$important,domain=~browser;@@||/^(accounts\.google\.com|appleid\.apple\.com|login\.microsoftonline\.com|recaptcha\.net|hcaptcha\.com|.*\.bank)$/^$important;#%#//scriptlet("set-constant","navigator.doNotTrack|navigator.msDoNotTrack|window.doNotTrack|navigator.donottrack|navigator.globalPrivacyControl|window.optOut","true");$stealth=on,hide_ip=on,hide_ua=on,strip_tracking=on,webrtc,important,header=/^(X-Forwarded-For|Via|X-Real-IP|X-Goog-Api-Client|Sec-CH-UA(-Model|-Platform)?|If-None-Match|DNT|Sec-GPC|Referer)$/;||/^(ads|metrics|telemetry|track(ing|ers)?|analytics|stats|events|adservice|cloudflareinsights|browser-intake-datadoghq|events\.statsigapi|beacon|log(s|ger)?)\./^$dnstype=A,empty,important;$websocket,ping,third-party,important,reject,domain=~system;||/^(consent|cookie(-law)?|trustarc|onetrust|quantcast|privacy-center|user-report|choice)\./^$important,reject,domain=~system;||/^(fonts\.(gstatic|googleapis)\.com)$/^$important,third-party,content=off,dnstype=HTTPS,domain=~system,~google.com;$network=tls,pqc=off,important,domain=~google.com|~github.com|~revolut.com|~apple.com|~microsoft.com|~bitwarden.com|~binance.com
+@@||/^(googlevideo|googleusercontent|gstatic|youtube|ggpht|ytimg|android|apple|icloud|mzstatic|samsung|samsungapps|samsungcloud|galaxy\.store|waze|mapquest|apple-dns|gvt[1-3])\.(com|net)$/^$important,domain=~browser;@@||/^(accounts\.google\.com|appleid\.apple\.com|login\.microsoftonline\.com|recaptcha\.net|hcaptcha\.com|.*\.bank)$/^$important;$stealth=on,hide_ip=on,hide_ua=on,strip_tracking=on,webrtc,important,header=/^(X-Forwarded-For|Via|X-Real-IP|X-Goog-Api-Client|Sec-CH-UA(-Model|-Platform)?|If-None-Match|DNT|Sec-GPC|Referer)$/;||/^(ads|metrics|telemetry|track(ing|ers)?|analytics|stats|events|adservice|cloudflareinsights|browser-intake-datadoghq|events\.statsigapi|beacon|log(s|ger)?)\./^$dnstype=A,empty,important;$websocket,ping,third-party,important,reject,domain=~system;||/^(consent|cookie(-law)?|trustarc|onetrust|quantcast|privacy-center|user-report|choice)\./^$important,reject,domain=~system;||/^(fonts\.(gstatic|googleapis)\.com)$/^$important,third-party,content=off,dnstype=HTTPS,domain=~system,~google.com;$network=tls,pqc=off,important,domain=~google.com|~github.com|~revolut.com|~apple.com|~microsoft.com|~bitwarden.com|~binance.com
+#%#//scriptlet("set-constant","navigator.doNotTrack|navigator.msDoNotTrack|window.doNotTrack|navigator.donottrack|navigator.globalPrivacyControl|window.optOut","true")
 
 ! =========================================================================
-! [MEGA-BLOCK II] TRACKER GENOCIDE & URL PURGE (v2026.1-HYPER)
+! [MEGA-BLOCK II] TRACKING ANNIHILATION CORE
 ! =========================================================================
-! Фокус: Уничтожение аналитики, RTB-сетей и очистка мусора в ссылках.
+||/^(hotjar|amplitude|mixpanel|clarity|mouseflow|fullstory|doubleclick|adnxs|openx|pubmatic|appsflyer|adjust|branch|kochava|crashlytics|adsystem|adserver|web-beacon|metrics|pixel|track)\./^$important,reject,nolog,domain=~system;$removeparam=/^(utm_|fbclid|gclid|gclsrc|dclid|msclkid|yclid|ttclid|li_fat_id|igsh|mc_eid|_hsenc|ref_src|ref_url|aff_id|aff_sub|click_id|ncid|track_id|original_referer|_ga|_gl|gciid|gckid|t)$/,important,domain=~system
+#%#//scriptlet("set-constant", "ga.loaded|navigator.sendBeacon", "true")
+#%#//scriptlet("set-constant", "ga", "undefined")
 
-! --- 1.2: OMNI-CLEAN-DECEPTION-SHIELD ---
-||/^(hotjar|amplitude|mixpanel|clarity|mouseflow|fullstory|doubleclick|adnxs|openx|pubmatic|appsflyer|adjust|branch|kochava|crashlytics|adsystem|adserver|web-beacon|metrics|pixel|track)\./^$important,reject,nolog,domain=~system;$removeparam=/^(utm_|fbclid|gclid|gclsrc|dclid|msclkid|yclid|ttclid|li_fat_id|igsh|mc_eid|_hsenc|ref_src|ref_url|aff_id|aff_sub|click_id|ncid|track_id|original_referer|_ga|_gl|gciid|gckid|t)$/,important,domain=~system;#%#//scriptlet("set-constant", "ga.loaded|navigator.sendBeacon", "true");#%#//scriptlet("set-constant", "ga", "undefined")
+
 
 ! =========================================================================
 ! [MEGA-BLOCK III] SEARCH GHOST & REDIRECT SHIELD (v2026.1-HYPER)
@@ -105,10 +105,14 @@ $cookie,third-party,important,header=/^(Set-Cookie|ETag|If-None-Match|If-Modifie
 ! =========================================================================
 ! [MEGA-BLOCK XIII] URBAN STEALTH: RADIO & GEO SHIELD (v2026.1-HYPER)
 ! =========================================================================
-! Фокус: Защита Bluetooth, Wi-Fi Hotspot и блокировка Geo-IP триангуляции.
 
-! --- 2.3: OMNI-WIRELESS-GEO-SPOOF-MONOLITH ---
-||/^(tethering\.samsung|hotspot-analytics|knox-selfupdate|bt-tracking|altbeacon|ibeacon|proximity-beacon|bluetooth-ads|bt-pairing-interceptor|auth-bypass|ipstack|ipapi|maxmind|geoip|location-provider|gps-stats|positioning-system|wifi-positioning|cell-location|exif-data|image-metadata)\./^$important,third-party,port=623|2000;||places-api\.google\.com^$important,third-party;@@||/^(maps\.google|googleusercontent|maps\.yandex|waze|ls\.apple|connectivity\.samsung|connectivity\.google)\.(com|ru|fr)$/^$important;@@||/^(pub\.3gppnetwork|bt-audio-handshake|system-bt-manager)\./^$important;#%#//scriptlet("spoof-css","canvas","random");#%#//scriptlet("spoof-css","webgl","random");#%#//scriptlet("trusted-suppress-native-method","fetch");#%#//scriptlet("trusted-suppress-native-method","XMLHttpRequest")
+||/^(tethering\.samsung|hotspot-analytics|knox-selfupdate|bt-tracking|altbeacon|ibeacon|proximity-beacon|bluetooth-ads|bt-pairing-interceptor|auth-bypass|ipstack|ipapi|maxmind|geoip|location-provider|gps-stats|positioning-system|wifi-positioning|cell-location|exif-data|image-metadata)\./^$important,third-party,port=623|2000;||places-api\.google\.com^$important,third-party;@@||/^(maps\.google|googleusercontent|maps\.yandex|waze|ls\.apple|connectivity\.samsung|connectivity\.google)\.(com|ru|fr)$/^$important;@@||/^(pub\.3gppnetwork|bt-audio-handshake|system-bt-manager)\./^$important
+#%#//scriptlet("spoof-css","canvas","random")
+#%#//scriptlet("spoof-css","webgl","random")
+#%#//scriptlet("trusted-suppress-native-method","fetch")
+#%#//scriptlet("trusted-suppress-native-method","XMLHttpRequest")
+
+
 
 ! =========================================================================
 ! [MEGA-BLOCK XIV] HARDWARE ISOLATION: MIC, CAM & AUDIO (v2026.1-HYPER)
@@ -127,12 +131,13 @@ $cookie,third-party,important,header=/^(Set-Cookie|ETag|If-None-Match|If-Modifie
 ||/.*(-pa|frontend-pa|robinfrontend-pa|spot-pa|nearby-pa|metadatalearning-pa|firebaselogging-pa|ab\.chatgpt|events\.statsigapi|ios\.chat\.openai|browser-intake-datadoghq|collector\.github|analytics\.github)\.google(apis)?\.(com|io|net)$/^$important,reject;||/^(cdn-cgi\/(trace|beacon|challenge-platform)|collect\?|track\?|events\?)/^$important,third-party,xmlhttprequest;@@||android\.googleapis\.com/v1/safetynet^$important;@@||/^(play|update)\.googleapis\.com$/^$important;@@||www\.google\..*/complete/search^$important;@@||/^(mercanet\.bnpparibas|vads\.bnpparibas|secure\.bnpparibas|pay\.google)\.(net|com)$/^$important;$removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com;$removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net,important;@@||challenges.cloudflare.com^$important;@@||*.akamaihd.net^$important;||*analytics*$subdocument,third-party;||*tracking*$subdocument,third-party
 
 ! =========================================================================
-! [MEGA-BLOCK XVI] NETWORK ARMOR: QUIC, DoH & IPv6 (v2026.1-HYPER)
+! [MEGA-BLOCK XVI] DPI STEALTH & PROTOCOL CONTROL
 ! =========================================================================
-! Фокус: Запрет скрытых туннелей, TLS Transparency и принудительный TCP.
 
-! --- 2.6: OMNI-PROTOCOL-ANTI-BLOCK-MONOLITH ---
-||$networkaddress=quic,reject;||$networkaddress=http3,reject,tag=ad;||play-fe\.googleapis\.com^$networkaddress=http3,reject;@@||/(googlevideo\.com|\.ytimg\.com)$/^$networkaddress=http3;||/^(cloudflare-dns|dns\.google|1dot1dot1dot1|8\.8\.8\.8|8\.8\.4\.4)\.(com|net)$/^$important,reject;||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system,~browser;||/(_esni|_ech)\./^$important,reject;||[2a00:1450:4009:c04::5f]^$important,reject;||[2a06:98c1:3100::6812:202f]^$important,reject;||/.*-(intake|logs)\.com$/^$important,reject;#%#//scriptlet("trusted-suppress-native-method","setTimeout");#%#//scriptlet("trusted-suppress-native-method","setInterval");#%#//scriptlet("trusted-set-attr","style","display:block")
+||$networkaddress=quic,reject;||$networkaddress=http3,reject,tag=ad;||play-fe\.googleapis\.com^$networkaddress=http3,reject;@@||/(googlevideo\.com|\.ytimg\.com)$/^$networkaddress=http3;||/^(cloudflare-dns|dns\.google|1dot1dot1dot1|8\.8\.8\.8|8\.8\.4\.4)\.(com|net)$/^$important,reject;||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system,~browser;||/(_esni|_ech)\./^$important,reject;||[2a00:1450:4009:c04::5f]^$important,reject;||[2a06:98c1:3100::6812:202f]^$important,reject;||/.*-(intake|logs)\.com$/^$important,reject
+#%#//scriptlet("trusted-suppress-native-method","setTimeout")
+#%#//scriptlet("trusted-suppress-native-method","setInterval")
+#%#//scriptlet("trusted-set-attr","style","display:block")
 
 ! =========================================================================
 ! [MEGA-BLOCK XVII] FAILSAFE & QUANTUM OMEGA (v2026.1-HYPER)
