@@ -559,3 +559,7 @@ $app_detection=manufacturer_telemetry,action=block,important
 ! --- СЕКЦИЯ 5: КРИПТОДЖЕКИНГ & ФОНОВЫЙ ШУМ ---
 ||/^(coin-hive|coinhive|cryptoloot|miner|authedmine|webmine|monerominer|cryptonight|mining-pool)\./^$important,reject
 
+! --- [FINAL-TOUCH] YANDEX & DZEN CLEANER ---
+||/^(yandex.*|dzen.*|mail.*)\/.*(adv|context|banner|clck|metrika)/^$important,reject
+||/^(an.yandex.ru|yabs.yandex.ru|ads.adfox.ru)\./^$dnstype=A,empty,important
+
