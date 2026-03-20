@@ -628,14 +628,18 @@ $network=dns,edns=off,important
 ||/^(android.clients.google.com|connectivitycheck.gstatic.com|telemetry.sdk.samsung.com)\./^$dnstype=A,empty,important
 
 
+​! =========================================================================
 ! --- [MEGA-BLOCK XXIV] ANTI-SPYWARE & BASEBAND STEALTH ---
+​! =========================================================================
 ! Блокировка связи шпионского ПО с командными центрами (Pegasus и др.)
 ||/^(api|logs|c2|detect|push)\.(nso-group|nso|pegasus|quadream|candiru|intellexa)\./^$important,reject
 ||/^(opencellid|location-api.com|unwiredlabs)\./^$dnstype=A,empty,important
 
-! --- [MEGA-BLOCK XXV] OMNI-GLOBAL-PASS (Green Lane) ---
-! Разрешаем путь для банковских кодов и системных уведомлений (CAF, BNP, Revolut)
-@@||*.(gouv.fr|gov|gov.uk|bund.de|europa.eu|gov.ru|gosuslugi|fcm.googleapis|firebaseinstallations.googleapis|revolut|appleid|icloud|microsoft|passport|auth|otp|secure-code|3ds)\.(com|fr|de|ru|org|net|eu)^$important,domain=~browser
 
+​! =========================================================================
+! --- [MEGA-BLOCK XXV] OMNI-GLOBAL-PASS (Green Lane) ---
+​! =========================================================================
+! Разрешаем путь для банковских кодов и системных уведомлений (CAF, BNP, Revolut)
+@@||*.(gov|gouv|bund|europa|gosuslugi|fcm|firebase|appleid|icloud|microsoft|passport|auth|otp|secure|3ds|amazon|ebay|aliexpress|alibaba|leboncoin|wildberries|ozon|asda|lidl|carrefour|rewe|pay|checkout|billing)\.(com|fr|de|ru|org|net|eu|uk|it|es)^$important,domain=~browser
 ! Защита от спам-прозвонов и фишинговых SMS-сервисов
 ||/^(spamblock|callfilter|numverify|phone-validator)\./^$dnstype=A,empty,important
