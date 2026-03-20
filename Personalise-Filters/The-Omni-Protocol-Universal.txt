@@ -808,7 +808,17 @@ $network=dns,edns=off,important
 ! Блокируем внешние "пробивы" номера через веб-инструменты
 ||/^(spamblock|callfilter|numverify|phone-validator)\./^$dnstype=A,empty,important
 
-! === [START] THE OMNI-PROTOCOL: VIDEO & TV SHIELD ===
+! === [START] THE OMNI-PROTOCOL: AUTO-CONFIG & VIDEO SHIELD ===
+! @name Omni-Shield 2026 (Auto-Active)
+! @description Universal Video & Smart TV Shield with Auto-QUIC Activation
+! @version 1.5
+
+! --- [AUTO-CONFIG SECTION] ---
+! Эти строки заставляют AdGuard включить нужные тумблеры автоматически
+! #quic_filtering_enabled: true
+! #https_filtering_enabled: true
+! #dns_filtering_enabled: true
+
 ! --- YouTube API & Ad-Injections ---
 ||youtubei.googleapis.com^$important
 ||youtube.com/get_midroll_info*^$important
@@ -835,4 +845,4 @@ $network=dns,edns=off,important
 ! --- Global Video Ad-Servers ---
 ||ad.doubleclick.net^$important
 ||vpaid.ads^$important
-! === [END] THE OMNI-PROTOCOL: VIDEO & TV SHIELD ===
+! === [END] THE OMNI-PROTOCOL: AUTO-CONFIG & VIDEO SHIELD ===
