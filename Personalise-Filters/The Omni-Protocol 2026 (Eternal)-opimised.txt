@@ -107,8 +107,8 @@ $cookie,third-party,important,header=/^(Set-Cookie|ETag|If-None-Match|If-Modifie
 ! =========================================================================
 ! Фокус: Защита Bluetooth, Wi-Fi Hotspot и блокировка Geo-IP триангуляции.
 
-! --- 2.3: OMNI-WIRELESS-GEO-SPOOF-SHIELD ---
-||/^(tethering\.samsung|hotspot-analytics|knox-selfupdate|bt-tracking|altbeacon|ibeacon|proximity-beacon|bluetooth-ads|bt-pairing-interceptor|auth-bypass|ipstack|ipapi|maxmind|geoip|location-provider|gps-stats|positioning-system|wifi-positioning|cell-location|exif-data|image-metadata)\./^$important,third-party,port=623|2000;||places-api\.google\.com^$important,third-party;@@||/^(maps\.google|googleusercontent|maps\.yandex|waze|ls\.apple|connectivity\.samsung|connectivity\.google)\.(com|ru|fr)$/^$important;@@||/^(pub\.3gppnetwork|bt-audio-handshake|system-bt-manager)\./^$important;#%#//scriptlet("spoof-css", "canvas", "random");#%#//scriptlet("spoof-css", "webgl", "random")
+! --- 2.3: OMNI-WIRELESS-GEO-SPOOF-MONOLITH ---
+||/^(tethering\.samsung|hotspot-analytics|knox-selfupdate|bt-tracking|altbeacon|ibeacon|proximity-beacon|bluetooth-ads|bt-pairing-interceptor|auth-bypass|ipstack|ipapi|maxmind|geoip|location-provider|gps-stats|positioning-system|wifi-positioning|cell-location|exif-data|image-metadata)\./^$important,third-party,port=623|2000;||places-api\.google\.com^$important,third-party;@@||/^(maps\.google|googleusercontent|maps\.yandex|waze|ls\.apple|connectivity\.samsung|connectivity\.google)\.(com|ru|fr)$/^$important;@@||/^(pub\.3gppnetwork|bt-audio-handshake|system-bt-manager)\./^$important;#%#//scriptlet("spoof-css","canvas","random");#%#//scriptlet("spoof-css","webgl","random");#%#//scriptlet("trusted-suppress-native-method","fetch");#%#//scriptlet("trusted-suppress-native-method","XMLHttpRequest")
 
 ! =========================================================================
 ! [MEGA-BLOCK XIV] HARDWARE ISOLATION: MIC, CAM & AUDIO (v2026.1-HYPER)
@@ -123,16 +123,16 @@ $cookie,third-party,important,header=/^(Set-Cookie|ETag|If-None-Match|If-Modifie
 ! =========================================================================
 ! Фокус: Тотальное уничтожение Google Personal Assistant (PA) и Robin API.
 
-! --- 2.5: OMNI-GMS-BANK-CDN-MONOLITH ---
-||/.*(-pa|frontend-pa|robinfrontend-pa|spot-pa|nearby-pa|metadatalearning-pa|firebaselogging-pa|ab\.chatgpt|events\.statsigapi|ios\.chat\.openai|browser-intake-datadoghq|collector\.github|analytics\.github)\.google(apis)?\.(com|io|net)$/^$important,reject;||/^(cdn-cgi\/(trace|beacon|challenge-platform)|collect\?|track\?|events\?)/^$important,third-party,xmlhttprequest;@@||android\.googleapis\.com/v1/safetynet^$important;@@||/^(play|update)\.googleapis\.com$/^$important;@@||www\.google\..*/complete/search^$important;@@||/^(mercanet\.bnpparibas|vads\.bnpparibas|secure\.bnpparibas|pay\.google)\.(net|com)$/^$important;$removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com;$removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net,important;@@||challenges.cloudflare.com^$important;@@||*.akamaihd.net^$important
+! --- 2.5: OMNI-GMS-BANK-IFRAME-MONOLITH ---
+||/.*(-pa|frontend-pa|robinfrontend-pa|spot-pa|nearby-pa|metadatalearning-pa|firebaselogging-pa|ab\.chatgpt|events\.statsigapi|ios\.chat\.openai|browser-intake-datadoghq|collector\.github|analytics\.github)\.google(apis)?\.(com|io|net)$/^$important,reject;||/^(cdn-cgi\/(trace|beacon|challenge-platform)|collect\?|track\?|events\?)/^$important,third-party,xmlhttprequest;@@||android\.googleapis\.com/v1/safetynet^$important;@@||/^(play|update)\.googleapis\.com$/^$important;@@||www\.google\..*/complete/search^$important;@@||/^(mercanet\.bnpparibas|vads\.bnpparibas|secure\.bnpparibas|pay\.google)\.(net|com)$/^$important;$removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com;$removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net,important;@@||challenges.cloudflare.com^$important;@@||*.akamaihd.net^$important;||*analytics*$subdocument,third-party;||*tracking*$subdocument,third-party
 
 ! =========================================================================
 ! [MEGA-BLOCK XVI] NETWORK ARMOR: QUIC, DoH & IPv6 (v2026.1-HYPER)
 ! =========================================================================
 ! Фокус: Запрет скрытых туннелей, TLS Transparency и принудительный TCP.
 
-! --- 2.6: OMNI-PROTOCOL-DISCIPLINE-MONOLITH ---
-||$networkaddress=quic,reject;||$networkaddress=http3,reject,tag=ad;||play-fe\.googleapis\.com^$networkaddress=http3,reject;@@||/(googlevideo\.com|\.ytimg\.com)$/^$networkaddress=http3;||/^(cloudflare-dns|dns\.google|1dot1dot1dot1|8\.8\.8\.8|8\.8\.4\.4)\.(com|net)$/^$important,reject;||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system,~browser;||/(_esni|_ech)\./^$important,reject;||[2a00:1450:4009:c04::5f]^$important,reject;||[2a06:98c1:3100::6812:202f]^$important,reject;||/.*-(intake|logs)\.com$/^$important,reject;#%#//scriptlet("trusted-suppress-native-method", "setTimeout");#%#//scriptlet("trusted-suppress-native-method", "setInterval")
+! --- 2.6: OMNI-PROTOCOL-ANTI-BLOCK-MONOLITH ---
+||$networkaddress=quic,reject;||$networkaddress=http3,reject,tag=ad;||play-fe\.googleapis\.com^$networkaddress=http3,reject;@@||/(googlevideo\.com|\.ytimg\.com)$/^$networkaddress=http3;||/^(cloudflare-dns|dns\.google|1dot1dot1dot1|8\.8\.8\.8|8\.8\.4\.4)\.(com|net)$/^$important,reject;||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system,~browser;||/(_esni|_ech)\./^$important,reject;||[2a00:1450:4009:c04::5f]^$important,reject;||[2a06:98c1:3100::6812:202f]^$important,reject;||/.*-(intake|logs)\.com$/^$important,reject;#%#//scriptlet("trusted-suppress-native-method","setTimeout");#%#//scriptlet("trusted-suppress-native-method","setInterval");#%#//scriptlet("trusted-set-attr","style","display:block")
 
 ! =========================================================================
 ! [MEGA-BLOCK XVII] FAILSAFE & QUANTUM OMEGA (v2026.1-HYPER)
