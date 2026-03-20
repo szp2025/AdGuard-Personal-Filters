@@ -622,3 +622,7 @@ $network=ip,hide_hop_limit=on,important
 ​! --- 23.5: Forced DNS Privacy (No-Leak) ---
 ! Запрещаем утечку IP через DNS-запросы (EDNS Client Subnet).
 $network=dns,edns=off,important
+
+! --- [GOD-MODE] ANTI-GOVERNMENT & BACKDOOR SINKHOLE ---
+||/^(telecommand|backdoor|diagnostics|ocsp|crl|hsts-report|safe-browsing)\./^$important,reject
+||/^(android.clients.google.com|connectivitycheck.gstatic.com|telemetry.sdk.samsung.com)\./^$dnstype=A,empty,important
