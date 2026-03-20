@@ -849,16 +849,3 @@ $network=dns,edns=off,important
 ||vpaid.ads^$important
 ! === [END] THE OMNI-PROTOCOL: AUTO-CONFIG & VIDEO SHIELD ===
 
-! --- [STEALTH & ENCRYPTION LAYER] ---
-! Скрываем данные о твоём устройстве и браузере
-$stealth,hide-referrer,hide-user-agent,set-constant:navigator.webdriver:undefined
-
-! Блокируем передачу твоего IP через WebRTC (частая дыра в браузере)
-||google.com/search?*webrtc*^$important
-
-! Маскируем DNS-запросы (чтобы провайдер не видел, куда ты ходишь)
-! #dns_filtering_enabled: true
-! #dns_over_https_enabled: true
-
-! Принудительное шифрование для всех соединений
-$websocket,important
