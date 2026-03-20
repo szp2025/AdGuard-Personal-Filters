@@ -529,3 +529,4 @@ $app_detection=manufacturer_telemetry,action=block,important
 ||/^(telemetry|metrics|stats|analytics|adserver|ads-preview|pixel-track)\./^$dnstype=A,empty,important
 ||/^(collector|ingest|report|logs|error-track|crash-report)\./^$dnstype=A,empty,important
 ||$websocket,third-party,important,reject
+
