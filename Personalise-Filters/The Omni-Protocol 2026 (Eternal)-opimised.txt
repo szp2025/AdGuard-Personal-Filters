@@ -175,6 +175,17 @@ $network=tls,pqc=off,domain=~google.com|~github.com|~revolut.com
 ##html, body:style(overflow: auto !important; height: auto !important;)
 
 
+! --- Уровень 7: Universal Ad Kill ---
+||*/ads/*$all,third-party
+||*/adservice/*$all,third-party
+||*/advert/*$all,third-party
+
+! --- Уровень 8: YouTube Inline Ads ---
+youtube.com##ytd-display-ad-renderer
+youtube.com##ytd-promoted-video-renderer
+youtube.com##ytd-player-legacy-desktop-watch-ads-renderer
+youtube.com##.video-ads
+youtube.com##.ytp-ad-module
 ! =========================================================================
 ! [MEGA-BLOCK VII] ANNOYANCES & SOCIAL PURGE (v2026.1-HYPER)
 ! =========================================================================
