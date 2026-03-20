@@ -54,6 +54,8 @@ $network=tls,pqc=off,important,domain=~google.com|~github.com|~revolut.com|~appl
 ||youtube.com/get_midroll_info*^$important
 ||samsungads.com^$important
 
+||youtube.com^$dnsrewrite=0.0.0.0
+||samsung-com.112.2o7.net^$important
 
 ! =========================================================================
 ! [MEGA-BLOCK II] TRACKING ANNIHILATION CORE (v2026.UNIVERSAL)
