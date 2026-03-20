@@ -496,6 +496,19 @@ $removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net,imp
 ##+js(trusted-suppress-native-method, setTimeout)
 ##+js(trusted-suppress-native-method, setInterval)
 
+! Универсальное подавление для uBlock/Brave (замена $network для JS-уровня)
+##+js(trusted-suppress-native-method, setTimeout)
+##+js(set-constant, navigator.webdriver, false)
+! Защита WebRTC для uBlock (совместимость)
+##+js(nowebrtc)
+
+
+! Разрешаем QUIC только для критических медиа-потоков (YouTube/Meet)
+@@||googlevideo.com^$networkaddress=quic
+@@||google.com/meet^$networkaddress=quic
+! Для всех остальных — жесткий TCP (для контроля DPI)
+||$networkaddress=quic,reject,domain=~googlevideo.com|~google.com
+
 
 ! =========================================================================
 ! [MEGA-BLOCK XVII] FAILSAFE & QUANTUM OMEGA (v2026.UNIVERSAL)
@@ -516,6 +529,11 @@ $removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net,imp
 ! --- 17.4: Essential Comms (Профессиональная связь) ---
 ! Финальное подтверждение стабильности для Zoom, Webex и Teams
 @@||/^(zoom|webex|teams\.microsoft)\.(us|com)$/^$important
+
+! Расширенный список для мгновенного "Check-Online"
+@@||msftconnecttest.com^$important
+@@||appleid.apple.com^$important
+@@||captive.apple.com^$important
 
 
 ! =========================================================================
@@ -546,6 +564,11 @@ $removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net,imp
 ! --- 18.6: Push Stability (Стабильность уведомлений) ---
 ! Разрешаем порт 5228 для Google Push (mtalk), чтобы работали сообщения
 @@||mtalk\.google\.com^$important,port=5228
+
+! Разрешаем локальный трафик ТОЛЬКО для системных запросов авторизации
+@@||192.168.0.0/16^$important,app=com.android.settings|com.apple.Preferences|com.android.htmlviewer
+! Блокируем порты прокси, но исключаем стандартные альтернативные HTTP-порты для Captive Portals
+||^$important,port=1080|8888|5299..65535,reject,domain=~system
 
 ! =========================================================================
 ! [MEGA-BLOCK XIX] KYBER CORE & FINTECH INTEGRITY (v2026.UNIVERSAL)
