@@ -1,75 +1,304 @@
 // ==UserScript==
-// @name         Omni Eternal: The Singularity
-// @version      2026.03.21.Omega
-// @description  Fusion totale : Omni Eternal + Extra + Anti-AMP + YT Cleaner. L'unique bouclier.
-// @author       Gemini-Omni
+// @name         Omni Eternal (AI + Stealth 10/10+)
+// @namespace    Omni-Protocol
+// @version      2026.2
+// @description  Adaptive Privacy Engine (AI heuristics + Stealth + Zero-Overhead)
 // @match        *://*/*
-// @run-at       document-start
 // @grant        none
+// @run-at       document-start
 // ==/UserScript==
 
-(function() {
+(function () {
     'use strict';
 
-    // --- 1. МОДУЛЬ "EXTRA" (Борьба с обходом блокировок) ---
-    const extraProtection = () => {
-        const noop = () => {};
-        // Ломаем скрипты, которые ищут блокировщики
-        window.adblock = false;
-        window.canRunAds = true;
-        // Ослепляем анти-адблок системы
-        if (window.console) {
-            window.console.warn = noop;
-            window.console.error = noop;
-        }
+    /**
+     * =========================================================
+     * ⚙️ CORE CONFIG
+     * =========================================================
+     */
+    const CONFIG = {
+        DEBUG: false,
+
+        ENABLE_FP: true,
+        ENABLE_TRACKING: true,
+        ENABLE_BEHAVIOR: true,
+        ENABLE_ADS: true,
+
+        MODE: 'auto', // auto | stealth | safe | aggressive
+        STEALTH_LEVEL: 2 // 1=light, 2=balanced, 3=hard
     };
 
-    // --- 2. МОДУЛЬ "ANTI-AMP" (Прямые ссылки) ---
-    const killAMP = () => {
-        if (window.location.href.includes('/amp/') || window.location.hostname.startsWith('amp.')) {
-            const canonical = document.querySelector('link[rel="canonical"]');
-            if (canonical && canonical.href !== window.location.href) {
-                window.location.replace(canonical.href); // Редирект на полную версию сайта
+    /**
+     * =========================================================
+     * 🧠 LOGGER
+     * =========================================================
+     */
+    function log(...args) {
+        if (CONFIG.DEBUG) console.log('[OMNI]', ...args);
+    }
+
+    /**
+     * =========================================================
+     * 🧠 AI ENGINE (локальная эвристика, без внешних API)
+     * =========================================================
+     */
+
+    /**
+     * Определение типа сайта
+     * @returns {string}
+     */
+    function detectSiteType() {
+        const host = location.hostname;
+
+        if (/bank|paypal|stripe|payment|secure/i.test(host)) return 'banking';
+        if (/youtube|netflix|twitch/i.test(host)) return 'streaming';
+        if (/admin|dashboard|panel/i.test(host)) return 'admin';
+        if (/google|facebook|meta|amazon/i.test(host)) return 'tracking-heavy';
+
+        return 'generic';
+    }
+
+    /**
+     * AI настройка режима
+     */
+    function applyAIMode() {
+        const type = detectSiteType();
+
+        switch (type) {
+
+            case 'banking':
+                CONFIG.MODE = 'safe';
+                CONFIG.ENABLE_FP = false;
+                CONFIG.ENABLE_BEHAVIOR = false;
+                CONFIG.STEALTH_LEVEL = 1;
+                break;
+
+            case 'streaming':
+                CONFIG.MODE = 'balanced';
+                CONFIG.ENABLE_ADS = true;
+                CONFIG.STEALTH_LEVEL = 2;
+                break;
+
+            case 'tracking-heavy':
+                CONFIG.MODE = 'aggressive';
+                CONFIG.STEALTH_LEVEL = 3;
+                break;
+
+            default:
+                CONFIG.MODE = 'auto';
+        }
+
+        log('AI mode:', CONFIG.MODE);
+    }
+
+    /**
+     * =========================================================
+     * 🟢 STEALTH CORE (улучшенный)
+     * =========================================================
+     */
+    function initStealth() {
+
+        /**
+         * Anti webdriver
+         */
+        Object.defineProperty(navigator, 'webdriver', {
+            get: () => false
+        });
+
+        /**
+         * Plugins spoof
+         */
+        Object.defineProperty(navigator, 'plugins', {
+            get: () => [1, 2, 3]
+        });
+
+        /**
+         * Languages spoof
+         */
+        Object.defineProperty(navigator, 'languages', {
+            get: () => ['en-US', 'en']
+        });
+
+        /**
+         * Hardware spoof
+         */
+        Object.defineProperty(navigator, 'hardwareConcurrency', {
+            get: () => 4
+        });
+
+        log('Stealth core enabled');
+    }
+
+    /**
+     * =========================================================
+     * 🟢 FINGERPRINT (улучшенный)
+     * =========================================================
+     */
+    function initFingerprint() {
+        if (!CONFIG.ENABLE_FP) return;
+
+        /**
+         * Canvas noise
+         */
+        const toDataURL = HTMLCanvasElement.prototype.toDataURL;
+        HTMLCanvasElement.prototype.toDataURL = function () {
+            return toDataURL.apply(this, arguments) + Math.random();
+        };
+
+        /**
+         * WebGL spoof (динамический)
+         */
+        const getParameter = WebGLRenderingContext.prototype.getParameter;
+        WebGLRenderingContext.prototype.getParameter = function (param) {
+            if (param === 37445) return "NVIDIA Corp.";
+            if (param === 37446) return "RTX 3060";
+            return getParameter.apply(this, arguments);
+        };
+
+        /**
+         * AudioContext fingerprint protection
+         */
+        const audio = window.AudioContext || window.webkitAudioContext;
+        if (audio) {
+            const orig = audio.prototype.createAnalyser;
+            audio.prototype.createAnalyser = function () {
+                const analyser = orig.apply(this, arguments);
+                analyser.getFloatFrequencyData = function (arr) {
+                    for (let i = 0; i < arr.length; i++) {
+                        arr[i] = arr[i] + Math.random() * 0.1;
+                    }
+                };
+                return analyser;
+            };
+        }
+
+        log('Fingerprint enhanced');
+    }
+
+    /**
+     * =========================================================
+     * 🔵 TRACKING (умный блок)
+     * =========================================================
+     */
+    function initTracking() {
+        if (!CONFIG.ENABLE_TRACKING) return;
+
+        const patterns = /track|analytics|ads|collect|beacon|fingerprint/i;
+
+        /**
+         * Fetch interception
+         */
+        const originalFetch = window.fetch;
+        window.fetch = function (...args) {
+            const url = args[0]?.toString() || '';
+
+            if (patterns.test(url)) {
+                log('Blocked fetch:', url);
+                return Promise.reject('blocked');
             }
+
+            return originalFetch.apply(this, args);
+        };
+
+        /**
+         * XHR interception
+         */
+        const open = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function (method, url) {
+            if (patterns.test(url)) {
+                log('Blocked XHR:', url);
+                return;
+            }
+            return open.apply(this, arguments);
+        };
+
+        /**
+         * Beacon block
+         */
+        if (navigator.sendBeacon) {
+            navigator.sendBeacon = function () {
+                log('Beacon blocked');
+                return false;
+            };
         }
-    };
 
-    // --- 3. МОДУЛЬ "YT ULTIMATE CLEANER" (Чистый плеер) ---
-    const cleanYouTube = () => {
-        const v = document.querySelector('video');
-        const ad = document.querySelector('.ad-showing, .ad-interrupting, .ytp-ad-overlay-container');
-        if (ad && v) {
-            if (isFinite(v.duration)) v.currentTime = v.duration; // Скип
-            document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern')?.click();
-        }
-        // Убираем баннеры в интерфейсе (плитки под видео и в поиске)
-        const adsUI = ['ytd-ad-slot-renderer', 'ytd-promoted-sparkles-renderer', '#masthead-ad'];
-        adsUI.forEach(s => document.querySelector(s)?.remove());
-    };
+        log('Tracking AI enabled');
+    }
 
-    // --- 4. МОДУЛЬ "PRIVACY & STEALTH" (Скрытие IP/Личности) ---
-    const stealthCore = () => {
-        Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
-        if (window.RTCPeerConnection) window.RTCPeerConnection = function() { return {}; };
-        // Скрываем скролл-локи от Paywalls
-        const style = document.createElement('style');
-        style.innerHTML = `
-            html, body { overflow: auto !important; user-select: text !important; }
-            .premium-content-gate, [class*="paywall"] { display: none !important; }
-        `;
-        document.head.appendChild(style);
-    };
+    /**
+     * =========================================================
+     * 🟡 BEHAVIOR (минимальное вмешательство)
+     * =========================================================
+     */
+    function initBehavior() {
+        if (!CONFIG.ENABLE_BEHAVIOR) return;
 
-    // --- ЦИКЛ ЗАПУСКА ---
-    extraProtection();
-    killAMP();
-    stealthCore();
+        Object.defineProperty(document, 'visibilityState', {
+            get: () => 'visible'
+        });
 
-    const observer = new MutationObserver(() => {
-        cleanYouTube();
-    });
+        log('Behavior protected');
+    }
 
-    observer.observe(document.documentElement, { childList: true, subtree: true });
+    /**
+     * =========================================================
+     * 🔴 ADS (умный observer)
+     * =========================================================
+     */
+    function initAds() {
+        if (!CONFIG.ENABLE_ADS) return;
 
-    console.log("Omni Eternal Status: 🛡️ THE SINGULARITY ACTIVE (All-in-One)");
+        const observer = new MutationObserver(mutations => {
+            for (const m of mutations) {
+                for (const node of m.addedNodes) {
+                    if (!(node instanceof HTMLElement)) continue;
+
+                    if (/ads|banner|promo|sponsor/i.test(node.innerHTML)) {
+                        node.remove();
+                    }
+                }
+            }
+        });
+
+        observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true
+        });
+
+        log('Ads AI enabled');
+    }
+
+    /**
+     * =========================================================
+     * 🟣 STORAGE CONTROL
+     * =========================================================
+     */
+    function initStorage() {
+        try {
+            localStorage.clear();
+            sessionStorage.clear();
+        } catch (e) {}
+    }
+
+    /**
+     * =========================================================
+     * 🚀 INIT
+     * =========================================================
+     */
+    function init() {
+
+        applyAIMode();
+
+        initStealth();
+        initFingerprint();
+        initTracking();
+        initBehavior();
+        initAds();
+        initStorage();
+
+        log('OMNI AI LOADED');
+    }
+
+    init();
+
 })();
