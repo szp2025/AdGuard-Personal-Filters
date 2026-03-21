@@ -879,3 +879,16 @@ $replace=/(&client=[^&]+|&sourceid=[^&]+|&gs_lcrp=[^&]+)//
 ! Блокируем скрытые запросы к рекламным ID (Advertising ID)
 ||googleads.g.doubleclick.net/pagead/gen_204*
 
+
+! --- [Omni-Protocol: Enhanced Security] ---
+! Блокировка скрытых майнеров
+||coin-hive.com^$important
+||coinhive.com^$important
+
+! Удаление раздражающих виджетов "Подпишитесь на рассылку"
+##.newsletter-popup
+##.subscribe-modal
+
+! Ускорение загрузки: Блокировка тяжелых видео-прероллов
+$videoplayback,domain=youtube.com,important
+
