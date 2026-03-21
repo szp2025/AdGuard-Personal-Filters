@@ -206,6 +206,69 @@ function isolateStorage() {
 
 /**
  * =========================================================
+ * 🛡️ ANTI-EXPLOIT (защита от XSS / инъекций)
+ * =========================================================
+ */
+function initAntiExploit() {
+
+    const origEval = window.eval;
+    window.eval = function () {
+        throw new Error("eval blocked");
+    };
+
+    const origFunction = window.Function;
+    window.Function = function () {
+        throw new Error("Function constructor blocked");
+    };
+
+    log('Anti-Exploit ON');
+}
+
+/**
+ * =========================================================
+ * 🔐 CLIPBOARD PROTECTION
+ * =========================================================
+ */
+function protectClipboard() {
+
+    navigator.clipboard.writeText = () => Promise.reject();
+
+    log('Clipboard protected');
+}
+
+/**
+ * =========================================================
+ * 🛰 SENSOR BLOCK
+ * =========================================================
+ */
+function blockSensors() {
+
+    if (window.DeviceMotionEvent) window.DeviceMotionEvent = undefined;
+    if (window.DeviceOrientationEvent) window.DeviceOrientationEvent = undefined;
+
+    log('Sensors blocked');
+}
+
+/**
+ * =========================================================
+ * 🔒 IFRAME ISOLATION
+ * =========================================================
+ */
+function isolateIframes() {
+
+    const observer = new MutationObserver(() => {
+        document.querySelectorAll('iframe').forEach(f => {
+            f.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+        });
+    });
+
+    observer.observe(document, { childList:true, subtree:true });
+
+    log('Iframes isolated');
+}
+
+/**
+ * =========================================================
  * 🚀 INIT
  * =========================================================
  */
