@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Omni Eternal BLACK LEVEL++
+// @name         Omni Eternal ULTRA GOD / MILITARY
 // @namespace    Omni-Protocol
-// @version      2026.5
-// @description  Ultimate Anti-Detect AI Engine (Black Level)
+// @version      2026.6
+// @description  Ultimate Anti-Detect + Security + AI Adaptive Engine
 // @match        *://*/*
 // @grant        none
 // @run-at       document-start
@@ -13,19 +13,51 @@
 
 /**
  * =========================================================
- * ⚙️ CONFIG
+ * ⚙️ CONFIGURATION GLOBALE
  * =========================================================
  */
 const CONFIG = {
     DEBUG: false,
-    ROTATION_INTERVAL: 1000 * 60 * 10 // 10 min
+    ROTATION_INTERVAL: 1000 * 60 * 10,
+    LEARNING: true
 };
 
-function log(...a){ if(CONFIG.DEBUG) console.log('[BLACK]',...a); }
+function log(...args){
+    if(CONFIG.DEBUG) console.log('[OMNI-MIL]', ...args);
+}
 
 /**
  * =========================================================
- * 🧠 PROFILE GENERATOR (анти-корреляция)
+ * 🧠 STOCKAGE IA LOCAL
+ * =========================================================
+ */
+const STORE_KEY = "__omni_ai__";
+
+/**
+ * Récupère les données IA depuis le localStorage
+ * @returns {Object}
+ */
+function getStore() {
+    try {
+        return JSON.parse(localStorage.getItem(STORE_KEY)) || {};
+    } catch {
+        return {};
+    }
+}
+
+/**
+ * Sauvegarde les données IA
+ * @param {Object} data
+ */
+function saveStore(data) {
+    try {
+        localStorage.setItem(STORE_KEY, JSON.stringify(data));
+    } catch {}
+}
+
+/**
+ * =========================================================
+ * 🧠 GENERATEUR DE PROFIL (ANTI-CORRELATION)
  * =========================================================
  */
 function generateProfile() {
@@ -51,18 +83,38 @@ function generateProfile() {
 let PROFILE = generateProfile();
 
 /**
- * =========================================================
- * 🔁 PROFILE ROTATION (soft)
- * =========================================================
+ * Rotation dynamique du profil
  */
 setInterval(() => {
     PROFILE = generateProfile();
-    log('Profile rotated');
+    log('Rotation profil');
 }, CONFIG.ROTATION_INTERVAL);
 
 /**
  * =========================================================
- * 🧠 CONSISTENCY ENGINE (самое важное)
+ * 🧠 MOTEUR IA ADAPTATIF
+ * =========================================================
+ */
+function applyAI() {
+
+    if(!CONFIG.LEARNING) return;
+
+    const store = getStore();
+    const host = location.hostname;
+
+    if(!store[host]) {
+        store[host] = { errors:0 };
+    }
+
+    window.addEventListener('error', () => {
+        store[host].errors++;
+        saveStore(store);
+    });
+}
+
+/**
+ * =========================================================
+ * 🔐 CONSISTENCY ENGINE (CRITIQUE)
  * =========================================================
  */
 function applyConsistency() {
@@ -90,10 +142,10 @@ function applyConsistency() {
 
 /**
  * =========================================================
- * 🎨 CANVAS + WEBGL (согласованный spoof)
+ * 🎨 FINGERPRINT (Canvas + WebGL)
  * =========================================================
  */
-function applyGraphics() {
+function applyFingerprint() {
 
     const toDataURL = HTMLCanvasElement.prototype.toDataURL;
 
@@ -114,30 +166,24 @@ function applyGraphics() {
 
 /**
  * =========================================================
- * 🛰 WEBRTC HARD BLOCK
+ * 🛰 NETWORK PROTECTION (WebRTC + Fetch)
  * =========================================================
  */
-function blockWebRTC() {
+function protectNetwork() {
 
+    // WebRTC block
     if (window.RTCPeerConnection) {
         window.RTCPeerConnection = function () {
             return {};
         };
     }
-}
 
-/**
- * =========================================================
- * 🔐 NETWORK HUMANIZATION
- * =========================================================
- */
-function humanizeNetwork() {
-
+    // Fetch humanization
     const origFetch = window.fetch;
 
     window.fetch = function (...args) {
 
-        const jitter = 20 + Math.random()*120;
+        const jitter = 20 + Math.random()*100;
 
         return new Promise((resolve, reject) => {
             setTimeout(() => {
@@ -149,7 +195,7 @@ function humanizeNetwork() {
 
 /**
  * =========================================================
- * 🧬 REAL BEHAVIOR MODEL
+ * 🧬 COMPORTEMENT HUMAIN
  * =========================================================
  */
 function simulateBehavior() {
@@ -170,13 +216,13 @@ function simulateBehavior() {
 
     setInterval(() => {
         moveMouse();
-        if (Math.random() > 0.5) scroll();
+        if(Math.random() > 0.5) scroll();
     }, 3000 + Math.random()*4000);
 }
 
 /**
  * =========================================================
- * 🧠 ANTI-TIMING ATTACK
+ * 🧠 ANTI TIMING
  * =========================================================
  */
 function protectTiming() {
@@ -190,7 +236,62 @@ function protectTiming() {
 
 /**
  * =========================================================
- * 🧠 STORAGE ISOLATION
+ * 🛡️ ANTI-EXPLOIT
+ * =========================================================
+ */
+function initAntiExploit() {
+
+    window.eval = function () {
+        throw new Error("Blocked eval");
+    };
+
+    window.Function = function () {
+        throw new Error("Blocked Function");
+    };
+}
+
+/**
+ * =========================================================
+ * 🔐 PROTECTION CLIPBOARD
+ * =========================================================
+ */
+function protectClipboard() {
+
+    if(navigator.clipboard) {
+        navigator.clipboard.writeText = () => Promise.reject();
+    }
+}
+
+/**
+ * =========================================================
+ * 🛰 BLOQUAGE CAPTEURS
+ * =========================================================
+ */
+function blockSensors() {
+
+    if (window.DeviceMotionEvent) window.DeviceMotionEvent = undefined;
+    if (window.DeviceOrientationEvent) window.DeviceOrientationEvent = undefined;
+}
+
+/**
+ * =========================================================
+ * 🔒 ISOLATION IFRAME
+ * =========================================================
+ */
+function isolateIframes() {
+
+    const observer = new MutationObserver(() => {
+        document.querySelectorAll('iframe').forEach(f => {
+            f.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+        });
+    });
+
+    observer.observe(document, { childList:true, subtree:true });
+}
+
+/**
+ * =========================================================
+ * 🧠 ISOLATION STORAGE
  * =========================================================
  */
 function isolateStorage() {
@@ -206,87 +307,24 @@ function isolateStorage() {
 
 /**
  * =========================================================
- * 🛡️ ANTI-EXPLOIT (защита от XSS / инъекций)
- * =========================================================
- */
-function initAntiExploit() {
-
-    const origEval = window.eval;
-    window.eval = function () {
-        throw new Error("eval blocked");
-    };
-
-    const origFunction = window.Function;
-    window.Function = function () {
-        throw new Error("Function constructor blocked");
-    };
-
-    log('Anti-Exploit ON');
-}
-
-/**
- * =========================================================
- * 🔐 CLIPBOARD PROTECTION
- * =========================================================
- */
-function protectClipboard() {
-
-    navigator.clipboard.writeText = () => Promise.reject();
-
-    log('Clipboard protected');
-}
-
-/**
- * =========================================================
- * 🛰 SENSOR BLOCK
- * =========================================================
- */
-function blockSensors() {
-
-    if (window.DeviceMotionEvent) window.DeviceMotionEvent = undefined;
-    if (window.DeviceOrientationEvent) window.DeviceOrientationEvent = undefined;
-
-    log('Sensors blocked');
-}
-
-/**
- * =========================================================
- * 🔒 IFRAME ISOLATION
- * =========================================================
- */
-function isolateIframes() {
-
-    const observer = new MutationObserver(() => {
-        document.querySelectorAll('iframe').forEach(f => {
-            f.setAttribute('sandbox', 'allow-scripts allow-same-origin');
-        });
-    });
-
-    observer.observe(document, { childList:true, subtree:true });
-
-    log('Iframes isolated');
-}
-
-/**
- * =========================================================
- * 🚀 INIT
+ * 🚀 INITIALISATION GLOBALE
  * =========================================================
  */
 function init() {
 
+    applyAI();
     applyConsistency();
-    applyGraphics();
-    blockWebRTC();
-    humanizeNetwork();
+    applyFingerprint();
+    protectNetwork();
     simulateBehavior();
     protectTiming();
-    isolateStorage();
     initAntiExploit();
     protectClipboard();
     blockSensors();
     isolateIframes();
+    isolateStorage();
 
-    log('BLACK LEVEL ACTIVE');
+    log('MILITARY MODE ACTIVE');
 }
 
 init();
