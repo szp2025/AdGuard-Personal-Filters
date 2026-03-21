@@ -3,15 +3,6 @@
 ! Version: 7.4.9
 ! Last modified: 2026-03-20
 
-! --- [OMNI NETWORK SEARCH STEALTH] ---
-! Блокируем трекинг кликов в поиске (чтобы Google не знал, на что ты нажал)
-||google.*/url?sa=t&source=web&*
-! Удаляем идентификатор устройства из запросов на лету
-$replace=/(&client=[^&]+|&sourceid=[^&]+|&gs_lcrp=[^&]+)//
-! Принудительное шифрование метаданных
-||google.com/complete/search?*$jsonp,important
-
-
 ! =========================================================================
 ! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE (v2026.UNIVERSAL)
 ! =========================================================================
@@ -863,4 +854,28 @@ $network=dns,edns=off,important
 ||ad.doubleclick.net^$important
 ||vpaid.ads^$important
 ! === [END] THE OMNI-PROTOCOL: AUTO-CONFIG & VIDEO SHIELD ===
+
+
+! --- [OMNI NETWORK SEARCH STEALTH] ---
+! Блокируем трекинг кликов в поиске (чтобы Google не знал, на что ты нажал)
+||google.*/url?sa=t&source=web&*
+! Удаляем идентификатор устройства из запросов на лету
+$replace=/(&client=[^&]+|&sourceid=[^&]+|&gs_lcrp=[^&]+)//
+! Принудительное шифрование метаданных
+||google.com/complete/search?*$jsonp,important
+
+
+! --- [OMNI SYSTEM FREEZE & TELEMETRY KILL] ---
+! Блокируем логи и отчеты об ошибках Google Play (экономия батареи)
+||play.googleapis.com/log/*$important
+||play-lh.googleusercontent.com^$important
+||android.clients.google.com/checkin$important
+
+! Отключаем системную телеметрию Samsung/Android
+||diag.allow.samsung.com^
+||analytics.samsung.com^
+||stats.g.doubleclick.net^
+
+! Блокируем скрытые запросы к рекламным ID (Advertising ID)
+||googleads.g.doubleclick.net/pagead/gen_204*
 
