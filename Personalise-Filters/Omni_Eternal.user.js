@@ -1,263 +1,227 @@
 // ==UserScript==
-// @name         Omni Eternal (ULTRA GHOST+ AI)
+// @name         Omni Eternal BLACK LEVEL++
 // @namespace    Omni-Protocol
-// @version      2026.4
-// @description  Anti-Detect Engine (Adaptive + Self-Learning + Stealth++)
+// @version      2026.5
+// @description  Ultimate Anti-Detect AI Engine (Black Level)
 // @match        *://*/*
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==
 
 (function () {
-    'use strict';
+'use strict';
 
-    /**
-     * =========================================================
-     * ⚙️ CONFIG
-     * =========================================================
-     */
-    const CONFIG = {
-        DEBUG: false,
-        MODE: 'auto', // auto / stealth / safe / aggressive
-        LEARNING: true
+/**
+ * =========================================================
+ * ⚙️ CONFIG
+ * =========================================================
+ */
+const CONFIG = {
+    DEBUG: false,
+    ROTATION_INTERVAL: 1000 * 60 * 10 // 10 min
+};
+
+function log(...a){ if(CONFIG.DEBUG) console.log('[BLACK]',...a); }
+
+/**
+ * =========================================================
+ * 🧠 PROFILE GENERATOR (анти-корреляция)
+ * =========================================================
+ */
+function generateProfile() {
+
+    const profiles = [
+        { platform:'Win32', gpu:'NVIDIA', cores:8, memory:8 },
+        { platform:'Win32', gpu:'AMD', cores:4, memory:4 },
+        { platform:'MacIntel', gpu:'Apple', cores:8, memory:8 }
+    ];
+
+    const p = profiles[Math.floor(Math.random()*profiles.length)];
+
+    return {
+        seed: Math.random().toString(36),
+        platform: p.platform,
+        gpu: p.gpu,
+        cores: p.cores,
+        memory: p.memory,
+        lang: ['en-US','en','fr-FR'][Math.floor(Math.random()*3)]
+    };
+}
+
+let PROFILE = generateProfile();
+
+/**
+ * =========================================================
+ * 🔁 PROFILE ROTATION (soft)
+ * =========================================================
+ */
+setInterval(() => {
+    PROFILE = generateProfile();
+    log('Profile rotated');
+}, CONFIG.ROTATION_INTERVAL);
+
+/**
+ * =========================================================
+ * 🧠 CONSISTENCY ENGINE (самое важное)
+ * =========================================================
+ */
+function applyConsistency() {
+
+    Object.defineProperty(navigator, 'platform', { get: () => PROFILE.platform });
+
+    Object.defineProperty(navigator, 'hardwareConcurrency', {
+        get: () => PROFILE.cores
+    });
+
+    Object.defineProperty(navigator, 'deviceMemory', {
+        get: () => PROFILE.memory
+    });
+
+    Object.defineProperty(navigator, 'languages', {
+        get: () => [PROFILE.lang, 'en']
+    });
+
+    Object.defineProperty(navigator, 'webdriver', {
+        get: () => false
+    });
+
+    window.chrome = { runtime: {} };
+}
+
+/**
+ * =========================================================
+ * 🎨 CANVAS + WEBGL (согласованный spoof)
+ * =========================================================
+ */
+function applyGraphics() {
+
+    const toDataURL = HTMLCanvasElement.prototype.toDataURL;
+
+    HTMLCanvasElement.prototype.toDataURL = function () {
+        return toDataURL.apply(this, arguments) + PROFILE.seed;
     };
 
-    function log(...a){ if(CONFIG.DEBUG) console.log('[OMNI]',...a); }
+    const getParameter = WebGLRenderingContext.prototype.getParameter;
 
-    /**
-     * =========================================================
-     * 🧠 SELF-LEARNING STORAGE
-     * =========================================================
-     */
-    const STORE_KEY = "__omni_learning__";
+    WebGLRenderingContext.prototype.getParameter = function (param) {
 
-    function getStore() {
-        try {
-            return JSON.parse(localStorage.getItem(STORE_KEY)) || {};
-        } catch {
+        if (param === 37445) return PROFILE.gpu + " Inc.";
+        if (param === 37446) return PROFILE.gpu + " Renderer";
+
+        return getParameter.apply(this, arguments);
+    };
+}
+
+/**
+ * =========================================================
+ * 🛰 WEBRTC HARD BLOCK
+ * =========================================================
+ */
+function blockWebRTC() {
+
+    if (window.RTCPeerConnection) {
+        window.RTCPeerConnection = function () {
             return {};
-        }
-    }
-
-    function saveStore(data) {
-        try {
-            localStorage.setItem(STORE_KEY, JSON.stringify(data));
-        } catch {}
-    }
-
-    /**
-     * =========================================================
-     * 🧠 AI ENGINE (локальное обучение)
-     * =========================================================
-     */
-    function applyAI() {
-        const store = getStore();
-        const host = location.hostname;
-
-        if (!store[host]) {
-            store[host] = { errors: 0, blocks: 0 };
-        }
-
-        const stats = store[host];
-
-        /**
-         * Адаптация
-         */
-        if (stats.errors > 5) {
-            CONFIG.MODE = 'safe';
-        } else if (stats.blocks > 10) {
-            CONFIG.MODE = 'aggressive';
-        } else {
-            CONFIG.MODE = 'stealth';
-        }
-
-        saveStore(store);
-        log('AI mode:', CONFIG.MODE);
-    }
-
-    /**
-     * =========================================================
-     * 🟢 DYNAMIC FINGERPRINT++
-     * =========================================================
-     */
-    function initFP() {
-
-        const seed = Math.random().toString(36);
-
-        /**
-         * Canvas noise
-         */
-        const toDataURL = HTMLCanvasElement.prototype.toDataURL;
-        HTMLCanvasElement.prototype.toDataURL = function () {
-            return toDataURL.apply(this, arguments) + seed;
         };
-
-        /**
-         * WebGL spoof
-         */
-        const getParameter = WebGLRenderingContext.prototype.getParameter;
-        WebGLRenderingContext.prototype.getParameter = function (param) {
-            if (param === 37445) return "NVIDIA Corp.";
-            if (param === 37446) return "RTX " + Math.floor(Math.random()*4000);
-            return getParameter.apply(this, arguments);
-        };
-
-        /**
-         * Timing attack protection
-         */
-        const now = performance.now.bind(performance);
-        performance.now = function () {
-            return now() + Math.random() * 5;
-        };
-
-        log('FP++ enabled');
     }
+}
 
-    /**
-     * =========================================================
-     * 🛰 WEBRTC + WEBGPU SHIELD
-     * =========================================================
-     */
-    function initNetworkShield() {
+/**
+ * =========================================================
+ * 🔐 NETWORK HUMANIZATION
+ * =========================================================
+ */
+function humanizeNetwork() {
 
-        const fakeIP = "0.0.0.0";
+    const origFetch = window.fetch;
 
-        if (window.RTCPeerConnection) {
-            const orig = window.RTCPeerConnection;
-            window.RTCPeerConnection = function (...args) {
-                const pc = new orig(...args);
+    window.fetch = function (...args) {
 
-                pc.addEventListener('icecandidate', e => {
-                    if (e.candidate) {
-                        e.candidate.candidate = e.candidate.candidate.replace(
-                            /([0-9]{1,3}\.){3}[0-9]{1,3}/,
-                            fakeIP
-                        );
-                    }
-                });
+        const jitter = 20 + Math.random()*120;
 
-                return pc;
-            };
-        }
-
-        /**
-         * WebGPU disable
-         */
-        if (navigator.gpu) {
-            navigator.gpu = undefined;
-        }
-
-        log('Network shield active');
-    }
-
-    /**
-     * =========================================================
-     * 🧬 ANTI-AI BEHAVIOR++
-     * =========================================================
-     */
-    function initBehavior() {
-
-        setTimeout(() => {
-
-            document.dispatchEvent(new MouseEvent('mousemove', {
-                clientX: Math.random()*window.innerWidth,
-                clientY: Math.random()*window.innerHeight
-            }));
-
-            window.scrollBy({
-                top: Math.random()*150,
-                behavior: 'smooth'
-            });
-
-        }, 2000 + Math.random()*3000);
-
-        log('Behavior AI active');
-    }
-
-    /**
-     * =========================================================
-     * 🔐 STEALTH CORE+++
-     * =========================================================
-     */
-    function initStealth() {
-
-        Object.defineProperty(navigator, 'webdriver', { get: () => false });
-
-        Object.defineProperty(navigator, 'platform', { get: () => 'Win32' });
-
-        Object.defineProperty(navigator, 'languages', {
-            get: () => ['en-US','en']
+        return new Promise((resolve, reject) => {
+            setTimeout(() => {
+                origFetch(...args).then(resolve).catch(reject);
+            }, jitter);
         });
+    };
+}
 
-        window.chrome = { runtime: {} };
+/**
+ * =========================================================
+ * 🧬 REAL BEHAVIOR MODEL
+ * =========================================================
+ */
+function simulateBehavior() {
 
-        log('Stealth+++ enabled');
+    function moveMouse() {
+        document.dispatchEvent(new MouseEvent('mousemove', {
+            clientX: Math.random()*window.innerWidth,
+            clientY: Math.random()*window.innerHeight
+        }));
     }
 
-    /**
-     * =========================================================
-     * 📡 NETWORK MASK++
-     * =========================================================
-     */
-    function initNetworkMask() {
-
-        const origFetch = window.fetch;
-
-        window.fetch = function (...args) {
-
-            const delay = Math.random()*60;
-
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    origFetch.apply(this, args)
-                        .then(resolve)
-                        .catch(reject);
-                }, delay);
-            });
-        };
-
-        log('Network mask++ active');
-    }
-
-    /**
-     * =========================================================
-     * 📊 ERROR TRACKING (для обучения)
-     * =========================================================
-     */
-    function initLearningHooks() {
-
-        if (!CONFIG.LEARNING) return;
-
-        const store = getStore();
-        const host = location.hostname;
-
-        window.addEventListener('error', () => {
-            store[host].errors++;
-            saveStore(store);
+    function scroll() {
+        window.scrollBy({
+            top: Math.random()*200,
+            behavior: 'smooth'
         });
-
-        log('Learning active');
     }
 
-    /**
-     * =========================================================
-     * 🚀 INIT
-     * =========================================================
-     */
-    function init() {
+    setInterval(() => {
+        moveMouse();
+        if (Math.random() > 0.5) scroll();
+    }, 3000 + Math.random()*4000);
+}
 
-        applyAI();
+/**
+ * =========================================================
+ * 🧠 ANTI-TIMING ATTACK
+ * =========================================================
+ */
+function protectTiming() {
 
-        initStealth();
-        initFP();
-        initNetworkShield();
-        initNetworkMask();
-        initBehavior();
-        initLearningHooks();
+    const now = performance.now.bind(performance);
 
-        log('ULTRA GHOST+ LOADED');
-    }
+    performance.now = function () {
+        return now() + Math.random()*3;
+    };
+}
 
-    init();
+/**
+ * =========================================================
+ * 🧠 STORAGE ISOLATION
+ * =========================================================
+ */
+function isolateStorage() {
+
+    const prefix = "__omni_" + Math.random().toString(36);
+
+    const origSet = localStorage.setItem;
+
+    localStorage.setItem = function (k,v) {
+        return origSet.call(this, prefix + k, v);
+    };
+}
+
+/**
+ * =========================================================
+ * 🚀 INIT
+ * =========================================================
+ */
+function init() {
+
+    applyConsistency();
+    applyGraphics();
+    blockWebRTC();
+    humanizeNetwork();
+    simulateBehavior();
+    protectTiming();
+    isolateStorage();
+
+    log('BLACK LEVEL ACTIVE');
+}
+
+init();
 
 })();
