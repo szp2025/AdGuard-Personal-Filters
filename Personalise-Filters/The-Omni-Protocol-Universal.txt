@@ -954,3 +954,21 @@ google.com##.pla-unit
 ||*.sc.omtrdc.net^$important
 ||*.at-o.net^$important
 
+! === [УСИЛЕНИЕ: ANTI-FINGERPRINTING & TELEMETRY] ===
+! Блокировка запросов к API, собирающим данные о железе
+||browser-update.org^
+||client-api.arkoselabs.com^
+||fingerprintjs.com^
+||hcaptcha.com/collect/
+
+! Запрет на передачу данных о батарее и сенсорах (через косметику)
+##.sensor-data-collector
+##.device-info-gatherer
+
+! === [УСИЛЕНИЕ: АНТИ-ТРЕКИНГ ВНУТРИ ПРИЛОЖЕНИЙ] ===
+! Блокировка аналитики внутри приложений Android (Samsung)
+||graph.facebook.com^
+||app-measurement.com^
+||firebaseinstallations.googleapis.com^
+||crashlytics.com^
+
