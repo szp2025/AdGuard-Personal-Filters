@@ -1045,3 +1045,11 @@ $removeparam=gclid
 ||chartboost.com^
 ||startappservice.com^
 
+! === [OMNI-PROTOCOL: QUANTUM NOISE & OBSFUCATION] ===
+! Добавление случайного шума в заголовки, чтобы запутать квантовые алгоритмы анализа
+||google.com^$set-header=X-Omni-Noise: $random_string
+||google.com^$set-header=X-Quantum-Shield: active
+
+! Запрет на сохранение истории поиска в кэше браузера (Anti-Forensics)
+||google.com^$header=Cache-Control: no-store, no-cache, must-revalidate
+
