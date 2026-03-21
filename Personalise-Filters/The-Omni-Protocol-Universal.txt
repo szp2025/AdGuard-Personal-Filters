@@ -1053,3 +1053,23 @@ $removeparam=gclid
 ! Запрет на сохранение истории поиска в кэше браузера (Anti-Forensics)
 ||google.com^$header=Cache-Control: no-store, no-cache, must-revalidate
 
+! === [OMNI-PROTOCOL: QUANTUM STEALTH & NOISE] ===
+! Внедрение шумовых заголовков для дезориентации алгоритмов анализа
+||google.*^$set-header=X-Omni-Entropy: $random_string
+||google.*^$set-header=X-Shield-State: quantum-locked
+||google.*^$set-header=DNT: 1
+
+! Обфускация поисковых параметров (запутывание следов)
+$removeparam=gs_lcp,domain=google.com
+$removeparam=sclient,domain=google.com
+$removeparam=ved,domain=google.com
+$removeparam=uact,domain=google.com
+
+! Запрет на передачу данных о взаимодействии с поисковой выдачей
+||google.com/gen_204^$important
+||google.com/clkn^$important
+
+! Форсирование "стерильного" кеширования
+||google.*^$header=Pragma: no-cache
+||google.*^$header=Cache-Control: private, no-bind, no-store
+
