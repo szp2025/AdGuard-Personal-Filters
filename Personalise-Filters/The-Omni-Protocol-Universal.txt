@@ -892,3 +892,32 @@ $replace=/(&client=[^&]+|&sourceid=[^&]+|&gs_lcrp=[^&]+)//
 ! Ускорение загрузки: Блокировка тяжелых видео-прероллов
 $videoplayback,domain=youtube.com,important
 
+
+! === [УСИЛЕНИЕ: ПОВЕДЕНЧЕСКИЙ АНАЛИЗ] ===
+! Блокировка скрытых скриптов-советчиков и "умных" чатов (снижает нагрузку)
+||reword.pro^
+||jivo.ru^
+||jivosite.com^
+
+! === [УСИЛЕНИЕ: ЗАЩИТА ОТ КЛИКДЖЕКИНГА] ===
+! Запрет на невидимые слои, которые подсовывают клики
+##iframe[style*="opacity: 0"]
+##div[style*="z-index: 9999999"]
+
+! === [УСИЛЕНИЕ: ГЛУБОКАЯ ОЧИСТКА GOOGLE] ===
+! Удаление рекламных вставок прямо в поисковой выдаче (усиление к JS)
+google.com##.commercial-unit
+google.com##div[data-text-ad]
+google.com##.pla-unit
+
+! === [УСИЛЕНИЕ: АНТИ-ТРЕКИНГ ПЛАТЕЖЕЙ] ===
+! Блокировка пикселей, которые следят за нажатием кнопок "Купить"
+||facebook.com/tr/
+||google.com/ads/ga-audiences
+||bing.com/pixel/
+
+! === [УСИЛЕНИЕ: МОБИЛЬНАЯ ОПТИМИЗАЦИЯ] ===
+! Убираем "липкие" баннеры, которые перекрывают пол-экрана на Samsung
+##div[class*="sticky-ad"]
+##div[class*="bottom-anchor"]
+##.mobile-ad-overlay
