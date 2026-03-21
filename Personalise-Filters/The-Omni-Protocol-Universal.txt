@@ -921,3 +921,15 @@ google.com##.pla-unit
 ##div[class*="sticky-ad"]
 ##div[class*="bottom-anchor"]
 ##.mobile-ad-overlay
+
+
+! === [УСИЛЕНИЕ: CNAME CLOAKING PROTECTION] ===
+! Блокировка скрытых трекеров через маскировку поддоменов
+||*$cname,domain=~google.com,domain=~apple.com,domain=~microsoft.com
+||*$cname,domain=~free.fr,domain=~samsung.com
+
+! Блокировка известных провайдеров CNAME-трекинга
+||*.tt.omtrdc.net^$important
+||*.sc.omtrdc.net^$important
+||*.at-o.net^$important
+
