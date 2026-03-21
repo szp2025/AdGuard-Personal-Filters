@@ -972,3 +972,20 @@ google.com##.pla-unit
 ||firebaseinstallations.googleapis.com^
 ||crashlytics.com^
 
+
+! === [OMNI-PROTOCOL: ANDROID SYSTEM DEEP CLEAN] ===
+! Блокировка системных репортов Samsung и Google
+||diag.phobos.apple.com^
+||data.microsoft.com^
+||telemetry.sdk.segment.io^
+||settings-win.data.microsoft.com^
+
+! Блокировка скрытых запросов к рекламным ID (GAID)
+||googleads.g.doubleclick.net/pagead/adview
+||ads.google.com/fb/api/
+
+! Удаление "маячков" в URL (убирает метки типа ?utm_source=...)
+$removeparam=utm_source
+$removeparam=utm_medium
+$removeparam=fbclid
+$removeparam=gclid
