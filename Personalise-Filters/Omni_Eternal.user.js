@@ -281,6 +281,10 @@ function init() {
     simulateBehavior();
     protectTiming();
     isolateStorage();
+    initAntiExploit();
+    protectClipboard();
+    blockSensors();
+    isolateIframes();
 
     log('BLACK LEVEL ACTIVE');
 }
