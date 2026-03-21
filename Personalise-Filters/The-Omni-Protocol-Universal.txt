@@ -39,6 +39,12 @@ $network=tls,pqc=off,important,domain=~google.com|~github.com|~revolut.com|~appl
 ##+js(set-constant, navigator.globalPrivacyControl, true)
 ##+js(set-constant, window.optOut, true)
 
+! --- [SEARCH STEALTH LAYER] ---
+! Удаляем трекеры из поисковой выдачи Google
+||google.*/search?*$client=ms-android-samsung-ss
+! Блокируем отправку аналитики о кликах
+||google.*/url?sa=t&source=web&rct=j&url=*
+
 ! =========================================================================
 ! [MEGA-BLOCK II] TRACKING ANNIHILATION CORE (v2026.UNIVERSAL)
 ! =========================================================================
