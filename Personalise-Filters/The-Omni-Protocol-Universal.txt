@@ -989,3 +989,5 @@ $removeparam=utm_source
 $removeparam=utm_medium
 $removeparam=fbclid
 $removeparam=gclid
+! Скрытие источника перехода для всех сервисов Google
+||google.com^$hide-referrer,domain=~google.com
