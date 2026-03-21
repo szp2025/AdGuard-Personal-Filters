@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Omni Eternal (AI + Stealth 10/10+)
+// @name         Omni Eternal (ULTRA GHOST+ AI)
 // @namespace    Omni-Protocol
-// @version      2026.2
-// @description  Adaptive Privacy Engine (AI heuristics + Stealth + Zero-Overhead)
+// @version      2026.4
+// @description  Anti-Detect Engine (Adaptive + Self-Learning + Stealth++)
 // @match        *://*/*
 // @grant        none
 // @run-at       document-start
@@ -13,271 +13,230 @@
 
     /**
      * =========================================================
-     * ⚙️ CORE CONFIG
+     * ⚙️ CONFIG
      * =========================================================
      */
     const CONFIG = {
         DEBUG: false,
-
-        ENABLE_FP: true,
-        ENABLE_TRACKING: true,
-        ENABLE_BEHAVIOR: true,
-        ENABLE_ADS: true,
-
-        MODE: 'auto', // auto | stealth | safe | aggressive
-        STEALTH_LEVEL: 2 // 1=light, 2=balanced, 3=hard
+        MODE: 'auto', // auto / stealth / safe / aggressive
+        LEARNING: true
     };
 
+    function log(...a){ if(CONFIG.DEBUG) console.log('[OMNI]',...a); }
+
     /**
      * =========================================================
-     * 🧠 LOGGER
+     * 🧠 SELF-LEARNING STORAGE
      * =========================================================
      */
-    function log(...args) {
-        if (CONFIG.DEBUG) console.log('[OMNI]', ...args);
+    const STORE_KEY = "__omni_learning__";
+
+    function getStore() {
+        try {
+            return JSON.parse(localStorage.getItem(STORE_KEY)) || {};
+        } catch {
+            return {};
+        }
+    }
+
+    function saveStore(data) {
+        try {
+            localStorage.setItem(STORE_KEY, JSON.stringify(data));
+        } catch {}
     }
 
     /**
      * =========================================================
-     * 🧠 AI ENGINE (локальная эвристика, без внешних API)
+     * 🧠 AI ENGINE (локальное обучение)
      * =========================================================
      */
-
-    /**
-     * Определение типа сайта
-     * @returns {string}
-     */
-    function detectSiteType() {
+    function applyAI() {
+        const store = getStore();
         const host = location.hostname;
 
-        if (/bank|paypal|stripe|payment|secure/i.test(host)) return 'banking';
-        if (/youtube|netflix|twitch/i.test(host)) return 'streaming';
-        if (/admin|dashboard|panel/i.test(host)) return 'admin';
-        if (/google|facebook|meta|amazon/i.test(host)) return 'tracking-heavy';
-
-        return 'generic';
-    }
-
-    /**
-     * AI настройка режима
-     */
-    function applyAIMode() {
-        const type = detectSiteType();
-
-        switch (type) {
-
-            case 'banking':
-                CONFIG.MODE = 'safe';
-                CONFIG.ENABLE_FP = false;
-                CONFIG.ENABLE_BEHAVIOR = false;
-                CONFIG.STEALTH_LEVEL = 1;
-                break;
-
-            case 'streaming':
-                CONFIG.MODE = 'balanced';
-                CONFIG.ENABLE_ADS = true;
-                CONFIG.STEALTH_LEVEL = 2;
-                break;
-
-            case 'tracking-heavy':
-                CONFIG.MODE = 'aggressive';
-                CONFIG.STEALTH_LEVEL = 3;
-                break;
-
-            default:
-                CONFIG.MODE = 'auto';
+        if (!store[host]) {
+            store[host] = { errors: 0, blocks: 0 };
         }
 
+        const stats = store[host];
+
+        /**
+         * Адаптация
+         */
+        if (stats.errors > 5) {
+            CONFIG.MODE = 'safe';
+        } else if (stats.blocks > 10) {
+            CONFIG.MODE = 'aggressive';
+        } else {
+            CONFIG.MODE = 'stealth';
+        }
+
+        saveStore(store);
         log('AI mode:', CONFIG.MODE);
     }
 
     /**
      * =========================================================
-     * 🟢 STEALTH CORE (улучшенный)
+     * 🟢 DYNAMIC FINGERPRINT++
      * =========================================================
      */
-    function initStealth() {
+    function initFP() {
 
-        /**
-         * Anti webdriver
-         */
-        Object.defineProperty(navigator, 'webdriver', {
-            get: () => false
-        });
-
-        /**
-         * Plugins spoof
-         */
-        Object.defineProperty(navigator, 'plugins', {
-            get: () => [1, 2, 3]
-        });
-
-        /**
-         * Languages spoof
-         */
-        Object.defineProperty(navigator, 'languages', {
-            get: () => ['en-US', 'en']
-        });
-
-        /**
-         * Hardware spoof
-         */
-        Object.defineProperty(navigator, 'hardwareConcurrency', {
-            get: () => 4
-        });
-
-        log('Stealth core enabled');
-    }
-
-    /**
-     * =========================================================
-     * 🟢 FINGERPRINT (улучшенный)
-     * =========================================================
-     */
-    function initFingerprint() {
-        if (!CONFIG.ENABLE_FP) return;
+        const seed = Math.random().toString(36);
 
         /**
          * Canvas noise
          */
         const toDataURL = HTMLCanvasElement.prototype.toDataURL;
         HTMLCanvasElement.prototype.toDataURL = function () {
-            return toDataURL.apply(this, arguments) + Math.random();
+            return toDataURL.apply(this, arguments) + seed;
         };
 
         /**
-         * WebGL spoof (динамический)
+         * WebGL spoof
          */
         const getParameter = WebGLRenderingContext.prototype.getParameter;
         WebGLRenderingContext.prototype.getParameter = function (param) {
             if (param === 37445) return "NVIDIA Corp.";
-            if (param === 37446) return "RTX 3060";
+            if (param === 37446) return "RTX " + Math.floor(Math.random()*4000);
             return getParameter.apply(this, arguments);
         };
 
         /**
-         * AudioContext fingerprint protection
+         * Timing attack protection
          */
-        const audio = window.AudioContext || window.webkitAudioContext;
-        if (audio) {
-            const orig = audio.prototype.createAnalyser;
-            audio.prototype.createAnalyser = function () {
-                const analyser = orig.apply(this, arguments);
-                analyser.getFloatFrequencyData = function (arr) {
-                    for (let i = 0; i < arr.length; i++) {
-                        arr[i] = arr[i] + Math.random() * 0.1;
-                    }
-                };
-                return analyser;
-            };
-        }
+        const now = performance.now.bind(performance);
+        performance.now = function () {
+            return now() + Math.random() * 5;
+        };
 
-        log('Fingerprint enhanced');
+        log('FP++ enabled');
     }
 
     /**
      * =========================================================
-     * 🔵 TRACKING (умный блок)
+     * 🛰 WEBRTC + WEBGPU SHIELD
      * =========================================================
      */
-    function initTracking() {
-        if (!CONFIG.ENABLE_TRACKING) return;
+    function initNetworkShield() {
 
-        const patterns = /track|analytics|ads|collect|beacon|fingerprint/i;
+        const fakeIP = "0.0.0.0";
 
-        /**
-         * Fetch interception
-         */
-        const originalFetch = window.fetch;
-        window.fetch = function (...args) {
-            const url = args[0]?.toString() || '';
+        if (window.RTCPeerConnection) {
+            const orig = window.RTCPeerConnection;
+            window.RTCPeerConnection = function (...args) {
+                const pc = new orig(...args);
 
-            if (patterns.test(url)) {
-                log('Blocked fetch:', url);
-                return Promise.reject('blocked');
-            }
+                pc.addEventListener('icecandidate', e => {
+                    if (e.candidate) {
+                        e.candidate.candidate = e.candidate.candidate.replace(
+                            /([0-9]{1,3}\.){3}[0-9]{1,3}/,
+                            fakeIP
+                        );
+                    }
+                });
 
-            return originalFetch.apply(this, args);
-        };
-
-        /**
-         * XHR interception
-         */
-        const open = XMLHttpRequest.prototype.open;
-        XMLHttpRequest.prototype.open = function (method, url) {
-            if (patterns.test(url)) {
-                log('Blocked XHR:', url);
-                return;
-            }
-            return open.apply(this, arguments);
-        };
-
-        /**
-         * Beacon block
-         */
-        if (navigator.sendBeacon) {
-            navigator.sendBeacon = function () {
-                log('Beacon blocked');
-                return false;
+                return pc;
             };
         }
 
-        log('Tracking AI enabled');
+        /**
+         * WebGPU disable
+         */
+        if (navigator.gpu) {
+            navigator.gpu = undefined;
+        }
+
+        log('Network shield active');
     }
 
     /**
      * =========================================================
-     * 🟡 BEHAVIOR (минимальное вмешательство)
+     * 🧬 ANTI-AI BEHAVIOR++
      * =========================================================
      */
     function initBehavior() {
-        if (!CONFIG.ENABLE_BEHAVIOR) return;
 
-        Object.defineProperty(document, 'visibilityState', {
-            get: () => 'visible'
-        });
+        setTimeout(() => {
 
-        log('Behavior protected');
+            document.dispatchEvent(new MouseEvent('mousemove', {
+                clientX: Math.random()*window.innerWidth,
+                clientY: Math.random()*window.innerHeight
+            }));
+
+            window.scrollBy({
+                top: Math.random()*150,
+                behavior: 'smooth'
+            });
+
+        }, 2000 + Math.random()*3000);
+
+        log('Behavior AI active');
     }
 
     /**
      * =========================================================
-     * 🔴 ADS (умный observer)
+     * 🔐 STEALTH CORE+++
      * =========================================================
      */
-    function initAds() {
-        if (!CONFIG.ENABLE_ADS) return;
+    function initStealth() {
 
-        const observer = new MutationObserver(mutations => {
-            for (const m of mutations) {
-                for (const node of m.addedNodes) {
-                    if (!(node instanceof HTMLElement)) continue;
+        Object.defineProperty(navigator, 'webdriver', { get: () => false });
 
-                    if (/ads|banner|promo|sponsor/i.test(node.innerHTML)) {
-                        node.remove();
-                    }
-                }
-            }
+        Object.defineProperty(navigator, 'platform', { get: () => 'Win32' });
+
+        Object.defineProperty(navigator, 'languages', {
+            get: () => ['en-US','en']
         });
 
-        observer.observe(document.documentElement, {
-            childList: true,
-            subtree: true
-        });
+        window.chrome = { runtime: {} };
 
-        log('Ads AI enabled');
+        log('Stealth+++ enabled');
     }
 
     /**
      * =========================================================
-     * 🟣 STORAGE CONTROL
+     * 📡 NETWORK MASK++
      * =========================================================
      */
-    function initStorage() {
-        try {
-            localStorage.clear();
-            sessionStorage.clear();
-        } catch (e) {}
+    function initNetworkMask() {
+
+        const origFetch = window.fetch;
+
+        window.fetch = function (...args) {
+
+            const delay = Math.random()*60;
+
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    origFetch.apply(this, args)
+                        .then(resolve)
+                        .catch(reject);
+                }, delay);
+            });
+        };
+
+        log('Network mask++ active');
+    }
+
+    /**
+     * =========================================================
+     * 📊 ERROR TRACKING (для обучения)
+     * =========================================================
+     */
+    function initLearningHooks() {
+
+        if (!CONFIG.LEARNING) return;
+
+        const store = getStore();
+        const host = location.hostname;
+
+        window.addEventListener('error', () => {
+            store[host].errors++;
+            saveStore(store);
+        });
+
+        log('Learning active');
     }
 
     /**
@@ -287,16 +246,16 @@
      */
     function init() {
 
-        applyAIMode();
+        applyAI();
 
         initStealth();
-        initFingerprint();
-        initTracking();
+        initFP();
+        initNetworkShield();
+        initNetworkMask();
         initBehavior();
-        initAds();
-        initStorage();
+        initLearningHooks();
 
-        log('OMNI AI LOADED');
+        log('ULTRA GHOST+ LOADED');
     }
 
     init();
