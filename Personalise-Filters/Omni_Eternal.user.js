@@ -305,6 +305,30 @@ function isolateStorage() {
     };
 }
 
+
+// 1. Очистка URL от мусора Google (client, sourceid, и т.д.)
+if (window.location.hostname.includes('google')) {
+    const cleanParams = ['client', 'sourceid', 'ie', 'gs_lcrp', 'oq'];
+    let url = new URL(window.location.href);
+    let params = new URLSearchParams(url.search);
+    let changed = false;
+
+    cleanParams.forEach(p => { if(params.has(p)) { params.delete(p); changed = true; } });
+    
+    if (changed) {
+        window.history.replaceState({}, '', `${url.pathname}?${params.toString()}${url.hash}`);
+    }
+}
+
+// 2. Защита "q=" при переходе на другие сайты (Referrer Policy)
+document.addEventListener('mousedown', (e) => {
+    const a = e.target.closest('a');
+    if (a && !a.href.includes(window.location.hostname)) {
+        a.rel = "noreferrer noopener"; // Сайт-получатель не увидит твой поисковый запрос
+    }
+});
+
+
 /**
  * =========================================================
  * 🚀 INITIALISATION GLOBALE
