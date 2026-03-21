@@ -991,3 +991,57 @@ $removeparam=fbclid
 $removeparam=gclid
 ! Скрытие источника перехода для всех сервисов Google
 ||google.com^$hide-referrer,domain=~google.com
+
+! =========================================================================
+! [OMNI TV] SAMSUNG ADS KILL CORE
+! =========================================================================
+||ads.samsung.com^
+||config.samsungads.com^
+||log-config.samsungacr.com^
+||samsungacr.com^
+||samsungads.com^
+||tvx.adgrx.com^
+||gpm.samsungqbe.com^
+||samsungcloudsolution.com^
+
+! =========================================================================
+! [OMNI TV] SMART HUB TRACKING
+! =========================================================================
+||log-ingestion.samsungacr.com^
+||events.samsungacr.com^
+||device-metrics-us.amazon.com^
+||analytics.samsung.com^
+||tracking.samsung.com^
+
+! =========================================================================
+! [OMNI TV] ACR TRACKING (Content Recognition)
+! =========================================================================
+||acr.samsung.com^
+||acr-us.samsung.com^
+||acr-eu.samsung.com^
+||tvinteractive.tv^
+||samba.tv^
+
+
+! =========================================================================
+! [OMNI TV] SAFE WHITELIST
+! =========================================================================
+@@||youtube.com^
+@@||ytimg.com^
+@@||googlevideo.com^
+@@||netflix.com^
+@@||nflxvideo.net^
+@@||amazonaws.com^
+! =========================================================================
+! [OMNI TV] UNIVERSAL TV AD NETWORKS
+! =========================================================================
+||doubleclick.net^
+||googleads.g.doubleclick.net^
+||adservice.google.com^
+||ads.yahoo.com^
+||adcolony.com^
+||unityads.unity3d.com^
+||vungle.com^
+||chartboost.com^
+||startappservice.com^
+
