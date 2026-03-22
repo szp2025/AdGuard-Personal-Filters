@@ -842,3 +842,20 @@ google.com##.pla-unit
 ##div[style*="z-index: 9999999"]
 ##div[class*="sticky-ad"]
 ##.mobile-ad-overlay
+
+! === [OMNI-SINGULARITY: LAYER 29 - ABSOLUTE ZERO & QUANTUM SHREDDER] ===
+! Принудительная аннигиляция расшифровки и тотальная инкапсуляция
+
+! Блокировка попыток деградации шифрования (Anti-Fallback)
+||^$dnstype=(HTTPS|65|QUIC),important,pqc=on
+||/(_esni|_echconfig|_pqcconfig)\./^$important,reject
+
+! Тотальный запрет на передачу заголовков, раскрывающих суть запроса
+*^$set-header=X-Content-Type-Options: nosniff
+*^$set-header=X-Frame-Options: DENY
+*^$set-header=Referrer-Policy: no-referrer
+*^$set-header=Content-Security-Policy: default-src 'none';
+
+! Инъекция "Шума Пустыни" в каждый запрос (Entropy Max)
+||*^$set-header=X-Quantum-Residue: $random_string$random_string
+||*^$set-header=X-Vault-State: zero-visibility
