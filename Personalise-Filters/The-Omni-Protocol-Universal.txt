@@ -1087,3 +1087,44 @@ $removeparam=uact,domain=google.com
 
 ! Подмена версии сборки (имитация разных прошивок Samsung)
 ||google.*^$replace=/android-samsung-ss/android-samsung-omni-v$random_string/
+
+! === [OMNI-SINGULARITY: THE 5-LAYER UNIVERSAL SHIELD] ===
+! Version: 3.0.Quantum
+! Target: All Search Engines & Global Tracking
+
+! --- LAYER 1: THE GREEN CORRIDOR (SYSTEM UPDATES) ---
+@@||android.googleapis.com^$important
+@@||update.samsungmobile.com^$important
+@@||play.google.com^$important
+@@||gvt1.com^$important
+@@||samsungcloud.com^$important
+
+! --- LAYER 2: GLOBAL MUTATION (DECEPTION FOR ALL) ---
+! Подмена ID во всех поисковиках мира (Google, Bing, Yandex, Baidu, Duck)
+*^$replace=/(client|uid|sid|user_id|device_id)=[^&]*/$1=omni-qnt-$random_string/
+*^$replace=/(sca_esv|sxsrf|ei|ved)=[^&]*/$1=null-point-$random_string/
+
+! --- LAYER 3: HEADER ENTROPY (ANTI-DPI & ANTI-HACK) ---
+! Создаем "шумовую завесу" в заголовках пакетов
+*^$set-header=X-Omni-Layer: Singularity-5
+*^$set-header=X-Quantum-State: Encrypted
+*^$set-header=Sec-CH-UA-Platform: "OmniOS"
+*^$set-header=User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36
+
+! --- LAYER 4: HARDWARE CLOAKING (ANTI-FINGERPRINT) ---
+! Прячем реальный Samsung за маской абстрактного Linux-узла
+##.device-info-gatherer
+##.telemetry-pixel
+||*^$removeparam=model
+||*^$removeparam=manufacturer
+||*^$removeparam=os_version
+
+! --- LAYER 5: VACUUM STERILIZATION (CLEAN URL) ---
+! Универсальная зачистка меток для всех ссылок в мире
+||*^$removeparam=utm_source
+||*^$removeparam=utm_medium
+||*^$removeparam=fbclid
+||*^$removeparam=gclid
+||*^$removeparam=yclid
+||*^$removeparam=_openstat
+||*^$removeparam=msclkid
