@@ -1137,6 +1137,20 @@ $removeparam=uact,domain=google.com
 ! Target: All Search Engines & Global Tracking
 
 ! --- LAYER 1: THE GREEN CORRIDOR (SYSTEM UPDATES) ---
+
+! === [OMNI-G-UNLOCKED: КОРЕКЦИЯ ИНТЕРФЕЙСА] ===
+! 1. Разрешаем загрузку визуальных компонентов
+@@||www.gstatic.com/lamda/*$important
+@@||fonts.gstatic.com^$important
+
+! 2. Отключаем подмену User-Agent конкретно для домена Gemini
+! (Чтобы ИИ видел реальное устройство и не блокировал интерфейс)
+@@||gemini.google.com^$extension=set-header:User-Agent:Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36
+
+! 3. Сохраняем токены сессии для стабильной связи
+@@||gemini.google.com^$removeparam=sca_esv
+@@||gemini.google.com^$removeparam=sid
+
 @@||android.googleapis.com^$important
 @@||update.samsungmobile.com^$important
 @@||play.google.com^$important
