@@ -696,9 +696,12 @@ $app_detection=manufacturer_telemetry,action=block,important
 ! Мгновенная аннигиляция NSO Pegasus, майнеров и инфраструктуры угроз
 ||/^([^.]+\.)*(nso-group|pegasus|quadream|candiru|intellexa|antivirus|malware|phishing|scam|spyware|trojan|virus|worm|exploit|ransomware|botnet|c2-server|dga-domain|abuse|malicious|threat|blacklist|badsite|coin-hive|coinhive|cryptoloot|miner|authedmine|webmine|monerominer|cryptonight|mining-pool)/^$important,reject
 
-! --- 21.3: Radio-Cell Stealth & ID Protection (Anti-Triangulation) ---
-! Зануление API триангуляции и блокировка перехвата ID устройства
-||/^([^.]+\.)*(opencellid|location-api|unwiredlabs|cell-id|mcc-mnc|lac-id|tower-stats)/^$dnstype=A,empty,important
+! --- 21.3: Omni-Ghost & IP-Leak Shield (Anti-Triangulation & WebRTC) ---
+! Блокировка STUN/TURN, GeoIP и триангуляции сотовых вышек в одном блоке
+||/^([^.]+\.)*(webrtc|rtcp|stun|turn|ice|ip-api|ipstack|ipinfo|maxmind|geoip|db-ip|ident\.me|ifconfig\.me|opencellid|location-api|unwiredlabs|cell-id|mcc-mnc|lac-id|tower-stats)/^$dnstype=A,empty,important
+$network=webrtc,action=block,important
+
+! Защита от перехвата системных идентификаторов и телеметрии
 ||device-id\.google\..*^$important,reject
 ||telemetry\.sdk\.samsung\.com^$important,reject
 
@@ -752,11 +755,6 @@ $stealth=on,hide_user_agent=on,strip_tracking_params=on,important
 
 ! === [OMNI-SINGULARITY: LAYER 24 - GHOST PROTOCOL & IP-STEALTH] ===
 ! Защита от утечек WebRTC, маскировка TTL и стерилизация DNS-метаданных
-
-! --- 24.1: Квантовый WebRTC & IP-Leak Shield (Anti-De-Anonymization) ---
-! Блокировка STUN/TURN и GeoIP сервисов (IP-Stack, MaxMind, GeoIP)
-||/^([^.]+\.)*(webrtc|rtcp|stun|turn|ice|ip-api|ipstack|ipinfo|maxmind|geoip|db-ip|ident\.me|ifconfig\.me)/^$dnstype=A,empty,important
-$network=webrtc,action=block,important
 
 ! --- 24.2-24.3: Протокольная Мимикрия (TTL 64 & Header Cleanup) ---
 ! Маскировка под стандартный Linux-стек и удаление следов прокси
