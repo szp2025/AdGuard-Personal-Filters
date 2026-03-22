@@ -1073,3 +1073,17 @@ $removeparam=uact,domain=google.com
 ||google.*^$header=Pragma: no-cache
 ||google.*^$header=Cache-Control: private, no-bind, no-store
 
+! === [MODULE: OMNI-DECEPTION / MILLION FACES] ===
+! Подмена ID клиента на случайные значения (имитация разных устройств)
+||google.*^$replace=/client=[^&]*/client=ms-android-samsung-gen-$random_string/
+||google.*^$replace=/sourceid=[^&]*/sourceid=chrome-omni-$random_string/
+
+! Рандомизация токенов отслеживания сессий
+||google.*^$replace=/sca_esv=[^&]*/sca_esv=$random_string/
+||google.*^$replace=/sxsrf=[^&]*/sxsrf=omni-lock-$random_string/
+
+! Маскировка рекламного ID (GAID) для приложений
+||doubleclick.net^$replace=/ad_id=[^&]*/ad_id=00000000-0000-0000-0000-$random_string/
+
+! Подмена версии сборки (имитация разных прошивок Samsung)
+||google.*^$replace=/android-samsung-ss/android-samsung-omni-v$random_string/
