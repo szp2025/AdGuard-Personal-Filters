@@ -85,6 +85,14 @@ $network=tls,pqc=off,important,domain=~system|~google.com|~github.com|~revolut.c
 ||crashlytics.com^
 
 
+
+! --- [OMNI-G-UNLOCKED: КАНАЛ ДЛЯ GEMINI] ---
+@@||gemini.google.com^$important
+@@||generativelanguage.googleapis.com^$important
+@@||alkaliminer-pa.clients6.google.com^$important
+
+
+
 ! =========================================================================
 ! [MEGA-BLOCK II] TRACKING ANNIHILATION CORE (v2026.UNIVERSAL)
 ! =========================================================================
