@@ -7,31 +7,46 @@
 ! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE (v2026.UNIVERSAL)
 ! =========================================================================
 
-! --- 1.1: Белый список критической инфраструктуры (Универсально) ---
-!@@||/^(googlevideo|googleusercontent|gstatic|youtube|ggpht|ytimg|android|apple|icloud|mzstatic|samsung|samsungapps|samsungcloud|galaxy\.store|waze|mapquest|apple-dns|gvt[1-3])\.(com|net)$/^$important,domain=~browser
+! --- 1.1: Белый список критической инфраструктуры (Универсально / OPTIMIZED) ---
+@@||googlevideo.com^$important
+@@||googleusercontent.com^$important
+@@||gstatic.com^$important
+@@||youtube.com^$important
+@@||ytimg.com^$important
+@@||ggpht.com^$important
 
-@@||/^(.*\.)?(googlevideo|googleusercontent|gstatic|youtube|ggpht|ytimg)\.(com|net)$/^$important
-@@||/^(accounts\.google\.com|appleid\.apple\.com|login\.microsoftonline\.com|recaptcha\.net|hcaptcha\.com|.*\.bank)$/^$important
+@@||accounts.google.com^$important
+@@||appleid.apple.com^$important
+@@||login.microsoftonline.com^$important
+@@||recaptcha.net^$important
+@@||hcaptcha.com^$important
+@@||bank^$important
 
-! --- 1.2: Параметры скрытности AdGuard (Эксклюзивно для системного уровня) ---
-$stealth=on,hide_ip=on,hide_ua=on,strip_tracking=on,webrtc,important
-$header=/^(X-Forwarded-For|Via|X-Real-IP|X-Goog-Api-Client|Sec-CH-UA(-Model|-Platform)?|If-None-Match|DNT|Sec-GPC|Referer)$/,important
+! --- 1.2: Параметры скрытности AdGuard (TUNED, NO REMOVAL) ---
+$stealth=on,hide_ip=on,hide_ua=on,strip_tracking=on,webrtc=block,important
 
-! --- 1.3: Глобальная блокировка аналитики и трекеров (Универсально) ---
-||/^(ads|metrics|telemetry|track(ing|ers)?|analytics|stats|events|adservice|cloudflareinsights|browser-intake-datadoghq|events\.statsigapi|beacon|log(s|ger)?)\./^$dnstype=A,empty,important
-||/^(ads|metrics|telemetry|track(ing|ers)?|analytics|stats|events|adservice)\./^$websocket,ping,third-party,important,reject,domain=~system
+$header=/^(X-Forwarded-For|Via|X-Real-IP|X-Goog-Api-Client|Sec-CH-UA(-Model|-Platform)?)$/,important
+$header=/^(If-None-Match|DNT|Sec-GPC|Referer)$/,important
 
-! --- 1.4: Блокировка согласий и Cookie-баннеров (Универсально) ---
-||/^(consent|cookie(-law)?|trustarc|onetrust|quantcast|privacy-center|user-report|choice)\./^$important,reject,domain=~system
+! --- 1.3: Глобальная блокировка аналитики и трекеров (TUNED PRO) ---
+||/^(ads|metrics|telemetry|track(?:ing|ers?)?|analytics|stats|events(\.|-)|adservice|cloudflareinsights|browser-intake-datadoghq|events\.statsigapi|beacon|log(?:s|ger)?\.)\./^$dnstype=A,empty,websocket,ping,third-party,important,reject,domain=~system
 
-! --- 1.5: Шрифты и Сетевой тюнинг (Смешанный режим) ---
-||/^(fonts\.(gstatic|googleapis)\.com)$/^$important,third-party,content=off,dnstype=HTTPS,domain=~system,~google.com
-$network=tls,pqc=off,important,domain=~google.com|~github.com|~revolut.com|~apple.com|~microsoft.com|~bitwarden.com|~binance.com
+! --- 1.4: Блокировка согласий и Cookie-баннеров (TUNED PRO) ---
+||/^(consent|cookie(?:-law)?\.|trustarc|onetrust|quantcast|privacy(?:-|)center|user-report|choice\.microsoft)\./^$important,reject,domain=~system
 
-! --- 1.6: Скриптлеты: Анонимизация DNT (Зеркальная защита AdGuard + uBlock) ---
-! Синтаксис AdGuard
+! --- 1.5: Шрифты и Сетевой тюнинг (TUNED PRO) ---
+||/^(?:.*\.)?fonts\.(?:gstatic|googleapis)\.com$/^$important,third-party,content=off,dnstype=HTTPS,domain=~system,~google.com
+
+$network=tls,pqc=off,important,domain=~system|~google.com|~github.com|~revolut.com|~apple.com|~microsoft.com|~bitwarden.com|~binance.com
+
+
+! --- 1.6: Скриптлеты: Анонимизация DNT (ULTRA STEALTH) ---
+
+! AdGuard
 #%#//scriptlet("set-constant", "navigator.doNotTrack|navigator.msDoNotTrack|window.doNotTrack|navigator.donottrack|navigator.globalPrivacyControl|window.optOut", "true")
-! Синтаксис uBlock Origin / Brave / Vivaldi
+#%#//scriptlet("set-constant", "navigator.doNotTrack", "1")
+
+! uBlock / Brave / Vivaldi
 ##+js(set-constant, navigator.doNotTrack, true)
 ##+js(set-constant, navigator.msDoNotTrack, true)
 ##+js(set-constant, window.doNotTrack, true)
@@ -39,52 +54,67 @@ $network=tls,pqc=off,important,domain=~google.com|~github.com|~revolut.com|~appl
 ##+js(set-constant, navigator.globalPrivacyControl, true)
 ##+js(set-constant, window.optOut, true)
 
-! --- [SEARCH STEALTH LAYER] ---
-! Удаляем трекеры из поисковой выдачи Google
-||google.*/search?*$client=ms-android-samsung-ss
-! Блокируем отправку аналитики о кликах
-||google.*/url?sa=t&source=web&rct=j&url=*
+! --- Anti-Fingerprint (дополнение, не замена) ---
+##+js(set-constant, navigator.hardwareConcurrency, 4)
+##+js(set-constant, navigator.deviceMemory, 8)
+##+js(set-constant, navigator.platform, "Win32")
 
+
+! --- [SEARCH STEALTH LAYER] ---
+||google.*/search?*client=ms-android-samsung-ss
+||google.*/url?sa=t&*
 
 ! === [УСИЛЕНИЕ: ANTI-FINGERPRINTING & TELEMETRY] ===
-! Блокировка запросов к API, собирающим данные о железе
 ||browser-update.org^
 ||client-api.arkoselabs.com^
 ||fingerprintjs.com^
-||hcaptcha.com/collect/
+||fpjs.io^
+||cdn.fpjs.io^
+||hcaptcha.com/collect*
 
-! Запрет на передачу данных о батарее и сенсорах (через косметику)
 ##.sensor-data-collector
 ##.device-info-gatherer
+##[class*="sensor"]
+##[class*="device-info"]
 
 ! === [УСИЛЕНИЕ: АНТИ-ТРЕКИНГ ВНУТРИ ПРИЛОЖЕНИЙ] ===
-! Блокировка аналитики внутри приложений Android (Samsung)
-||graph.facebook.com^
+||graph.facebook.com^$third-party
 ||app-measurement.com^
 ||firebaseinstallations.googleapis.com^
+||firebase-settings.crashlytics.com^
 ||crashlytics.com^
-
 
 
 ! =========================================================================
 ! [MEGA-BLOCK II] TRACKING ANNIHILATION CORE (v2026.UNIVERSAL)
 ! =========================================================================
 
-! --- 2.1: Блокировка аналитических гигантов (Regex-фильтрация) ---
-||/^(hotjar|amplitude|mixpanel|clarity|mouseflow|fullstory|doubleclick|adnxs|openx|pubmatic|appsflyer|adjust|branch|kochava|crashlytics|adsystem|adserver|web-beacon|metrics|pixel|track)\./^$important,reject,nolog,domain=~system
+! --- 2.1: Блокировка аналитических гигантов (TUNED PRO) ---
+! DUPLICATE: crashlytics (already defined above)
 
-! --- 2.2: Очистка URL от трекинговых параметров (Strip Tracking) ---
-! AdGuard / uBlock Origin / Brave поддерживают этот синтаксис в разных формах
-$removeparam=/^(utm_|fbclid|gclid|gclsrc|dclid|msclkid|yclid|ttclid|li_fat_id|igsh|mc_eid|_hsenc|ref_src|ref_url|aff_id|aff_sub|click_id|ncid|track_id|original_referer|_ga|_gl|gciid|gckid|t)$/,important,domain=~system
+||/^(?:hotjar|amplitude|mixpanel|clarity|mouseflow|fullstory|doubleclick|adnxs|openx|pubmatic|appsflyer|adjust|branch|kochava|crashlytics|adsystem|adserver|web-beacon|metrics\.|pixel\.|track\.)\./^$important,reject,nolog,domain=~system
+
+||doubleclick.net^
+
+! --- 2.2: Очистка URL от трекинговых параметров (TUNED PRO) ---
+$removeparam=/^(?:utm_.*|fbclid|gclid|gclsrc|dclid|msclkid|yclid|ttclid|li_fat_id|igsh|mc_eid|_hsenc|ref_src|ref_url|ref$|source$|aff_id|aff_sub|click_id|ncid|track_id|original_referer|_ga|_gl|gciid|gckid|si|ved|ei|t(?=$))$/,important,domain=~system
 
 ! --- 2.3: Скриптлеты: Нейтрализация Google Analytics (AdGuard) ---
 #%#//scriptlet("set-constant", "ga.loaded|navigator.sendBeacon", "true")
 #%#//scriptlet("set-constant", "ga", "undefined")
 
-! --- 2.4: Скриптлеты: Нейтрализация (Зеркало для uBlock Origin / Brave) ---
+! --- Дополнение (расширение GA/GTAG) ---
+#%#//scriptlet("set-constant", "gtag", "undefined")
+#%#//scriptlet("set-constant", "dataLayer", "[]")
+
+! --- 2.4: Скриптлеты: Нейтрализация (uBlock / Brave) ---
 ##+js(set-constant, ga.loaded, true)
 ##+js(set-constant, navigator.sendBeacon, true)
 ##+js(set-constant, ga, undefined)
+
+! --- Дополнение ---
+##+js(set-constant, gtag, undefined)
+##+js(set-constant, dataLayer, [])
 
 
 
@@ -92,31 +122,37 @@ $removeparam=/^(utm_|fbclid|gclid|gclsrc|dclid|msclkid|yclid|ttclid|li_fat_id|ig
 ! [MEGA-BLOCK III] SEARCH GHOST & REDIRECT SHIELD (v2026.UNIVERSAL)
 ! =========================================================================
 
-! --- 3.1: Анонимизация Поисковых Систем (Скрытие Referer и очистка URL) ---
-||/^(google|yandex|bing|duckduckgo|baidu|qwant|ecosia|yahoo)\.(com|ru|fr|de|org)$/^$referer=origin,removeparam=/^(url|q|res|usg|text|uuid|click|key|lr|redircnt|src|from|mda|mdo|device_id|rdata|cvid|form|sk|sp|qs|pq|sc|atb|gs_lcp|sclient|source|ved|ei)$/,important,domain=~system
+! --- 3.1: Анонимизация Поисковых Систем (TUNED PRO) ---
+! WARNING: q / text may break search results if removed
+! ALT: referer=no-referrer (more aggressive)
 
-! --- 3.2: Защита от API-трекинга (Только AdGuard) ---
-||/^(google|yandex)\.(com|ru)(\/(search|clck))?$/^$network,important,header=X-Goog-Api-Client,domain=google.com|googleapis.com
+||/^(google|yandex|bing|duckduckgo|baidu|qwant|ecosia|yahoo)\.(?:com|ru|fr|de|org|co\.[a-z]{2}|com\.[a-z]{2})$/^$referer=origin,removeparam=/^(?:url|q|res|usg|text|uuid|click|key|lr|redircnt|src|from|mda|mdo|device_id|rdata|cvid|form|sk|sp|qs|pq|sc|atb|gs_lcp|sclient|source|ved|ei|oq|aqs)$/,important,domain=~system
 
-! --- 3.3: Скриптлеты: Уничтожение клик-логов (AdGuard) ---
+! --- 3.2: Защита от API-трекинга (TUNED PRO, AdGuard) ---
+
+||/^(google|yandex)\.(?:com|ru|fr|de|kz|co\.[a-z]{2})(?:/(search|clck))?$/^$network,important,header=-X-Goog-Api-Client,domain=google.com|googleapis.com|yandex.ru|yandex.com
+
+! --- 3.3: Скриптлеты: Уничтожение клик-логов (AdGuard PRO) ---
 #%#//scriptlet("set-constant", "window.ping|rwt", "undefined")
-#%#//scriptlet("set-attribute", "a[ping]", "ping", "")
-#%#//scriptlet("abort-current-inline-script", "google.navigation")
-#%#//scriptlet("prevent-listener", "click", "/\.(ru|com)\/clck\//")
+#%#//scriptlet("set-constant", "window.rwt", "undefined")
+#%#//scriptlet("remove-attr", "a", "ping")
+#%#//scriptlet("abort-current-inline-script", "/navigation|click|redirect/i")
+#%#//scriptlet("prevent-listener", "click", "/(clck|url\\?|aclk|gen_204)/")
 
-! --- 3.4: Скриптлеты: Уничтожение клик-логов (uBlock Origin / Brave) ---
+! --- 3.4: Скриптлеты: Уничтожение клик-логов (uBlock / Brave PRO) ---
 ##+js(set-constant, window.ping, undefined)
 ##+js(set-constant, rwt, undefined)
-##+js(set-attribute, a[ping], ping, "")
-##+js(abort-current-inline-script, google.navigation)
-##+js(prevent-listener, click, /\.(ru|com)\/clck\//)
+##+js(set-constant, window.rwt, undefined)
+##+js(remove-attr, a, ping)
+##+js(abort-current-inline-script, /navigation|click|redirect/i)
+##+js(prevent-listener, click, /(clck|url\?|aclk|gen_204)/)
 
 ! --- 3.5: Косметическая очистка ссылок (Универсально) ---
+##a[ping]
 ##a[ping]:remove-attr(ping)
 
-
 ! =========================================================================
-! [MEGA-BLOCK IV] PRIVACY VORTEX: COOKIE & IDENTITY (v2026.UNIVERSAL)
+! [MEGA-BLOCK IV] PRIVACY VORTEX: COOKIE & IDENTITY (v2026.UNIVERSAL) à refaire
 ! =========================================================================
 
 ! --- 4.1: Изоляция Cookie и Кэш-трекинга (AdGuard Stealth) ---
@@ -881,7 +917,7 @@ $network=dns,edns=off,important
 ! Блокируем трекинг кликов в поиске (чтобы Google не знал, на что ты нажал)
 ||google.*/url?sa=t&source=web&*
 ! Удаляем идентификатор устройства из запросов на лету
-$replace=/(&client=[^&]+|&sourceid=[^&]+|&gs_lcrp=[^&]+)//
+$replace=/(&]+|&]+|&]+)//
 ! Принудительное шифрование метаданных
 ||google.com/complete/search?*$jsonp,important
 
