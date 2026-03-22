@@ -1142,6 +1142,17 @@ $removeparam=uact,domain=google.com
 @@||play.google.com^$important
 @@||gvt1.com^$important
 @@||samsungcloud.com^$important
+! === [GEMINI-UNLOCKED: КВАНТОВЫЙ МОСТ] ===
+! Разблокировка интерфейса и логики Gemini 3
+@@||gemini.google.com^$important
+@@||home.google.com^$important
+@@||www.gstatic.com/lamda/^$important
+@@||content-autofill.googleapis.com^$important
+@@||fonts.gstatic.com^$important
+
+! Разрешение на выполнение скриптов ИИ (без трекинга)
+@@||apis.google.com^$domain=gemini.google.com
+@@||ogpy.google.com^$domain=gemini.google.com
 
 ! --- LAYER 2: GLOBAL MUTATION (DECEPTION FOR ALL) ---
 ! Подмена ID во всех поисковиках мира (Google, Bing, Yandex, Baidu, Duck)
