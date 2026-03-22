@@ -685,52 +685,42 @@ $app_detection=manufacturer_telemetry,action=block,important
 ! [MEGA-BLOCK XXI] THE OMNI-TIF: THREAT & MALWARE SINKHOLE (v2026.UNIVERSAL)
 ! =========================================================================
 
-! === [OMNI-SINGULARITY: LAYER 21 - INFRASTRUCTURE SINKHOLE & WS STEALTH] ===
-! Глобальное зануление магистралей, аннигиляция угроз и скрытие WebSocket
+! === [OMNI-SINGULARITY: LAYER 21 - GLOBAL INFRASTRUCTURE & STEALTH MONOLITH] ===
+! Глобальное зануление метрик, защита от шпионажа, триангуляции и WebSocket
 
-! --- 21.1 & 21.5: Квантовый Sinkhole (Infrastructure & Suffix Void) ---
-! Зануляем рекламные и аналитические хвосты через пустой DNS-ответ
-||/^([^.]+\.)*(ads|metrics|telemetry|tracking|analytics|stats|events|adservice|cloudflareinsights|pqc-stats|dpi-analysis|app-measurement|crashlytics|luckyorange|hotjar|click|pixel|collect|track|collector|ingest|report|logs|error-track|crash-report|adserver|pixel-track|-intake|-logs|-analytics|-telemetry|-collector|-stats|-report|-track|-tracker|-tracker-api)\./^$dnstype=A,empty,important
+! --- 21.1: Квантовый Sinkhole (Global Analytics & Suffix Void) ---
+! Зануляем гигантов (Google, Yandex, Mail.ru) и шпионские хвосты через DNS
+||/^([^.]+\.)*(google-analytics|googleadservices|doubleclick|mc\.yandex|yabs\.yandex|an\.yandex|ads\.adfox|ad\.mail|suggest\.sso\.dzen|clck\.yandex|luckyorange|hotjar|cloudflareinsights|pqc-stats|app-measurement|crashlytics|metrics|telemetry|tracking|analytics|stats|events|adservice|dpi-analysis|click|pixel|collect|track|collector|ingest|report|logs|error-track|crash-report|adserver|pixel-track|-intake|-logs|-analytics|-telemetry|-collector|-stats|-report|-track|-tracker|-tracker-api)\./^$dnstype=A,empty,important
 
-! --- 21.2-21.3: Cyber-Threat & Crypto-Jacking Lockdown (Hard Reject) ---
-! Мгновенная смерть для малвари, фишинга и крипто-майнеров
-||/^([^.]+\.)*(antivirus|malware|phishing|scam|spyware|trojan|virus|worm|exploit|ransomware|botnet|c2-server|dga-domain|coin-hive|coinhive|cryptoloot|miner|authedmine|webmine|monerominer|cryptonight|mining-pool)/^$important,reject
+! --- 21.2: Malware, C2 & Crypto-Mining Lockdown (Hard Reject) ---
+! Мгновенная аннигиляция NSO Pegasus, майнеров и инфраструктуры угроз
+||/^([^.]+\.)*(nso-group|pegasus|quadream|candiru|intellexa|antivirus|malware|phishing|scam|spyware|trojan|virus|worm|exploit|ransomware|botnet|c2-server|dga-domain|abuse|malicious|threat|blacklist|badsite|coin-hive|coinhive|cryptoloot|miner|authedmine|webmine|monerominer|cryptonight|mining-pool)/^$important,reject
 
-! --- 21.4: Redirect Purge (Очистка сокращателей ссылок) ---
-! Блокируем подозрительные редиректы, сохраняя работу соцсетей
+! --- 21.3: Radio-Cell Stealth & ID Protection (Anti-Triangulation) ---
+! Зануление API триангуляции и блокировка перехвата ID устройства
+||/^([^.]+\.)*(opencellid|location-api|unwiredlabs|cell-id|mcc-mnc|lac-id|tower-stats)/^$dnstype=A,empty,important
+||device-id\.google\..*^$important,reject
+||telemetry\.sdk\.samsung\.com^$important,reject
+
+! --- 21.4: Redirect & Zero-Click Shield (Traffic Isolation) ---
+! Очистка сокращателей и блокировка путей доставки шпионской нагрузки
 ||/^(bit\.ly|tinyurl\.com|t\.co|goo\.gl|clck\.ru|cutt\.ly|is\.gd|shorturl\.at|bit\.do)/^$important,reject,domain=~social_media|~t.me|~vk.com
+||/^.*-(push|telemetry)-.*-(cloud|analytics)-.*\.(io|net|com)$/^$important,reject,domain=~system
 
-! --- 21.6-21.7: Protocol & WebSocket Stealth (Финальный замок) ---
-! Запрет скрытых DNS-запросов и невидимых WebSocket-туннелей
+! --- 21.5: RU-Segment Deep Clean (Yandex/Mail.ru Exterminator) ---
+! Вырезание рекламных модулей внутри доменов без блокировки сервисов
+||/^(yandex.*|dzen.*|mail.*)\/.*(adv|context|banner|clck|metrika)/^$important,reject
+
+! --- 21.6: Protocol, WebSocket & Consent Purge (UX-Sterilization) ---
+! Запрет скрытых каналов, WebSocket-шпионов и "Cookie-законов"
 ||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system|~browser|~google.com
 ||/(_esni|_echconfig)\./^$important,reject
+||/^([^.]+\.)*(consent|cookie-law|trustarc|onetrust|quantcast)/^$important,reject
 ||*$websocket,third-party,important,reject,domain=~system|~google.com|~github.com
 
 ! =========================================================================
 ! [MEGA-BLOCK XXII] THE OMNI-TOTALITARIAN SINKHOLE (v2026.FINAL)
 ! =========================================================================
-
-! === [OMNI-SINGULARITY: LAYER 22 - ABSOLUTE EVENT HORIZON & RU-CLEANUP] ===
-! Тотальное зануление гигантов, очистка RU-сегмента и уничтожение Cookie-стен
-
-! --- 22.1 & 22.6: Квантовый Sinkhole (RU/Global Ad-Exterminator) ---
-! Зануляем метрики Google, Yandex, Mail.ru и рекламные модули
-||/^([^.]+\.)*(google-analytics|googleadservices|doubleclick|mc\.yandex|yabs\.yandex|an\.yandex|ads\.adfox|ad\.mail|suggest\.sso\.dzen|clck\.yandex|luckyorange|hotjar|cloudflareinsights|pqc-stats|app-measurement|crashlytics)\./^$dnstype=A,empty,important
-||/^(yandex.*|dzen.*|mail.*)\/.*(adv|context|banner|clck|metrika)/^$important,reject
-
-! --- 22.2-22.3: Malware & Crypto-Mining Void (Hard Isolation) ---
-! Мгновенный обрыв соединений с инфраструктурой угроз и майнерами
-||/^([^.]+\.)*(antivirus|malware|phishing|scam|spyware|trojan|virus|worm|exploit|ransomware|botnet|c2-server|dga-domain|abuse|malicious|threat|blacklist|badsite|coin-hive|coinhive|cryptoloot|miner|cryptonight|mining-pool)/^$important,reject
-
-! --- 22.5: Consent & WebSocket Purge (UX-Sterilization) ---
-! Уничтожение "Cookie-законов" и скрытых WebSocket-шпионов
-||/^([^.]+\.)*(consent|cookie-law|trustarc|onetrust|quantcast)/^$important,reject
-||*$websocket,third-party,important,reject,domain=~system|~google.com|~github.com
-
-! --- 22.4: Protocol Hardening (DNS & ECH Lockdown) ---
-! Запрет скрытых каналов для обхода фильтрации
-||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system|~browser|~google.com
-||/(_esni|_echconfig)\./^$important,reject
 
 ​! =========================================================================
 ! [MEGA-BLOCK XXIII] OMNI-QUANTUM: THE ETERNAL ENCRYPTION (v2026.FINAL)
@@ -786,25 +776,6 @@ $network=dns,edns=off,important
 ! =========================================================================
 ! [MEGA-BLOCK XXV] ANTI-SPYWARE & BASEBAND STEALTH (v2026.FINAL)
 ! =========================================================================
-! === [OMNI-SINGULARITY: LAYER 25 - ANTI-SPYWARE & CELL-STEALTH] ===
-! Изоляция NSO Pegasus, систем триангуляции и Zero-Click векторов
-
-! --- 25.1: Квантовый C2-Isolator (Anti-Pegasus & Intellexa) ---
-! Мгновенный разрыв связи с инфраструктурой элитного шпионского ПО
-||/^([^.]+\.)*(nso-group|pegasus|quadream|candiru|intellexa)\./^$important,reject
-
-! --- 25.2 & 25.4: Radio-Cell Stealth (Защита от триангуляции) ---
-! Зануление API сопоставления сотовых вышек и ID базовых станций
-||/^([^.]+\.)*(opencellid|location-api|unwiredlabs|cell-id|mcc-mnc|lac-id|tower-stats)\./^$dnstype=A,empty,important
-
-! --- 25.3: Zero-Click & Cloud Vector Shield (Инфраструктурный бан) ---
-! Блокировка путей доставки нагрузки через подозрительные пуш-каналы
-||/^.*-push-.*-cloud-.*\.(io|net|com)$/^$important,reject,domain=~system
-||/^.*-telemetry-.*-analytics-.*\.(io|net|com)$/^$important,reject,domain=~system
-
-! --- Финальный аккорд: Защита от перехвата ID устройства ---
-||device-id\.google\..*^$important,reject
-||telemetry\.sdk\.samsung\.com^$important,reject
 
 
 ! =========================================================================
