@@ -622,10 +622,19 @@ $removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net,imp
 @@||*^$important,app=com.samsung.android.spay|com.google.android.apps.walletnfcrel,jsinject=off,content=off
 @@||192.168.0.0/16^$important,app=com.google.android.apps.chromecast|com.android.printspooler
 
-! --- 28.1: Samsung Smart TV & ACR Exterminator ---
-! Зачистка рекламы и слежки за контентом на уровне железа и DNS
-||/^([^.]+\.)*(samsungads|samsungacr|samsungqbe|samsungcloudsolution|adgrx|tvinteractive|samba\.tv|ads\.samsung)/^$important,reject
+! --- 28.1: Omni-Video & Smart TV Exterminator (YouTube & Samsung Core) ---
+! Тотальная зачистка рекламы в видео-потоках и телеметрии Smart TV
+||/^([^.]+\.)*(samsungads|samsungacr|samsungqbe|samsungcloudsolution|samsungotn|samsungrm|adgrx|tvinteractive|samba\.tv|ads\.samsung)/^$important,reject
 ||device-metrics-us.amazon.com^$important,reject
+
+! Блокировка рекламных инъекций YouTube и DNS-рерайт для видео-хостов
+||youtubei.googleapis.com^$important,domain=~com.google.android.youtube
+||youtube.com/get_midroll_info*^$important
+||googlevideo.com/videoplayback?*&ptracking=*^$important
+||googleads.g.doubleclick.net^$important
+||yt3.ggpht.com^$important
+||googlevideo.com^$dnsrewrite=0.0.0.0
+||youtube.com^$dnsrewrite=0.0.0.0
 
 ! --- 28.2: Safe Passage (Критический Белый Список) ---
 ! Стриминг и обновления без блокировок
@@ -786,17 +795,6 @@ $network=dns,edns=off,important
 ! --- 26.1-26.4: Магистраль Доверия (Gov, Market & Payments) ---
 ! Разрешаем критические сервисы (CAF, Ameli, Amazon, Billing) без слежки
 @@||/^([^.]+\.)*(gov|gouv|bund|europa|gosuslugi|appleid|icloud|microsoft|passport|amazon|aliexpress|leboncoin|wildberries|ozon|lidl|carrefour|pay|checkout|billing)\.(com|fr|de|ru|org|net|eu|uk|it|es)$/^$important,domain=~browser
-
-! --- 26.5: YouTube & Smart TV Сингулярность (Ad-Exterminator) ---
-! Уничтожение рекламы в видео-потоках и телеметрии Samsung TV
-||youtubei.googleapis.com^$important,domain=~com.google.android.youtube
-||youtube.com/get_midroll_info*^$important
-||googlevideo.com/videoplayback?*&ptracking=*^$important
-||/^([^.]+\.)*(samsungads|samsungotn|samsungrm|samsungcloudsolution)\./^$important
-||googleads.g.doubleclick.net^$important
-||yt3.ggpht.com^$important
-||googlevideo.com^$dnsrewrite=0.0.0.0
-||youtube.com^$dnsrewrite=0.0.0.0
 
 ! --- 26.6: Search & System Stealth (Invisible Mode) ---
 ! Блокировка трекинга кликов в поиске и системных "стукачей" Play Store
