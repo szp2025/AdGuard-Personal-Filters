@@ -822,12 +822,6 @@ $videoplayback,domain=youtube.com,important
 ||*.sc.omtrdc.net^$important
 ||*.at-o.net^$important
 
-! --- 27.2: Anti-Fingerprinting & Hardware Stealth (Защита железа) ---
-! Запрет на сбор данных о батарее, сенсорах и уникальном отпечатке браузера
-||/^([^.]+\.)*(fingerprintjs|arkoselabs|browser-update|hcaptcha\.com\/collect)/^$important,reject
-##.sensor-data-collector
-##.device-info-gatherer
-
 ! --- 27.3: Android & Samsung System Deep Clean (Battery Saver) ---
 ! Блокировка системной телеметрии, Firebase и отчетов об ошибках
 ||/^([^.]+\.)*(crashlytics|app-measurement|firebaseinstallations|segment\.io|diag\.phobos\.apple|settings-win\.data\.microsoft)/^$dnstype=A,empty,important
