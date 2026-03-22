@@ -605,29 +605,49 @@ $removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net,imp
 ! [MEGA-BLOCK XIX] KYBER CORE & FINTECH INTEGRITY (v2026.UNIVERSAL)
 ! =========================================================================
 
-! === [OMNI-SINGULARITY: LAYER 19 - QUANTUM VAULT & FINTECH ISOLATION] ===
-! Постквантовая защита, изоляция кошельков и блокировка сетевого обнаружения
+! === [OMNI-SINGULARITY: LAYER 19-28 - QUANTUM VAULT & ENTROPY BRIDGE] ===
+! Постквантовая защита, стерилизация Samsung TV и глобальная дезориентация
 
-! --- 19.1-19.2: Квантовая Изоляция Роутера и LAN (Discovery Shield) ---
-! Блокируем доступ к админке и протоколы сканирования (SSDP, mDNS, SMB)
+! --- 19.1-19.2: Network Isolation (Discovery Shield) ---
+! Блокировка админок роутеров и протоколов сканирования локальной сети
 ||/^192\.168\.[0-1]\.1$/^$important,port=1..65535,reject,domain=~system,~browser
 ||^$important,port=137..139|445|1900|5353|5355,reject,domain=~system
 ||/^(239\.255\.255\.250|224\.0\.0\.251)$/^$important,reject,domain=~system
 
-! --- 19.3-19.5: Fintech-Vault (Стерильные Платежи & Исключения) ---
-! Гарантия работы Samsung/Google Pay и МИР без рекламы и инъекций
+! --- 19.3-19.5: Fintech-Vault (Стерильные Платежи) ---
+! Гарантия работы кошельков без слежки и инъекций (Samsung/Google Pay, МИР)
 @@||/^(samsungpay|nspk|visa|mastercard)\.(com|ru|net)$/^$important
 @@||google.com/pay^$important
-||/^(ads\.samsung\.com|telemetry\.mirpay\.ru)$/^$important,reject
-! Изоляция приложений: отключаем вмешательство в код кошельков
+||telemetry.mirpay.ru^$important,reject
 @@||*^$important,app=com.samsung.android.spay|com.google.android.apps.walletnfcrel,jsinject=off,content=off
 @@||192.168.0.0/16^$important,app=com.google.android.apps.chromecast|com.android.printspooler
 
-! --- 19.6-19.7: Kyber Core & Stealth 2.0 (Будущее Безопасности) ---
-! Принудительный постквантовый алгоритм Kyber для TLS
+! --- 28.1: Samsung Smart TV & ACR Exterminator ---
+! Зачистка рекламы и слежки за контентом на уровне железа и DNS
+||/^([^.]+\.)*(samsungads|samsungacr|samsungqbe|samsungcloudsolution|adgrx|tvinteractive|samba\.tv|ads\.samsung)/^$important,reject
+||device-metrics-us.amazon.com^$important,reject
+
+! --- 28.2: Safe Passage (Критический Белый Список) ---
+! Стриминг и обновления без блокировок
+@@||/^([^.]+\.)*(youtube|ytimg|googlevideo|netflix|nflxvideo|amazonaws)\.com/^$important
+
+! --- 28.3-28.4: Quantum Entropy & Gemini Bridge (Deception) ---
+! Внедрение случайного шума, рандомизация ID и мост для Gemini 3
+||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=X-Shield-State: quantum-locked,set-header=DNT: 1
+*^$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved)=[^&]*/$1=omni-qnt-$random_string/
+||google.*^$replace=/sourceid=[^&]*/sourceid=chrome-omni-$random_string/
+||doubleclick.net^$replace=/ad_id=[^&]*/ad_id=00000000-0000-0000-0000-$random_string/
+@@||gemini.google.com^$important,extension=set-header:User-Agent:Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36
+@@||www.gstatic.com/lamda/^$important
+@@||apis.google.com^$domain=gemini.google.com
+
+! --- FINAL: Protocol Hardening & Stealth 2.0 ---
+! Kyber, маскировка IP, User-Agent и тотальная зачистка URL
 $network=tls,pqc=on,pqc_algorithm=kyber,important
-! Финальная маскировка IP, User-Agent и очистка URL
 $stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
+$removeparam=/^(utm_source|utm_medium|fbclid|gclid|yclid|_openstat|msclkid|gs_lcp|sclient|ved|uact|model|manufacturer|os_version)$/
+||google.com/gen_204^$important,reject
+||google.com/clkn^$important,reject
 
 ! =========================================================================
 ! [MEGA-BLOCK XX] THE FINAL CITADEL: THE VOID (v2026.UNIVERSAL)
@@ -861,37 +881,3 @@ google.com##.pla-unit
 ##div[style*="z-index: 9999999"]
 ##div[class*="sticky-ad"]
 ##.mobile-ad-overlay
-
-! === [OMNI-SINGULARITY: LAYER 28 - QUANTUM ENTROPY & SMART TV CORE] ===
-! Стерилизация Samsung TV, ACR-трекинга и глобальная дезориентация трекеров
-
-! --- 28.1: Samsung Smart TV & ACR Exterminator ---
-! Полная зачистка рекламы и слежки за контентом (ACR) на уровне DNS
-||/^([^.]+\.)*(samsungads|samsungacr|samsungqbe|samsungcloudsolution|adgrx|tvinteractive|samba\.tv)/^$important,reject
-||device-metrics-us.amazon.com^$important,reject
-
-! --- 28.2: Safe Passage (Критический Белый Список ТВ) ---
-! Гарантия работы стриминга при активной блокировке рекламы
-@@||/^([^.]+\.)*(youtube|ytimg|googlevideo|netflix|nflxvideo|amazonaws)\.com/^$important
-
-! --- 28.3: Quantum Deception (Million Faces & Noise) ---
-! Внедрение энтропии и рандомизация ID для всех поисковиков мира
-||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=X-Shield-State: quantum-locked,set-header=DNT: 1
-*^$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved)=[^&]*/$1=omni-qnt-$random_string/
-||google.*^$replace=/sourceid=[^&]*/sourceid=chrome-omni-$random_string/
-||doubleclick.net^$replace=/ad_id=[^&]*/ad_id=00000000-0000-0000-0000-$random_string/
-
-! --- 28.4: Gemini-Bridge (Стабильность ИИ без трекинга) ---
-! Разблокировка интерфейса Gemini 3 Flash с защитой сессии
-@@||gemini.google.com^$important
-@@||www.gstatic.com/lamda/^$important
-@@||apis.google.com^$domain=gemini.google.com
-@@||ogpy.google.com^$domain=gemini.google.com
-@@||gemini.google.com^$extension=set-header:User-Agent:Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36
-
-! --- 28.5: Universal Sterilization (Clean URL & Header) ---
-! Финальная зачистка меток (UTM/GCLID) и маскировка под Linux-узел
-$removeparam=/^(utm_source|utm_medium|fbclid|gclid|yclid|_openstat|msclkid|gs_lcp|sclient|ved|uact|model|manufacturer|os_version)$/
-*^$set-header=X-Omni-Layer: Singularity-28,set-header=Sec-CH-UA-Platform: "Linux"
-||google.com/gen_204^$important,reject
-||google.com/clkn^$important,reject
