@@ -33,7 +33,9 @@
 @@||google.com^$important,document,generichide
 @@||google.fr^$important,document,generichide
 @@||m2mlease.fr^$important,document,generichide
-
+@@||paypal.com^$important,document,generichide
+@@||stripe.com^$important,document,generichide
+@@||revolut.com^$important,document,generichide
 
 ! [LAYER 1-5: NETWORK & PROTOCOL HARDENING - APEX LEVEL]
 ! --- 1. Global Reject & DNS Sovereignty ---
