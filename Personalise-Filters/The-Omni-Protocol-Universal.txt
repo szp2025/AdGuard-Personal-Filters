@@ -17,6 +17,7 @@
 @@||com^$document,generichide
 @@||net^$document,generichide
 @@||org^$document,generichide
+@@ftp://*^$important,document,generichide
 
 ! --- 2. Identity & Global Auth (Unified Group) ---
 @@||accounts.google.com^$important,domain=google.com|youtube.com
