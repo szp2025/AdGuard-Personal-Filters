@@ -1,10 +1,10 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
-! Version: 7.5.6
+! Version: 7.5.7
 ! Last modified: 2026-03-23
 ! Expires: 30 days
 ! Homepage: https://github.com/szp2025/AdGuard-Personal-Filters
-! Description: Ultimate Privacy Engine. Anti-detect, PQC-Hardening & Compressed Deception.
+! Description: Ultimate Anti-Detect Engine. Sync-calibrated Signals, L7 Realism & Max Performance.
 ! =========================================================================
 
 ! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE (WHITELIST)
@@ -20,7 +20,11 @@
 @@||bank^$important
 
 ! [LAYER 1-5: PQ-HARDENING & PROTOCOL SUPREMACY]
-||/^(ads|metrics|telemetry|track(?:ing|ers?)?|analytics|stats|adservice|beacon|log(?:ger)?\.|consent|cookie(?:-law)?|onetrust|quantcast|privacy|fingerprintjs|app-measurement|firebaseinstallations|crashlytics|amplitude|doubleclick|appsflyer|adjust|pixel\.)\./^$dnstype=A,empty,websocket,ping,third-party,reject,domain=~system
+||doubleclick.net^$dnstype=A,empty,third-party,reject
+||googlesyndication.com^$dnstype=A,empty,third-party,reject
+||adservice.google.com^$dnstype=A,empty,third-party,reject
+||analytics.google.com^$dnstype=A,empty,third-party,reject
+||/^(ads|metrics|telemetry|track(?:ing|ers?)?|analytics|stats|adservice|beacon|log(?:ger)?\.|consent|cookie(?:-law)?|onetrust|quantcast|privacy|fingerprintjs|app-measurement|firebaseinstallations|crashlytics|amplitude|adjust|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system
 ||ad-delivery.net^$third-party,important
 ||amazon-adsystem.com^$third-party,important
 ||criteo.com^$third-party,important
@@ -36,25 +40,25 @@ $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5,important
 ||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system
 
 ! [LAYER 6-12: IDENTITY, DECEPTION & GHOST PROTOCOL]
-! 1. COMPRESSED REALISM (Максимальное сжатие для скорости)
+! 1. SCRIPTLET SYNC (navigator & language)
 #%#//scriptlet("set-constant", "navigator.platform|navigator.hardwareConcurrency|navigator.deviceMemory|navigator.language|navigator.languages", "Win32|8|8|en-US|en-US,en")
 #%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 #%#//scriptlet("set-constant", "navigator.webdriver", "false")
 #%#//scriptlet("set-constant", "isAdBlockActive", "false")
 #%#//scriptlet("set-constant", "google_ad_status", "1")
-! 2. SILENT PURGE (Аналитика & Cookies)
+! 2. L7 CALIBRATION (Timezone, Permissions, Canvas, Audio)
+#%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
+#%#//scriptlet("execute-script", "navigator.permissions.query=(p)=>Promise.resolve({state:'granted'});")
+#%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=function(){return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB';};")
+#%#//scriptlet("set-constant", "AudioContext.prototype.sampleRate", "44100")
+! 3. SILENT PURGE (Analytics & Storage)
 #%#//scriptlet("set-constant", "ga|gtag|fbq|document.interestCohort|navigator.browsingTopics", "undefined")
 #%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|ym_uid|amplitude_id|_hjSessionUser)$/")
-! 3. MEDIA & CANVAS SPOOFING (Без поломок UI)
-#%#//scriptlet("spoof-css", "canvas", "noise")
 #%#//scriptlet("spoof-css", "webgl", "intel-uhd")
-! 4. L7 CONTEXT (Timezone & Permissions)
-#%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
-#%#//scriptlet("execute-script", "const origQuery=navigator.permissions.query;navigator.permissions.query=(q)=>q.name==='notifications'?Promise.resolve({state:'denied'}):origQuery(q);")
 $network=ip,set_ttl=64,hide_hop_limit=on,important
 
 ! [LAYER 13-27: NETWORK PERIMETER & DEEP PURGE]
-##.ad-box, .ads-container, .sponsored-post, .mobile-ad-overlay, .cookie-banner, .newsletter-popup
+##[class*="ad"], .ad-box, .ads-container, .sponsored-post, .mobile-ad-overlay, .cookie-banner, .newsletter-popup
 ||/^.*(-pa|frontend-pa|spot-pa|metadatalearning-pa)\.google(apis)?\.(com|io|net)$/^$reject
 ||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system
 ||^$important,port=22|23|445|3389|1433|3306|5432|6379|8080,domain=~teamviewer.com
@@ -67,8 +71,9 @@ $network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,
 ||*^$set-header=X-Quantum-Residue: $random_string,set-header=Referrer-Policy: strict-origin-when-cross-origin,set-header=X-Content-Type-Options: nosniff
 
 ! [LAYER 17-26: LIFE BRIDGE & STABILITY (TRUSTED)]
-@@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|verifiedbyvisa|samsung|apple|microsoft|icloud|googleapis|gstatic|connectivitycheck|jsdelivr|cloudflare-dns|yandex|passport|sso|maps\.google|googleusercontent|challenges\.cloudflare|zoom|teams\.microsoft|netflix|amazonaws|gov|gouv|gosuslugi|amazon|aliexpress|wildberries|ozon)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
+@@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|verifiedbyvisa|samsung|apple|microsoft|icloud|googleapis|gstatic|connectivitycheck|jsdelivr|cloudflare-dns|yandex|passport|sso|maps\.google|googleusercontent|challenges\.cloudflare|zoom|teams\.microsoft|netflix|amazonaws|gov|gouv|gosuslugi|amazon|aliexpress|wildberries|ozon)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$document
 @@||android\.googleapis\.com/v1/safetynet^$important
+$header=/^(X-Forwarded-For|Real-IP|Client-IP|Via|Forwarded)$/i,important,domain=~system
 $removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com
 $removeparam=/^(utm_source|utm_medium|fbclid|gclid|msclkid)$/
 
