@@ -1,10 +1,10 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
-! Version: 7.5.7
+! Version: 7.5.8
 ! Last modified: 2026-03-23
 ! Expires: 30 days
 ! Homepage: https://github.com/szp2025/AdGuard-Personal-Filters
-! Description: Ultimate Anti-Detect Engine. Sync-calibrated Signals, L7 Realism & Max Performance.
+! Description: Behavioral Manipulation Engine. Quantum Entropy, API Randomization & HW Sync.
 ! =========================================================================
 
 ! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE (WHITELIST)
@@ -40,17 +40,23 @@ $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5,important
 ||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system
 
 ! [LAYER 6-12: IDENTITY, DECEPTION & GHOST PROTOCOL]
-! 1. SCRIPTLET SYNC (navigator & language)
+! 1. HW & LANG SYNC (Синхронизация сигнатур)
 #%#//scriptlet("set-constant", "navigator.platform|navigator.hardwareConcurrency|navigator.deviceMemory|navigator.language|navigator.languages", "Win32|8|8|en-US|en-US,en")
 #%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 #%#//scriptlet("set-constant", "navigator.webdriver", "false")
 #%#//scriptlet("set-constant", "isAdBlockActive", "false")
 #%#//scriptlet("set-constant", "google_ad_status", "1")
-! 2. L7 CALIBRATION (Timezone, Permissions, Canvas, Audio)
+
+! 2. QUANTUM L7 (Рандомизация & Реализм)
+! --- Рандомизация Permissions (Granted/Prompt/Denied) ---
+#%#//scriptlet("execute-script", "navigator.permissions.query=(p)=>Promise.resolve({state:['granted','prompt','denied'][Math.floor(Math.random()*2.2)]});")
+! --- Синхронизация Времени & Микро-дрейф ---
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
-#%#//scriptlet("execute-script", "navigator.permissions.query=(p)=>Promise.resolve({state:'granted'});")
+#%#//scriptlet("execute-script", "const offset=Math.floor(Math.random()*5);Date.prototype.getTimezoneOffset=()=>-120+offset;")
+! --- Canvas & Audio (Валидные данные) ---
 #%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=function(){return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB';};")
 #%#//scriptlet("set-constant", "AudioContext.prototype.sampleRate", "44100")
+
 ! 3. SILENT PURGE (Analytics & Storage)
 #%#//scriptlet("set-constant", "ga|gtag|fbq|document.interestCohort|navigator.browsingTopics", "undefined")
 #%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|ym_uid|amplitude_id|_hjSessionUser)$/")
