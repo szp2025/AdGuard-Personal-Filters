@@ -12,7 +12,6 @@
 @@||gov^$important,document,generichide
 @@||mil^$important,document,generichide
 @@||edu^$important,document,generichide
-@@||bank^$important,document,generichide
 @@||fr^$document,generichide
 @@||com^$document,generichide
 @@||net^$document,generichide
@@ -31,7 +30,8 @@
 @@||chatgpt.com^$important,document,generichide
 @@||yandex.ru^$important,document,generichide
 @@||dzen.ru^$important,document,generichide
-@@||google.*^$important,document,generichide
+@@||google.com^$important,document,generichide
+@@||google.fr^$important,document,generichide
 @@||m2mlease.fr^$important,document,generichide
 
 
