@@ -18,6 +18,7 @@
 @@||net^$document,generichide
 @@||org^$document,generichide
 @@ftp://*^$important,document,generichide
+@@ftps://*^$important,document,generichide
 
 ! --- 2. Identity & Global Auth (Unified Group) ---
 @@||accounts.google.com^$important,domain=google.com|youtube.com
@@ -38,13 +39,19 @@
 ||doubleclick.net^$dnstype=A,empty,third-party,reject
 ||googlesyndication.com^$dnstype=A,empty,third-party,reject
 ||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr
-||/^(ad-delivery|amazon-adsystem|criteo|sentry\.io|taboola|outbrain)\./^$third-party,important
-$network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum,important
-$network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa,important
-||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~gov
+
+! --- FTP STABILIZER: Отключаем вмешательство в TLS для FTP-сокетов ---
+$network=tls,pqc=off,domain=~ftp:*|~ftps:*
+$network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum,important,domain=~ftp:*|~ftps:*
+$network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa,important,domain=~ftp:*|~ftps:*
+
+! Блокировка старых протоколов (ВЕЗДЕ, КРОМЕ FTP, чтобы не было ECONNABORTED)
+||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~gov|~ftp:*|~ftps:*
+
 ||stun:*$third-party,important
 ||webrtc.org^$third-party,important
 ||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system
+
 
 ! [LAYER 6-12: AUTO-FILTER COMPATIBILITY (SMART SHIELD)]
 ! 1. ANTI-WHITE-SCREEN: Запрещаем скрывать элементы на доверенных доменах
