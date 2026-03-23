@@ -2,66 +2,67 @@
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
 ! Version: 7.5.9
 ! Last modified: 2026-03-23
-! Expires: 30 days
 ! Homepage: https://github.com/szp2025/AdGuard-Personal-Filters
 ! Description: Dynamic Behavioral Engine. 48 Rules. Optimized for Max Speed & Stealth.
 ! =========================================================================
 
-! [MEGA-BLOCK I] CORE: TRUST & STEALTH (WHITELIST)
-! --- 1. Infrastructure & Identity ---
-@@||googlevideo.com^
-@@||googleusercontent.com^
-@@||gstatic.com^
-@@||youtube.com^
-@@||ytimg.com^
-@@||accounts.google.com^$important
-@@||appleid.apple.com^$important
-@@||microsoftonline.com^$important
-@@||okta.com^$important
+! --- 1. France Utilities & Living (Water, Energy, Housing) ---
+@@||oelie-eau.fr^$important,document
+@@||suez.fr^$important,document
+@@||veolia.fr^$important,document
+@@||edf.fr^$important,document
+@@||engie.fr^$important,document
+@@||totalenergies.fr^$important,document
+@@||eni.fr^$important,document
+@@||enedis.fr^$important,document
+@@||grdf.fr^$important,document
 
-! --- 2. AI & Productivity (ChatGPT, etc.) ---
+! --- 2. France Social & Public Services (CAF, Health, Tax) ---
+@@||caf.fr^$important,document
+@@||ameli.fr^$important,document
+@@||urssaf.fr^$important,document
+@@||impots.gouv.fr^$important,document
+@@||france-travail.fr^$important,document
+@@||pole-emploi.fr^$important,document
+@@||service-public.fr^$important,document
+@@||msa.fr^$important,document
+@@||info-retraite.fr^$important,document
+
+! --- 3. Transport & Logistics (SNCF, RATP, Shipping) ---
+@@||sncf-connect.com^$important,document
+@@||ratp.fr^$important,document
+@@||navigo.fr^$important,document
+@@||dhl.com^$important,document
+@@||fedex.com^$important,document
+@@||laposte.fr^$important,document
+@@||chronopost.fr^$important,document
+
+! --- 4. Global Governance, AI & Work ---
+@@||gov^$important,document
+@@||gouv.fr^$important,document
+@@||mil^$important,document
+@@||europa.eu^$important,document
+@@||un.org^$important,document
 @@||openai.com^$important,document
 @@||chatgpt.com^$important,document
-@@||anthropic.com^$important,document
-@@||claude.ai^$important,document
-@@||deepseek.com^$important,document
 @@||github.com^$important,document
+@@||m2mlease.fr^$important
+@@||mail.google.com^$important,document
 
-! --- 3. Global Finance & Payments (Sterile Channel) ---
+! --- 5. Global Finance & Payments (Sterile Channel) ---
 @@||bank^$important,document
 @@||revolut.com^$important,document
 @@||stripe.com^$important,document
 @@||paypal.com^$important,document
 @@||mastercard.com^$important,document
 @@||visa.com^$important,document
-@@||swift.com^$important,document
-@@||adyen.com^$important,document
-@@||klarna.com^$important,document
 
-! --- 4. Global Search & Services ---
+! --- 6. Global Search & Infrastructure ---
 @@||google.*^$important,document
 @@||bing.com^$important,document
-@@||yahoo.com^$important,document
-@@||duckduckgo.com^$important,document
-@@||baidu.com^$important,document
 @@||yandex.ru^$important,document
-@@||dzen.ru^$important,document
-@@||yastatic.net^$important
-@@||yandex.net^$important
-
-! --- 5. Official Structures & Global Shops ---
-@@||gov^$important,document
-@@||gouv.fr^$important,document
-@@||gosuslugi.ru^$important,document
-@@||amazon.com^$important,document
-@@||aliexpress.com^$important,document
-@@||ebay.com^$important,document
+@@||amazon.*^$important,document
 @@||apple.com^$important,document
-
-!--- 5. Boulot ---
-@@||m2mlease.fr^$important
-
-
 
 ! [LAYER 1-5: NETWORK & PROTOCOL HARDENING]
 ||doubleclick.net^$dnstype=A,empty,third-party,reject
