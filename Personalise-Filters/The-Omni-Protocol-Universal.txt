@@ -1,10 +1,10 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
-! Version: 7.5.1
+! Version: 7.5.2
 ! Last modified: 2026-03-23
 ! Expires: 30 days
 ! Homepage: https://github.com/szp2025/AdGuard-Personal-Filters
-! Description: Ультимативный монолит стелс-защиты. Интеграция квантовой энтропии, анти-фишинга и реалистичной мимикрии.
+! Description: Ультимативный монолит стелс-защиты. L7 Deception: Permissions, Timezone & Font spoofing.
 ! =========================================================================
 
 ! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE (WHITELIST)
@@ -31,7 +31,7 @@ $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5,important
 ||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system
 
 ! [LAYER 6-12: IDENTITY, DECEPTION & GHOST PROTOCOL]
-! --- Реалистичная мимикрия (Ультра-Про) ---
+! --- Реалистичная мимикрия (v7.5.2 L7 Spoof) ---
 #%#//scriptlet("set-constant", "navigator.doNotTrack", "1")
 #%#//scriptlet("set-constant", "navigator.hardwareConcurrency", "8")
 #%#//scriptlet("set-constant", "navigator.deviceMemory", "8")
@@ -50,6 +50,10 @@ $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5,important
 #%#//scriptlet("set-constant", "navigator.browsingTopics", "undefined")
 #%#//scriptlet("spoof-css", "canvas", "noise")
 #%#//scriptlet("spoof-css", "webgl", "intel-uhd")
+! --- L7 Deception: Permissions, Timezone & Fonts ---
+#%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'fr-FR'});")
+#%#//scriptlet("execute-script", "const origQuery=navigator.permissions.query;navigator.permissions.query=(q)=>q.name==='notifications'?Promise.resolve({state:'denied'}):origQuery(q);")
+#%#//scriptlet("execute-script", "Object.defineProperty(screen,'width',{get:()=>1920});Object.defineProperty(screen,'height',{get:()=>1080});")
 $network=ip,set_ttl=64,hide_hop_limit=on,important
 $network=dns,edns=off,important
 
