@@ -2,7 +2,7 @@
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
 ! Version: 7.7.1
 ! Last modified: 2026-03-23
-! Expires: 30 days
+! Expires: 1 days
 ! Homepage: https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt
 ! Description: Optimized for Auto-Filtering Mode. Global Governance, AI, Finance & Utility.
 ! =========================================================================
