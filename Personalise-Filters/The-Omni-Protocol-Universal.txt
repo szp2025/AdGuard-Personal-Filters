@@ -436,7 +436,7 @@ $network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,
 ! --- 2. Privacy Header Stripping ---
 ! Удаляем специфические ID Google и подменяем IP-заголовки
 $header=/^(X-Forwarded-For|Real-IP|Client-IP|Via|Forwarded)$/i,important,domain=~system
-$removeheader=/^x-goog-api-(client|key|client-mods)$/,domain=google.com|googleapis.com
+$removeheader=/^x-goog-api-(client|key|client-mods)|x-client-data/ ,domain=google.com|googleapis.com
 $removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid|mc_eid|_hsenc)$/
 
 ! [LAYER 30: PHISH-FENCE & PROTOCOL INTEGRITY]
