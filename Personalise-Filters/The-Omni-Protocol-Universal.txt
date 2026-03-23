@@ -208,6 +208,101 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 })();
 ")
 
+# Маскировка (MAX HARDENING — осторожно)
+
+#%#//scriptlet("execute-script", "
+(function(){
+
+  const key = 'fp_profile_v5';
+  let p;
+
+  try {
+    p = JSON.parse(sessionStorage.getItem(key));
+  } catch(e) {
+    p = {tz:'Europe/Paris'};
+  }
+
+  const seed = JSON.stringify(p).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+
+  // ===== 1. WEBRTC (SOFT MASK, НЕ ЛОМАЕМ ВСЁ) =====
+  if (window.RTCPeerConnection) {
+    const OrigRTC = window.RTCPeerConnection;
+
+    window.RTCPeerConnection = function(...args){
+      const pc = new OrigRTC(...args);
+
+      pc.addEventListener('icecandidate', e => {
+        if (e && e.candidate && e.candidate.candidate) {
+          // Убираем локальные IP
+          e.candidate.candidate = e.candidate.candidate.replace(/192\\.168\\.[0-9]+\\.[0-9]+/g, '0.0.0.0');
+        }
+      });
+
+      return pc;
+    };
+  }
+
+  // ===== 2. NETWORK INFO =====
+  if (navigator.connection) {
+    Object.defineProperty(navigator.connection,'downlink',{get:()=> 10 + (seed % 5)});
+    Object.defineProperty(navigator.connection,'effectiveType',{get:()=> '4g'});
+    Object.defineProperty(navigator.connection,'rtt',{get:()=> 50 + (seed % 20)});
+  }
+
+  // ===== 3. BATTERY API =====
+  navigator.getBattery = function(){
+    return Promise.resolve({
+      charging: true,
+      chargingTime: 0,
+      dischargingTime: Infinity,
+      level: 0.95
+    });
+  };
+
+  // ===== 4. VISIBILITY =====
+  Object.defineProperty(document,'hidden',{get:()=> false});
+  Object.defineProperty(document,'visibilityState',{get:()=> 'visible'});
+
+  // ===== 5. PERMISSIONS (РЕАЛИСТИЧНО) =====
+  const originalQuery = navigator.permissions?.query;
+  if (originalQuery) {
+    navigator.permissions.query = function(params){
+      const map = {
+        'notifications': 'default',
+        'geolocation': 'prompt',
+        'camera': 'prompt',
+        'microphone': 'prompt'
+      };
+      const state = map[params.name] || 'prompt';
+      return Promise.resolve({ state });
+    };
+  }
+
+  // ===== 6. TIMING (ANTI BOT) =====
+  const originalNow = performance.now;
+  performance.now = function(){
+    return originalNow.call(performance) + (seed % 3) * 0.01;
+  };
+
+  // ===== 7. LOCK (ANTI OVERRIDE) =====
+  const protect = (obj, prop) => {
+    try {
+      const val = obj[prop];
+      Object.defineProperty(obj, prop, {
+        get: () => val,
+        configurable: false
+      });
+    } catch(e){}
+  };
+
+  protect(navigator, 'userAgent');
+  protect(navigator, 'hardwareConcurrency');
+  protect(navigator, 'deviceMemory');
+
+})();
+")
+
+
 ! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
 #%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=()=>'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB';")
