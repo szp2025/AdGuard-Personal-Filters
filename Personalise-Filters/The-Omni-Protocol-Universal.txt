@@ -1,10 +1,10 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
-! Version: 7.5.0
+! Version: 7.5.1
 ! Last modified: 2026-03-23
 ! Expires: 30 days
 ! Homepage: https://github.com/szp2025/AdGuard-Personal-Filters
-! Description: Ультимативный монолит стелс-защиты. Интеграция квантовой энтропии, анти-фишинга и защиты от мобильных угроз (SMS/SS7).
+! Description: Ультимативный монолит стелс-защиты. Интеграция квантовой энтропии, анти-фишинга и реалистичной мимикрии.
 ! =========================================================================
 
 ! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE (WHITELIST)
@@ -31,15 +31,25 @@ $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5,important
 ||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system
 
 ! [LAYER 6-12: IDENTITY, DECEPTION & GHOST PROTOCOL]
-#%#//scriptlet("set-constant", "navigator.doNotTrack|navigator.msDoNotTrack|window.doNotTrack|navigator.globalPrivacyControl|window.optOut", "true")
-#%#//scriptlet("set-constant", "navigator.hardwareConcurrency|navigator.deviceMemory", "8")
+! --- Реалистичная мимикрия (Ультра-Про) ---
+#%#//scriptlet("set-constant", "navigator.doNotTrack", "1")
+#%#//scriptlet("set-constant", "navigator.hardwareConcurrency", "8")
+#%#//scriptlet("set-constant", "navigator.deviceMemory", "8")
 #%#//scriptlet("set-constant", "navigator.platform", "Win32")
 #%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
-#%#//scriptlet("set-constant", "ga.loaded|navigator.sendBeacon|canRunAds|AdBlockDetected|google_ad_status|isAdBlockActive|cookie_consent|navigator.webdriver", "true")
-#%#//scriptlet("set-constant", "ga|gtag|window.ping|window.rwt|rwt|document.interestCohort|navigator.browsingTopics|navigator.credentials.get|PasswordCredential|fbq|NDEFReader|navigator.nfc|PaymentRequest|console.clear|console.table", "undefined")
-#%#//scriptlet("spoof-css", "canvas|webgl", "random")
-#%#//scriptlet("trusted-suppress-native-method", "fetch|XMLHttpRequest|setTimeout|setInterval")
-#%#//scriptlet("execute-script", "window.googletag={apiReady:true,pubads:()=>({getSlots:()=>[]})};window.google={accounts:{id:{initialize:undefined}}};")
+#%#//scriptlet("set-constant", "navigator.webdriver", "false")
+#%#//scriptlet("set-constant", "ga.loaded", "true")
+#%#//scriptlet("set-constant", "canRunAds", "true")
+#%#//scriptlet("set-constant", "isAdBlockActive", "false")
+#%#//scriptlet("set-constant", "google_ad_status", "1")
+! --- Блокировка детекции аналитики ---
+#%#//scriptlet("set-constant", "ga", "undefined")
+#%#//scriptlet("set-constant", "gtag", "undefined")
+#%#//scriptlet("set-constant", "fbq", "undefined")
+#%#//scriptlet("set-constant", "document.interestCohort", "undefined")
+#%#//scriptlet("set-constant", "navigator.browsingTopics", "undefined")
+#%#//scriptlet("spoof-css", "canvas", "noise")
+#%#//scriptlet("spoof-css", "webgl", "intel-uhd")
 $network=ip,set_ttl=64,hide_hop_limit=on,important
 $network=dns,edns=off,important
 
@@ -58,7 +68,7 @@ $network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,
 ||googlevideo.com/videoplayback?*&ptracking=*^$important
 ||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=X-Shield-State: quantum-locked,set-header=DNT: 1
 *^$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved|sourceid|ad_id)=[^&]*/$1=omni-qnt-$random_string/
-||*^$set-header=X-Quantum-Residue: $random_string$random_string,set-header=Referrer-Policy: no-referrer,set-header=X-Frame-Options: DENY,set-header=X-Content-Type-Options: nosniff
+||*^$set-header=X-Quantum-Residue: $random_string$random_string,set-header=Referrer-Policy: strict-origin-when-cross-origin,set-header=X-Frame-Options: DENY,set-header=X-Content-Type-Options: nosniff
 
 ! [LAYER 17-26: LIFE BRIDGE & STABILITY (TRUSTED)]
 @@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|verifiedbyvisa|gomining|samsung|apple|microsoft|windowsupdate|icloud|googleapis|gstatic|connectivitycheck|msftconnecttest|jsdelivr|cdnjs|aspnetcdn|cloudflare-dns|yandex|dzen|passport|sso|maps\.google|googleusercontent|waze|ls\.apple|challenges\.cloudflare|zoom|webex|teams\.microsoft|netflix|nflxvideo|amazonaws|gov|gouv|bund|europa|gosuslugi|amazon|aliexpress|leboncoin|wildberries|ozon|carrefour|billing)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
