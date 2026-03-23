@@ -1,106 +1,79 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
-! Version: 7.5.9
+! Version: 7.7.1
 ! Last modified: 2026-03-23
-! Homepage: https://github.com/szp2025/AdGuard-Personal-Filters
-! Description: Dynamic Behavioral Engine. 48 Rules. Optimized for Max Speed & Stealth.
+! Expires: 30 days
+! Homepage: https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt
+! Description: Optimized for Auto-Filtering Mode. Global Governance, AI, Finance & Utility.
 ! =========================================================================
 
 ! [MEGA-BLOCK I] CORE: GLOBAL TRUST & STEALTH (WHITELIST)
-! --- 1. Global Governance & Official (Any country .gov / .gouv / .mil / .edu / .org) ---
+! --- 1. Global Governance & Identity (Automatic Pass) ---
 @@||gov^$important,document
 @@||gouv.fr^$important,document
 @@||mil^$important,document
 @@||edu^$important,document
 @@||org^$important,document
 @@||un.org^$important,document
-@@||who.int^$important,document
 @@||europa.eu^$important,document
-@@||interpol.int^$important,document
+@@||gosuslugi.ru^$important,document
+@@||accounts.google.com^$important
+@@||appleid.apple.com^$important
 
-! --- 2. Global Finance & Payments (Sterile Channel - All Major Providers) ---
+! --- 2. Global Finance & Utilities (Sterile Channel) ---
 @@||bank^$important,document
 @@||revolut.com^$important,document
 @@||stripe.com^$important,document
 @@||paypal.com^$important,document
-@@||adyen.com^$important,document
-@@||klarna.com^$important,document
 @@||mastercard.*^$important,document
 @@||visa.*^$important,document
-@@||swift.com^$important,document
-@@||worldline.com^$important,document
-
-! --- 3. Global Mail, Identity & Auth (Gmail, Outlook, iCloud) ---
-@@||mail.google.com^$important,document
-@@||gmail.com^$important,document
-@@||outlook.*^$important,document
-@@||proton.me^$important,document
-@@||icloud.com^$important,document
-@@||accounts.google.com^$important
-@@||appleid.apple.com^$important
-@@||microsoftonline.com^$important
-@@||okta.com^$important
-
-! --- 4. Global Infrastructure & Utilities (Energy, Water, Telco) ---
-@@||*.eau.fr^$important,document
-@@||*.energy^$important,document
+@@||oelie-eau.fr^$important,document
 @@||edf.fr^$important,document
 @@||engie.fr^$important,document
-@@||orange.fr^$important,document
-@@||free.fr^$important,document
-@@||t-mobile.com^$important,document
-@@||verizon.com^$important,document
-@@||vodafone.com^$important,document
+@@||caf.fr^$important,document
+@@||ameli.fr^$important,document
 
-! --- 5. Global AI, Productivity & Work ---
+! --- 3. Global AI, Work & Search ---
 @@||openai.com^$important,document
 @@||chatgpt.com^$important,document
 @@||claude.ai^$important,document
-@@||deepseek.com^$important,document
 @@||github.com^$important,document
 @@||m2mlease.fr^$important
-@@||slack.com^$important,document
-@@||zoom.us^$important,document
-@@||notion.so^$important,document
-
-! --- 6. Global Search, Shops & Logistics ---
 @@||google.*^$important,document
 @@||bing.com^$important,document
-@@||yahoo.com^$important,document
-@@||duckduckgo.com^$important,document
 @@||yandex.ru^$important,document
-@@||amazon.*^$important,document
-@@||aliexpress.com^$important,document
-@@||ebay.*^$important,document
-@@||dhl.com^$important,document
-@@||fedex.com^$important,document
-@@||ups.com^$important,document
-
+@@||dzen.ru^$important,document
 
 ! [LAYER 1-5: NETWORK & PROTOCOL HARDENING]
 ||doubleclick.net^$dnstype=A,empty,third-party,reject
 ||googlesyndication.com^$dnstype=A,empty,third-party,reject
-||adservice.google.com^$dnstype=A,empty,third-party,reject
-||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system
+||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr
 ||/^(ad-delivery|amazon-adsystem|criteo|sentry\.io|taboola|outbrain)\./^$third-party,important
 $network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum,important
 $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa,important
-||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com
+||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~gov
 ||stun:*$third-party,important
 ||webrtc.org^$third-party,important
 ||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system
 
-! [LAYER 6-12: BEHAVIORAL MANIPULATION & SYNC]
-! 1. SYNCED SIGNALS (HW & LANG)
+! [LAYER 6-12: AUTO-FILTER COMPATIBILITY (SMART SHIELD)]
+! 1. ANTI-WHITE-SCREEN: Запрещаем скрывать элементы на доверенных доменах
+@@||gov^$generichide
+@@||gouv.fr^$generichide
+@@||bank^$generichide
+@@||openai.com^$generichide
+@@||chatgpt.com^$generichide
+@@||yandex.ru^$generichide
+@@||dzen.ru^$generichide
+@@||google.*^$generichide
+
+! 2. BEHAVIORAL SYNC (Behavioral Emulation)
 #%#//scriptlet("set-constant", "navigator.platform|navigator.hardwareConcurrency|navigator.deviceMemory|navigator.language|navigator.languages", "Win32|8|8|en-US|en-US,en")
 #%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 #%#//scriptlet("set-constant", "navigator.webdriver|isAdBlockActive", "false")
-
-! 2. DYNAMIC REALISM (Permissions, Time, Canvas)
 #%#//scriptlet("execute-script", "navigator.permissions.query=(p)=>Promise.resolve({state:['granted','prompt'][Math.floor(Math.random()*1.5)]});")
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
 #%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=()=>'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB';")
-#%#//scriptlet("set-constant", "AudioContext.prototype.sampleRate", "44100")
 
 ! 3. STORAGE & ANALYTICS PURGE
 #%#//scriptlet("set-constant", "ga|gtag|fbq|document.interestCohort|navigator.browsingTopics", "undefined")
@@ -114,7 +87,6 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 ||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system
 ||^$important,port=22|23|445|3389|1433|3306|5432|6379|8080,domain=~teamviewer.com
 $network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,important
-||*$cname,domain=~google.com|~apple.com|~microsoft.com|~samsung.com|~free.fr
 
 ! [LAYER 28-29: QUANTUM VISIBILITY]
 ||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=DNT: 1
@@ -122,14 +94,14 @@ $network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,
 ||*^$set-header=Referrer-Policy: strict-origin-when-cross-origin,set-header=X-Content-Type-Options: nosniff
 
 ! [LAYER 17-26: TRUSTED BRIDGE]
-@@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|klarna|mastercard|samsung|apple|microsoft|icloud|googleapis|gstatic|jsdelivr|yandex|passport|sso|zoom|teams\.microsoft|netflix|amazon|aliexpress|wildberries|ozon)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$document
+@@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|samsung|apple|microsoft|icloud|googleapis|gstatic|jsdelivr|yandex|passport|sso|zoom|teams\.microsoft|netflix|amazon|aliexpress|wildberries|ozon|caf|ameli|urssaf|oelie-eau|sncf-connect|enedis|edf)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
 @@||android\.googleapis\.com/v1/safetynet^$important
 $header=/^(X-Forwarded-For|Real-IP|Client-IP|Via|Forwarded)$/i,important,domain=~system
 $removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com
 $removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid)$/
 
 ! [LAYER 30: PHISH-FENCE]
-||/^(flash-sms|silent-ping|carrier-popup)/^$important,network,third-party
-$removeparam=/^(redirect|url|link|goto|continue|ref_url)$/,domain=~google.com|~bank
+||/^(flash-sms|class0-message|silent-ping|carrier-popup)/^$important,network,third-party
+$removeparam=/^(redirect|url|link|goto|continue|ref_url)$/,domain=~google.com|~bank|~yandex.ru|~dzen.ru|~openai.com|~gov|~un.org|~europa.eu|~caf.fr|~oelie-eau.fr
 ||xn--*^$important,reject,domain=~system
 ||bit.ly^$rewrite=abp-resource:blank-js
