@@ -89,12 +89,19 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 #%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
 
-! Маскировка железа и ОС (Стандартизация под массовый сегмент)
-#%#//scriptlet("set-constant", "navigator.platform|navigator.hardwareConcurrency|navigator.deviceMemory", "Win32|8|8")
+# Маскировка железа и ОС (реалистичный профиль)
+
+#%#//scriptlet("set-constant", "navigator.platform", "Win32")
+#%#//scriptlet("set-constant", "navigator.hardwareConcurrency", "8")
+#%#//scriptlet("set-constant", "navigator.deviceMemory", "8")
 #%#//scriptlet("set-constant", "navigator.maxTouchPoints", "0")
+
 #%#//scriptlet("set-constant", "navigator.language", "en-US")
-#%#//scriptlet("set-constant", "navigator.languages", "en-US,en;q=0.9")
-#%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
+#%#//scriptlet("set-constant", "navigator.languages", ["en-US","en"])
+
+#%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
+
+#%#//scriptlet("set-constant", "Intl.DateTimeFormat.prototype.resolvedOptions", "function(){return {timeZone:'Europe/Paris'}}")
 
 ! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
