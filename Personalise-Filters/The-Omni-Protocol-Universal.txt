@@ -35,34 +35,59 @@
 @@||m2mlease.fr^$important,document,generichide
 
 
-! [LAYER 1-5: NETWORK & PROTOCOL HARDENING]
+! [LAYER 1-5: NETWORK & PROTOCOL HARDENING - MAX LEVEL]
+! --- 1. Global Reject (DNS & Analytics Deep Purge) ---
 ||doubleclick.net^$dnstype=A,empty,third-party,reject
 ||googlesyndication.com^$dnstype=A,empty,third-party,reject
-||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr
+! Блокируем любые попытки системной аналитики и сбора отпечатков на уровне доменов
+||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr|~ftp:*|~ftps:*
 
-! --- FTP STABILIZER: Отключаем вмешательство в TLS для FTP-сокетов ---
+! --- 2. FTP STABILIZER & TLS ENFORCEMENT ---
+! Отключаем вмешательство только для FTP, для остального - УЛЬТРА-PQC
 $network=tls,pqc=off,domain=~ftp:*|~ftps:*
 $network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum,important,domain=~ftp:*|~ftps:*
 $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa,important,domain=~ftp:*|~ftps:*
 
-! Блокировка старых протоколов (ВЕЗДЕ, КРОМЕ FTP, чтобы не было ECONNABORTED)
+! --- 3. Anti-Downgrade & Protocol Purge (The Iron Curtain) ---
+! Запрещаем откат на небезопасные протоколы и блокируем QUIC (кроме видео), чтобы исключить обход фильтров
 ||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~gov|~ftp:*|~ftps:*
+! Блокируем DoH (DNS over HTTPS) сторонних провайдеров, чтобы браузер не сливал DNS мимо нашей системы
+||/^(dns|doh|dot|cloudflare-dns|dns-query)\./^$important,reject,domain=~system|~google.com
 
-||stun:*$third-party,important
-||webrtc.org^$third-party,important
-||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system
-
+! --- 4. WebRTC & Tunneling Protection ---
+! Запрещаем WebRTC (утечка реального IP) для всех сторонних ресурсов
+||stun:*$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com
+||webrtc.org^$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com
+! Блокируем скрытые HTTPS/DNS запросы (Type 65), которые часто используют для обхода блокировок
+||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov
 
 ! [LAYER 6-12: AUTO-FILTER COMPATIBILITY (SMART SHIELD)]
-! 1. ANTI-WHITE-SCREEN: Запрещаем скрывать элементы на доверенных доменах
-@@||gov^$generichide
-@@||gouv.fr^$generichide
-@@||bank^$generichide
-@@||openai.com^$generichide
-@@||chatgpt.com^$generichide
-@@||yandex.ru^$generichide
-@@||dzen.ru^$generichide
-@@||google.*^$generichide
+! --- 1. ANTI-WHITE-SCREEN (Группировка для стабильности интерфейса) ---
+! Запрещаем косметическую фильтрацию (скрытие элементов) на критических узлах
+@@||gov^$generichide,genericblock
+@@||gouv.fr^$generichide,genericblock
+@@||bank^$generichide,genericblock
+@@||openai.com^$generichide,genericblock
+@@||chatgpt.com^$generichide,genericblock
+@@||yandex.ru^$generichide,genericblock
+@@||dzen.ru^$generichide,genericblock
+@@||google.*^$generichide,genericblock
+@@||m2mlease.fr^$generichide,genericblock
+@@||*.fr^$generichide,domain=~doubleclick.net|~google-analytics.com
+@@||*.com^$generichide,domain=~doubleclick.net|~google-analytics.com
+
+! --- 2. ANTI-ADBLOCK-DETECTOR (Маскировка присутствия фильтра) ---
+! Заставляем сайты верить, что реклама "загружена", чтобы они не блокировали доступ
+#%#//scriptlet("set-constant", "isAdBlockActive|isAdblockActive|adblocker|AdBlock", "false")
+#%#//scriptlet("set-constant", "google_ad_status", "1")
+#%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
+
+! --- 3. BEHAVIORAL SYNC (Behavioral Emulation & Stealth) ---
+#%#//scriptlet("set-constant", "navigator.platform|navigator.hardwareConcurrency|navigator.deviceMemory|navigator.language|navigator.languages", "Win32|8|8|en-US|en-US,en")
+#%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
+#%#//scriptlet("execute-script", "navigator.permissions.query=(p)=>Promise.resolve({state:['granted','prompt'][Math.floor(Math.random()*1.5)]});")
+#%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
+#%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=()=>'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB';")
 
 ! 2. BEHAVIORAL SYNC (Behavioral Emulation)
 #%#//scriptlet("set-constant", "navigator.platform|navigator.hardwareConcurrency|navigator.deviceMemory|navigator.language|navigator.languages", "Win32|8|8|en-US|en-US,en")
