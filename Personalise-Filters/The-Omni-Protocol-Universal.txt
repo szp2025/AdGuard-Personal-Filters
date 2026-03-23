@@ -1,102 +1,75 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
-! Version: 7.5.2
+! Version: 7.5.3
 ! Last modified: 2026-03-23
 ! Expires: 30 days
 ! Homepage: https://github.com/szp2025/AdGuard-Personal-Filters
-! Description: Ультимативный монолит стелс-защиты. L7 Deception: Permissions, Timezone & Font spoofing.
+! Description: Ультимативный монолит. L7 Stealth, WebRTC Shield & Optimized Realism.
 ! =========================================================================
 
 ! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE (WHITELIST)
-@@||googlevideo.com^$important
-@@||googleusercontent.com^$important
-@@||gstatic.com^$important
-@@||youtube.com^$important
-@@||ytimg.com^$important
-@@||ggpht.com^$important
+@@||googlevideo.com^
+@@||googleusercontent.com^
+@@||gstatic.com^
+@@||youtube.com^
+@@||ytimg.com^
 @@||accounts.google.com^$important
 @@||appleid.apple.com^$important
-@@||login.microsoftonline.com^$important
 @@||recaptcha.net^$important
 @@||hcaptcha.com^$important
 @@||bank^$important
 
 ! [LAYER 1-5: PQ-HARDENING & PROTOCOL SUPREMACY]
-||/^(ads|metrics|telemetry|track(?:ing|ers?)?|analytics|stats|events(\.|-)|adservice|cloudflareinsights|browser-intake-datadoghq|events\.statsigapi|beacon|log(?:s|ger)?\.|consent|cookie(?:-law)?\.|trustarc|onetrust|quantcast|privacy(?:-|)center|user-report|choice\.microsoft|fingerprintjs|fpjs|hcaptcha|arkoselabs|graph\.facebook|app-measurement|firebaseinstallations|firebase-settings|crashlytics|hotjar|amplitude|mixpanel|clarity|mouseflow|fullstory|doubleclick|adnxs|openx|pubmatic|appsflyer|adjust|branch|kochava|adsystem|adserver|web-beacon|pixel\.)\./^$dnstype=A,empty,websocket,ping,third-party,important,reject,domain=~system
-||/^([^.]+\.)*(ad-delivery|ad-serv|amazon-adsystem|criteo|mopub|unityads|connect\.facebook|analytics\.tiktok|pixel\.facebook|byteoversea|sentry\.io|snapads|tiktokv|drainer|walletconnect|coin-hive|minr|dhl-delivery|chronopost|laposte|ups-track|secure-verification|revolut-verify|n26-login|gouv-fr|ameli-update|caf-infoconnect|apk-download|pegasus|nso-group|shodan|censys|metasploit|cobalt-strike|openai|anthropic|taboola|outbrain|bt-tracking|altbeacon|ibeacon|ipstack|maxmind|geoip|audio-fingerprint|ultrasonic-beacon|silverpush|camera-access|webcam-probe|samsungads|samsungacr|samba\.tv|tt\.omtrdc|at-o)\./^$important,third-party,websocket,domain=~system|~google.com|~github.com
+||/^(ads|metrics|telemetry|track(?:ing|ers?)?|analytics|stats|adservice|beacon|consent|cookie(?:-law)?|onetrust|quantcast|fingerprintjs|app-measurement|firebaseinstallations|crashlytics|amplitude|doubleclick|appsflyer|adjust|pixel\.)\./^$dnstype=A,empty,websocket,ping,third-party,reject,domain=~system
+||/^([^.]+\.)*(ad-delivery|amazon-adsystem|criteo|mopub|unityads|pixel\.facebook|sentry\.io|tiktokv|drainer|walletconnect|secure-verification|revolut-verify|ameli-update|apk-download|nso-group|shodan|censys|openai|taboola|outbrain)\./^$third-party,websocket,domain=~system|~google.com|~github.com
 $network=tls,pqc=on,pqc_algorithm=ml-kem-1024|kyber,hybrid_pqc=on,pqc_strength=maximum,important
 $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5,important
 ||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~ytimg.com
-||/(_esni|_echconfig|_pqcconfig)\./^$important,reject
+||webrtc.org^$third-party,important
 ||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system
 
 ! [LAYER 6-12: IDENTITY, DECEPTION & GHOST PROTOCOL]
-! --- Реалистичная мимикрия (v7.5.2 L7 Spoof) ---
-#%#//scriptlet("set-constant", "navigator.doNotTrack", "1")
+! --- Реалистичная мимикрия (Global Citizen Profile) ---
+#%#//scriptlet("set-constant", "navigator.language", "en-US")
+#%#//scriptlet("set-constant", "navigator.languages", "en-US,en")
 #%#//scriptlet("set-constant", "navigator.hardwareConcurrency", "8")
 #%#//scriptlet("set-constant", "navigator.deviceMemory", "8")
 #%#//scriptlet("set-constant", "navigator.platform", "Win32")
-#%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 #%#//scriptlet("set-constant", "navigator.webdriver", "false")
-#%#//scriptlet("set-constant", "ga.loaded", "true")
-#%#//scriptlet("set-constant", "canRunAds", "true")
 #%#//scriptlet("set-constant", "isAdBlockActive", "false")
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 ! --- Блокировка детекции аналитики ---
 #%#//scriptlet("set-constant", "ga", "undefined")
-#%#//scriptlet("set-constant", "gtag", "undefined")
 #%#//scriptlet("set-constant", "fbq", "undefined")
-#%#//scriptlet("set-constant", "document.interestCohort", "undefined")
-#%#//scriptlet("set-constant", "navigator.browsingTopics", "undefined")
 #%#//scriptlet("spoof-css", "canvas", "noise")
 #%#//scriptlet("spoof-css", "webgl", "intel-uhd")
-! --- L7 Deception: Permissions, Timezone & Fonts ---
-#%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'fr-FR'});")
+! --- L7: Permissions & Timezone ---
+#%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
 #%#//scriptlet("execute-script", "const origQuery=navigator.permissions.query;navigator.permissions.query=(q)=>q.name==='notifications'?Promise.resolve({state:'denied'}):origQuery(q);")
-#%#//scriptlet("execute-script", "Object.defineProperty(screen,'width',{get:()=>1920});Object.defineProperty(screen,'height',{get:()=>1080});")
 $network=ip,set_ttl=64,hide_hop_limit=on,important
-$network=dns,edns=off,important
 
 ! [LAYER 13-27: NETWORK PERIMETER & DEEP PURGE]
-##.ad-box, .ads-container, .sponsored-post, .yandex-ad, .mobile-ad-overlay, .cookie-banner, .newsletter-popup, div[data-text-ad], .pla-unit
-||/^.*(-pa|frontend-pa|robinfrontend-pa|spot-pa|nearby-pa|metadatalearning-pa)\.google(apis)?\.(com|io|net)$/^$important,reject
-||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|100\.6[4-9]\.)/^$important,reject,domain=~system
-||^$important,port=22|23|135|137-139|445|3389|1433|1900|3306|5353|5432|6379|8883|1080|8080|8888,domain=~teamviewer.com
-||/^(stun|dns-query|imsi-catcher|sim-jacker|ss7-attack|hlr-lookup|cellular-intercept|tower-analytics|connectivitycheck)/^$important,network,third-party,domain=~system|~google.com|~samsung.com|~android.com
+[class*="ad"], [id^="ad"], .ad-box, .ads-container, .sponsored-post, .mobile-ad-overlay, .cookie-banner
+||/^.*(-pa|frontend-pa|spot-pa|metadatalearning-pa)\.google(apis)?\.(com|io|net)$/^$reject
+||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system
+||^$important,port=22|23|445|3389|1433|3306|5432|6379|8080,domain=~teamviewer.com
 $network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,important
-||*$cname,domain=~google.com|~apple.com|~microsoft.com|~samsung.com|~free.fr|~icloud.com
+||*$cname,domain=~google.com|~apple.com|~microsoft.com|~samsung.com|~free.fr
 
 ! [LAYER 28-29: QUANTUM ENTROPY & ZERO VISIBILITY]
-||youtubei.googleapis.com^$important,domain=~com.google.android.youtube
-||youtube.com/get_midroll_info*^$important
-||googlevideo.com/videoplayback?*&ptracking=*^$important
-||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=X-Shield-State: quantum-locked,set-header=DNT: 1
-*^$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved|sourceid|ad_id)=[^&]*/$1=omni-qnt-$random_string/
-||*^$set-header=X-Quantum-Residue: $random_string$random_string,set-header=Referrer-Policy: strict-origin-when-cross-origin,set-header=X-Frame-Options: DENY,set-header=X-Content-Type-Options: nosniff
+||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=DNT: 1
+*^$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved)=[^&]*/$1=omni-qnt-$random_string/
+||*^$set-header=X-Quantum-Residue: $random_string,set-header=Referrer-Policy: strict-origin-when-cross-origin,set-header=X-Content-Type-Options: nosniff
 
 ! [LAYER 17-26: LIFE BRIDGE & STABILITY (TRUSTED)]
-@@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|verifiedbyvisa|gomining|samsung|apple|microsoft|windowsupdate|icloud|googleapis|gstatic|connectivitycheck|msftconnecttest|jsdelivr|cdnjs|aspnetcdn|cloudflare-dns|yandex|dzen|passport|sso|maps\.google|googleusercontent|waze|ls\.apple|challenges\.cloudflare|zoom|webex|teams\.microsoft|netflix|nflxvideo|amazonaws|gov|gouv|bund|europa|gosuslugi|amazon|aliexpress|leboncoin|wildberries|ozon|carrefour|billing)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
-@@||/^(samsungpay|nspk|visa|mastercard)\.(com|ru|net)$/^$dnstype=A,ttl=3600,important
-@@||google.com/pay^$dnstype=A,ttl=3600,important
+@@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|verifiedbyvisa|samsung|apple|microsoft|icloud|googleapis|gstatic|connectivitycheck|jsdelivr|cloudflare-dns|yandex|passport|sso|maps\.google|googleusercontent|challenges\.cloudflare|zoom|teams\.microsoft|netflix|amazonaws|gov|gouv|gosuslugi|amazon|aliexpress|wildberries|ozon)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
 @@||android\.googleapis\.com/v1/safetynet^$important
-@@||/(googlevideo\.com|\.ytimg\.com)$/^$networkaddress=http3
-$header=/^(X-(Forwarded-For|Real-IP|Client-IP)|Via|Forwarded)$/i,important,domain=~system|~google.com|~github.com|~samsung.com|~gemini.google.com
 $removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com
-$removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid)$/
-
-! [GEMINI ACCESS BRIDGE]
-@@||gemini.google.com^$important,extension=set-header:User-Agent:Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36
-@@||www.gstatic.com/lamda/^$important
-@@||apis.google.com^$domain=gemini.google.com
+$removeparam=/^(utm_source|utm_medium|fbclid|gclid|msclkid)$/
 
 ! [LAYER 30: PHISH-FENCE & SMS-SHIELD]
-||/^(flash-sms|class0-message|silent-ping|carrier-popup)/^$important,network,third-party
-$removeparam=/^(redirect|url|link|goto|continue|return_to|ref_url)$/,domain=~google.com|~apple.com|~bank
+||/^(flash-sms|silent-ping|carrier-popup)/^$important,network,third-party
+$removeparam=/^(redirect|url|link|goto|continue|ref_url)$/,domain=~google.com|~apple.com|~bank
 ||xn--*^$important,reject,domain=~system
-||bit.ly^$rewrite=abp-resource:blank-js,important
-||t.co^$rewrite=abp-resource:blank-js,important
-||tinyurl.com^$rewrite=abp-resource:blank-js,important
-||is.gd^$rewrite=abp-resource:blank-js,important
-##div[class*="login-overlay"]
-##div[class*="verify-account"]
-##iframe[src*="account-update"]
+||bit.ly^$rewrite=abp-resource:blank-js
+||t.co^$rewrite=abp-resource:blank-js
