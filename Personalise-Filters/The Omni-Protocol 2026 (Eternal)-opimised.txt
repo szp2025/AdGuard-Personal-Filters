@@ -1,809 +1,454 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
-! Version: 7.4.9
-! Last modified: 2026-03-20
-
-! =========================================================================
-! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 1.1: Белый список критической инфраструктуры (Универсально) ---
-@@||/^(googlevideo|googleusercontent|gstatic|youtube|ggpht|ytimg|android|apple|icloud|mzstatic|samsung|samsungapps|samsungcloud|galaxy\.store|waze|mapquest|apple-dns|gvt[1-3])\.(com|net)$/^$important,domain=~browser
-@@||/^(accounts\.google\.com|appleid\.apple\.com|login\.microsoftonline\.com|recaptcha\.net|hcaptcha\.com|.*\.bank)$/^$important
-
-! --- 1.2: Параметры скрытности AdGuard (Эксклюзивно для системного уровня) ---
-$stealth=on,hide_ip=on,hide_ua=on,strip_tracking=on,webrtc,important
-$header=/^(X-Forwarded-For|Via|X-Real-IP|X-Goog-Api-Client|Sec-CH-UA(-Model|-Platform)?|If-None-Match|DNT|Sec-GPC|Referer)$/,important
-
-! --- 1.3: Глобальная блокировка аналитики и трекеров (Универсально) ---
-||/^(ads|metrics|telemetry|track(ing|ers)?|analytics|stats|events|adservice|cloudflareinsights|browser-intake-datadoghq|events\.statsigapi|beacon|log(s|ger)?)\./^$dnstype=A,empty,important
-||/^(ads|metrics|telemetry|track(ing|ers)?|analytics|stats|events|adservice)\./^$websocket,ping,third-party,important,reject,domain=~system
-
-! --- 1.4: Блокировка согласий и Cookie-баннеров (Универсально) ---
-||/^(consent|cookie(-law)?|trustarc|onetrust|quantcast|privacy-center|user-report|choice)\./^$important,reject,domain=~system
-
-! --- 1.5: Шрифты и Сетевой тюнинг (Смешанный режим) ---
-||/^(fonts\.(gstatic|googleapis)\.com)$/^$important,third-party,content=off,dnstype=HTTPS,domain=~system,~google.com
-$network=tls,pqc=off,important,domain=~google.com|~github.com|~revolut.com|~apple.com|~microsoft.com|~bitwarden.com|~binance.com
-
-! --- 1.6: Скриптлеты: Анонимизация DNT (Зеркальная защита AdGuard + uBlock) ---
-! Синтаксис AdGuard
-#%#//scriptlet("set-constant", "navigator.doNotTrack|navigator.msDoNotTrack|window.doNotTrack|navigator.donottrack|navigator.globalPrivacyControl|window.optOut", "true")
-! Синтаксис uBlock Origin / Brave / Vivaldi
-##+js(set-constant, navigator.doNotTrack, true)
-##+js(set-constant, navigator.msDoNotTrack, true)
-##+js(set-constant, window.doNotTrack, true)
-##+js(set-constant, navigator.donottrack, true)
-##+js(set-constant, navigator.globalPrivacyControl, true)
-##+js(set-constant, window.optOut, true)
-
-
-
-! =========================================================================
-! [MEGA-BLOCK II] TRACKING ANNIHILATION CORE (v2026.UNIVERSAL)
+! Version: 7.7.1
+! Last modified: 2026-03-23
+! Expires: 1 days
+! Homepage: https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt
+! Description: Optimized for Auto-Filtering Mode. Global Governance, AI, Finance & Utility.
 ! =========================================================================
 
-! --- 2.1: Блокировка аналитических гигантов (Regex-фильтрация) ---
-||/^(hotjar|amplitude|mixpanel|clarity|mouseflow|fullstory|doubleclick|adnxs|openx|pubmatic|appsflyer|adjust|branch|kochava|crashlytics|adsystem|adserver|web-beacon|metrics|pixel|track)\./^$important,reject,nolog,domain=~system
-
-! --- 2.2: Очистка URL от трекинговых параметров (Strip Tracking) ---
-! AdGuard / uBlock Origin / Brave поддерживают этот синтаксис в разных формах
-$removeparam=/^(utm_|fbclid|gclid|gclsrc|dclid|msclkid|yclid|ttclid|li_fat_id|igsh|mc_eid|_hsenc|ref_src|ref_url|aff_id|aff_sub|click_id|ncid|track_id|original_referer|_ga|_gl|gciid|gckid|t)$/,important,domain=~system
-
-! --- 2.3: Скриптлеты: Нейтрализация Google Analytics (AdGuard) ---
-#%#//scriptlet("set-constant", "ga.loaded|navigator.sendBeacon", "true")
-#%#//scriptlet("set-constant", "ga", "undefined")
-
-! --- 2.4: Скриптлеты: Нейтрализация (Зеркало для uBlock Origin / Brave) ---
-##+js(set-constant, ga.loaded, true)
-##+js(set-constant, navigator.sendBeacon, true)
-##+js(set-constant, ga, undefined)
-
-
-
-! =========================================================================
-! [MEGA-BLOCK III] SEARCH GHOST & REDIRECT SHIELD (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 3.1: Анонимизация Поисковых Систем (Скрытие Referer и очистка URL) ---
-||/^(google|yandex|bing|duckduckgo|baidu|qwant|ecosia|yahoo)\.(com|ru|fr|de|org)$/^$referer=origin,removeparam=/^(url|q|res|usg|text|uuid|click|key|lr|redircnt|src|from|mda|mdo|device_id|rdata|cvid|form|sk|sp|qs|pq|sc|atb|gs_lcp|sclient|source|ved|ei)$/,important,domain=~system
-
-! --- 3.2: Защита от API-трекинга (Только AdGuard) ---
-||/^(google|yandex)\.(com|ru)(\/(search|clck))?$/^$network,important,header=X-Goog-Api-Client,domain=google.com|googleapis.com
-
-! --- 3.3: Скриптлеты: Уничтожение клик-логов (AdGuard) ---
-#%#//scriptlet("set-constant", "window.ping|rwt", "undefined")
-#%#//scriptlet("set-attribute", "a[ping]", "ping", "")
-#%#//scriptlet("abort-current-inline-script", "google.navigation")
-#%#//scriptlet("prevent-listener", "click", "/\.(ru|com)\/clck\//")
-
-! --- 3.4: Скриптлеты: Уничтожение клик-логов (uBlock Origin / Brave) ---
-##+js(set-constant, window.ping, undefined)
-##+js(set-constant, rwt, undefined)
-##+js(set-attribute, a[ping], ping, "")
-##+js(abort-current-inline-script, google.navigation)
-##+js(prevent-listener, click, /\.(ru|com)\/clck\//)
-
-! --- 3.5: Косметическая очистка ссылок (Универсально) ---
-##a[ping]:remove-attr(ping)
-
-
-! =========================================================================
-! [MEGA-BLOCK IV] PRIVACY VORTEX: COOKIE & IDENTITY (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 4.1: Изоляция Cookie и Кэш-трекинга (AdGuard Stealth) ---
-$cookie,third-party,important,domain=~system|~google.com|~github.com
-$header=/^(Set-Cookie|ETag|If-None-Match|If-Modified-Since|Cache-Control:no-store)$/,domain=doubleclick.net|adnxs.com|scorecardresearch.com|*
-
-! --- 4.2: Уничтожение Клиентских Подсказок (User-Agent Ch-Hints) ---
-$header=/^(Sec-CH-UA(-Mobile|-Platform|-Model|-Full-Version|-Arch|-Bitness)?)$/,important,domain=~system|~google.com|~github.com
-$header=/^(X-(Requested-With|Fb-Http-Engine|Amzn-Trace-Id|NewRelic-ID|App-ID|Client-Data|Goog-))$/,important,referer=origin,third-party,domain=~system|~google.com|~github.com
-
-! --- 4.3: Скриптлеты: Маскировка Железа и Браузера (AdGuard + uBlock) ---
-! Синтаксис AdGuard
-#%#//scriptlet("set-constant", "navigator.userAgent|navigator.appVersion", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
-#%#//scriptlet("set-constant", "navigator.platform|navigator.oscpu", "Win32")
-#%#//scriptlet("set-constant", "navigator.hardwareConcurrency|navigator.deviceMemory", "8")
-! Синтаксис uBlock Origin / Brave
-##+js(set-constant, navigator.userAgent, "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
-##+js(set-constant, navigator.platform, "Win32")
-##+js(set-constant, navigator.hardwareConcurrency, 8)
-##+js(set-constant, navigator.deviceMemory, 8)
-
-! --- 4.4: Скриптлеты: Блокировка Privacy Sandbox и Креденшалов ---
-#%#//scriptlet("set-constant", "document.interestCohort|navigator.browsingTopics|navigator.credentials.get|PasswordCredential", "undefined")
-##+js(set-constant, document.interestCohort, undefined)
-##+js(set-constant, navigator.browsingTopics, undefined)
-##+js(set-constant, navigator.credentials.get, undefined)
-
-! --- 4.5: Перенаправление хранилища (Re-map Storage) ---
-#%#//scriptlet("re-map-web-storage", "tracking_id|user_id|_ga", "null")
-
-! --- 4.6: Защита авторизационных токенов (Security Layer) ---
-$header=/^(Authorization|X-CSRF-Token|X-XSRF-TOKEN|X-Auth-Token|Proxy-Authorization|X-Session-ID|WWW-Authenticate|X-Request-ID|X-Access-Token)$/,third-party,important,domain=~system|~google.com|~github.com|~revolut.com|~binance.com
-
-
-
-! =========================================================================
-! [MEGA-BLOCK V] HARDWARE LOCK & NETWORK STEALTH (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 5.1: Сетевой Стелс и Защита от DPI (AdGuard Network Layer) ---
-||/^(stun|dns-query)/^$important,network,protocol=h3,quic,third-party,domain=~system|~google.com|~github.com
-$header=/^(X-Forwarded-For|Via|X-Real-IP|Forwarded)$/,important,domain=~system|~google.com|~github.com
-
-! --- 5.2: Скриптлеты: Изоляция сенсоров и WebRTC (AdGuard + uBlock) ---
-! Блокировка Геолокации, Гироскопа, Bluetooth, USB и WebRTC
-#%#//scriptlet("set-constant", "navigator.geolocation|DeviceMotionEvent|DeviceOrientationEvent|navigator.connection|navigator.bluetooth|navigator.usb|navigator.hid|RTCPeerConnection|webkitRTCPeerConnection|RTCIceCandidate|RTCSessionDescription", "undefined")
-##+js(set-constant, navigator.geolocation, undefined)
-##+js(set-constant, DeviceMotionEvent, undefined)
-##+js(set-constant, DeviceOrientationEvent, undefined)
-##+js(set-constant, navigator.connection, undefined)
-##+js(set-constant, RTCPeerConnection, undefined)
-
-! --- 5.3: Скриптлеты: Блокировка уведомлений и Push (Авто-отказ) ---
-#%#//scriptlet("set-constant", "Notification.requestPermission|PushManager.subscribe", "function(){return Promise.resolve('denied');}")
-##+js(set-constant, Notification.requestPermission, function(){return Promise.resolve('denied');})
-
-! --- 5.4: Скриптлеты: Защита AudioContext (Аудио-фингерпринтинг) ---
-#%#//scriptlet("set-constant", "window.AudioContext|window.webkitAudioContext", "undefined")
-##+js(set-constant, window.AudioContext, undefined)
-##+js(set-constant, window.webkitAudioContext, undefined)
-
-! --- 5.5: Скриптлеты: Canvas & WebGL Poisoning (Графическая тишина) ---
-#%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=()=>'';CanvasRenderingContext2D.prototype.getImageData=()=>new ImageData(1,1);WebGLRenderingContext.prototype.getParameter=undefined;")
-##+js(execute-script, HTMLCanvasElement.prototype.toDataURL=()=>'';CanvasRenderingContext2D.prototype.getImageData=()=>new ImageData(1,1);WebGLRenderingContext.prototype.getParameter=undefined;)
-
-! =========================================================================
-! [MEGA-BLOCK VI] AD ANNIHILATION & MOBILE SHIELD (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 6.1: Сетевой Рубильник (Блокировка Рекламных Сетей) ---
-||/^(ad-delivery|ad-serv|telemetry|stats|amazon-adsystem|criteo|adnxs|doubleclick|mopub|unityads|appsflyer|adj\.st)/^$important,third-party,websocket
-||*/ad(s|service|vert)/*$all,third-party,important,nolog
-
-! --- 6.2: Модификация Контента (YouTube Ad-Bypass & Headers) ---
-! AdGuard Only: Замена сигнатур рекламы в потоке и фильтрация медиа-заголовков
-$header=/^((ad|ads|banners|promo|sponsored)[-_]).*\.(js|jpg|png|webp)$/,important
-$replace=/(googlevideo\.com\/videoplayback\?ad_type=)/,important,domain=youtube.com
-
-! --- 6.3: Скриптлеты: Обман Anti-Adblock (AdGuard + uBlock) ---
-! Мы говорим сайту: "Да, реклама загружена, всё окей!"
-#%#//scriptlet("set-constant", "canRunAds|AdBlockDetected|google_ad_status|isAdBlockActive", "true")
-#%#//scriptlet("execute-script", "window.googletag={apiReady:true,pubads:()=>({getSlots:()=>[]})};window.ga={answer:42,loaded:true};")
-#%#//scriptlet("prevent-setTimeout", "detectAdBlock|checkAdBlock")
-! Зеркало для uBlock Origin / Brave
-##+js(set-constant, canRunAds, true)
-##+js(set-constant, AdBlockDetected, true)
-##+js(set-constant, google_ad_status, true)
-##+js(set-constant, isAdBlockActive, true)
-##+js(execute-script, window.googletag={apiReady:true,pubads:()=>({getSlots:()=>[]})};window.ga={answer:42,loaded:true};)
-
-! --- 6.4: Косметическая Зачистка (Уничтожение баннеров и плашек) ---
-##.ad-box, .ads-container, .sponsored-post, .yandex-ad, .yandex-rtb, .mobile-ad-overlay, .full-screen-ad
-##[class*="sticky-ad"], [id^="ad-"], [class^="ad-"], [id^="div-gpt-ad"], [class*="promo"]
-##.native-ad, .promoted-link
-
-! --- 6.5: YouTube Visual Fixes (Чистый интерфейс) ---
-##ytd-display-ad-renderer, ytd-promoted-video-renderer, ytd-player-legacy-desktop-watch-ads-renderer
-##.video-ads, .ytp-ad-module:style(display: none !important;)
-
-! --- 6.6: Восстановление Прокрутки (Anti-Adblock Overlay Fix) ---
-! Разблокировка скролла, если сайт пытается его заморозить при обнаружении фильтра
-##html, body:style(overflow: auto !important; height: auto !important;)
-
-
-
-! =========================================================================
-! [MEGA-BLOCK VII] ANNOYANCES & SOCIAL PURGE (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 7.1: Социальный Экстерминатор (Блокировка трекеров Facebook, TikTok, Sentry) ---
-||/^(connect\.facebook|platform\.twitter|analytics\.tiktok|snapads|pixel\.facebook|byteoversea|ibytedtos|tiktokv|sentry\.io)/^$important,third-party,pixel
-
-! AdGuard Only: Вырезание трекинга из потока Facebook
-$replace=/(facebook\.com\/tr\/)/,important,domain=facebook.com
-
-! --- 7.2: Zero-Trust: Блокировка опасных TLD и Криптоджекинга ---
-! Блокировка потенциально опасных доменных зон (top, click, zip и т.д.)
-||/^.*\.(top|click|monster|zip|mov)$/^$important,third-party,script,websocket,subdocument,domain=~system
-
-! Блокировка скрытого майнинга и сокращателей ссылок с трекингом
-||/^(coin-hive|coinhive|crypto-loot|coinhab|bit\.ly|cutt\.ly|t\.co)$/^$important
-
-! --- 7.3: Скриптлеты: GDPR Bypass и Google One-Tap (AdGuard + uBlock) ---
-#%#//scriptlet("execute-script", "window.cookie_consent=true;window.showNewsletter=false;window.google={accounts:{id:{initialize:undefined}}};")
-##+js(execute-script, window.cookie_consent=true;window.showNewsletter=false;window.google={accounts:{id:{initialize:undefined}}};)
-
-! --- 7.4: Косметическая зачистка: GDPR, Чаты и Рассылки ---
-##.cookie-banner, .cookie-notice, .cookie-consent
-##.newsletter-popup, .subscribe-modal
-##.intercom-launcher, .zendesk-chat-widget
-##div[id="g_id_onload"]:style(display: none !important;)
-
-! --- 7.5: Скриптлеты: Защита от опасных расширений файлов ---
-! Предотвращение автоматического скачивания/выполнения скриптов
-#%#//scriptlet("set-constant", "window.location.href", "undefined", "/\.(exe|apk|scr|vbs)$/")
-##+js(set-constant, window.location.href, undefined, /\.(exe|apk|scr|vbs)$/)
-
-
-! =========================================================================
-! [MEGA-BLOCK VIII] SYSTEM INTEGRITY & CELLULAR SHIELD (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 8.1: Cellular & SIM Shield (Защита сотового стека и IMSI) ---
-||/^(imsi-catcher|sim-jacker|ss7-attack|hlr-lookup|cellular-intercept|tower-analytics|connectivitycheck)\./^$important,domain=~android.com|~google.com|~samsung.com
-! Исключения для работы MMS и системных сервисов оператора
-@@||/^(mms|vvm|pub\.3gppnetwork)\./^$important
-
-! --- 8.2: DNS & Tunnel Protection (Защита от утечек и теневых шлюзов) ---
-||/^(dns-over-|doh-proxy|dot-proxy|onion-gateway|exit-node|vpn-tunnel|tunnel-service|ddns|dns-query)\./^$important,third-party
-||/^.*\.(bit|onion|lib|bazar|coin|emc)$/^$important
-! Контроль DNS-запросов (AdGuard Network Layer)
-||dns-query^$network,important,domain=~system|~google.com|~github.com|~cloudflare.com
-
-! --- 8.3: Port Lockdown (Блокировка опасных портов и бэкдоров) ---
-! Закрываем SSH, Telnet, SMB, RDP, БД и другие векторы атак
-||^$important,port=22|23|135|137-139|445|3389|5800|5900|1433|1900|3306|5353|5432|6379|8883
-! Исключение для TeamViewer и стандартных веб-портов
-||^$important,port=5938,domain=~teamviewer.com
-@@||^$port=53|80|443
-
-! --- 8.4: Скриптлеты: Глубокая системная анонимизация (AdGuard + uBlock) ---
-#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.toDataURL|HTMLCanvasElement.prototype.getContext|WebGLRenderingContext.prototype.getParameter|WebGL2RenderingContext.prototype.getParameter|navigator.sendBeacon|window._paq|window.dataLayer|window.BlockAdBlock|window.FuckAdBlock", "undefined")
-#%#//scriptlet("set-constant", "window.adblock", "false")
-! Зеркало для uBlock Origin / Brave
-##+js(set-constant, HTMLCanvasElement.prototype.toDataURL, undefined)
-##+js(set-constant, HTMLCanvasElement.prototype.getContext, undefined)
-##+js(set-constant, navigator.sendBeacon, undefined)
-##+js(set-constant, window.adblock, false)
-
-! --- 8.5: Header Stealth (Минимизация отпечатков в запросах) ---
-! Удаляем лишние заголовки User-Agent и язык для сторонних доменов
-$header=/^(User-Agent|Accept-Language)$/,third-party,important,domain=~system|~google.com|~github.com|~samsung.com
-
-
-! =========================================================================
-! [MEGA-BLOCK IX] FINANCIAL VAULT & TRANSACTION GUARD (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 9.1: Anti-Drainer & Crypto-Security (Защита кошельков и NFT) ---
-! Блокировка вредоносных скриптов, крадущих активы (WalletConnect/Drainers)
-||/^(drainer|walletconnect|coin-hive|minr|crypto-locker|etherscan|infura|alchemy)\./^$important,third-party
-
-! --- 9.2: Anti-Phishing: Global & Regional (Защита от поддельных доставок и госсервисов) ---
-! Блокировка имитации почтовых служб и верификаций
-||/^(dhl-delivery|chronopost|laposte|ups-track|secure-verification|revolut-verify|n26-login|gouv-fr|ameli-update|caf-infoconnect|apk-download)\./^$important,third-party
-
-! --- 9.3: Платежная инфраструктура (Защита BIN-чекеров и NFC-тегов) ---
-||/^(pay\.google|wallet\.google|samsungpay|stripe|binlist|card-verify|check-bin|nfc-tag|rfid)\./^$important,third-party
-
-! --- 9.4: Белый список: Финансовый Стерильный Канал (Исключения) ---
-! Гарантия работы реальных банковских и государственных систем
-@@||/^(revolut|n26|ameli|caf|impots\.gouv)\.(com|fr)$/^$important
-
-! --- 9.5: Скриптлеты: Изоляция NFC и Бесконтактных платежей (AdGuard + uBlock) ---
-! Отключаем доступ браузера к NFC-ридеру (защита от несанкционированного считывания)
-#%#//scriptlet("execute-script", "window.NDEFReader=undefined;window.navigator.nfc=undefined;")
-##+js(set-constant, window.NDEFReader, undefined)
-##+js(set-constant, navigator.nfc, undefined)
-
-
-! =========================================================================
-! [MEGA-BLOCK X] CYBER-WARFARE & PEGASUS DEFENSE (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 10.1: Anti-Spyware & Zero-Day Shield (Защита от Pegasus и NSO Group) ---
-! Блокировка известных доменов шпионского ПО и векторов Zero-Click атак
-||/^(pegasus-spyware|nso-group|q-cyber|zero-click|buffer-overflow|heap-spray)\./^$important,third-party
-
-! --- 10.2: Malware Infrastructure (Блокировка серверов управления и CDN) ---
-! Отрезаем доступ к хранилищам малвари, троянов и API вымогателей
-||/^(malware-storage|trojan-cdn|ransomware-api)\./^$important,third-party
-
-! --- 10.3: Anti-Reconnaissance (Защита от сканеров и OSINT-разведки) ---
-! Блокировка сервисов, которые "видят" твои открытые порты (Shodan, Censys)
-||/^(shodan|censys|zoomeye|leakix|port-scan|nmap-online)\./^$important,third-party
-
-! --- 10.4: Offensive Tools Block (Защита от скрипт-кидди и фреймворков атак) ---
-! Блокировка доступа к базам эксплойтов и командным центрам (Cobalt Strike и др.)
-||/^(metasploit|offensive-security|cobalt-strike|kali-linux|exploit-db|brute-force|password-crack|packet-inject)\./^$important,third-party
-
-! --- 10.5: Localhost Isolation (Защита от атак на локальную сеть и порты) ---
-! Запрет сторонним сайтам обращаться к твоему роутеру или локальным сервисам
-||/^(127\.0\.0\.1|localhost|::1|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.)/^$important,third-party,domain=~system
-
-
-! =========================================================================
-! [MEGA-BLOCK XI] GLOBAL BEHAVIORAL STEALTH (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 11.1: AI & Neuro-Harvesting Shield (Защита от сбора данных для ИИ) ---
-! Блокировка отправки данных в OpenAI, Anthropic и ИИ-метрики Google
-||/^(generativelanguage\.googleapis|openai|anthropic|ml-stats|prediction-engine)\./^$important,third-party
-
-! --- 11.2: Fingerprint & Hardware Metrics (Защита от цифровых слепков) ---
-! Блокировка продвинутых систем идентификации (FingerprintJS, ThreatMetrix)
-||/^(fingerprint|fpjs|h-sdk|measurement|device-metrics|threatmetrix|hardware-stats|pixel-metrics|sensor-data|edge-metrics)\./^$important,third-party
-
-! --- 11.3: RTB & Content Recommendations (Защита от мусорных магистралей) ---
-! Блокировка Taboola, Outbrain и систем рекламных рекомендаций
-||/^(taboola|outbrain|adnxs|rubiconproject|doubleclick|vortex\.data\.microsoft|telemetry\.nvidia)\./^$important,third-party
-
-! --- 11.4: Mobile Infrastructure Cleanup (Очистка логов приложений) ---
-! Блокировка телеметрии Firebase, Crashlytics и рекламных вставок (Preroll/Midroll)
-||/^(firebaseio|crashlytics|video-ads|ad-delivery|midroll|preroll|popunder|interstitial)\./^$important,third-party
-
-! --- 11.5: Deep URL Sterilization (Очистка партнерских хвостов) ---
-! Удаление ID кликов и аффилиатных меток при переходах
-$removeparam=/^(adj_t|adjust_t|click_id|aff_sub|track_id)$/,important,domain=~system
-
-
-! =========================================================================
-! [MEGA-BLOCK XII] THE STABILITY GATE: GLOBAL TRUSTED (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 12.1: Infrastructure Trusted (Исключения для GitHub и Dev-среды) ---
-@@||/^(github|githubassets|api\.github|raw\.githubusercontent)\.(com|io|net)$/^$important,document
-
-! --- 12.2: Financial Trusted (Исключения для банков и платежных систем) ---
-! Стабильность для BNP Paribas, Revolut, N26, Stripe, Klarna и Mastercard
-@@||/^(revolut|n26|stripe|checkout\.stripe|gomining|mercanet\.bnpparibas|vads\.bnpparibas|secure\.bnpparibas|paylib|adyen|worldpay|klarna|arcot|cardinalcommerce|verifiedbyvisa|mastercard)\.(com|fr|net|st)$/^$important,document
-
-! --- 12.3: OS & Ecosystem Stability (Apple, Microsoft, Google, Samsung) ---
-! Гарантия работы обновлений системы и проверки связи (Connectivity Check)
-@@||/^(samsung|apple|microsoft|windowsupdate|icloud|googleapis|fonts\.gstatic|connectivitycheck\.gstatic|captive\.apple|msftconnecttest)\.(com|net|org)$/^$important,document
-
-! --- 12.4: CDN & DNS Stability (Надежные источники библиотек) ---
-@@||/^(ajax\.aspnetcdn|cdn\.jsdelivr|cdnjs|ajax|cloudflare-dns|dns\.google)\.(com|net)$/^$important,document
-
-! --- 12.5: Regional Stability (Yandex & Dzen) ---
-! Обеспечение работы SSO и паспорта для корректной авторизации
-@@||/^(yandex|dzen|yastatic|passport\.yandex|sso\.yandex|sso\.dzen|google)\.(com|ru|net|fr)$/^$important,document
-
-! --- 12.6: Скриптлеты: Ложная готовность рекламных систем (AdGuard + uBlock) ---
-! Мы имитируем готовность рекламных API, чтобы сайты не ломались
-#%#//scriptlet("set-constant", "AdGuard", "undefined")
-#%#//scriptlet("set-constant", "canRunAds", "true")
-#%#//scriptlet("set-constant", "google_ad_status", "1")
-##+js(set-constant, AdGuard, undefined)
-##+js(set-constant, canRunAds, true)
-##+js(set-constant, google_ad_status, 1)
-
-! --- 12.7: URL Sterilization (Очистка маркетинговых меток) ---
-$removeparam=/^(utm_|fbclid|gclid|yclid|_openstat|uuid|promo|promotion|utm_promo)$/,important,domain=~system
-
-
-! =========================================================================
-! [MEGA-BLOCK XIII] URBAN STEALTH: RADIO & GEO SHIELD (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 13.1: Radio & Proximity Shield (Защита от маяков и Bluetooth-трекинга) ---
-! Блокировка систем отслеживания через Bluetooth, Hotspot и Beacon-метки
-||/^(tethering\.samsung|hotspot-analytics|knox-selfupdate|bt-tracking|altbeacon|ibeacon|proximity-beacon|bluetooth-ads|bt-pairing-interceptor|auth-bypass)\./^$important,third-party,port=623|2000
-
-! --- 13.2: Geo-Positioning & Metadata (Защита от деанонимизации по локации) ---
-! Блокировка API определения IP-адреса, GPS-статистики и метаданных EXIF
-||/^(ipstack|ipapi|maxmind|geoip|location-provider|gps-stats|positioning-system|wifi-positioning|cell-location|exif-data|image-metadata)\./^$important,third-party
-||places-api\.google\.com^$important,third-party
-
-! --- 13.3: Navigation & Connectivity Trusted (Исключения для Карт и Системы) ---
-! Гарантия работы Waze, Google Maps, Apple Maps и системного Bluetooth-сопряжения
-@@||/^(maps\.google|googleusercontent|maps\.yandex|waze|ls\.apple|connectivity\.samsung|connectivity\.google)\.(com|ru|fr)$/^$important
-@@||/^(pub\.3gppnetwork|bt-audio-handshake|system-bt-manager)\./^$important
-
-! --- 13.4: Скриптлеты: Графический шум (Canvas & WebGL Spoofing) ---
-! Мы добавляем случайный шум в отрисовку, чтобы твой отпечаток всегда был разным
-#%#//scriptlet("spoof-css", "canvas", "random")
-#%#//scriptlet("spoof-css", "webgl", "random")
-##+js(spoof-css, canvas, random)
-##+js(spoof-css, webgl, random)
-
-! --- 13.5: Скриптлеты: Защита нативных методов (AdGuard Trusted) ---
-! Использовать осторожно: предотвращает перехват запросов через fetch/XHR
-#%#//scriptlet("trusted-suppress-native-method", "fetch")
-#%#//scriptlet("trusted-suppress-native-method", "XMLHttpRequest")
-
-
-! =========================================================================
-! [MEGA-BLOCK XIV] HARDWARE ISOLATION: MIC, CAM & AUDIO (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 14.1: Ultrasonic & Bio-Metric Shield (Защита от ультразвуковой слежки) ---
-! Блокировка SilverPush и ультразвуковых маяков, которые "слушают" рекламу через микрофон
-||/^(audio-fingerprint|audiocontext-probe|acoustic-id|ultrasonic-beacon|silverpush)\./^$important,third-party
-
-! --- 14.2: Camera & Video Privacy (Защита от скрытого доступа к камере) ---
-! Блокировка зондов веб-камер и телеметрии видеопотоков
-||/^(camera-access|webcam-probe|video-stream-telemetry|sensor-analytics)\./^$important,third-party
-
-! --- 14.3: Peripheral Identity Protection (Защита Solix Nexus ANC и аксессуаров) ---
-! Запрет на сбор серийных номеров, логов батареи и аналитики носимых устройств
-||/^(gyroscope-log|accelerometer-report|accessory-id|serial-number-leak|wearable-identity)\./^$important,third-party
-||/^(.*(earbuds|headphone|audio|buds|wearable|accessory|anc|ambient|battery|power).*(analytics|log|metrics|report|stats|tracking))\./^$important,third-party
-
-! --- 14.4: Communication & Firmware Trusted (Исключения для работы и звука) ---
-! Гарантия работы видеосвязи (Zoom, Teams) и обновлений прошивок аксессуаров
-@@||/^(zoom|webex|teams\.microsoft|vitalsource|firmware-update)\.(com|us|net|org)$/^$important
-@@||/^(.*-audio-handshake|.*-firmware-check|bluetooth-audio-stack|avrcp-media-control)\./^$important
-
-! =========================================================================
-! [MEGA-BLOCK XV] GMS STEALTH & PA-ISOLATION (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 15.1: PA-Extermination (Уничтожение Google Personal Assistant & Robin) ---
-! Блокировка фронтендов ассистента, сбора метаданных и соседских сервисов (Nearby)
-||/.*(-pa|frontend-pa|robinfrontend-pa|spot-pa|nearby-pa|metadatalearning-pa|firebaselogging-pa)\.google(apis)?\.(com|io|net)$/^$important,reject
-
-! --- 15.2: External Analytics & Intake (Блокировка ИИ-сбора и Datadog) ---
-||/^(ab\.chatgpt|events\.statsigapi|ios\.chat\.openai|browser-intake-datadoghq|collector\.github|analytics\.github)\./^$important,reject
-||/^(cdn-cgi\/(trace|beacon|challenge-platform)|collect\?|track\?|events\?)/^$important,third-party,xmlhttprequest
-
-! --- 15.3: Google Infrastructure Stability (Критические исключения) ---
-! Гарантия работы Google Play, обновлений и SafetyNet (важно для банков)
-@@||android\.googleapis\.com/v1/safetynet^$important
-@@||/^(play|update)\.googleapis\.com$/^$important
-@@||www\.google\..*/complete/search^$important
-
-! --- 15.4: Bank Iframe Monolith (Безопасность BNP Paribas & Pay) ---
-! Стерильный доступ для платежных систем без передачи лишних заголовков
-@@||/^(mercanet\.bnpparibas|vads\.bnpparibas|secure\.bnpparibas|pay\.google)\.(net|com)$/^$important
-$removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com
-$removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net,important
-
-! --- 15.5: Cloud Protection & Anti-Bot (Исключения для Cloudflare/Akamai) ---
-@@||challenges.cloudflare.com^$important
-@@||*.akamaihd.net^$important
-
-! --- 15.6: Subdocument Purge (Запрет скрытых фреймов трекинга) ---
-||*analytics*$subdocument,third-party
-||*tracking*$subdocument,third-party
-
-
-! =========================================================================
-! [MEGA-BLOCK XVI] DPI STEALTH & PROTOCOL CONTROL (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 16.1: Protocol Downgrade (Блокировка QUIC/H3 для обхода DPI) ---
-! Принуждаем систему использовать TCP/TLS, который легче фильтровать и скрывать
-||$networkaddress=quic,reject
-||$networkaddress=http3,reject,tag=ad
-||play-fe\.googleapis\.com^$networkaddress=http3,reject
-! Исключение для стабильности YouTube (Google жестко оптимизирует под H3)
-@@||/(googlevideo\.com|\.ytimg\.com)$/^$networkaddress=http3
-
-! --- 16.2: DNS & ECH Hardening (Защита от перехвата и скрытых каналов) ---
-! Блокировка стандартных DNS-резолверов, чтобы не было обхода системного DNS
-||/^(cloudflare-dns|dns\.google|1dot1dot1dot1|8\.8\.8\.8|8\.8\.4\.4)\.(com|net)$/^$important,reject
-! Блокировка зашифрованных SNI/ECH (могут использоваться для скрытого трекинга)
-||/(_esni|_ech)\./^$important,reject
-||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system,~browser
-
-! --- 16.3: IPv6 Static Block (Изоляция конкретных узлов слежки) ---
-||[2a00:1450:4009:c04::5f]^$important,reject
-||[2a06:98c1:3100::6812:202f]^$important,reject
-||/.*-(intake|logs)\.com$/^$important,reject
-
-! --- 16.4: Скриптлеты: Anti-Debugger & Visibility (AdGuard Trusted) ---
-! Предотвращаем бесконечные циклы проверки AdBlock через таймеры
-#%#//scriptlet("trusted-suppress-native-method", "setTimeout")
-#%#//scriptlet("trusted-suppress-native-method", "setInterval")
-! Принудительное отображение элементов (борьба с "невидимыми" оверлеями)
-#%#//scriptlet("trusted-set-attr", "style", "display:block")
-
-! --- 16.5: Зеркало для uBlock Origin ---
-##+js(trusted-suppress-native-method, setTimeout)
-##+js(trusted-suppress-native-method, setInterval)
-
-! Универсальное подавление для uBlock/Brave (замена $network для JS-уровня)
-##+js(trusted-suppress-native-method, setTimeout)
-##+js(set-constant, navigator.webdriver, false)
-! Защита WebRTC для uBlock (совместимость)
-##+js(nowebrtc)
-
-
-! Разрешаем QUIC только для критических медиа-потоков (YouTube/Meet)
-@@||googlevideo.com^$networkaddress=quic
-@@||google.com/meet^$networkaddress=quic
-! Для всех остальных — жесткий TCP (для контроля DPI)
-||$networkaddress=quic,reject,domain=~googlevideo.com|~google.com
-
-
-! =========================================================================
-! [MEGA-BLOCK XVII] FAILSAFE & QUANTUM OMEGA (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 17.1: Backbone Connectivity (Проверка «живого» интернета) ---
-! Гарантирует, что Android, Windows и iOS не будут жаловаться на отсутствие Wi-Fi
-@@||/^(connectivitycheck\.gstatic|msftconnecttest|captive\.apple|connectivitycheck\.android)\.com$/^$important
-
-! --- 17.2: CDN Backbone Stability (Магистрали доставки контента) ---
-! Белый список для критических библиотек и шрифтов, без которых сайты "разваливаются"
-@@||/^(cdnjs\.cloudflare|fastly|akamaihd|gstatic|apis\.google|fonts\.googleapis)\.(com|net)$/^$important
-
-! --- 17.3: Localhost & Link-Local (Исключения для локального стека) ---
-! Разрешаем внутренние адреса (IPv6 Loopback и Link-Local) для работы системы
-@@||(fe80::|::1)^$important
-
-! --- 17.4: Essential Comms (Профессиональная связь) ---
-! Финальное подтверждение стабильности для Zoom, Webex и Teams
-@@||/^(zoom|webex|teams\.microsoft)\.(us|com)$/^$important
-
-! Расширенный список для мгновенного "Check-Online"
-@@||msftconnecttest.com^$important
-@@||appleid.apple.com^$important
-@@||captive.apple.com^$important
-
-
-! =========================================================================
-! [MEGA-BLOCK XVIII] LAN STEALTH & PORT LOCKDOWN (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 18.1: Port Lockdown (Блокировка прокси и сервисных портов) ---
-! Закрываем 1080 (SOCKS), 8080/8888 (HTTP-Proxy) и высокие порты (угрозы/бэкдоры)
-||^$important,port=1080|8080|8888|8443|5222|5223|5299..65535,reject,domain=~system
-! Исключение для стандартного веб-трафика
-@@||^$port=80|443
-
-! --- 18.2: Localhost & Loopback Isolation (Защита от "Петли смерти") ---
-! Запрет сайтам обращаться к твоему внутреннему адресу (защита от RCE атак)
-||/^(127\.0\.0\.1|::1|0\.0\.0\.0|255\.255\.255\.255)$/^$important,dnstype=A,domain=~system
-
-! --- 18.3: LAN Stealth (Изоляция домашней сети) ---
-! Защита роутера и умных устройств (192.168.x.x, 10.x.x.x, CGNAT) от браузерных скриптов
-||/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|100\.6[4-9]\.)/^$important,reject,domain=~system,~browser
-
-! --- 18.4: IPv6 Infrastructure Block (Блокировка узлов слежки по IPv6) ---
-||/^(2001:4860:4860::|2607:f8b0:4000::|fe80::|ff02::)$/^$important,reject
-
-! --- 18.5: Log & Analytics Extermination (Жесткая блокировка логов) ---
-! Отрезаем передачу логов Google, Facebook, Instagram и Netflix
-||/^(play\.google\.com\/log|\.facebook\.com|\.graph\.instagram\.com|\.logs\.netflix\.com|\.gvt[1-2]\.com)$/^$important,reject,domain=~browser
-
-! --- 18.6: Push Stability (Стабильность уведомлений) ---
-! Разрешаем порт 5228 для Google Push (mtalk), чтобы работали сообщения
-@@||mtalk\.google\.com^$important,port=5228
-
-! Разрешаем локальный трафик ТОЛЬКО для системных запросов авторизации
-@@||192.168.0.0/16^$important,app=com.android.settings|com.apple.Preferences|com.android.htmlviewer
-! Блокируем порты прокси, но исключаем стандартные альтернативные HTTP-порты для Captive Portals
-||^$important,port=1080|8888|5299..65535,reject,domain=~system
-
-! =========================================================================
-! [MEGA-BLOCK XIX] KYBER CORE & FINTECH INTEGRITY (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 19.1: Gateway Vault (Защита панели управления роутером) ---
-! Блокируем доступ сайтов к админке роутера (192.168.1.1 / 192.168.0.1)
-||/^(192\.168\.[0-1]\.1)$/^$important,port=1..65535,reject,domain=~system,~browser
-
-! --- 19.2: Discovery Protocol Shield (Блокировка утечек в локальной сети) ---
-! Закрываем порты NetBIOS, SMB, SSDP и mDNS для предотвращения сканирования
-||^$important,port=137..139|445|1900|5353|5355,reject,domain=~system
-||/^(239\.255\.255\.250|224\.0\.0\.251)$/^$important,reject,domain=~system
-
-! --- 19.3: LAN Exceptions (Исключения для печати и трансляции) ---
-! Разрешаем работу Chromecast и системной печати в локальной сети
-@@||192\.168\.0\.0/16^$important,app=com.google.android.apps.chromecast|com.android.printspooler
-
-! --- 19.4: Fintech-Vault: Trusted Payment Systems (Белый список) ---
-! Гарантируем работу Samsung Pay, Google Pay, Visa, MC и НСПК (Мир)
-@@||/^(samsungpay\.com|google\.com\/pay|nspk\.ru|visa\.com|mastercard\.com)$/^$important
-! Блокировка встроенной рекламы и телеметрии в платежных приложениях
-||/^(ads\.samsung\.com|telemetry\.mirpay\.ru)$/^$important,reject
-
-! --- 19.5: App-Level Integrity (Изоляция кошельков - AdGuard Only) ---
-! Отключаем инъекции скриптов и фильтрацию контента внутри кошельков для безопасности
-@@||*^$important,app=com.samsung.android.spay|com.google.android.apps.walletnfcrel,jsinject=off,content=off
-
-! --- 19.6: Kyber Core: Post-Quantum Cryptography (AdGuard Layer) ---
-! Принудительное использование квантово-устойчивых алгоритмов (Kyber)
-$network=tls,pqc=on,pqc_algorithm=kyber,important
-
-! --- 19.7: Stealth Mode 2.0 (Максимальная скрытость) ---
-$stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
-
-
-! =========================================================================
-! [MEGA-BLOCK XX] THE FINAL CITADEL: THE VOID (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 20.1: Connectivity Zeroing (Зануление "Стукачей" Google) ---
-! Мы не блокируем, а возвращаем пустой ответ, чтобы система не спамила запросами
-||/^(connectivitycheck\.gstatic|connectivitycheck\.android|mtalk\.google)\.com$/^$important,dnstype=A,empty
-
-! --- 20.2: DNS Rewrite & Protocol Void (Обман систем обхода) ---
-! Возвращаем NXDOMAIN (домен не существует) для прокси-сервисов
-$dnsrewrite=NXDOMAIN,domain=/(proxy\.google|vpn\.samsung)\.com/
-! Возвращаем SERVFAIL для скрытых заголовков ECH, чтобы запретить шифрование SNI
-$dnsrewrite=SERVFAIL,domain=/(_esni|_echconfig)\./
-! Блокировка утечек через локальные суффиксы
-||/(\.local|\.lan|\.home)$/^$important,reject
-
-! --- 20.3: Network Layer Hardening (Аппаратная фильтрация - AdGuard Only) ---
-! Запрещаем пинговать устройство (ICMP Drop) и блокируем обнаружение в сети
-$network=icmp,action=drop,important
-$network=discovery,action=reject,important
-! Блокировка входящих соединений для всех приложений, кроме системных
-$network=inbound,action=block,app=~system,important
-
-! --- 20.4: L2 Protocol Protection (Защита на уровне ARP и DHCP) ---
-! Фильтрация пакетов для предотвращения атак типа MITM и подмены IP
-$network=arp,action=filter,important
-$network=dhcp,action=filter,important
-
-! --- 20.5: Hardware Integrity (NFC & Telemetry) ---
-! Разрешаем NFC только в режиме обхода (для бесконтактной оплаты)
-$network=nfc,action=bypass,important
-! Блокировка встроенной телеметрии производителя устройства
-$app_detection=manufacturer_telemetry,action=block,important
-
-! --- 20.6: Fintech High-Priority TTL (Квантовая задержка для оплат) ---
-! Принудительно кэшируем DNS для платежных систем на 1 час для скорости и стабильности
-@@||/^(samsungpay|visa|mastercard)\.com$/^$dnstype=A,ttl=3600,important
-
-
-! =========================================================================
-! [MEGA-BLOCK XXI] THE OMNI-TIF: THREAT & MALWARE SINKHOLE (v2026.UNIVERSAL)
-! =========================================================================
-
-! --- 21.1: Global Infrastructure Sinkhole (Зануление рекламных магистралей) ---
-! Вместо блокировки возвращаем "пусто", чтобы не триггерить повторные запросы
-||/^(ads|metrics|telemetry|tracking|analytics|stats|events|adservice|cloudflareinsights|pqc-stats|dpi-analysis|connectivity-stats|app-measurement|crashlytics|luckyorange|hotjar|click|pixel|collect|track|collector|ingest|report|logs|error-track|crash-report|adserver|ads-preview|pixel-track)\./^$dnstype=A,empty,important
-
-! --- 21.2: Cyber-Threat Extermination (Малварь, Фишинг, Ботнеты) ---
-! Жесткий REJECT для доменов, имитирующих антивирусы или содержащих угрозы
-||/^(antivirus|malware|phishing|scam|spyware|trojan|virus|worm|exploit|ransomware|botnet|c2-server|dga-domain)\./^$important,reject
-
-! --- 21.3: Crypto-Jacking Defense (Защита от скрытого майнинга) ---
-! Блокировка всех известных пулов и скриптов (CoinHive и аналоги)
-||/^(coin-hive|coinhive|cryptoloot|miner|authedmine|webmine|monerominer|cryptonight|mining-pool)\./^$important,reject
-
-! --- 21.4: Shortlink & Redirect Purge (Очистка сокращателей ссылок) ---
-! Блокировка редиректов, кроме социальных сетей (где они необходимы для работы)
-||/^(bit\.ly|tinyurl\.com|t\.co|goo\.gl|clck\.ru|cutt\.ly|is\.gd|shorturl\.at|bit\.do)/.*/^$important,reject,domain=~social_media
-
-! --- 21.5: Suffix-Based API Block (Удаление хвостов сбора данных) ---
-! Блокировка любых поддоменов, заканчивающихся на интейки и трекеры
-||/^(-intake|-logs|-analytics|-telemetry|-collector|-stats|-report|-track|-tracker|-tracker-api)\./^$important,reject
-
-! --- 21.6: Protocol & Encryption Lockdown (Финальный замок) ---
-! Запрет скрытых DNS-запросов и зашифрованных SNI (защита от обхода фильтров)
-||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system,~browser
-||/(_esni|_echconfig)\./^$important,reject
-
-! --- 21.7: WebSocket Stealth (Защита от утечек через сокеты) ---
-! Блокировка сторонних WebSocket соединений (часто используются для трекинга)
-||*$websocket,third-party,important,reject
-
-
-! =========================================================================
-! [MEGA-BLOCK XXII] THE OMNI-TOTALITARIAN SINKHOLE (v2026.FINAL)
-! =========================================================================
-
-! --- 22.1: Global Analytics Sinkhole (Зануление гигантов: Google, Yandex, Mail.ru) ---
-! Возвращаем пустой ответ для метрик, чтобы страницы грузились мгновенно
-||/^(ads|metrics|telemetry|tracking|analytics|stats|events|adservice|cloudflareinsights|pqc-stats|dpi-analysis|connectivity-stats|app-measurement|crashlytics|luckyorange|hotjar|click|pixel|collect|track|doubleclick|googleadservices|google-analytics|ad\.mail\.ru|suggest\.sso\.dzen\.ru|clck\.yandex\.ru|mc\.yandex\.ru|yabs\.yandex\.ru|an\.yandex\.ru|ads\.adfox\.ru)\./^$dnstype=A,empty,important
-
-! --- 22.2: Malware & TIF Sinkhole (Инфраструктура угроз и URLHaus) ---
-! Жесткий обрыв соединений с доменами, содержащими признаки вредоносного ПО
-||/^(antivirus|malware|phishing|scam|spyware|trojan|virus|worm|exploit|ransomware|botnet|c2-server|dga-domain|abuse|malicious|threat|blacklist|badsite)\./^$important,reject
-
-! --- 22.3: Crypto-Jacking & Mining Void (Защита ресурсов процессора) ---
-||/^(coin-hive|coinhive|cryptoloot|miner|authedmine|webmine|monerominer|cryptonight|mining-pool)\./^$important,reject
-
-! --- 22.4: Protocol Hardening & Anti-ECH (Запрет скрытых каналов) ---
-||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system,~browser
-||/(_esni|_echconfig)\./^$important,reject
-
-! --- 22.5: WebSocket & Consent Purge (Уничтожение раздражителей и трекеров) ---
-! Блокировка систем согласия (Cookie Law) и скрытых WebSocket-шпионов
-||/^(consent|cookie-law|trustarc|onetrust|quantcast)\./^$important,reject
-||*$websocket,third-party,important,reject
-
-! --- 22.6: Regional Ad-Exterminator (Глубокая очистка RU-сегмента) ---
-! Вырезание рекламных модулей и клик-трекеров Yandex/Dzen/Mail.ru
-||/^(yandex.*|dzen.*|mail.*)\/.*(adv|context|banner|clck|metrika)/^$important,reject
-
-
-​! =========================================================================
-! [MEGA-BLOCK XXIII] OMNI-QUANTUM: THE ETERNAL ENCRYPTION (v2026.FINAL)
-! =========================================================================
-
-! --- 23.1: Post-Quantum Cryptography (PQC) Key Exchange ---
-! Принудительный переход на квантово-устойчивые решетки (ML-KEM/Kyber)
-! Мы используем гибридный режим для максимальной совместимости и силы
-$network=tls,pqc=on,pqc_algorithm=ml-kem-1024|ml-kem-768|kyber|hqc-192|frodo-976,hybrid_pqc=on,pqc_strength=maximum,important
-
-! --- 23.2: PQC Digital Signatures (Защита от подмены сертификатов) ---
-! Использование алгоритмов Dilithium и Falcon для проверки подлинности узлов
-$network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5|falcon-1024|sphincs-sha256-128f,important
-
-! --- 23.3: Legacy Protocol Purge (Уничтожение слабых звеньев) ---
-! Мгновенный разрыв соединений по устаревшим и дырявым протоколам TLS/SSL
-||^$networkaddress=(tls1.0|tls1.1|ssl3.0),reject,important
-! Принудительный стандарт TLS 1.3 (минимум) для всех исходящих соединений
-$network=tls,min_version=1.3,important
-
-! --- 23.4: Anti-ECH & DNS Stealth (Обман систем DPI) ---
-! Возвращаем ошибку на попытки использовать скрытые конфиги шифрования (ECH)
-! Это заставляет браузер работать через контролируемый нами чистый TLS 1.3
-$dnsrewrite=SERVFAIL,domain=/(_esni|_echconfig)\./
-
-! --- 23.5: Absolute Stealth Mode (Финальная анонимизация) ---
-! Скрытие отпечатков, очистка URL-параметров и маскировка User-Agent
-$stealth=on,hide_user_agent=on,strip_tracking_params=on,important
-
-
-! =========================================================================
-! [MEGA-BLOCK XXIV] PHANTOM-IP & GEOLOCATION STEALTH (v2026.FINAL)
-! =========================================================================
-
-! --- 24.1: WebRTC & IP Leak Protection (Защита от утечек реального IP) ---
-! Блокировка протоколов STUN/TURN/ICE и API, выдающих твое местоположение
-||/^(webrtc|rtcp|stun|turn|ice|ip-api|ipstack|ipinfo|maxmind|geoip|db-ip|ident\.me|ifconfig\.me)\./^$dnstype=A,empty,important,reject
-$network=webrtc,action=block,important
-
-! --- 24.2: Header Sterilization (Очистка прокси-заголовков) ---
-! Удаляем следы пересылки трафика, чтобы сайт не знал, что ты используешь защиту
-$removeheader=/^x-(forwarded-for|real-ip|client-ip|via)/,domain=~system
-
-! --- 24.3: TTL & Hop Limit Shield (Маскировка типа устройства) ---
-! Устанавливаем TTL=64 (стандарт Linux/Android) и скрываем лимит прыжков трафика
-! Это не дает провайдеру (DPI) понять, что трафик идет с мобильного устройства
+! [MEGA-BLOCK I] GLOBAL INFRASTRUCTURE (THE "GREEN CHANNEL")
+! --- 1. Global Trusted Zones (TLD-Level Access) ---
+@@||gov^$important,document,generichide
+@@||mil^$important,document,generichide
+@@||edu^$important,document,generichide
+@@||fr^$document,generichide
+@@||com^$document,generichide
+@@||net^$document,generichide
+@@||org^$document,generichide
+@@ftp://*^$important,document,generichide
+@@ftps://*^$important,document,generichide
+
+! --- 2. Identity & Global Auth (Unified Group) ---
+@@||accounts.google.com^$important,domain=google.com|youtube.com
+@@||appleid.apple.com^$important,domain=apple.com|icloud.com
+@@||microsoftonline.com^$important,domain=microsoft.com|office.com
+@@||okta.com^$important
+
+! --- 3. Critical Service Nodes (AI, Search, Work) ---
+@@||openai.com^$important,document,generichide
+@@||chatgpt.com^$important,document,generichide
+@@||yandex.ru^$important,document,generichide
+@@||dzen.ru^$important,document,generichide
+@@||google.com^$important,document,generichide
+@@||google.fr^$important,document,generichide
+@@||m2mlease.fr^$important,document,generichide
+@@||paypal.com^$important,document,generichide
+@@||stripe.com^$important,document,generichide
+@@||revolut.com^$important,document,generichide
+@@||youtube.com^$important
+@@||google.com^$important
+
+! [LAYER 1-5: NETWORK & PROTOCOL HARDENING - APEX LEVEL]
+! --- 1. Global Reject & DNS Sovereignty ---
+||doubleclick.net^$dnstype=A,empty,third-party,reject
+||googlesyndication.com^$dnstype=A,empty,third-party,reject
+! Глубокое подавление аналитики на уровне резолвинга
+||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr|~ftp:*|~ftps:*
+
+! --- 2. Protocol Integrity (PQC & FTP Stabilizer) ---
+! Стабилизация FTP и принудительный переход на постквантовое шифрование для веба
+$network=tls,pqc=off,domain=~ftp:*|~ftps:*
+$network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum,important,domain=~ftp:*|~ftps:*
+$network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa,important,domain=~ftp:*|~ftps:*
+
+! --- 3. The Iron Curtain (Anti-Downgrade & Tunneling) ---
+! Блокировка QUIC/HTTP3 для предотвращения обхода фильтрации (кроме видеосервисов)
+||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~gov|~ftp:*|~ftps:*
+! Блокировка DoH и Dot (защита от подмены системного DNS браузером)
+||/^(dns|doh|dot|cloudflare-dns|dns-query|dns-server|doh-server)\./^$important,reject,domain=~system|~google.com|~yandex.ru
+! Блокировка DNS-запросов типа 65 (HTTPS) и Type 64, используемых для скрытой передачи метаданных
+||^$dnstype=(HTTPS|65|64|QUIC),reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov
+
+! --- 4. WebRTC & Privacy Leak Protection ---
+! Запрет WebRTC для предотвращения утечки реального локального IP
+||stun:*$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com|~yandex.ru
+||webrtc.org^$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com
+! Блокируем маскировку под прокси и VPN-туннели внутри браузера
+||/^(proxy|vpn|shadowsocks|v2ray|wireguard|warp)\./^$important,reject,domain=~system
+
+! --- 5. Traffic Masking (Advanced Layer) ---
+! Маскировка TTL для предотвращения детекции типа устройства (Standardizing OS Fingerprint)
 $network=ip,set_ttl=64,hide_hop_limit=on,important
+! Запрещаем асинхронные запросы (Beacon API), которые отправляют данные после закрытия вкладки
+||*$ping,third-party,important,domain=~google.com|~yandex.ru|~bank|~gov
 
-! --- 24.4: DNS Metadata & EDNS Purge (Защита от гео-привязки DNS) ---
-! Отключаем EDNS Client Subnet, чтобы DNS-сервер не знал твой точный IP-подсеть
-$network=dns,edns=off,important
+! [LAYER 6-12: SMART SHIELD & BEYOND]
+! --- 1. ANTI-WHITE-SCREEN & INFRASTRUCTURE TRUST ---
+@@||gov^$generichide,genericblock,shorthide
+@@||bank^$generichide,genericblock,shorthide
+@@||openai.com^$generichide,genericblock,shorthide
+@@||chatgpt.com^$generichide,genericblock,shorthide
+@@||yandex.ru^$generichide,genericblock,shorthide
+@@||dzen.ru^$generichide,genericblock,shorthide
+@@||google.*^$generichide,genericblock,shorthide
+@@||*.fr^$generichide,domain=~doubleclick.net|~google-analytics.com
+@@||*.com^$generichide,domain=~doubleclick.net|~google-analytics.com
 
-! --- 24.5: Backdoor & Diagnostic Extermination (Уничтожение телеметрии) ---
-! Блокировка скрытых каналов диагностики Samsung, Google и отчетов HSTS
-||/^(telecommand|backdoor|diagnostics|ocsp|crl|hsts-report|safe-browsing|android\.clients\.google\.com|connectivitycheck\.gstatic\.com|telemetry\.sdk\.samsung\.com)\./^$dnstype=A,empty,important,reject
+! --- 2. DEEP STEALTH: ANTI-FINGERPRINTING & BEHAVIORAL SYNC ---
+! Убиваем детекторы блокировщиков на корню
+#%#//scriptlet("set-constant", "isAdBlockActive|isAdblockActive|adblocker|AdBlock|navigator.webdriver", "false")
+#%#//scriptlet("set-constant", "google_ad_status", "1")
+#%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
+
+# Маскировка железа и ОС (Dynamic V5 PRO++++++)
+
+#%#//scriptlet("execute-script", "
+(function(){
+
+  const key = 'fp_profile_v5';
+  let p;
+
+  const profiles = [
+    {cores:4, memory:4, ua:'120.0.0.0', lang:['en-US','en'], tz:'Europe/Paris'},
+    {cores:8, memory:8, ua:'125.0.0.0', lang:['fr-FR','fr'], tz:'Europe/Paris'},
+    {cores:6, memory:8, ua:'123.0.0.0', lang:['en-GB','en'], tz:'Europe/Berlin'}
+  ];
+
+  try {
+    const saved = sessionStorage.getItem(key);
+    if (saved) {
+      p = JSON.parse(saved);
+    } else {
+      p = profiles[Math.floor(Math.random()*profiles.length)];
+      sessionStorage.setItem(key, JSON.stringify(p));
+    }
+  } catch(e) {
+    p = profiles[0];
+  }
+
+  const seed = JSON.stringify(p).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+
+  // ===== BASIC =====
+  Object.defineProperty(navigator,'platform',{get:()=> 'Win32'});
+  Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> p.cores});
+  Object.defineProperty(navigator,'deviceMemory',{get:()=> p.memory});
+  Object.defineProperty(navigator,'maxTouchPoints',{get:()=> 0});
+
+  Object.defineProperty(navigator,'language',{get:()=> p.lang[0]});
+  Object.defineProperty(navigator,'languages',{get:()=> p.lang});
+
+  const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'+p.ua+' Safari/537.36';
+  Object.defineProperty(navigator,'userAgent',{get:()=> ua});
+
+  const originalResolved = Intl.DateTimeFormat.prototype.resolvedOptions;
+  Intl.DateTimeFormat.prototype.resolvedOptions = function(){
+    const opts = originalResolved.apply(this, arguments);
+    opts.timeZone = p.tz;
+    return opts;
+  };
+
+  // ===== CANVAS (ULTRA LIGHT STABLE) =====
+  const noise = (seed % 7) + 1;
+  const toDataURL = HTMLCanvasElement.prototype.toDataURL;
+  HTMLCanvasElement.prototype.toDataURL = function(){
+    const ctx = this.getContext('2d');
+    if(ctx){
+      ctx.fillStyle = 'rgba('+noise+','+noise+','+noise+',0.005)';
+      ctx.fillRect(0,0,1,1);
+    }
+    return toDataURL.apply(this, arguments);
+  };
+
+  // ===== WEBGL (CONSISTENT SPOOF) =====
+  const getParameter = WebGLRenderingContext.prototype.getParameter;
+  WebGLRenderingContext.prototype.getParameter = function(param){
+    if(param === 37445) return 'Intel Inc.';
+    if(param === 37446) return 'Intel Iris OpenGL Engine';
+    return getParameter.apply(this, arguments);
+  };
+
+  // ===== AUDIO (MICRO DRIFT) =====
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (AudioCtx) {
+    const origCreate = AudioCtx.prototype.createAnalyser;
+    AudioCtx.prototype.createAnalyser = function(){
+      const analyser = origCreate.apply(this, arguments);
+      const orig = analyser.getFloatFrequencyData;
+      analyser.getFloatFrequencyData = function(arr){
+        orig.apply(this, arguments);
+        for(let i=0;i<arr.length;i++){
+          arr[i] += (noise * 0.00005);
+        }
+      };
+      return analyser;
+    };
+  }
+
+  // ===== CLIENT RECTS (VERY LIGHT SHIFT) =====
+  const origGetBounding = Element.prototype.getBoundingClientRect;
+  Element.prototype.getBoundingClientRect = function(){
+    const rect = origGetBounding.apply(this, arguments);
+    const shift = (noise % 2) * 0.1;
+    return {
+      x: rect.x + shift,
+      y: rect.y + shift,
+      width: rect.width,
+      height: rect.height,
+      top: rect.top + shift,
+      left: rect.left + shift,
+      right: rect.right + shift,
+      bottom: rect.bottom + shift
+    };
+  };
+
+  // ===== SCREEN =====
+  const w = screen.width;
+  const h = screen.height;
+
+  Object.defineProperty(screen,'availWidth',{get:()=> w - (noise % 3)});
+  Object.defineProperty(screen,'availHeight',{get:()=> h - (noise % 5)});
+
+  // ===== FONTS CHECK STABILIZATION =====
+  const origMeasure = CanvasRenderingContext2D.prototype.measureText;
+  CanvasRenderingContext2D.prototype.measureText = function(){
+    const metrics = origMeasure.apply(this, arguments);
+    metrics.width += (noise * 0.01);
+    return metrics;
+  };
+
+})();
+")
+
+# Маскировка (MAX HARDENING — осторожно)
+
+#%#//scriptlet("execute-script", "
+(function(){
+
+  const key = 'fp_profile_v5';
+  let p;
+
+  try {
+    p = JSON.parse(sessionStorage.getItem(key));
+  } catch(e) {
+    p = {tz:'Europe/Paris'};
+  }
+
+  const seed = JSON.stringify(p).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+
+  // ===== 1. WEBRTC (SOFT MASK, НЕ ЛОМАЕМ ВСЁ) =====
+  if (window.RTCPeerConnection) {
+    const OrigRTC = window.RTCPeerConnection;
+
+    window.RTCPeerConnection = function(...args){
+      const pc = new OrigRTC(...args);
+
+      pc.addEventListener('icecandidate', e => {
+        if (e && e.candidate && e.candidate.candidate) {
+          // Убираем локальные IP
+          e.candidate.candidate = e.candidate.candidate.replace(/192\\.168\\.[0-9]+\\.[0-9]+/g, '0.0.0.0');
+        }
+      });
+
+      return pc;
+    };
+  }
+
+  // ===== 2. NETWORK INFO =====
+  if (navigator.connection) {
+    Object.defineProperty(navigator.connection,'downlink',{get:()=> 10 + (seed % 5)});
+    Object.defineProperty(navigator.connection,'effectiveType',{get:()=> '4g'});
+    Object.defineProperty(navigator.connection,'rtt',{get:()=> 50 + (seed % 20)});
+  }
+
+  // ===== 3. BATTERY API =====
+  navigator.getBattery = function(){
+    return Promise.resolve({
+      charging: true,
+      chargingTime: 0,
+      dischargingTime: Infinity,
+      level: 0.95
+    });
+  };
+
+  // ===== 4. VISIBILITY =====
+  Object.defineProperty(document,'hidden',{get:()=> false});
+  Object.defineProperty(document,'visibilityState',{get:()=> 'visible'});
+
+  // ===== 5. PERMISSIONS (РЕАЛИСТИЧНО) =====
+  const originalQuery = navigator.permissions?.query;
+  if (originalQuery) {
+    navigator.permissions.query = function(params){
+      const map = {
+        'notifications': 'default',
+        'geolocation': 'prompt',
+        'camera': 'prompt',
+        'microphone': 'prompt'
+      };
+      const state = map[params.name] || 'prompt';
+      return Promise.resolve({ state });
+    };
+  }
+
+  // ===== 6. TIMING (ANTI BOT) =====
+  const originalNow = performance.now;
+  performance.now = function(){
+    return originalNow.call(performance) + (seed % 3) * 0.01;
+  };
+
+  // ===== 7. LOCK (ANTI OVERRIDE) =====
+  const protect = (obj, prop) => {
+    try {
+      const val = obj[prop];
+      Object.defineProperty(obj, prop, {
+        get: () => val,
+        configurable: false
+      });
+    } catch(e){}
+  };
+
+  protect(navigator, 'userAgent');
+  protect(navigator, 'hardwareConcurrency');
+  protect(navigator, 'deviceMemory');
+
+})();
+")
+
+# SAFE AUTO — интеллектуальное управление fingerprint
+
+#%#//scriptlet("execute-script", "
+(function(){
+
+  const host = location.hostname;
+
+  // ===== 1. TRUSTED ZONES =====
+  const trusted = [
+    'google.com',
+    'youtube.com',
+    'gstatic.com',
+    'googleapis.com',
+    'openai.com',
+    'chatgpt.com',
+    'github.com',
+    'paypal.com',
+    'stripe.com',
+    'bank',
+    'gouv.fr',
+    'ameli.fr',
+    'edf.fr'
+  ];
+
+  const isTrusted = trusted.some(d => host.includes(d));
+
+  // ===== 2. HARDENED TARGETS =====
+  const hardened = [
+    'doubleclick.net',
+    'ads',
+    'tracking',
+    'analytics',
+    'fingerprint'
+  ];
+
+  const isHardened = hardened.some(d => host.includes(d));
+
+  // ===== 3. MODE SWITCH =====
+  let mode = 'normal';
+
+  if (isTrusted) mode = 'trusted';
+  if (isHardened) mode = 'hardened';
+
+  // ===== 4. APPLY RULES =====
+
+  // TRUSTED → отключаем агрессивное
+  if (mode === 'trusted') {
+
+    // возвращаем оригинальный WebGL
+    if (WebGLRenderingContext.prototype.getParameter.__original) {
+      WebGLRenderingContext.prototype.getParameter =
+        WebGLRenderingContext.prototype.getParameter.__original;
+    }
+
+    // отключаем canvas шум
+    HTMLCanvasElement.prototype.toDataURL =
+      HTMLCanvasElement.prototype.toDataURL.__original || HTMLCanvasElement.prototype.toDataURL;
+
+  }
+
+  // HARDENED → усиливаем
+  if (mode === 'hardened') {
+
+    // усиливаем timing
+    const originalNow = performance.now;
+    performance.now = function(){
+      return originalNow.call(performance) + Math.random() * 0.5;
+    };
+
+    // усиливаем permissions
+    navigator.permissions.query = () => Promise.resolve({ state: 'denied' });
+
+  }
+
+  // ===== 5. DEBUG (можно убрать) =====
+  //console.log('[SAFE AUTO MODE]', mode);
+
+})();
+")
 
 
-! =========================================================================
-! [MEGA-BLOCK XXV] ANTI-SPYWARE & BASEBAND STEALTH (v2026.FINAL)
-! =========================================================================
+! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
+#%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
+#%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=()=>'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB';")
+#%#//scriptlet("execute-script", "Object.defineProperty(Screen.prototype,'width',{get:()=>1920});Object.defineProperty(Screen.prototype,'height',{get:()=>1080});")
+#%#//scriptlet("spoof-css", "webgl", "intel-uhd")
+! Защита от перечисления шрифтов (Font Fingerprinting)
+#%#//scriptlet("prevent-window-open", "ad-click")
 
-! --- 25.1: C2-Isolator (Изоляция командных центров шпионажа) ---
-! Блокировка связи с инфраструктурой NSO (Pegasus), QuaDream и Intellexa
-||/^(api|logs|c2|detect|push)\.(nso-group|nso|pegasus|quadream|candiru|intellexa)\./^$important,reject
+! --- 3. ZERO-FOOTPRINT: АБСОЛЮТНАЯ ОЧИСТКА ---
+! Очистка аналитики и рекламных движков
+#%#//scriptlet("set-constant", "ga|gtag|fbq|document.interestCohort|navigator.browsingTopics", "undefined")
+#%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|ym_uid|amplitude_id|_hjSessionUser)$/")
+! Запрещаем сайтам читать историю переходов через Referrer
+*^$set-header=Referrer-Policy: no-referrer-when-downgrade
 
-! --- 25.2: Baseband & Cell-Tower Stealth (Защита от триангуляции) ---
-! Блокировка API, которые сопоставляют ID сотовых вышек с твоими координатами
-||/^(opencellid|location-api\.com|unwiredlabs)\./^$dnstype=A,empty,important
-
-! --- 25.3: Zero-Click Vector Protection (Защита от атак без взаимодействия) ---
-! Отрезаем специфические пути доставки "полезной нагрузки" шпионского ПО
-||/^(.*-push-.*|.*-telemetry-.*)\.(.*-cloud-.*|.*-analytics-.*)\.(io|net|com)$/^$important,reject,domain=~system
-
-! --- 25.4: Base-Isolation (Зануление системных утечек) ---
-! Финальный аккорд: зануление запросов на сопоставление сетевых данных
-||/^(cell-id|mcc-mnc|lac-id|tower-stats)\./^$dnstype=A,empty,important
+! --- 4. BEYOND THE BROWSER (NETWORK HARDENING) ---
+! Маскировка типа устройства на уровне пакетов (TTL 64 = Android/Linux/Standard Chrome)
+$network=ip,set_ttl=64,hide_hop_limit=on,important
+! Запрет на утечку локальных IP-адресов через WebRTC
+||stun:*^$important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com
 
 
-! =========================================================================
-! [MEGA-BLOCK XXVI] OMNI-GLOBAL-PASS: THE LIFE BRIDGE (v2026.FINAL)
-! =========================================================================
+! [LAYER 13-27: PERIMETER DEFENSE & PORT ISOLATION]
+! --- 1. UI Purge (Удаление визуального мусора и баннеров) ---
+##[class*="ad"], .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup, #cookie-notice, .cmp-container
+##.premium-promo, .upsell-banner, [id^="google_ads_iframe"]
 
-! --- 26.1: Essential Services & Gov (Европейские и Глобальные Гос. Сервисы) ---
-! Разрешаем доступ к CAF, Ameli, Госуслугам и ресурсам Евросоюза
-@@||*.(gov|gouv|bund|europa|gosuslugi)\.(com|fr|de|ru|org|net|eu)^$important,domain=~browser
+! --- 2. Localhost & Port Hardening (Защита от сканирования твоей сети) ---
+! Запрещаем сайтам опрашивать твои локальные устройства и открытые порты
+||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system
+||^$important,port=22|23|445|3389|1433|3306|5432|6379|8080|9000|9090,domain=~teamviewer.com|~localhost
+$network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,important
 
-! --- 26.2: Auth & Push Infrastructure (Инфраструктура уведомлений и OTP) ---
-! Гарантия доставки СМС-кодов, Apple ID, Microsoft и Firebase Push
-@@||*.(fcm|firebase|appleid|icloud|microsoft|passport|auth|otp|secure|3ds)\.(com|net|org|eu)^$important,domain=~browser
+! [LAYER 28-29: QUANTUM VISIBILITY & ENTROPY]
+! --- 1. Header Manipulation (Активная дезинформация) ---
+! Генерируем случайную энтропию для Google, чтобы сбить их алгоритмы профилирования
+||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=DNT: 1
+*^$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved)=[^&]*/$1=omni-qnt-$random_string/
 
-! --- 26.3: Global Marketplaces (Безопасный Шопинг) ---
-! Стабильность для Amazon, AliExpress, LeBonCoin, Ozon и ритейлеров (Carrefour, Lidl)
-@@||*.(amazon|ebay|aliexpress|alibaba|leboncoin|wildberries|ozon|asda|lidl|carrefour|rewe)\.(com|fr|de|ru|org|net|uk|it|es)^$important,domain=~browser
+! --- 2. Security Headers (Принудительная безопасность) ---
+! Запрещаем отслеживание пути (Referrer) и защищаем от подмены типов контента
+||*^$set-header=Referrer-Policy: strict-origin-when-cross-origin,set-header=X-Content-Type-Options: nosniff
+||*^$set-header=X-Frame-Options: SAMEORIGIN,set-header=X-XSS-Protection: 1; mode=block
 
-! --- 26.4: Checkout & Billing (Платежные Магистрали) ---
-! Белый список для финальных этапов оплаты (Checkout/Billing)
-@@||*.(pay|checkout|billing)\.(com|net|fr|de|ru|org|eu)^$important,domain=~browser
+! [LAYER 17-26: TRUSTED BRIDGE & API CLEANER]
+! --- 1. Unified Trusted Bridge (Оптимизированный список доверия) ---
+@@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|samsung|apple|microsoft|icloud|googleapis|gstatic|jsdelivr|yandex|passport|sso|zoom|teams\.microsoft|netflix|amazon|aliexpress|wildberries|ozon|caf|ameli|urssaf|oelie-eau|sncf-connect|enedis|edf)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
 
-! --- 26.5: Anti-Spam Clean (Очистка от навязчивых определителей) ---
-! Блокируем внешние "пробивы" номера через веб-инструменты
-||/^(spamblock|callfilter|numverify|phone-validator)\./^$dnstype=A,empty,important
+! --- 2. Privacy Header Stripping ---
+! Удаляем специфические ID Google и подменяем IP-заголовки
+$header=/^(X-Forwarded-For|Real-IP|Client-IP|Via|Forwarded)$/i,important,domain=~system
+$removeheader=/^x-goog-api-(client|key|client-mods)|x-client-data/ ,domain=google.com|googleapis.com
+$removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid|mc_eid|_hsenc)$/
+
+! [LAYER 30: PHISH-FENCE & PROTOCOL INTEGRITY]
+! --- 1. Anti-Phishing & Punycode (Защита от поддельных доменов) ---
+||xn--*^$important,reject,domain=~system
+||/^(flash-sms|class0-message|silent-ping|carrier-popup)/^$important,network,third-party
+
+! --- 2. URL Cleaner (Удаление редиректов и мусора из ссылок) ---
+$removeparam=/^(redirect|url|link|goto|continue|ref_url|return_to)$/,domain=~google.com|~bank|~yandex.ru|~dzen.ru|~openai.com|~gov|~un.org|~europa.eu|~caf.fr|~oelie-eau.fr
+||bit.ly^$rewrite=abp-resource:blank-js
+||t.co^$rewrite=abp-resource:blank-js
+
+! --- 3. Cache Protection ---
+! Запрещаем "отравление" кэша через скрытые параметры
+$removeparam=/^(_|cb|cachebuster|v)$/,domain=~system|~google.com
