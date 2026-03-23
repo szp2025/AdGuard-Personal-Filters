@@ -89,94 +89,96 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 #%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
 
-# Маскировка железа и ОС (Dynamic V3 PRO — реалистичный профиль)
+# Маскировка железа и ОС (Dynamic V4 PRO+++)
 
 #%#//scriptlet("execute-script", "
 (function(){
 
-  // --- 1. ПУЛ РЕАЛЬНЫХ ПРОФИЛЕЙ ---
-  const profiles = [
-    {
-      cores: 4,
-      memory: 4,
-      ua: '120.0.0.0',
-      lang: ['en-US','en'],
-      tz: 'Europe/Paris'
-    },
-    {
-      cores: 8,
-      memory: 8,
-      ua: '125.0.0.0',
-      lang: ['fr-FR','fr'],
-      tz: 'Europe/Paris'
-    },
-    {
-      cores: 6,
-      memory: 8,
-      ua: '123.0.0.0',
-      lang: ['en-GB','en'],
-      tz: 'Europe/Berlin'
-    }
-  ];
-
-  // --- 2. СТАБИЛЬНЫЙ ВЫБОР (НЕ МЕНЯЕТСЯ В СЕССИИ) ---
-  const key = 'fp_profile_v3';
+  const key = 'fp_profile_v4';
   let p;
+
+  const profiles = [
+    {cores:4, memory:4, ua:'120.0.0.0', lang:['en-US','en'], tz:'Europe/Paris'},
+    {cores:8, memory:8, ua:'125.0.0.0', lang:['fr-FR','fr'], tz:'Europe/Paris'},
+    {cores:6, memory:8, ua:'123.0.0.0', lang:['en-GB','en'], tz:'Europe/Berlin'}
+  ];
 
   try {
     const saved = sessionStorage.getItem(key);
     if (saved) {
       p = JSON.parse(saved);
     } else {
-      p = profiles[Math.floor(Math.random() * profiles.length)];
+      p = profiles[Math.floor(Math.random()*profiles.length)];
       sessionStorage.setItem(key, JSON.stringify(p));
     }
   } catch(e) {
     p = profiles[0];
   }
 
-  // --- 3. PLATFORM ---
-  Object.defineProperty(navigator, 'platform', {
-    get: () => 'Win32'
-  });
+  // ===== BASIC =====
+  Object.defineProperty(navigator,'platform',{get:()=> 'Win32'});
+  Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> p.cores});
+  Object.defineProperty(navigator,'deviceMemory',{get:()=> p.memory});
+  Object.defineProperty(navigator,'maxTouchPoints',{get:()=> 0});
 
-  // --- 4. HARDWARE ---
-  Object.defineProperty(navigator, 'hardwareConcurrency', {
-    get: () => p.cores
-  });
+  Object.defineProperty(navigator,'language',{get:()=> p.lang[0]});
+  Object.defineProperty(navigator,'languages',{get:()=> p.lang});
 
-  Object.defineProperty(navigator, 'deviceMemory', {
-    get: () => p.memory
-  });
+  const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'+p.ua+' Safari/537.36';
+  Object.defineProperty(navigator,'userAgent',{get:()=> ua});
 
-  Object.defineProperty(navigator, 'maxTouchPoints', {
-    get: () => 0
-  });
-
-  // --- 5. LANGUAGE ---
-  Object.defineProperty(navigator, 'language', {
-    get: () => p.lang[0]
-  });
-
-  Object.defineProperty(navigator, 'languages', {
-    get: () => p.lang
-  });
-
-  // --- 6. USER AGENT ---
-  const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/' + p.ua + ' Safari/537.36';
-
-  Object.defineProperty(navigator, 'userAgent', {
-    get: () => ua
-  });
-
-  // --- 7. TIMEZONE (СИНХРОНИЗАЦИЯ) ---
   const originalResolved = Intl.DateTimeFormat.prototype.resolvedOptions;
-
   Intl.DateTimeFormat.prototype.resolvedOptions = function(){
     const opts = originalResolved.apply(this, arguments);
     opts.timeZone = p.tz;
     return opts;
   };
+
+  // ===== CANVAS (STABLE NOISE) =====
+  const canvasKey = JSON.stringify(p);
+  const noise = canvasKey.split('').reduce((a,c)=>a+c.charCodeAt(0),0) % 10;
+
+  const toDataURL = HTMLCanvasElement.prototype.toDataURL;
+  HTMLCanvasElement.prototype.toDataURL = function(){
+    const ctx = this.getContext('2d');
+    if(ctx){
+      ctx.fillStyle = 'rgba('+noise+','+noise+','+noise+',0.01)';
+      ctx.fillRect(0,0,1,1);
+    }
+    return toDataURL.apply(this, arguments);
+  };
+
+  // ===== WEBGL (LIGHT SPOOF) =====
+  const getParameter = WebGLRenderingContext.prototype.getParameter;
+  WebGLRenderingContext.prototype.getParameter = function(param){
+    if(param === 37445) return 'Intel Inc.'; // UNMASKED_VENDOR_WEBGL
+    if(param === 37446) return 'Intel Iris OpenGL Engine'; // RENDERER
+    return getParameter.apply(this, arguments);
+  };
+
+  // ===== AUDIO CONTEXT =====
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (AudioCtx) {
+    const origCreate = AudioCtx.prototype.createAnalyser;
+    AudioCtx.prototype.createAnalyser = function(){
+      const analyser = origCreate.apply(this, arguments);
+      const orig = analyser.getFloatFrequencyData;
+      analyser.getFloatFrequencyData = function(arr){
+        orig.apply(this, arguments);
+        for(let i=0;i<arr.length;i++){
+          arr[i] += (noise * 0.0001);
+        }
+      };
+      return analyser;
+    };
+  }
+
+  // ===== SCREEN (MINIMAL VARIATION) =====
+  const w = screen.width;
+  const h = screen.height;
+
+  Object.defineProperty(screen,'availWidth',{get:()=> w - (noise % 3)});
+  Object.defineProperty(screen,'availHeight',{get:()=> h - (noise % 5)});
 
 })();
 ")
