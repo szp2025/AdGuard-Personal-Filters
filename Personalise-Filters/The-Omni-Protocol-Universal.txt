@@ -7,42 +7,31 @@
 ! Description: Optimized for Auto-Filtering Mode. Global Governance, AI, Finance & Utility.
 ! =========================================================================
 
-! [MEGA-BLOCK I] CORE: GLOBAL TRUST & STEALTH (WHITELIST)
-! --- 1. Global Governance & Identity (Automatic Pass) ---
-@@||gov^$important,document
-@@||gouv.fr^$important,document
-@@||mil^$important,document
-@@||edu^$important,document
-@@||org^$important,document
-@@||un.org^$important,document
-@@||europa.eu^$important,document
-@@||gosuslugi.ru^$important,document
-@@||accounts.google.com^$important
-@@||appleid.apple.com^$important
+! [MEGA-BLOCK I] GLOBAL INFRASTRUCTURE (THE "GREEN CHANNEL")
+! --- 1. Global Trusted Zones (TLD-Level Access) ---
+@@||gov^$important,document,generichide
+@@||mil^$important,document,generichide
+@@||edu^$important,document,generichide
+@@||bank^$important,document,generichide
+@@||fr^$document,generichide
+@@||com^$document,generichide
+@@||net^$document,generichide
+@@||org^$document,generichide
 
-! --- 2. Global Finance & Utilities (Sterile Channel) ---
-@@||bank^$important,document
-@@||revolut.com^$important,document
-@@||stripe.com^$important,document
-@@||paypal.com^$important,document
-@@||mastercard.*^$important,document
-@@||visa.*^$important,document
-@@||oelie-eau.fr^$important,document
-@@||edf.fr^$important,document
-@@||engie.fr^$important,document
-@@||caf.fr^$important,document
-@@||ameli.fr^$important,document
+! --- 2. Identity & Global Auth (Unified Group) ---
+@@||accounts.google.com^$important,domain=google.com|youtube.com
+@@||appleid.apple.com^$important,domain=apple.com|icloud.com
+@@||microsoftonline.com^$important,domain=microsoft.com|office.com
+@@||okta.com^$important
 
-! --- 3. Global AI, Work & Search ---
-@@||openai.com^$important,document
-@@||chatgpt.com^$important,document
-@@||claude.ai^$important,document
-@@||github.com^$important,document
-@@||m2mlease.fr^$important
-@@||google.*^$important,document
-@@||bing.com^$important,document
-@@||yandex.ru^$important,document
-@@||dzen.ru^$important,document
+! --- 3. Critical Service Nodes (AI, Search, Work) ---
+@@||openai.com^$important,document,generichide
+@@||chatgpt.com^$important,document,generichide
+@@||yandex.ru^$important,document,generichide
+@@||dzen.ru^$important,document,generichide
+@@||google.*^$important,document,generichide
+@@||m2mlease.fr^$important,document,generichide
+
 
 ! [LAYER 1-5: NETWORK & PROTOCOL HARDENING]
 ||doubleclick.net^$dnstype=A,empty,third-party,reject
