@@ -6,76 +6,76 @@
 ! Description: Dynamic Behavioral Engine. 48 Rules. Optimized for Max Speed & Stealth.
 ! =========================================================================
 
-! --- 1. France Utilities & Living (Water, Energy, Housing) ---
-@@||oelie-eau.fr^$important,document
-@@||suez.fr^$important,document
-@@||veolia.fr^$important,document
-@@||edf.fr^$important,document
-@@||engie.fr^$important,document
-@@||totalenergies.fr^$important,document
-@@||eni.fr^$important,document
-@@||enedis.fr^$important,document
-@@||grdf.fr^$important,document
-
-! --- 2. France Social & Public Services (CAF, Health, Tax) ---
-@@||caf.fr^$important,document
-@@||ameli.fr^$important,document
-@@||urssaf.fr^$important,document
-@@||impots.gouv.fr^$important,document
-@@||france-travail.fr^$important,document
-@@||pole-emploi.fr^$important,document
-@@||service-public.fr^$important,document
-@@||msa.fr^$important,document
-@@||info-retraite.fr^$important,document
-
-! --- 3. Transport & Logistics (SNCF, RATP, Shipping) ---
-@@||sncf-connect.com^$important,document
-@@||ratp.fr^$important,document
-@@||navigo.fr^$important,document
-@@||dhl.com^$important,document
-@@||fedex.com^$important,document
-@@||laposte.fr^$important,document
-@@||chronopost.fr^$important,document
-
-! --- 4. Global Governance, AI & Work ---
+! [MEGA-BLOCK I] CORE: GLOBAL TRUST & STEALTH (WHITELIST)
+! --- 1. Global Governance & Official (Any country .gov / .gouv / .mil / .edu / .org) ---
 @@||gov^$important,document
 @@||gouv.fr^$important,document
 @@||mil^$important,document
-@@||europa.eu^$important,document
+@@||edu^$important,document
+@@||org^$important,document
 @@||un.org^$important,document
-@@||openai.com^$important,document
-@@||chatgpt.com^$important,document
-@@||github.com^$important,document
-@@||m2mlease.fr^$important
-@@||mail.google.com^$important,document
+@@||who.int^$important,document
+@@||europa.eu^$important,document
+@@||interpol.int^$important,document
 
-! --- 5. Global Finance & Payments (Sterile Channel) ---
+! --- 2. Global Finance & Payments (Sterile Channel - All Major Providers) ---
 @@||bank^$important,document
 @@||revolut.com^$important,document
 @@||stripe.com^$important,document
 @@||paypal.com^$important,document
-@@||mastercard.com^$important,document
-@@||visa.com^$important,document
+@@||adyen.com^$important,document
+@@||klarna.com^$important,document
+@@||mastercard.*^$important,document
+@@||visa.*^$important,document
+@@||swift.com^$important,document
+@@||worldline.com^$important,document
 
-! --- 6. Global Search & Infrastructure ---
+! --- 3. Global Mail, Identity & Auth (Gmail, Outlook, iCloud) ---
+@@||mail.google.com^$important,document
+@@||gmail.com^$important,document
+@@||outlook.*^$important,document
+@@||proton.me^$important,document
+@@||icloud.com^$important,document
+@@||accounts.google.com^$important
+@@||appleid.apple.com^$important
+@@||microsoftonline.com^$important
+@@||okta.com^$important
+
+! --- 4. Global Infrastructure & Utilities (Energy, Water, Telco) ---
+@@||*.eau.fr^$important,document
+@@||*.energy^$important,document
+@@||edf.fr^$important,document
+@@||engie.fr^$important,document
+@@||orange.fr^$important,document
+@@||free.fr^$important,document
+@@||t-mobile.com^$important,document
+@@||verizon.com^$important,document
+@@||vodafone.com^$important,document
+
+! --- 5. Global AI, Productivity & Work ---
+@@||openai.com^$important,document
+@@||chatgpt.com^$important,document
+@@||claude.ai^$important,document
+@@||deepseek.com^$important,document
+@@||github.com^$important,document
+@@||m2mlease.fr^$important
+@@||slack.com^$important,document
+@@||zoom.us^$important,document
+@@||notion.so^$important,document
+
+! --- 6. Global Search, Shops & Logistics ---
 @@||google.*^$important,document
 @@||bing.com^$important,document
+@@||yahoo.com^$important,document
+@@||duckduckgo.com^$important,document
 @@||yandex.ru^$important,document
 @@||amazon.*^$important,document
-@@||apple.com^$important,document
+@@||aliexpress.com^$important,document
+@@||ebay.*^$important,document
+@@||dhl.com^$important,document
+@@||fedex.com^$important,document
+@@||ups.com^$important,document
 
-! --- 7. France Telecom & Insurance (Full Coverage) ---
-@@||free.fr^$important,document
-@@||orange.fr^$important,document
-@@||sfr.fr^$important,document
-@@||bouyguestelecom.fr^$important,document
-@@||axa.fr^$important,document
-@@||allianz.fr^$important,document
-@@||maif.fr^$important,document
-
-! --- 8. Global Infrastructure TLDs (Safety First) ---
-@@||*.edu^$important,document
-@@||*.org^$important,document
 
 ! [LAYER 1-5: NETWORK & PROTOCOL HARDENING]
 ||doubleclick.net^$dnstype=A,empty,third-party,reject
