@@ -1,10 +1,10 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
-! Version: 7.5.4
+! Version: 7.5.5
 ! Last modified: 2026-03-23
 ! Expires: 30 days
 ! Homepage: https://github.com/szp2025/AdGuard-Personal-Filters
-! Description: Supreme Stealth Engine. Anti-detect, PQC-Hardening & Micro-Optimized Realism.
+! Description: Ultimate Anti-Detect & Privacy Engine. Optimized for AdGuard Android/iOS.
 ! =========================================================================
 
 ! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE (WHITELIST)
@@ -21,7 +21,13 @@
 
 ! [LAYER 1-5: PQ-HARDENING & PROTOCOL SUPREMACY]
 ||/^(ads|metrics|telemetry|track(?:ing|ers?)?|analytics|stats|adservice|beacon|log(?:ger)?\.|consent|cookie(?:-law)?|onetrust|quantcast|privacy|fingerprintjs|app-measurement|firebaseinstallations|crashlytics|amplitude|doubleclick|appsflyer|adjust|pixel\.)\./^$dnstype=A,empty,websocket,ping,third-party,reject,domain=~system
-||/^([^.]+\.)*(ad-delivery|amazon-adsystem|criteo|mopub|unityads|pixel\.facebook|sentry\.io|tiktokv|drainer|walletconnect|secure-verification|revolut-verify|ameli-update|apk-download|nso-group|shodan|censys|openai|taboola|outbrain)\./^$third-party,websocket,domain=~system|~google.com|~github.com
+||ad-delivery.net^$third-party,important
+||amazon-adsystem.com^$third-party,important
+||criteo.com^$third-party,important
+||pixel.facebook.com^$third-party,important
+||sentry.io^$third-party,important
+||taboola.com^$third-party,important
+||outbrain.com^$third-party,important
 $network=tls,pqc=on,pqc_algorithm=ml-kem-1024|kyber,hybrid_pqc=on,pqc_strength=maximum,important
 $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5,important
 ||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~ytimg.com
@@ -30,23 +36,26 @@ $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5,important
 ||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system
 
 ! [LAYER 6-12: IDENTITY, DECEPTION & GHOST PROTOCOL]
-! --- Сжатая инъекция (Performance Boost) ---
-#%#//scriptlet("set-constant", "navigator.platform|navigator.hardwareConcurrency|navigator.deviceMemory", "Win32|8|8")
-#%#//scriptlet("set-constant", "navigator.language|navigator.languages", "en-US|en-US,en")
+! 1. SET-CONSTANT (Консолидация & Реализм)
+#%#//scriptlet("set-constant", "navigator.platform|navigator.hardwareConcurrency|navigator.deviceMemory|navigator.language|navigator.languages", "Win32|8|8|en-US|en-US,en")
 #%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 #%#//scriptlet("set-constant", "navigator.webdriver", "false")
 #%#//scriptlet("set-constant", "isAdBlockActive", "false")
 #%#//scriptlet("set-constant", "google_ad_status", "1")
-! --- Стерилизация аналитики ---
+! 2. PREVENT / UNDEFINED (Стерилизация)
 #%#//scriptlet("set-constant", "ga|gtag|fbq|document.interestCohort|navigator.browsingTopics", "undefined")
+! 3. REMOVE (Storage Purge)
+#%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|ym_uid|amplitude_id|_hjSessionUser)$/")
+! 4. RE-MAP (Spoofing)
 #%#//scriptlet("spoof-css", "canvas", "noise")
 #%#//scriptlet("spoof-css", "webgl", "intel-uhd")
-! --- L7: Permissions & Timezone ---
+! 5. L7 EXPERIMENTAL (Permissions & Timezone)
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
 #%#//scriptlet("execute-script", "const origQuery=navigator.permissions.query;navigator.permissions.query=(q)=>q.name==='notifications'?Promise.resolve({state:'denied'}):origQuery(q);")
 $network=ip,set_ttl=64,hide_hop_limit=on,important
 
 ! [LAYER 13-27: NETWORK PERIMETER & DEEP PURGE]
+! 6. COSMETIC (Оптимизированные селекторы)
 ##.ad-box, .ads-container, .sponsored-post, .mobile-ad-overlay, .cookie-banner, .newsletter-popup
 ||/^.*(-pa|frontend-pa|spot-pa|metadatalearning-pa)\.google(apis)?\.(com|io|net)$/^$reject
 ||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system
@@ -58,7 +67,6 @@ $network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,
 ||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=DNT: 1
 *^$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved)=[^&]*/$1=omni-qnt-$random_string/
 ||*^$set-header=X-Quantum-Residue: $random_string,set-header=Referrer-Policy: strict-origin-when-cross-origin,set-header=X-Content-Type-Options: nosniff
-#%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|ym_uid|amplitude_id|_hjSessionUser)$/")
 
 ! [LAYER 17-26: LIFE BRIDGE & STABILITY (TRUSTED)]
 @@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|verifiedbyvisa|samsung|apple|microsoft|icloud|googleapis|gstatic|connectivitycheck|jsdelivr|cloudflare-dns|yandex|passport|sso|maps\.google|googleusercontent|challenges\.cloudflare|zoom|teams\.microsoft|netflix|amazonaws|gov|gouv|gosuslugi|amazon|aliexpress|wildberries|ozon)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
