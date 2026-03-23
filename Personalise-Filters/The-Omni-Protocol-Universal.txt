@@ -89,12 +89,12 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 #%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
 
-# Маскировка железа и ОС (Dynamic V4 PRO+++)
+# Маскировка железа и ОС (Dynamic V5 PRO++++++)
 
 #%#//scriptlet("execute-script", "
 (function(){
 
-  const key = 'fp_profile_v4';
+  const key = 'fp_profile_v5';
   let p;
 
   const profiles = [
@@ -115,6 +115,8 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
     p = profiles[0];
   }
 
+  const seed = JSON.stringify(p).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+
   // ===== BASIC =====
   Object.defineProperty(navigator,'platform',{get:()=> 'Win32'});
   Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> p.cores});
@@ -134,29 +136,27 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
     return opts;
   };
 
-  // ===== CANVAS (STABLE NOISE) =====
-  const canvasKey = JSON.stringify(p);
-  const noise = canvasKey.split('').reduce((a,c)=>a+c.charCodeAt(0),0) % 10;
-
+  // ===== CANVAS (ULTRA LIGHT STABLE) =====
+  const noise = (seed % 7) + 1;
   const toDataURL = HTMLCanvasElement.prototype.toDataURL;
   HTMLCanvasElement.prototype.toDataURL = function(){
     const ctx = this.getContext('2d');
     if(ctx){
-      ctx.fillStyle = 'rgba('+noise+','+noise+','+noise+',0.01)';
+      ctx.fillStyle = 'rgba('+noise+','+noise+','+noise+',0.005)';
       ctx.fillRect(0,0,1,1);
     }
     return toDataURL.apply(this, arguments);
   };
 
-  // ===== WEBGL (LIGHT SPOOF) =====
+  // ===== WEBGL (CONSISTENT SPOOF) =====
   const getParameter = WebGLRenderingContext.prototype.getParameter;
   WebGLRenderingContext.prototype.getParameter = function(param){
-    if(param === 37445) return 'Intel Inc.'; // UNMASKED_VENDOR_WEBGL
-    if(param === 37446) return 'Intel Iris OpenGL Engine'; // RENDERER
+    if(param === 37445) return 'Intel Inc.';
+    if(param === 37446) return 'Intel Iris OpenGL Engine';
     return getParameter.apply(this, arguments);
   };
 
-  // ===== AUDIO CONTEXT =====
+  // ===== AUDIO (MICRO DRIFT) =====
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   if (AudioCtx) {
     const origCreate = AudioCtx.prototype.createAnalyser;
@@ -166,19 +166,44 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
       analyser.getFloatFrequencyData = function(arr){
         orig.apply(this, arguments);
         for(let i=0;i<arr.length;i++){
-          arr[i] += (noise * 0.0001);
+          arr[i] += (noise * 0.00005);
         }
       };
       return analyser;
     };
   }
 
-  // ===== SCREEN (MINIMAL VARIATION) =====
+  // ===== CLIENT RECTS (VERY LIGHT SHIFT) =====
+  const origGetBounding = Element.prototype.getBoundingClientRect;
+  Element.prototype.getBoundingClientRect = function(){
+    const rect = origGetBounding.apply(this, arguments);
+    const shift = (noise % 2) * 0.1;
+    return {
+      x: rect.x + shift,
+      y: rect.y + shift,
+      width: rect.width,
+      height: rect.height,
+      top: rect.top + shift,
+      left: rect.left + shift,
+      right: rect.right + shift,
+      bottom: rect.bottom + shift
+    };
+  };
+
+  // ===== SCREEN =====
   const w = screen.width;
   const h = screen.height;
 
   Object.defineProperty(screen,'availWidth',{get:()=> w - (noise % 3)});
   Object.defineProperty(screen,'availHeight',{get:()=> h - (noise % 5)});
+
+  // ===== FONTS CHECK STABILIZATION =====
+  const origMeasure = CanvasRenderingContext2D.prototype.measureText;
+  CanvasRenderingContext2D.prototype.measureText = function(){
+    const metrics = origMeasure.apply(this, arguments);
+    metrics.width += (noise * 0.01);
+    return metrics;
+  };
 
 })();
 ")
