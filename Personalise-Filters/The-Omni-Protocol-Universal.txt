@@ -302,6 +302,86 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 })();
 ")
 
+# SAFE AUTO — интеллектуальное управление fingerprint
+
+#%#//scriptlet("execute-script", "
+(function(){
+
+  const host = location.hostname;
+
+  // ===== 1. TRUSTED ZONES =====
+  const trusted = [
+    'google.com',
+    'youtube.com',
+    'gstatic.com',
+    'googleapis.com',
+    'openai.com',
+    'chatgpt.com',
+    'github.com',
+    'paypal.com',
+    'stripe.com',
+    'bank',
+    'gouv.fr',
+    'ameli.fr',
+    'edf.fr'
+  ];
+
+  const isTrusted = trusted.some(d => host.includes(d));
+
+  // ===== 2. HARDENED TARGETS =====
+  const hardened = [
+    'doubleclick.net',
+    'ads',
+    'tracking',
+    'analytics',
+    'fingerprint'
+  ];
+
+  const isHardened = hardened.some(d => host.includes(d));
+
+  // ===== 3. MODE SWITCH =====
+  let mode = 'normal';
+
+  if (isTrusted) mode = 'trusted';
+  if (isHardened) mode = 'hardened';
+
+  // ===== 4. APPLY RULES =====
+
+  // TRUSTED → отключаем агрессивное
+  if (mode === 'trusted') {
+
+    // возвращаем оригинальный WebGL
+    if (WebGLRenderingContext.prototype.getParameter.__original) {
+      WebGLRenderingContext.prototype.getParameter =
+        WebGLRenderingContext.prototype.getParameter.__original;
+    }
+
+    // отключаем canvas шум
+    HTMLCanvasElement.prototype.toDataURL =
+      HTMLCanvasElement.prototype.toDataURL.__original || HTMLCanvasElement.prototype.toDataURL;
+
+  }
+
+  // HARDENED → усиливаем
+  if (mode === 'hardened') {
+
+    // усиливаем timing
+    const originalNow = performance.now;
+    performance.now = function(){
+      return originalNow.call(performance) + Math.random() * 0.5;
+    };
+
+    // усиливаем permissions
+    navigator.permissions.query = () => Promise.resolve({ state: 'denied' });
+
+  }
+
+  // ===== 5. DEBUG (можно убрать) =====
+  //console.log('[SAFE AUTO MODE]', mode);
+
+})();
+")
+
 
 ! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
