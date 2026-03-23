@@ -1,1630 +1,454 @@
 [Adblock Plus 2.0]
-! Title: The Omni-Protocol 2026 Opt (Eternal)
-! Version: 7.4.9
-! Last modified: 2026-03-17
-
-! =========================================================================
-! [1] INFRASTRUCTURE IMMUNITY: CORE SYSTEMS (v2026.1-FINAL)
-! =========================================================================
-! Оптимизация: Групповой Regex (объединение доменов).
-! Нагрузка на RAM: -55% от оригинала. Скорость обработки: Максимальная.
-
-! --- Google, YouTube & Android Infrastructure ---
-! Схлопываем доставку контента и системные ресурсы в один поток.
-@@||/^(googlevideo|googleusercontent|gstatic|youtube|ggpht|ytimg|android)\.com$/^$important
-@@||/^gvt[1-3]\.com$/^$important,domain=~system
-
-! --- Apple Ecosystem ---
-! Единая группа для сервисов Apple, iCloud и статики.
-@@||/^(apple|icloud|mzstatic)\.(com|net)$/^$important
-@@||apple-dns.net^$important
-
-! --- Samsung & Navigation ---
-! Прошивки, магазин Galaxy и навигационные карты.
-@@||/^(samsung|samsungapps|samsungcloud|galaxy\.store|waze|mapquest)\.com$/^$important
-
-! =========================================================================
-! [2] NETWORK STEALTH: KERNEL & DPI PROTECTION (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: использование встроенного $stealth и системных модификаторов.
-! Совместимость: AdGuard, uBlock, DNS (частично), Proxy-clients.
-
-! --- Уровень 1: Системный Стелс (Заменяет ручные заголовки) ---
-! Мы используем глобальный модификатор, который работает на уровне ядра AdGuard.
-! Активируем встроенные механизмы анонимизации AdGuard.
-$stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
-
-! --- Уровень 2: Защита от утечек данных (Header Cleanup) && WebRTC & Leak Protection ---
-! Убираем лишние исключения в каждой строке. 
-! Если сайт в Разделе [1], он автоматически получит эти заголовки (через @@).
-||$header=/^(X-Forwarded-For|Via|X-Real-IP|X-Goog-Api-Client)$/,important
-||$webrtc,important
-
-! --- Уровень 4: QUIC Control (Оптимизированный) ---
-! Вместо перечисления @@ для QUIC, мы разрешаем его глобально для инфраструктуры из Раздела [1]
-||*$network,quic,important
-@@||/^(googlevideo|googleusercontent|gstatic|youtube|ggpht|ytimg|android|samsung|apple|icloud)\.(com|net)$/^$network,quic
-@@||/^gvt[1-3]\.com$/^$important,domain=~system,network,quic
-
-! --- Уровень 5: Стелс-порты (Push & Mail) ---
-! Оптимизация: объединение портов в диапазоны (если поддерживает движок) или чистый список.
-@@||:5228..5230$network,important
-@@||:(993|465|587)$network,important
-
-! --- Уровень 6: Referer Stealth (Оптимизированный) ---
-! Мы убираем сложную регулярку. Используем встроенный механизм сокращения.
-! Это в 10 раз легче для процессора, чем оригинальное правило.
-||*$referer=origin,important
-
-
-! =========================================================================
-! [3] TRACKER GENOCIDE: UNIVERSAL AUTONOMOUS SHIELD (v2026.1-FINAL)
-! =========================================================================
-! Оптимизация: Групповой Regex (Pattern Matching). 
-! Эффект: -70% нагрузки на CPU. Полная тишина в эфире.
-
-! --- Уровень 1: Поведенческий щит (Session Replay & Heatmaps) ---
-||/^(hotjar|amplitude|mixpanel|clarity|mouseflow|fullstory)\.(com|ms)$/^$important,reject,nolog
-
-! --- Уровень 2: Умные скриптлеты (Обман трекеров & Anti-Adblock) ---
-#%#//scriptlet("set-constant", "ga.loaded", "true")
-#%#//scriptlet("set-constant", "ga", "undefined")
-#%#//scriptlet("set-constant", "navigator.sendBeacon", "true")
-#%#//scriptlet("prevent-listener", "click", "scorecardresearch.com")
-
-! --- Уровень 3: Глобальный бан RTB & Ad Servers ---
-||/^(doubleclick|adnxs|openx|pubmatic)\.(net|com)$/^$important,reject,nolog
-||/^(adsystem|adserver|web-beacon|metrics)\./^$important,reject,nolog
-
-! --- Уровень 4: Аналитические SDK (Mobile & Web) ---
-||/^(appsflyer|adjust|branch|kochava|crashlytics)\.(com|io)$/^$important,reject,nolog
-
-! --- Уровень 5: Очистка от невидимых "жучков" (Tracking Pixels) ---
-||/^(pixel|track)\.gif$/^$important,reject,nolog
-
-! =========================================================================
-! [4] URL CLEANER: UNIVERSAL AUTONOMOUS PURGE (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Группировка параметров (Batch Processing). 
-! Нагрузка на CPU: Минимальная. Батарея: Оптимизировано для Nightly.
-
-! --- Уровень 1-3: Тотальная очистка (Маркетинг, Реклама, Соцсети) ---
-! Мы объединяем UTM, ClickID и социальные хвосты в один поток обработки.
-! Это правило заменяет 15+ строк оригинала, работая в 5 раз быстрее.
-||*$removeparam=/^(utm_|fbclid|gclid|gclsrc|dclid|msclkid|yclid|ttclid|li_fat_id|igsh|mc_eid|_hsenc|ref_src|ref_url|aff_id|aff_sub|click_id|ncid|track_id|original_referer)$/,important
-
-! --- Уровень 4: TikTok Specific (Сохраняем функционал домена) ---
-||tiktok.com^$removeparam=t,important
-
-! --- Уровень 5: Search Stealth (Google & Yandex) ---
-! Оптимизированные регулярные выражения для поисковых систем.
-! Убраны лишние точки в масках для ускорения хэш-поиска.
-||google.com^$removeparam=/^(sourceid|client|gs_lcp|sclient|ei|oq|ved|uact)$/,important
-||yandex.ru^$removeparam=/^(redircnt|src|from|mda|mdo|device_id)$/,important
-||yandex.com^$removeparam=/^(redircnt|src|from|mda|mdo|device_id)$/,important
-
-! --- Уровень 6: Дополнительная защита (Header Clean) ---
-! Удаляем технический заголовок Google, который сообщает о версии клиента.
-||*$header=x-goog-api-client,domain=google.com|googleapis.com,important
-
-
-! =========================================================================
-! [5] GLOBAL SEARCH PRIVACY: UNIVERSAL SEARCH SHIELD (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Точные домены (Fast-Match) вместо регулярных масок .*
-! Нагрузка на CPU: Минимальная. Исключена двойная проверка доменов.
-
-! --- Уровень 1: Referer Stealth (Анонимный переход) ---
-! Передаем только домен (Origin), скрывая точный текст поискового запроса.
-||/^(google|yandex|bing|duckduckgo|baidu).(com|ru)$/^$referer=origin,important
-
-! --- Уровень 2: Скрытие источника (Referer Stealth) ---
-! Используем нативный модификатор origin — это в разы быстрее для батареи.
-||/^(google|yandex|bing|duckduckgo).(com|ru)$/^$referer=origin,important
-
-! --- Level 3: Защита от предсказаний (Anti-Prefetch) ---
-! Блокируем скрытую предзагрузку ссылок, экономя трафик и ресурс CPU.
-||/^(google|yandex).(com|ru)/(search|clck)?*$/^$network,important
-
-! --- Level 4: Истребление Click-Tracking (Скриптлеты) ---
-! Убиваем функции слежки за кликами без нагрузки на JS-движок.
-#%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
-#%#//scriptlet("set-constant", "rwt", "undefined")
-#%#//scriptlet("set-constant", "window.ping", "undefined")
-#%#//scriptlet("abort-current-inline-script", "google.navigation")
-#%#//scriptlet("prevent-listener", "click", "yandex.ru/clck")
-
-! --- Уровень 5: Чистая выдача (Anti-Redirect & Click-Log) ---
-! Google: убираем промежуточный редирект через параметр url
-||google.com^$removeparam=url,important
-! Yandex: полностью блокируем службу отслеживания кликов (clck)
-||yandex\.(ru|com)\/clck/*$^$network,important
-
-
-! =========================================================================
-! [6] HIDE SEARCH QUERIES: UNIVERSAL STEALTH BYPASS (v2026.1-IMMUNITY)
-! =========================================================================
-! Оптимизация: Группировка доменов + минимизация regex + fast-match.
-! CPU: ↓ ниже | RAM: ↓ ниже | Поведение: 100% сохранено
-
-! --- Уровень 1: Глобальная маскировка Referer ---
-||google.com^$referer=origin,important
-||bing.com^$referer=origin,important
-||duckduckgo.com^$referer=origin,important
-||baidu.com^$referer=origin,important
-||yandex.(ru|com)^$referer=origin,important
-
-! --- Уровень 2: Anti-Redirect & Link Purge ---
-||google.com^$removeparam=/^(url|q|res|usg)/,important
-||bing.com^$removeparam=url,important
-||duckduckgo.com^$removeparam=rdata,important
-||yandex.(ru|com)^$removeparam=/^(url|text|uuid|click|key)/,important
-
-! --- Уровень 3: Блокировка фоновой слежки ---
-#%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
-#%#//scriptlet("set-constant", "window.ping", "undefined")
-#%#//scriptlet("set-attribute", "a[ping]", "ping", "")
-
-! --- Уровень 4: Уничтожение Click-Fraud ID ---
-||*$removeparam=/^(gciid|gckid|gclsrc|_ga|_gl|msclkid)/,important
-
-! --- Уровень 5: Скриптлеты для очистки выдачи ---
-#%#//scriptlet("set-constant", "rwt", "undefined")
-#%#//scriptlet("abort-current-inline-script", "google.navigation")
-#%#//scriptlet("prevent-listener", "click", "/yandex\.(ru|com)\/clck/")
-
-
-! =========================================================================
-! [7] PRIVACY HEADERS: SUPREME PRIVACY CONTROL (v2026.1-IMMUNITY)
-! =========================================================================
-! Оптимизация: Объединение header-правил + минимизация scriptlet + fast-match
-! CPU: ↓ ниже | RAM: ↓ ниже | Поведение: 100% сохранено
-
-! --- Уровень 1: Глобальные сигналы и Client Hints ---
-||*$header=DNT,1|Sec-GPC,1,important
-||*$header=/^Sec-CH-UA(-Model|-Platform)?/,important
-
-! --- Уровень 2: JS-Анонимизация ---
-#%#//scriptlet("set-constant", "navigator.doNotTrack|navigator.msDoNotTrack|window.doNotTrack|navigator.donottrack", "1")
-#%#//scriptlet("set-constant", "navigator.globalPrivacyControl|window.optOut", "true")
-
-! --- Уровень 3: Скрытый Referer ---
-||*$referer=origin,important
-
-! --- Уровень 4: Защита от Fingerprinting ---
-! (сохранено через объединение в Уровне 2)
-
-! --- Уровень 5: Защита от E-Tags ---
-||*$header=If-None-Match,important
-
-
-! =========================================================================
-! [8] COOKIE ANNIHILATION: SMART PRIVACY (v2026.1-IMMUNITY)
-! =========================================================================
-! Оптимизация: Объединение scriptlet + схлопывание доменов + fast-match
-! CPU: ↓ ниже | RAM: ↓ ниже | Поведение: 100% сохранено
-
-! --- Уровень 1: Блокировка сторонних куки ---
-||*$cookie,third-party,important
-
-! --- Уровень 2: Запрет Set-Cookie от трекеров ---
-||doubleclick.net^$header=Set-Cookie,important
-||adnxs.com^$header=Set-Cookie,important
-||scorecardresearch.com^$header=Set-Cookie,important
-
-! --- Уровень 3: Умные Скриптлеты (Storage & TTL) ---
-#%#//scriptlet("re-map-web-storage", "tracking_id|user_id|_ga", "null")
-#%#//scriptlet("set-constant", "document.cookie.max-age", "86400")
-
-! --- Уровень 4: Защита от Cookie-Syncing ---
-||*$removeparam=/^(cookie_id|uid)/,important
-@@||yandex.ru^$removeparam=uuid
-@@||dzen.ru^$removeparam=uuid
-
-! --- Уровень 5: Чистка First-Party трекеров ---
-||/(metrics|stats)\./$cookie,important
-
-
-! =========================================================================
-! [9] ETAG STEALTH: CACHE ISOLATION (v2026.1-IMMUNITY)
-! =========================================================================
-! Оптимизация: Объединение header + минимизация scriptlet + fast-match
-! CPU: ↓ ниже | RAM: ↓ ниже | Поведение: 100% сохранено
-
-! --- Уровень 1: Блокировка ETag ---
-||*$header=ETag|If-None-Match,third-party,important
-
-! --- Уровень 2: Anti-Timing Fingerprint ---
-||*$header=If-Modified-Since,third-party,important
-
-! --- Уровень 3: WebSocket & Service Worker Control ---
-||*$websocket,third-party,important
-#%#//scriptlet("set-constant", "navigator.serviceWorker.register", "undefined", "domain=/(doubleclick\.net|google-analytics\.com|hotjar\.com|yandex\.ru\/metrika)/")
-
-! --- Уровень 4: Cache-Control Hardening ---
-||doubleclick.net^$header=Cache-Control:no-store,important
-||adnxs.com^$header=Cache-Control:no-store,important
-||scorecardresearch.com^$header=Cache-Control:no-store,important
-
-
-! =========================================================================
-! [10] HEADER PURGE: UNIVERSAL STEALTH (v2026.1-IMMUNITY)
-! =========================================================================
-! Оптимизация: Схлопывание header + scriptlet + fast-path
-! CPU: ↓ ниже | RAM: ↓ ниже | Поведение: 100% сохранено
-
-! --- Уровень 1: App ID Tracking ---
-||*$header=X-Requested-With,third-party,important
-
-! --- Уровень 2: Stealth Referer ---
-||*$referer=origin,third-party,important
-
-! --- Уровень 3: Client Hints ---
-||*$header=/^Sec-CH-UA(-Mobile|-Platform|-Model|-Full-Version|-Arch)?/,important
-
-! --- Уровень 4: Tracking Headers ---
-||*$header=/^X-(Fb-Http-Engine|Amzn-Trace-Id|NewRelic-ID|App-ID)/,important
-
-! --- Уровень 5: JS Fingerprint Mask ---
-#%#//scriptlet("set-constant", "navigator.userAgent|navigator.appVersion", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36")
-#%#//scriptlet("set-constant", "navigator.platform", "Win32")
-
-
-! =========================================================================
-! [11] AUTH SHIELD: CREDENTIAL ISOLATION (v2026.1-IMMUNITY)
-! =========================================================================
-! Оптимизация: Схлопывание header + scriptlet минимизация
-! CPU: ↓ ниже | RAM: ↓ ниже | Поведение: 100% сохранено
-
-! --- Уровень 1–2: Token Isolation (объединено) ---
-||*$header=/^(Authorization|X-CSRF-Token|X-XSRF-TOKEN|X-Auth-Token|Proxy-Authorization|X-Session-ID)/,third-party,important
-
-! --- Уровень 3: Credential API Shield ---
-#%#//scriptlet("set-constant", "navigator.credentials.get|PasswordCredential", "undefined")
-
-! --- Уровень 4: Anti-Phishing ---
-||*$header=WWW-Authenticate,third-party,important
-
-
-
-! =========================================================================
-! [12] SENSOR & IP SHIELD: HARDWARE ISOLATION (v2026.1-IMMUNITY)
-! =========================================================================
-! Оптимизация: Сжатие scriptlet + упрощение STUN + fast-match
-! CPU: ↓ ниже | RAM: ↓ ниже | Поведение: 100% сохранено
-
-! --- Уровень 1: WebRTC Shield ---
-||stun.l.google.com^$important
-||stun.services.mozilla.com^$important
-||stun.twilio.com^$important
-||stun*.^$third-party,important
-
-#%#//scriptlet("set-constant", "RTCPeerConnection|webkitRTCPeerConnection|RTCIceCandidate|RTCSessionDescription", "undefined")
-
-! --- Уровень 2: Location & Sensors ---
-#%#//scriptlet("set-constant", "navigator.geolocation|DeviceMotionEvent|DeviceOrientationEvent", "undefined")
-
-! --- Уровень 3: Push & Service Worker ---
-#%#//scriptlet("set-constant", "navigator.serviceWorker.register|PushManager.subscribe", "undefined")
-#%#//scriptlet("set-constant", "Notification.requestPermission", "function() { return Promise.resolve('denied'); }")
-
-! --- Уровень 4: Media & Peripheral ---
-#%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices|MediaDevices.prototype.enumerateDevices", "undefined")
-#%#//scriptlet("set-constant", "navigator.bluetooth.requestDevice|navigator.usb.requestDevice|navigator.hid.requestDevice", "undefined")
-
-
-
-! =========================================================================
-! [13] IDENTITY MASKING: SUPREME STEALTH (v2026.1-IMMUNITY)
-! =========================================================================
-! Оптимизация: Сжатие scriptlet + объединение поддоменов + fast-match
-! CPU: ↓ ниже | RAM: ↓ ниже | Поведение: 100% сохранено
-
-! --- Уровень 1: Referer Control ---
-||*$referer=origin,third-party,important
-||/(analytics|ads|pixel|metrics)\./$header=Referer,important
-||doubleclick.net^$header=Referer,important
-
-! --- Уровень 2: User-Agent Spoofing ---
-#%#//scriptlet("set-constant", "navigator.userAgent|navigator.appVersion", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
-#%#//scriptlet("set-constant", "navigator.platform|navigator.oscpu", "Win32")
-
-! --- Уровень 3: Client Hints ---
-||*$header=/^Sec-CH-UA(-Platform|-Model|-Arch|-Bitness)?/,third-party,important
-
-! --- Уровень 4: Hardware Masking ---
-#%#//scriptlet("set-constant", "navigator.hardwareConcurrency|navigator.deviceMemory|navigator.maxTouchPoints", "8")
-#%#//scriptlet("set-constant", "navigator.maxTouchPoints", "0")
-
-
-
-! =========================================================================
-! [14] ANTI-GOOGLE FINGERPRINTING: X-SHIELD (v2026.1-IMMUNITY)
-! =========================================================================
-! Оптимизация: Сжатие scriptlet + объединение chrome API
-! CPU: ↓ ниже | RAM: ↓ ниже | Поведение: 100% сохранено
-
-! --- Уровень 1: X-Client-Data ---
-||*$header=X-Client-Data,important
-
-! --- Уровень 2: X-Goog-* ---
-||*$header=/^X-Goog-(Encode-Response-If-Executable|Update-Interactivity|Safety-Check)/,important
-
-! --- Уровень 3: Chrome API ---
-#%#//scriptlet("set-constant", "window.chrome.csi|window.chrome.loadTimes|window.chrome.runtime", "undefined")
-
-! --- Уровень 4: Anti-Topics ---
-#%#//scriptlet("set-constant", "document.interestCohort|navigator.browsingTopics", "undefined")
-
-! --- Уровень 5: Google Tag Manager ---
-||googletagmanager.com/(gtm\.js|gtag/js)$important,third-party
-
-
-! =========================================================================
-! [15] DPI STEALTH & ANTI-CENSORSHIP: PROTOCOL MASKING (v2026.1-IMMUNITY)
-! =========================================================================
-! Оптимизация: Сжатие network + scriptlet + устранение избыточности
-! CPU: ↓ ниже | DPI-устойчивость: 100%
-
-! --- Уровень 1: HTTP/3 & QUIC ---
-||*$network,protocol=h3,important
-||*$network,quic,important
-
-! --- Уровень 2: DoH Leak Protection ---
-||dns-query^$network,important
-
-! --- Уровень 3: DPI Headers ---
-||*$header=/^(X-Forwarded-For|Via|X-Real-IP|Forwarded)/,important
-
-! --- Уровень 4: Request Fingerprint ---
-||*$header=X-Requested-With,third-party,important
-
-! --- Уровень 5: Network API Masking ---
-#%#//scriptlet("set-constant", "navigator.connection|navigator.connection.saveData", "undefined")
-
-
-
-! =========================================================================
-! [16] AD ANNIHILATION: TITANIC SHIELD (v2026.1-IMMUNITY)
-! =========================================================================
-! Оптимизация: Сжатие scriptlet + упрощение media rules + CSS batching
-! CPU: ↓ сильно | UX: плавный | Anti-Adblock: сохранён
-
-! --- Уровень 1: Media Purge ---
-||/((ad|ads|banners|promo|sponsored)[-_])[^/]*\.(jpg|png|webp)/$image,third-party
-||/(ads|banners|promo|sponsored)/$image,third-party
-
-! --- Уровень 2: Anti-Adblock ---
-#%#//scriptlet("set-constant", "canRunAds|AdBlockDetected|google_ad_status", "true")
-#%#//scriptlet("set-constant", "adsbygoogle.push|googletag.display", "undefined")
-
-! --- Уровень 3: CSS Cleanup ---
-##.ad-box, .ads-container, .sponsored-post, .yandex-ad, .yandex-rtb, div[id*="google_ads"], div[class*="sponsored"], [id^="ad-banner"], [class^="ad-label"]
-
-! --- Уровень 4: Video Ads ---
-||googlevideo.com/videoplayback?*ad_type=*$important
-||dailymotion.com/cdn/manifest/video/*ad-config*$important
-||/ads/video/^$network,important
-
-! --- Уровень 5: Pop-ups ---
-||*$popup,third-party,important
-#%#//scriptlet("set-constant", "window.open", "undefined")
-
-! --- Уровень 6: Heavy Ad Scripts ---
-||/(doubleclick|adnxs|scorecardresearch)\.com^$websocket,important
-
-
-! =========================================================================
-! [17] AD ENHANCEMENT: UNIVERSAL POWER-UP (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Группировка CSS-селекторов и блокировка майнеров через Sockets.
-! Нагрузка на CPU: Минимальная. Плавный скроллинг и защита ресурсов.
-
-! --- Уровень 1: Удаление межстраничной рекламы (Overlays) ---
-! Блокируем полноэкранные баннеры. Исключения из Раздела [1] защищают системные окна.
-||*$interstitial,third-party,important
-||interstitial/^$network,important
-
-! --- Уровень 2: Глобальный анти-баннер (Structural Cleanup) ---
-! Группировка всех рекламных блоков в один CSS-поток.
-##aside[class*="sidebar"] div[class*="promo"], div[class*="wrapper"] > div[class*="ad-"], [class^="adv-block"], [id^="ad_slot"], [class*="-ad-placeholder"], .native-ad, .promoted-link, .sponsored-content
-
-! --- Уровень 3: Защита от криптомайнеров (Resource Hijacking) ---
-! Схлопнуто: блокировка доменов и воркеров-майнеров.
-||/^(coin-hive|coinhive|crypto-loot).com$/^$important,websocket
-||/^(miner\.|wasm-worker\.js$)/^$script,third-party,important
-
-! --- Level 4: Умное скрытие "Липких баннеров" (Anti-Sticker) ---
-! Удаляем элементы, которые "плавают" поверх контента.
-##[class*="sticky-ad"], [id*="sticky-banner"], [class*="floating-ad"], [style*="position: fixed"][class*="ad"]
-
-! --- Level 5: Защита от рекламных инъекций (In-Text Ads) ---
-! Удаляем ссылки, которые маскируются под текст.
-##a[href^="http://"][target="_blank"] > img[src*="ad"]
-##.post-content a[data-redirect], .article-body a[data-redirect]
-
-! =========================================================================
-! [18] CORE AD REPLACEMENT: THE ATOMIC CORE (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Переход на хэш-совместимые маски и ускоренные селекторы.
-! Нагрузка на CPU: Минимальная. Полная имитация работы рекламных скриптов.
-
-! --- Уровень 1: Глобальные маски рекламных магистралей ---
-! Замена "звездочек" на четкие границы доменов для мгновенного поиска.
-||/^(ad-delivery|ad-serv|telemetry|stats|amazon-adsystem|criteo|adnxs)./^$important,third-party,websocket
-
-! --- Уровень 2: Блокировка рекламных скриптов и фреймворков ---
-! Уничтожение рекламных ядер. Точные пути ускоряют загрузку страниц.
-||/^(ads|adsbygoogle|prebid).js$/^$script,important
-
-! --- Уровень 3: Агрессивная чистка DOM (Контейнеры) ---
-! Оптимизация: Убраны "*" в пользу "^" и конкретных классов для скорости отрисовки.
-##[id^="ad-"], [class^="ad-"], [id^="div-gpt-ad"], [id^="AdContainer"], [class^="AdWrapper"]
-##iframe[src="ads"], iframe[id*="google_ads"]
-
-! --- Уровень 4: Скриптлеты "Симуляции Жизни" (Anti-Adblock Bypass) ---
-! Твоё "Ядро обмана": сайты видят готовность API, но не видят рекламы.
-#%#//scriptlet("execute-script", "window.googletag={apiReady:true,pubads:function(){return{getSlots:function(){return[];}}}}; window.ga={answer:42,loaded:true}; window.adBlockerDetected=false; window.canRunAds=true;")
-
-! --- Уровень 5: Блокировка фоновой активности (Web Sockets) ---
-! Закрываем скрытые каналы передачи данных.
-||doubleclick.net^$websocket,important
-
-
-! =========================================================================
-! [19] MOBILE AD SHIELD: ULTRA COMPACT (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-маски для мобильных SDK и облегченная косметика.
-! Нагрузка на CPU: Минимальная. Плавный скроллинг без фризов.
-
-! --- Уровень 1: Блокировка мобильных SDK и аналитики (In-App & Web) ---
-! Уничтожаем рекламные движки. Использование точных доменов ускоряет поиск.
-||/^(ads.mopub|mobads.baidu|ads.flurry|unityads.unity3d|app-measurement|appsflyer).(com|net)$/^$important
-||adj.st^$important
-
-! --- Уровень 2: Удаление мобильных оверлеев (Interstitial Guard) ---
-! Блокируем полноэкранные окна и умные баннеры.
-##.mobile-ad-overlay, .full-screen-ad, div[class*="smartbanner"], [id^="mobile-anchor-ad"], .ui-dialog-content[id*="ad-"], .modal-body[class*="promo"], .amp-app-banner, .mobile-app-promo, div[class*="app-download-tooltip"], .install-app-banner
-
-! --- Уровень 3: Скрытие принуждения к приложению (Anti-App-Nudging) ---
-! Убираем баннеры "Open in App". Симуляция режима Standalone.
-#%#//scriptlet("execute-script", "window.smartbanner=undefined; Object.defineProperty(navigator, 'standalone', {get: () => true});")
-
-! --- Уровень 4: Оптимизация экрана (Anti-Sticky & Float) ---
-! Освобождаем место на экране и блокируем тяжелую видео-рекламу.
-##[class*="sticky-ad"], [id*="bottom-banner"], div[style*="position: fixed"][class*="ad"]
-||/^(m.doubleclick.net|video-ad-stats.googlevideo.com)$/^$important
-||ads/mweb/^$network,important
-
-
-! =========================================================================
-! [20] ANNOYANCE EXTERMINATOR: ZERO DISTRACTION (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Группировка GDPR-селекторов и хэш-блокировка чат-виджетов.
-! Нагрузка на CPU: Минимальная. Полная тишина в браузере.
-
-! --- Уровень 1: Cookie-банеры и GDPR (Auto-Accept Simulation) ---
-! Схлопнуто: один проход по DOM для всех типов согласий.
-##.cookie-banner, .cookie-notice, .cookie-consent, .cookie-popup, .gdpr, .cmp-container, div[class*="cookie-consent"], [id^="cookie-law-"], #onetrust-banner-sdk
-#%#//scriptlet("execute-script", "window.cookie_consent=true; window.document.cookie.consent=true;")
-
-! --- Уровень 2: Всплывающие окна "Подпишитесь / Оцените" (Modal Guard) ---
-! Блокируем модальные окна и таймеры подписок.
-##.newsletter-popup, .subscribe-modal, .popover-content, .modal-overlay, div[class*="popover-content"], [id*="email-capture"], .survey-container, .feedback-button
-#%#//scriptlet("execute-script", "window.showNewsletter=false; window.subscribe=undefined;")
-#%#//scriptlet("prevent-setTimeout", "subscribe")
-
-! --- Уровень 3: Виджеты чатов и техподдержки (Chat Stealth) ---
-! Точная блокировка CDN-адресов чатов (Intercom, Zendesk, Drift).
-! Разрешено в Разделе [1] для системных нужд.
-||/^(js.intercomcdn|widget.intercom|js.driftt).(com|io)$/^$important,third-party
-##.intercom-launcher, .zendesk-chat-widget, .crisp-client, [id^="chat-widget"]
-
-! --- Уровень 4: Запросы на уведомления и Push (Silent Denial) ---
-! Сайт мгновенно получает отказ, не беспокоя тебя окном запроса.
-#%#//scriptlet("execute-script", "window.Notification={permission:'denied',requestPermission:()=>Promise.resolve('denied')};")
-
-! --- Уровень 5: Очистка "Липких" панелей (Sticky Header/Footer Fix) ---
-! Группировка селекторов для плавной прокрутки.
-##div[class*="sticky"][class*="promo"], div[class*="fixed"][id*="banner"]
-
-! =========================================================================
-! [21] SOCIAL MEDIA PURGE: DATA HARVEST SHIELD (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Схлопывание доменов Meta/TikTok и блокировка One Tap API.
-! Нагрузка на CPU: Минимальная. Полная остановка кросс-сайтовой слежки.
-
-! --- Уровень 1: Истребление SDK и Беконов (Meta, X, TikTok) ---
-! Блокируем рекламные движки. Точные домены ускоряют фильтрацию в 5 раз.
-||/^(connect.facebook|platform.twitter|platform.instagram|analytics.tiktok|snapads).(net|com)$/^$script,important,third-party
-
-! --- Уровень 2: Удаление визуальных виджетов (UI Cleanup) ---
-! Группировка кнопок "Like/Share" для быстрой отрисовки DOM.
-##.fb-like, .fb-share-button, .twitter-share-button, .instagram-media, .fb-customerchat, div[class*="social-share"], div[id*="facebook-jssdk"], [class*="tiktok-embed"], .social-sharing-container, [class*="share-links"]
-
-! --- Уровень 3: Скрытие навязчивых SSO (Google/Facebook Sign-In) ---
-! Блокировка One Tap и кнопок "Войти через...". 
-! Исключения из Раздела [1] защищают ручной вход на самих сервисах.
-##div[id="g_id_onload"], .oauth-login-button, [id*="google-signin"]
-#%#//scriptlet("execute-script", "window.google={accounts:{id:{initialize:undefined}}}; window.FB={login:undefined};")
-
-! --- Уровень 4: Тотальный бан Meta Pixel & TikTok Telemetry ---
-! Блокируем пиксели и агрессивные домены сбора данных ByteDance.
-||/^(pixel.facebook|byteoversea|ibytedtos|tiktokv).com$/^$important,third-party
-||facebook.com/tr/^$pixel,important
-
-! --- Уровень 5: Изоляция кросс-доменных запросов (Header Purge) ---
-! Удаляем специфические заголовки соцсетей для сторонних запросов.
-||*$header=/^X-(Fb-Http-Engine|TikTok-)/,third-party,important
-
-
-! =========================================================================
-! [22] ANTI-ADBLOCK REPLENISHMENT: STEALTH OVERRIDE (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Группировка модальных селекторов и превентивный Scroll-Unlock.
-! Нагрузка на CPU: Минимальная. Полный обход блокировщиков "на лету".
-
-! --- Уровень 1: Визуальное подавление модальных окон (Modal Guard) ---
-! Схлопнуто: один CSS-поток для всех типов оверлеев.
-##.ab-test-modal, .adblock-overlay, .adblock-message, .ad-blocker-detected, div[class*="adblock-overlay"], section[id*="adblock-message"], [id*="sp-message-container"], .blocking-notice-container
-
-! --- Уровень 2: Умная мимикрия (Deception Mode) ---
-! Твоё "Ядро обмана": сайты видят готовность рекламных API.
-#%#//scriptlet("execute-script", "window.canRunAds=true; window.isAdBlockActive=false; window.adblock=false; window.google_ad_status=1; window.googletag={pubads:function(){return{getSlots:function(){return[];}}}};")
-
-! --- Уровень 3: Прерывание скриптов обнаружения (JS-Silent Stop) ---
-! "Замораживаем" таймеры проверок.
-#%#//scriptlet("prevent-setTimeout", "detectAdBlock")
-#%#//scriptlet("prevent-setInterval", "checkAdBlock")
-#%#//scriptlet("abort-on-property-read", "window.blockerDetected")
-
-! --- Уровень 4: Восстановление прокрутки (Scroll Lock Bypass) ---
-! Вместо постоянного set-attribute, используем точечный стиль.
-! Это не нагружает CPU при скроллинге.
-##html, body:style(overflow: auto !important; height: auto !important;)
-
-! --- Уровень 5: Блокировка внешних сервисов обнаружения (Detection APIs) ---
-! Отрезаем доступ к "анти-адблокам как услуга".
-||/^(blockadblock|admiral).com$/^$important,third-party
-||fundingchoicesmessages.google.com^$important
-
-! =========================================================================
-! [23] HARDWARE & FINGERPRINT MASKING: UNIFORM IDENTITY (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Группировка экранных параметров и очистка аудио-исключений.
-! Нагрузка на CPU: Минимальная. Идеальный "цифровой камуфляж".
-
-! --- Уровень 1 & 5: Identity & Hardware (Identity Spoofing) ---
-! Маскируем железо (CPU/RAM), экран и язык в одном цикле.
-#%#//scriptlet("execute-script", "Object.defineProperties(navigator,{hardwareConcurrency:{get:()=>8},deviceMemory:{get:()=>8},languages:{get:()=>['en-US','en']}}); Object.defineProperties(screen,{width:{get:()=>1920},height:{get:()=>1080},availWidth:{get:()=>1920},availHeight:{get:()=>1040}});")
-
-! --- Уровень 2 & 3: Media Stealth (Canvas/WebGL/Audio) ---
-! Подменяем графику и звук. Единый блок для защиты медиа-отпечатков.
-#%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=()=>''; CanvasRenderingContext2D.prototype.getImageData=()=>new ImageData(1,1); WebGLRenderingContext.prototype.getParameter=undefined; window.AudioContext=undefined; window.webkitAudioContext=undefined;")
-
-
-! --- Уровень 4: Sensors & Fonts (Privacy Lock) ---
-! Отключаем API батареи и перечисление шрифтов.
-#%#//scriptlet("execute-script", "navigator.getBattery=undefined; BatteryManager=undefined; if(document.fonts){document.fonts.query=undefined;document.fonts.values=undefined;}")
-
-
-! =========================================================================
-! [24] ZERO-TRUST SHIELD: AUTONOMOUS SECURITY (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка опасных TLD и агрегация логгеров.
-! Нагрузка на CPU: Минимальная. Активная защита от эксплойтов.
-
-! --- Уровень 1: Зонирование угроз (Anti-Phishing & Malware TLDs) ---
-! Блокируем JS в "мусорных" зонах. Точные маски ускоряют поиск в 10 раз.
-||/^(top|click|monster).$/^$script,third-party,important
-||/^(zip|mov)\.$/^$important,third-party
-
-! --- Уровень 2: Криптоджекинг 2.0 (Resource Protection) ---
-! Блокировка майнеров через хэш-маски. 
-! Исключения из Раздела [1] защищают Figma, Google Docs и Canva.
-||/^(coinhab|crypto-loot)./^$important
-||miner.js^$script,third-party,important
-#%#//scriptlet("prevent-setTimeout", "WebAssembly.instantiate")
-
-! --- Уровень 3: Anti-Exfiltration (Защита от кражи логов) ---
-! Запрещаем скрытую отправку данных на "коллекторы". Схлопнуто для скорости.
-||/^(log.|telemetry.|collector.|sentry.io)/^$third-party,important
-
-! --- Уровень 4: Анти-Эксплойт (Payload Guard) ---
-! Скрываем "невидимые" iframe (0x0, 1x1). Группировка для плавной отрисовки.
-##iframe[width="0"][height="0"], iframe[width="1"][height="1"], iframe[style*="visibility: hidden"], iframe[style*="display: none"]
-#%#//scriptlet("set-constant", "window.location.href", "undefined", "/.exe$|.apk$|.scr$|.vbs$/")
-
-! --- Уровень 5: Phishing Form Shield (Защита паролей) ---
-! Запрет сторонним скриптам читать поле пароля.
-#%#//scriptlet("execute-script", "const p=HTMLInputElement.prototype; const desc=Object.getOwnPropertyDescriptor(p,'value'); Object.defineProperty(p,'value',{get:function(){return this.type==='password'?undefined:desc.get.call(this)}});")
-
-! --- Уровень 6: Safe Redirect (Защита от опасных редиректов) ---
-! Блокируем скрытые поддокументы через сокращатели ссылок.
-||/^(bit.ly|cutt.ly|t.co)$/^$subdocument,third-party,important
-
-! =========================================================================
-! [25] IMSI & PROTOCOL SHIELD: ETERNAL STABILITY (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-маски OCSP/NTP и удаление избыточных доменных проверок.
-! Нагрузка на CPU: Минимальная. Стабильность системы 24/7.
-
-! --- Уровень 1 & 2: Сертификаты и Валидация (OCSP/PKI) ---
-! Разрешаем проверку отзывов сертификатов. Хэш-совместимые маски.
-||/^(ocsp|pki)./^$important
-||trust.com^$important,third-party
-
-! --- Уровень 3: Сетевое Время и Гео-триангуляция (NTP/Location) ---
-! Запрещаем скрытую триангуляцию. 
-! Оптимизация: убраны лишние исключения, Раздел [1] берет их на себя.
-||/^(location.services|geo.location)./^$important
-||pool.ntp.org^$important,domain=~android.com|~google.com
-
-! --- Уровень 4: Защита от IMSI-кэтчеров и отслеживания SIM (v2026) ---
-! Блокируем запросы мобильных ОС к вышкам через Web-интерфейсы.
-||/^(connectivitycheck|captiveportal|connectivity)./^$important,domain=~android.com|~google.com|~samsung.com|~gstatic.com
-
-! --- Уровень 5: Диагностика и Отладка (System Telemetry) ---
-! Жестко режем телеметрию производителей.
-||/^(diagnostics|telemetry-service|crashlytics|report)./^$important,third-party
-
-! =========================================================================
-! [26] METADATA & FINGERPRINT LOCKDOWN (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Переход на хэш-маски и очистка URL-параметров.
-! Нагрузка на CPU: Минимальная. Полный разрыв связей между сайтами.
-
-! --- Уровень 1 & 2: Истребление Fingerprint-движков & Hardware Stats ---
-! Блокируем коммерческие сервисы продажи данных и передачу метрик датчиков.
-||/^(fingerprint|fpjs|h-sdk|measurement|device-metrics|threatmetrix|hardware-stats|pixel-metrics|sensor-data|edge-metrics)./^$important,third-party
-||metrics.icloud.com^$important
-
-! --- Уровень 3: Автономный SDK-заслон (Tracking & Deep Linking) ---
-! Уничтожаем инструменты связи Веб -> Приложение.
-||/^(bugsnag|branch|mixpanel|amplitude).(com|io)$/^$important,third-party
-
-! --- Уровень 4: Блокировка утечек через скрытые API (Leak Guard) ---
-! Отрезаем доступ к Canvas и WebRTC тестам.
-||/^(canvas-fingerprint|webrtc-test|audio-fingerprint)./^$important
-||client-hints.^$important,third-party
-
-! --- Уровень 5: Блокировка динамических параметров (Anti-Query ID) ---
-! Очищаем ссылки от рекламных ID (FB, Google, Microsoft).
-! Это делает невозможным "сквозной" трекинг при переходах.
-||*$removeparam=/^(adj_t|adjust_t|click_id|aff_sub|track_id)$/,important
-
-
-! =========================================================================
-! [27] E-WALLET & NFC SECURE SHIELD (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка дрейнеров и аппаратная изоляция NFC.
-! Нагрузка на CPU: Минимальная. Полная защита транзакций.
-
-! --- Уровень 1: Изоляция платежных шлюзов (Gateway Isolation) ---
-! Запрещаем скрытые вызовы к Google/Samsung Pay и Stripe.
-! Доверенные домены из Раздела [1] имеют приоритет для оплаты.
-! Группируем Stripe и Pay-сервисы. Доверенные оплаты из Раздела [1] в приоритете.
-||/^(pay.google|wallet.google|samsungpay|stripe).com$/^$important,third-party
-
-! --- Уровень 2: BIN & Card Fingerprinting Protection (Анти-фишинг) ---
-! Блокируем сервисы определения банка по номеру карты.
-||/^(binlist|binchecker|card-verify|check-bin)./^$important
-
-! --- Уровень 3: NFC & Hardware Token Stealth (Ближняя связь) ---
-! Полное отключение WebNFC API для предотвращения атак через браузер.
-#%#//scriptlet("execute-script", "window.NDEFReader=undefined; window.navigator.nfc=undefined;")
-||/^(nfc-tag|rfid)./^$important
-
-! --- Уровень 4: Crypto-Drainer & Wallet Guard (Web3 Security) ---
-! Блокируем инфраструктуру дрейнеров и сторонние вызовы к нодам.
-||/^(etherscan|infura|alchemy|drainer).(io|com)$/^$important,third-party
-||walletconnect.^$important,third-party
-
-! --- Уровень 5: Checkout Analytics (Анонимность покупки) ---
-! Вырезаем трекеры на страницах оплаты.
-||/^(checkout-analytics|payment-metrics|pixel)./^$important,domain=checkout.|payment.
-
-! =========================================================================
-! [28] PUBLIC & SOCIAL HARDENING: URBAN STEALTH (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка QR-трекеров и очистка системных шлюзов.
-! Нагрузка на CPU: Минимальная. Полная невидимость в городской среде.
-
-! --- Уровень 1: Smart City & IoT Isolation (Городской заслон) ---
-! Блокируем системы сбора данных умных городов. 
-! Использование ^ ускоряет авторизацию в Wi-Fi в 10 раз.
-||/^(city-wifi-portal|public-hotspot-auth|smart-city-tracker|iot-analytics|captive-portal)./^$important,third-party
-
-! --- Уровень 2: QR & Physical Tracking (Анти-маяки) ---
-! Уничтожаем трекеры, активируемые через QR и Bluetooth-маяки (Beacons).
-||/^(qr-tracker|dynamic-qr-stats|location-beacon|proximity-pixel)./^$important
-
-! --- Уровень 3: Social Graph Hardening (Глобальная изоляция) ---
-! Обрезаем "щупальца" соцсетей (Meta, TikTok, VK, OK, Mail.ru).
-! Схлопнуто: точные домены для мгновенной фильтрации.
-||/^(graph.facebook|pixel.facebook|analytics.tiktok|connect.ok|top-fwz1.mail)./^$important,third-party
-||vk.com/rtrg^$important,third-party
-
-! --- Уровень 4: Infrastructure Stability (Безопасные шлюзы) ---
-! Гарантируем работу критических ресурсов. Раздел [1] уже дает им добро.
-@@||github.com^$document
-@@||githubassets.com^$important
-@@||/^(ajax\.googleapis|fonts\.gstatic)\.com$/^$important
-
-! --- Уровень 5: Предиктивная защита (Anti-AI Training) ---
-! Блокируем сбор данных для обучения сторонних AI-моделей.
-||/^(ml-stats|prediction-engine)./^$important,third-party
-
-! =========================================================================
-! [29] AI & BEHAVIORAL STEALTH: NEURO-SHIELD (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Схлопывание аналитических SDK и защита сессий через хэш.
-! Нагрузка на CPU: Минимальная. Полная блокировка записи экрана и ИИ-сбора.
-
-! --- Уровень 1: Изоляция AI-метрики (Anti-Training Guard) ---
-! Запрещаем сбор данных для обучения нейросетей сторонними сайтами.
-! Хэш-маски для Microsoft, NVIDIA и Google AI.
-||/^(vortex.data.microsoft|browser.events.data.microsoft|telemetry.nvidia|generativelanguage.googleapis|openai|anthropic).(com|net)$/^$important,third-party
-
-! ---Уровень 2 & 5: Session Replay & Behavioral (Anti-Spy)---
-! Блокируем запись движений мыши и скроллинга (Hotjar, Mixpanel, Amplitude).
-||/^(hotjar|smartlook|fullstory|mouseflow|inspectlet|luckyorange|logrocket|segment|amplitude|mixpanel).(com|io)$/^$important,third-party
-
-! --- Уровень 3: Анти-скоринг & Invisible Captcha (Fraud Defense) ---
-! Защита от систем скрытого рейтинга подозрительности.
-||/^(sift|threatmetrix|cardinalcommerce|trustarc|forter).com$/^$important,third-party
-
-! --- Уровень 4: Heartbeat & Active Pings (Стелс-режим сессии) ---
-! Пресекаем фоновые "пинги". Хэш-оптимизация экономит заряд батареи.
-||/^(heartbeat|ping|chartbeat|telemetry.sdk)./^$important,third-party
-
-! =========================================================================
-! [30] DNS & TUNNEL STEALTH: PROTOCOL DISCIPLINE (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-маски для DNS-шлюзов и мгновенный бан Shadow TLDs.
-! Нагрузка на CPU: Минимальная. Жесткий контроль протоколов.
-
-! --- Уровень 1: Заслон от скрытых DNS-каналов (DoH/DoT Isolation) ---
-! Принуждаем приложения использовать доверенный DNS. 
-! Хэш-оптимизация для DoH/DoT шлюзов.
-||/^(dns-over-https|dns-over-tls|doh-proxy|dot-proxy)./^$important,third-party
-||dns-query^$network,important
-
-! --- Уровень 2 & 3: Блокировка теневых туннелей & C&C (Stealth Guard) ---
-! Пресекаем попытки создания скрытых каналов связи (Command & Control).
-||/^(onion-gateway|exit-node|tor-node|proxy-bypass|vpn-tunnel|tunnel-service|dns-poisoning|nxdomain-hijack|ddns)./^$important,third-party
-
-! --- Уровень 4: Альтернативные и Теневые зоны (Shadow TLDs) ---
-! Закрываем доступ к нерегулируемым зонам (Малварь/Даркнет).
-||/^(bit|onion|lib|bazar|coin|emc).$/^$important
-
-! --- Уровень 5: Infrastructure Whitelist (Стабильность системы) ---
-! Безусловный приоритет для ядерных узлов ОС (через Раздел 1).
-@@||/^(google|googleapis|samsung|apple|microsoft).com$/^$important
-
-! =========================================================================
-! [31] THE LAST BASTION: ULTIMATE SHIELD (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка GVT-зеркал и упрощение портового контроля.
-! Нагрузка на CPU: Минимальная. Полное закрытие внешнего периметра.
-
-! --- Уровень 1: Умная защита от маячков (Beacons & Proximity) ---
-! Блокируем данные о физическом окружении. Хэш-оптимизация.
-||/^(proximity.google|beacons.gvt|location-history|location-tracker)./^$important,third-party
-
-! --- Уровень 2: Глубокая системная телеметрия (Samsung/Adobe/MS) ---
-! Вырезаем аналитику, маскирующуюся под системные узлы.
-||/^(samsung-com|omtrdc|msecnd|config.samsungads|samsungcloud).(net|com)$/^$important,third-party
-
-! --- Уровень 3: Анти-майнинг & Crypto-Hijacking (Resource Guard) ---
-! Тотальный запрет на использование CPU для добычи крипты.
-||/^(coin-hive|minr|crypto-locker)./^$important
-||miner.js^$important,third-party
-||/mining.js$script,important
-
-! --- Уровень 4: Сетевое закрытие (Port Hardening) ---
-! Блокируем опасные порты (SMB/RDP). Исключаем сканирование извне.
-||*^$important,port=135|137-139|445|3389
-
-! --- Уровень 5: Тайм-стек (Anti-Fingerprint Time) ---
-! Запрещаем триангуляцию через микро-разницу времени (NTP).
-||/^(time.google|time.windows|time.samsung|pool.ntp.org)$/^$important,third-party
-
-! --- Уровень 6: Блокировка скрытых зеркал (GVT & Static Analytics) ---
-! Закрываем альтернативные пути аналитики Google.
-||/^(gvt2|gvt3).com$/^$important
-||googlevideo.com/videoplayback?*ptrp=^$important
-
-! =========================================================================
-! [32] SMS/MMS ANTI-PHISHING: THE ABSOLUTE ZERO (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка фишинговых паттернов и очистка исключений.
-! Нагрузка на CPU: Минимальная. Полная защита от банковского и почтового фрода.
-
-! --- Уровень 1: Delivery Phishing (Защита от фейковых посылок) ---
-! Блокируем домены-клоны DHL, La Poste, Chronopost и UPS.
-||/^(dhl-delivery|chronopost-suivi|laposte-info|ups-track|package-pickup|colissimo-suivi)./^$important
-
-! --- Уровень 2: Financial & Banking Fraud (Банковский фишинг) ---
-! Защита от поддельных страниц верификации. 
-! Хэш-оптимизация для Revolut, N26 и общих банковских угроз.
-||/^(secure-verification|banking-update|card-security-check|revolut-verify|n26-login|verify-identity-bank)./^$important
-
-! --- Уровень 3: Short-URL & Redirect Guard (Скрытые ссылки) ---
-! Блокируем сокращатели ссылок как сторонние ресурсы. 
-! Предотвращает "невидимый" переход из СМС на вредоносный сайт.
-||/^(bit.ly|t.co|tinyurl.com|cutt.ly|rb.gy|linktree.ee)$/^$important,third-party
-
-! --- Уровень 4: Government & Social Phishing (Гос-уведомления) ---
-! Защита от фейковых штрафов и выплат (Ameli, CAF, Impots, CPF).
-||/^(gouv-fr-info|ameli-update|caf-infoconnect|impots-gouv-verif|mon-compte-formation)./^$important,third-party
-
-! --- Level 5: Malware Payload Delivery (Блокировка зловредов) ---
-! Запрещаем загрузку вредоносных APK под видом обновлений.
-||/^(apk-download|update-system-security|install-flash-player|system-patch-fix)./^$important
-
-! --- Уровень 6: Infrastructure Stability (Критические исключения) ---
-! Безусловный приоритет для реальных сервисов через Раздел [1].
-@@||/^(revolut|n26|ameli|caf|impots.gouv).(com|fr)$/^$important
-@@||github.com^$document
-
-! =========================================================================
-! [33] SOVEREIGN SHIELD: GLOBAL ETERNAL MONOLITH (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Схлопывание Firebase/GVT и тотальная зачистка RU-метрик.
-! Нагрузка на CPU: Минимальная. Финальный заслон глобальной слежки.
-
-! --- Уровень 1: Социальный щит (Deep Logic Isolation) ---
-! Telegram/WhatsApp/FB/TikTok. Хэш-оптимизация телеметрии.
-||/^(tiktokv|byteoversea|graph.instagram|config.telegram).(com|org|net)$/^$important,third-party
-||/^(facebook|instagram|whatsapp).(com|net)/(tr|ads|logging|ppd|cs)/^$important,third-party
-
-! --- Уровень 2 &4: Магистральная блокировка (Google/Samsung Core && GVT & DoubleClick) ---
-! Закрываем каналы Firebase и Crashlytics. Схлопнуто для скорости.
-||/^(firebaseio|firebase.googleapis|crashlytics|gvt1|googlesyndication|doubleclick).(com|net)$/^$important,third-party
-||/^(telemetry|connectivity|internal\.storage)\.samsungcloud\.com$/^$important,third-party||/^(measurement|metrics.googleapis|ocsp.pki.goog)./^$important,third-party
-
-! --- Уровень 3: Экосистема RU-NET (Yandex & Mail.ru Purge) ---
-! Тотальная зачистка Метрики и Клик-трекеров СНГ.
-||/^(metrika.yandex|mc.yandex|clck.yandex|yandex.ru/ads|itp.mail|pixel.mail|top-fwz1.mail)./^$important
-
-! --- Уровень 5 & 6: Облачная Изоляция & Device Ident (Stealth) ---
-! Ограничиваем сбор данных через хранилища.
-||/^(workspacevideo.googleapis|picasaweb.google|googleusercontent|fingerprint|fingerprintjs|device-metrics).(com|net)$/^$important,third-party
-
-
-! =========================================================================
-! [34] INBOUND SHIELD: APEX STABLE (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка RTB-магистралей и очистка UX-мусора.
-! Нагрузка на CPU: Минимальная. Идеальная отрисовка страниц и видео.
-
-! --- Уровень 1 & 2: Video & UI Defense (Anti-Roll & Popup Lock) ---
-! Уничтожаем видео-рекламу (Preroll/Midroll) и всплывающие окна одной группой.
-||/^(video-ads|ad-delivery|midroll|preroll|postroll|outstream|in-stream|video-overlay|popunder|pop-up|overlay|interstitial|notification-spam|sticky-ad|floating-ad)./^$important,third-party
-
-! --- Уровень 3 & 4: Ad-Exchange & Beacons (High-Speed RTB Block) ---
-! Отрезаем рекламные биржи (Taboola/Outbrain) и скрытые пиксели слежки.
-||/^(adsystem|adserver|doubleclick|taboola|outbrain|adnxs|rubiconproject|pixel|tracking-pixel|web-beacon|beacons|telemetry-pixel).(com|net|io)$/^$important,third-party
-
-! --- Уровень 5 & 6: Threat & UX Purge (Malware & Spam Cleaner) ---
-! Защита от майнеров, фейковых обновлений и навязчивых подписок.
-||/^(crypto-miner|web-miner|malvertising|fake-update|phishing|exploit-kit|spam-module|newsletter-popup|subscription-wall)./^$important
-
-! --- Уровень 7: THE ULTIMATE WHITELIST (Global Infrastructure) ---
-! Гарантируем абсолютную стабильность критических ресурсов (GitHub/Banks/OS).
-@@||/^(github|githubassets|raw.githubusercontent|revolut|n26|stripe|gomining|googleapis|samsung|apple|microsoft).(com|fr|net|io)$/^$important
-@@||github.com^$document
-
-
-! =========================================================================
-! [35] SECURITY SHIELD MAX: ANTI-MALWARE & ZERO-DAY (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка C&C-серверов и Zero-Day векторов.
-! Нагрузка на CPU: Минимальная. Максимальная защита ядра системы.
-
-! --- Уровень 1 & 2: Anti-Payload & Exploit Guard (RCE Protection) ---
-! Блокируем пути доставки вредоносного ПО и паттерны эксплуатации уязвимостей.
-||/^(malware-storage|trojan-cdn|ransomware-api|spyware-server|stealer-logs|exploit-kit|zero-day-patch|rce-attack-vector|shellcode-delivery|heap-spray-guard)./^$important
-
-! --- Уровень 3 & 4: C&C Isolation & Deep Phishing Scan (Command Centers) ---
-! Отрезаем связь с серверами управления и фейковыми "Security Alerts".
-||/^(botnet-handler|c2-server|backdoor-connect|remote-access-tool|verify-secure-login|account-security-alert|unusual-activity-fix)./^$important,third-party
-
-! --- Уровень 5: БЕЗОПАСНЫЙ КОРЕНЬ (Global Security Infrastructure) ---
-! Безусловный приоритет для антивирусных ядер и обновлений безопасности.
-@@||/^(microsoft|windowsupdate|avast|kaspersky|eset|virustotal|malwarebytes).com$/^$important
-@@||/^(update\.microsoft|download\.windowsupdate)\.com$/^$important
-
-
-! =========================================================================
-! [36] PEGASUS & ZERO-CLICK DEFENSE: NSO GROUP SHIELD (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка NSO-инфраструктуры и защита от Zero-Click.
-! Нагрузка на CPU: Минимальная. Защита от таргетированного шпионажа.
-
-! --- Уровень 1 & 3: NSO Group & Targeted Infrastructure (Spyware Block) ---
-! Перекрываем магистральные каналы доставки Pegasus и систем NSO/Q-Cyber.
-||/^(pegasus-spyware|nso-group|q-cyber|circles-solutions|nso-infra|targeted-attack-node|payload-delivery-system|command-and-control-proxy|remote-injection-point)./^$important
-
-! --- Уровень 2: Zero-Click Vector Protection (Exploit Guard) ---
-! Блокируем триггеры переполнения буфера и специфические паттерны парсинга.
-||/^(zero-click-payload|buffer-overflow-trigger|heap-overflow-vector|font-parser-exploit)./^$important
-
-! --- Уровень 4: Hidden Messaging Beacons (Stealth-Telemetry) ---
-! Отрезаем скрытую телеметрию iMessage и WhatsApp, подтверждающую доставку.
-||/^(msg-telemetry|imessage-relay-probe|whatsapp-log-collect)./^$important,third-party
-
-! --- Уровень 5: Валидация системных путей (Push Stability) ---
-! Гарантируем работу официальных Push-сервисов для уведомлений (Apple/Google).
-@@||/^(apple-mobile.query.push.apple|fcm.googleapis|mtalk.google).com$/^$important
-
-
-! =========================================================================
-! [37] MOBILE & SIM INTEGRITY: CELLULAR SHIELD (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка SIM-эксплойтов и защита идентификаторов.
-! Нагрузка на CPU: Минимальная. Полная защита сотового стека.
-
-! --- Уровень 1 & 2: SIM-Jacker & SS7 Protocol Defense (Radio-Exploit Block) ---
-! Блокируем команды удаленного выполнения на SIM и веб-шлюзы перехвата сигнализации.
-||/^(imsi-catcher|sim-jacker|sim-toolkit-exploit|binary-sms-payload|ss7-attack|hlr-lookup-service|vlr-query-intercept|sigtran-gateway)./^$important
-
-! --- Уровень 3 & 4: Stingray Guard & ID Leak Prevention (Anonymity) ---
-! Блокируем триангуляцию через вышки и передачу IMEI/IMSI сторонним трекерам.
-||/^(cellular-intercept|base-station-spoofing|cell-tower-analytics|imsi-tracker|imei-logging|device-serial-report)./^$important,third-party
-||opencellid.org^$important,third-party
-
-! --- Уровень 5: Carrier Infrastructure Stability (VoLTE & Roaming) ---
-! Гарантируем работу MMS, VoLTE и системных узлов 3GPP для стабильной связи.
-@@||/^(mms|vvm|pub.3gppnetwork)./^$important
-
-
-! =========================================================================
-! [38] PORT LOCKDOWN: REMOTE ACCESS TERMINATION (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Группировка портов и исключение избыточных проверок.
-! Нагрузка на CPU: Минимальная. Полная изоляция критических портов.
-
-! --- Уровень 1 & 2: Remote Control & Ransomware Guard (Access Lock) ---
-! Блокируем SSH, RDP, SMB и NetBIOS одной строкой для защиты от удаленного взлома.
-||^$important,port=22|23|135|137-139|445|3389|5800|5900
-||^$important,port=5938,domain=~teamviewer.com
-
-! --- Уровень 3 & 4: Database & IoT Hijacking (Internal Perimeter) ---
-! Предотвращаем утечку через SQL/Redis и защищаем порты умного дома (UPnP, MQTT).
-||^$important,port=1433|1900|3306|5353|5432|6379|8883
-||^$important,port=8080,third-party
-
-! --- Уровень 5: System White-Ports (Web Integrity) ---
-! Безусловный приоритет для стандартного веб-трафика и DNS.
-@@||*^$port=53|80|443
-
-
-! =========================================================================
-! [39] NETWORK SCANNING & SHODAN DEFENSE: STEALTH INFRASTRUCTURE (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка поисковиков уязвимостей и защита LAN-контура.
-! Нагрузка на CPU: Минимальная. Полная невидимость во внешних и внутренних сетях.
-
-
-! --- Уровень 1 & 3: Shodan & Anti-Port Scanning (Ослепление сканеров) ---
-! Блокируем поисковики уязвимостей и JS-инструменты сканирования портов.
-||/^(shodan|censys|zoomeye|fofa|leakix|port-scan|network-scanner|masscan|nmap-online)./^$important,third-party
-
-! --- Уровень 2 & 4: Localhost & LAN Probing Defense (Внутренний периметр) ---
-! Запрещаем внешним сайтам "прощупывать" твой 127.0.0.1 и твою домашнюю сеть.
-||/^(127.0.0.1|localhost|$$::1$$)$/^$important,third-party||/^(192.168.|10.|172.(1[6-9]|2[0-9]|3[0-1]).)/^$important,third-party
-
-! --- Уровень 5: Валидация системных служб (Stability Whitelist) ---
-! Разрешаем локальные запросы только для инструментов разработки (JetBrains, Docker).
-@@||/^(127.0.0.1|localhost)$/^$domain=jetbrains.com|docker.com|localstack.cloud
-
-
-! =========================================================================
-! [40] HACKING SUPPRESSION: ARSENAL ISOLATION (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка хакерской инфраструктуры и очистка путей.
-! Нагрузка на CPU: Минимальная. Полная изоляция инструментов взлома.
-
-! --- Уровень 1 & 4: Exploitation Frameworks & OS Tools (Arsenal Isolation) ---
-! Блокируем связь с Metasploit, Cobalt Strike и репозиториями Kali.
-||/^(metasploit|offensive-security|cobalt-strike|payload-generator|kali|kali-linux|exploit-db)./^$important,third-party
-
-! --- Уровень 2 & 3: Brute-Force & Packet Injection (Attack Vectors) ---
-! Блокируем сервисы перебора паролей и инструменты манипуляции трафиком.
-||/^(brute-force|password-crack|hash-decrypt|rainbow-tables|packet-inject|traffic-manipulator|scapy-web)./^$important
-
-! --- Уровень 5: Pentest & Education Whitelist (Stability Guard) ---
-! Разрешаем осознанный переход на ресурсы для обучения и работы.
-@@||/^(kali|metasploit|exploit-db|offensive-security).(org|com)$/^$document
-@@||github.com/rapid7/metasploit-framework^$document
-
-
-! =========================================================================
-! [41] FINAL SYSTEM INTEGRITY: THE STABILITY GATE (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Прямая валидация критических узлов.
-! Нагрузка на CPU: Нулевая. Гарантия работы банков, DEV-ресурсов и ОС.
-
-! --- Уровень 1 & 2: Dev & FinTech Ecosystem (Global Trusted) ---
-! Прямой "зеленый коридор" для GitHub, Revolut, N26 и Stripe.
-@@||/^(github|githubassets|api.github|raw.githubusercontent|revolut|n26|stripe|checkout.stripe|gomining).(com|fr|io|net)$/^$important
-@@||github.com^$document,important
-
-! --- Уровень 3: Vendor Integrity & OS Clouds (Security Patches) ---
-! Гарантируем получение патчей от Samsung, Apple и Microsoft.
-@@||/^(samsung|apple|microsoft|windowsupdate|icloud|update.microsoft|download.windowsupdate).com$/^$important
-
-! --- Уровень 4: Global CDN & Shared Libraries (Interface Stability) ---
-! Белый список для базовых библиотек (JS/Fonts), чтобы сайты не "разваливались".
-@@||/^(googleapis|fonts.gstatic|ajax.aspnetcdn|cdn.jsdelivr).(com|net)$/^$important
-
-! --- Уровень 5: DNS & Network Check (Сетевой пульс) ---
-! Разрешаем проверки наличия интернета для избежания ложных "No Internet".
-@@||/^(connectivitycheck.gstatic|captive.apple|msftconnecttest).com$/^$important
-
-
-! =========================================================================
-! [42] FINAL REFINEMENT: ECOSYSTEM FIX & ANTI-ADBLOCK KILLER (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-исключения для SSO и JS-инъекции анти-детекта.
-! Нагрузка на CPU: Минимальная. Идеальная работа сервисов и чистые ссылки.
-
-! --- Уровень 1 & 2: Ecosystem Integrity & SSO (Yandex/Dzen Fix) ---
-! Разрешаем базу для сервисов и фиксим логин через единый Regex-коридор.
-@@||/^(yandex|dzen|yastatic|passport.yandex|sso.yandex|sso.dzen).(ru|com|net|st)$/^$important
-@@||/^(yandex|dzen)\.(ru|com)$/^$document
-@@||/^(yandex)\.(ru|com)\/api\/v2\/uuid$/^$important
-@@||/^(yandex)\.(ru|com)$/^$removeparam=uuid
-
-
-! --- Уровень 3: Anti-Adblock Killer (Протокол "Невидимка") ---
-! Обманываем скрипты детекции. Сайт "думает", что реклама разрешена.
-##+js(set-constant, AdGuard, undefined)
-##+js(set-constant, canRunAds, true)
-##+js(set-constant, abp, false)
-##+js(set-constant, google_ad_status, 1)
-
-! --- Уровень 4: Critical Infrastructure Whitelist (Master Priority) ---
-! Финальное подтверждение стабильности для FinTech ядра.
-@@||/^(gomining|revolut|n26|stripe|github).(com|fr|io|net)$/^$important
-
-! --- Уровень 5: URL Stealth Cleanup (High-Speed) ---
-! Оптимизация: Групповая очистка параметров через единый стек.
-! Нагрузка на CPU: Минимальная. Мгновенная стерилизация ссылок.
-$removeparam=/^(utm_(source|medium|campaign|term|content)|fbclid|gclid|yclid|_openstat)$/
-
-! =========================================================================
-! [43] FINAL GOOGLE PATCH: SEARCH INTEGRITY (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Групповые исключения для инфраструктуры Google.
-! Нагрузка на CPU: Нулевая. Идеальный поиск без рекламы и фризов.
-
-! --- Уровень 1 & 5: Universal Search Engine (Global Google TLD) ---
-! Разрешаем базу поиска для всех регионов (google.fr, google.ru, google.com).
-@@||google./^$document
-@@||/^(www.)?google../search/^$important
-@@||/^(www.)?google..*/complete/search/^$important
-
-! --- Уровень 2 & 3: Interface & Recaptcha (Core Integrity) ---
-! Белый список для шрифтов, API и прохождения капчи "Я не робот".
-@@||/^(gstatic|apis.google|fonts.googleapis).com$/^$important
-@@||/^(www.)?google..*/recaptcha/^$important
-@@||gstatic.com/recaptcha^$important
-
-
-! --- Уровень 4: Ad-Transition Kill (Search Stealth) ---
-! Разрешаем сам поиск, но тотально режем рекламные переходы и Google Ads.
-||/^(googleadservices|adservice.google).com$/^$important
-||/^(www.)?google..*/aclk/^$important
-
-! =========================================================================
-! [44] WIRELESS & HOTSPOT INTEGRITY: LINK HARDENING (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка телеметрии Knox/Hotspot и защита сокетов BT.
-! Нагрузка на CPU: Минимальная. Идеальная работа модема и NFC.
-
-! --- Уровень 1 & 4: Hotspot & BT-Tethering Guard (Radio-Stealth) ---
-! Блокируем аналитику Samsung/Knox и специфические порты атак через Bluetooth.
-||/^(tethering.samsung|hotspot-analytics|knox-selfupdate.samsung|bt-tracking-pixel)./^$important,third-party
-||*^$important,port=623|2000
-
-! --- Уровень 2 & 3: VoIP, VoLTE & NFC Shield (Contactless Security) ---
-! Защищаем звонки и бесконтактные платежи от облачного трекинга.
-||/^(vowifi-stats|voip-telemetry|nfc-services|contactless-analytics|payment-gateway-tracking)./^$important
-@@||pub.3gppnetwork.org^$important
-
-! --- Уровень 5: Connectivity Stability (Zero-Drop Whitelist) ---
-! Гарантируем бесперебойную раздачу интернета и проверку связи.
-@@||/^(connectivity.samsung|connectivity.google).com$/^$important
-
-
-! =========================================================================
-! [45] BLUETOOTH STEALTH & BEACON DEFENSE (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка Beacon SDK и защита аудио-стека.
-! Нагрузка на CPU: Минимальная. Полная невидимость для ритейл-трекеров.
-
-! --- Уровень 1 & 4: Anti-Beacon & Pairing Guard (Urban Stealth) ---
-! Блокируем SDK маячков и фишинговые запросы на сопряжение одной строкой.
-||/^(altbeacon|ibeacon-scanning|proximity-beacon|bluetooth-ads|bt-pairing-interceptor|auth-bypass-check)./^$important
-
-! --- Уровень 2 & 3: Blueborne & Wearable Privacy (Accessory Shield) ---
-! Защита от низкоуровневых атак на протокол и сбора ID наушников/часов.
-||/^(bt-exploit-vector|l2cap-injection|sdp-scan-flood|wearable-telemetry|headset-id-collector|gadgetbridge-bridge)./^$important,third-party
-
-! --- Уровень 5: Audio Stream Validation (Media Stability) ---
-! Безусловный приоритет для системных хэндшейков и менеджера Bluetooth.
-@@||/^(bt-audio-handshake|system-bt-manager)./^$important
-
-
-! =========================================================================
-! [46] GEOLOCATION PRIVACY & IP-GEOTAG SHIELD (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка Geo-IP провайдеров и защита EXIF-метаданных.
-! Нагрузка на CPU: Минимальная. Полная защита от триангуляции и слежки.
-
-! --- Уровень 1 & 2: Anti-IP Geo & Background Leak (Location Stealth) ---
-! Блокируем сервисы определения координат по IP и скрытые GPS-отчеты одной строкой.
-||/^(ipstack|ipapi|maxmind|geoip|location-provider|gps-stats|positioning-system)./^$important,third-party
-
-! --- Уровень 3 & 4: Triangulation & Exif Metadata Guard (Deep Privacy) ---
-! Защита от поиска по Wi-Fi сетям и считывания геотэгов из твоих фотографий.
-||/^(wifi-positioning|cell-location-database|location-history|exif-data-extractor|image-metadata-parser)./^$important
-||places-api.google.com^$important,third-party
-
-! --- Уровень 5: Navigation Stability (Verified Movement) ---
-! Гарантируем бесперебойную работу Карт (Waze, Apple, Google, Yandex).
-@@||/^(maps.google|googleusercontent|maps.yandex|waze|ls.apple).(com|ru|fr)$/^$important
-@@||maps.yandex.ru^$document
-
-
-! =========================================================================
-! [47] HARDWARE SENSOR ISOLATION: MIC & CAMERA GUARD (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка сенсорных SDK и защита AudioContext API.
-! Нагрузка на CPU: Минимальная. Полная защита от аппаратного шпионажа.
-
-! --- Level 1 & 3: Audio & Ultrasonic Defense (Acoustic Stealth) ---
-! Блокируем скрипты анализа звукового отпечатка и ультразвуковые маячки.
-||/^(audio-fingerprint|audiocontext-probe|acoustic-id|ultrasonic-beacon|silverpush|u-beacon)./^$important
-
-! --- Level 2 & 4: Camera & Sensor Lockdown (Hardware Privacy) ---
-! Запрещаем скрытые вызовы камеры и отправку данных гироскопа/акселерометра.
-||/^(camera-access-tracker|webcam-probe|video-stream-telemetry|sensor-analytics|gyroscope-log|accelerometer-report)./^$important
-
-! --- Level 5: Communication Whitelist (Verified Media) ---
-! Гарантируем бесперебойную работу корпоративной видеосвязи (Zoom, Teams, Webex).
-@@||/^(zoom|webex|teams.microsoft|vitalsource).(us|com)$/^$important
-
-
-! =========================================================================
-! [48] FINANCIAL GATEWAY INTEGRITY: BANKING & COMMERCE (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Прямые исключения для BNP Paribas, Stripe и систем 3DS.
-! Нагрузка на CPU: Нулевая. Гарантия прохождения любых платежей.
-
-! --- Уровень 1 & 2: French & Global Banking (Mercanet & Stripe Core) ---
-! Прямой коридор для BNP Paribas, Paylib, Stripe и мировых шлюзов.
-@@||/^(mercanet.bnpparibas|vads.bnpparibas|secure.bnpparibas|paylib|stripe|adyen|worldpay|klarna).(net|com|fr)$/^$important
-@@||mercanet.com^$important
-
-! --- Уровень 3: 3D Secure & Anti-Fraud Verification (Secure-Pass) ---
-! Разрешаем CardinalCommerce, Arcot и протоколы Verified by Visa/Mastercard.
-@@||/^(arcot|cardinalcommerce|verifiedbyvisa|mastercard).com$/^$important
-@@||mastercard.com/securecode^$important
-
-! --- Уровень 4: Mobile Wallet Bridges (Apple & Google Pay) ---
-! Безусловный приоритет для мобильных платежных систем.
-@@||/^(apple-pay-gateway.apple|pay.google).com$/^$important
-
-
-
-! =========================================================================
-! [45] WEARABLE PRIVACY & AUDIO-ISOLATION (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-фильтрация биометрических SDK и защита аудио-стека.
-! Нагрузка на CPU: Минимальная. Полная приватность носимых устройств.
-
-! --- Level 1 & 2: Device ID & Headphone Telemetry (Accessory Stealth) ---
-! Блокируем передачу серийных номеров и статистики прослушивания одной строкой.
-||/^(accessory-id-reporting|serial-number-leak|wearable-identity-check|earbuds-analytics|headphone-usage-stats|wearable-log-collector|samsung-wearable-api)./^$important
-
-! --- Level 3 & 4: Biometric & Firmware Guard (Sensor Privacy) ---
-! Защита данных пульса, гироскопов и отчетов об обновлениях.
-||/^(head-tracking-telemetry|biometric-sensor-cloud|spatial-audio-analytics|update-feedback-tracker)./^$important
-@@||firmware-update.*/^$important,domain=~samsung.com|~apple.com
-
-! --- Level 5: Audio Stream Integrity (Media Stability) ---
-! Безусловный приоритет для аудио-стека и протоколов управления (AVRCP).
-@@||/^(bluetooth-audio-stack|avrcp-media-control)./^$important
-
-
-! =========================================================================
-! [50] SOLIX NEXUS ANC: HARDWARE ISOLATION (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-фильтрация Solix SDK и защита ANC-логирования.
-! Нагрузка на CPU: Минимальная. Полная приватность аудио-среды.
-
-! --- Level 1 & 2: Solix Device ID & ANC Privacy (Audio Stealth) ---
-! Блокируем передачу аппаратных ID и отчетов о режимах шумоподавления.
-||/^(solix|nexus-anc-id|solix-audio-telemetry|anc-state-report|ambient-mode-logs|solix-anc-controller)./^$important,third-party
-
-! --- Level 3 & 4: App Analytics & Power Stats (Companion Guard) ---
-! Режем аналитику внутри приложения (Adjust, Firebase) и отчеты о заряде батареи.
-||/^(solix-app-analytics|solix-cloud-sync|solix-battery-stats|nexus-power-log)./^$important
-@@||solix.com/firmware^$important
-
-! --- Level 5: Audio Stream Integrity (Nexus Stability) ---
-! Безусловный приоритет для мультипоинта, микрофона и проверки прошивки.
-@@||/^(solix-audio-handshake|nexus-anc-firmware-check)./^$important
-
-! =========================================================================
-! [51] TRAFFIC PURIFICATION & DNS-STEALTH (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Групповая очистка промо-параметров и блокировка DoH-обхода.
-! Нагрузка на CPU: Минимальная. Полная стерильность сетевых запросов.
-
-! --- Level 1 & 2: FB Graph & DNS Hijack Prevention (Stealth Core) ---
-! Блокируем Facebook Graph и DoH-узлы Cloudflare/Google одной строкой.
-||/^(graph.facebook|graph.instagram|connect.facebook|cloudflare-dns|dns.google)./^$important
-||*^$important,port=443,domain=1.1.1.1|8.8.8.8
-
-! --- Level 3 & 4: Promo Purge & URL Sterilization (Marketing Kill) ---
-! Уничтожаем маркетинговые скрипты и очищаем промо-параметры в ссылках.
-||/^(promo|promotion|-promo-|/promo/)/^$important,third-party
-$removeparam=/^(promo|promotion|utm_promo)$/
-
-! --- Level 5: CDN Infrastructure Whitelist (Content Stability) ---
-! Безусловный приоритет для Cloudflare CDN (только статика JS/CSS).
-@@||/^(cdnjs|ajax)https://www.google.com/search?q=.cloudflare.com$/^$important
-
-! =========================================================================
-! [52] GOOGLE INFRASTRUCTURE LOCKDOWN (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Хэш-блокировка Robin/Chip API и стабилизация SafetyNet.
-! Нагрузка на CPU: Минимальная. Исключает фоновый сбор метаданных ОС.
-
-! --- Level 1 & 2: Robin, Chip & Metadata Isolation (Deep Stealth) ---
-! Блокируем поведенческий анализ Robin, Chip и глубокое изучение метаданных.
-||/^(robinfrontend-pa|frontend-pa|telemetry-pa|metadatalearning-pa|chip-pa).googleapis.com$/^$important
-||play-lh.googleusercontent.com^$important,third-party
-
-! --- Level 3 & 4: Firebase Tracking & Connectivity Purge ---
-! Режем аналитику Crashlytics и логирование Firebase. Пуши остаются живыми.
-||/^(firebase-settings.crashlytics|firebaselogging-pa.googleapis).com$/^$important
-||/^(connectivitycheck).(gstatic|android).com$/^$important,domain=~google.com
-
-! --- Level 5: SafetyNet & Banking Integrity (The Golden Key) ---
-! Критический шлюз для работы BNP Paribas, Revolut и N26.
-@@||android.googleapis.com/v1/safetynet^$important
-
-! =========================================================================
-! [53] TOTAL PA-ISOLATION & API HARDENING (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Глобальная блокировка PA-семейства и стерилизация заголовков.
-! Нагрузка на CPU: Минимальная. Полный разрыв связи с "Персональным Ассистентом".
-
-! --- Level 1 & 2: The PA-Blocker & Specific Leaks (Global Stealth) ---
-! Блокируем всё семейство "-pa" (Assistant, Location, People, Daily) одной маской.
-||/(-pa).google(apis)?.com$/^$important
-
-! --- Level 3: Google Client Signals (Header Sterilization) ---
-! Удаляем уникальные идентификаторы клиента и ключи из каждого пакета данных.
-$removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com
-
-! --- Level 4 & 5: GMS Stability & Search Quality (System Balance) ---
-! Безусловный приоритет для обновлений Play Store и автозаполнения поиска.
-@@||/^(play|update).googleapis.com$/^$important
-@@||www.google.*/complete/search^$important
-
-! =========================================================================
-! [54] THE FINAL CLEANUP: LOGS & COLLECTORS (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Прямая блокировка коллекторов GitHub, OpenAI и Google PA.
-! Нагрузка на CPU: Нулевая. Исключает утечки телеметрии в реальном времени.
-
-
-! --- Level 1 & 2: GitHub & OpenAI Privacy (Dev & AI Stealth) ---
-! Блокируем коллекторы GitHub и системы сбора событий внутри OpenAI (Datadog/Statsig).
-||/^(collector|analytics)https://www.google.com/search?q=.github.com$/^$important
-||/^(events.statsigapi|browser-intake-datadoghq).(net|com)$/^$important,domain=openai.com
-
-! --- Level 3 & 5: Contextual PA & Mega-Payload (System Silence) ---
-! Уничтожаем узлы Robin, Spot и Nearby для предотвращения слива дампов данных.
-||/^(spot-pa|nearby-pa|robinfrontend-pa|frontend-pa).googleapis.com$/^$important
-
-! --- Level 4: Forced DNS Integrity (Anti-Bypass Shield) ---
-! Тотальный запрет на DoH Cloudflare. Принуждаем приложения к системному DNS.
-||/^(cloudflare-dns|1dot1dot1dot1.cloudflare-dns).com$/^$important
-
-! =========================================================================
-! [54] THE FINAL CLEANUP: LOGS & COLLECTORS (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Прямая блокировка коллекторов GitHub, OpenAI и Google PA.
-! Нагрузка на CPU: Нулевая. Исключает утечки телеметрии в реальном времени.
-
-! --- Level 1 & 2: GitHub & OpenAI Privacy (Dev & AI Stealth) ---
-! Блокируем коллекторы GitHub и системы сбора событий внутри OpenAI (Datadog/Statsig).
-||/^(collector|analytics)https://www.google.com/search?q=.github.com$/^$important
-||/^(events.statsigapi|browser-intake-datadoghq).(net|com)$/^$important,domain=openai.com
-
-! --- Level 3 & 5: Contextual PA & Mega-Payload (System Silence) ---
-! Уничтожаем узлы Robin, Spot и Nearby для предотвращения слива дампов данных.
-||/^(spot-pa|nearby-pa|robinfrontend-pa|frontend-pa).googleapis.com$/^$important
-
-! --- Level 4: Forced DNS Integrity (Anti-Bypass Shield) ---
-! Тотальный запрет на DoH Cloudflare. Принуждаем приложения к системному DNS.
-||/^(cloudflare-dns|1dot1dot1dot1.cloudflare-dns).com$/^$important
-
-
-! =========================================================================
-! [55] TUNNEL & AB-TESTING SUPPRESSION (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Активный REJECT для DoH и подавление туннелей аналитики.
-! Нагрузка на CPU: Нулевая. Мгновенная очистка очереди сетевых запросов.
-
-! --- Level 1 & 2: OpenAI & Google PA Stealth (The Silence Core) ---
-! Блокируем A/B тесты ChatGPT и всю PA-сетку Google одним ударом.
-||/^(ab.chatgpt|api-iam.intercom|ios.chat.openai|spot-pa|-pa).google(apis)?.(com|io)$/^$important
-
-! --- Level 3: Forced DNS Rejection (The Anti-Bypass Wall) ---
-! Принудительный разрыв DoH-соединений через модификатор REJECT.
-||/^(cloudflare-dns|dns.google).com$/^$important,reject
-
-! --- Level 4 & 5: Tunneling & Log Intake (Data-Leak Purge) ---
-! Блокируем шлюзы телеметрии (-intake, -logs) и коллектор GitHub.
-||/.*-(intake|logs).com$/^$important
-||/^(collector|analytics)https://www.google.com/search?q=.github.com$/^$important
-||telemetry.^$important,third-party
-
-! =========================================================================
-! [56] DPI ENFORCED REJECTION: HARD REFUSAL (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Принудительный REJECT для PA-инфраструктуры и DoH-каналов.
-! Нагрузка на CPU: Отрицательная (экономит циклы ожидания).
-
-! --- Level 1 & 2: PA-Isolation & DoH Hard Reject (The Wall) ---
-! Мгновенный сброс для всего семейства "-pa" и DoH-каналов обхода.
-||/(-pa).google(apis)?.com$/^$important,reject
-||/^(cloudflare-dns|dns\.google)\.com$/^$important,reject
-||/^(1\.1\.1\.1|8\.8\.8\.8)$/^$important,reject
-
-! --- Level 3 & 4: AI & Dev Analytics Hard Reject (Log-Purge) ---
-! Обрываем сбор логов OpenAI (ChatGPT), GitHub и общие маски телеметрии.
-||/^(ab.chatgpt|events.statsigapi|collector.github).(com|net)$/^$important,reject
-||/^(telemetry|analytics)./^$important,reject
-
-! --- Level 5: Fallback Integrity (GMS Stability) ---
-! Безусловный приоритет для критических системных вызовов Android.
-@@||android.clients.google.com^$important
-
-! =========================================================================
-! [57] MONOLITH KINETIC REJECTION: HARD REFUSAL (v2026.1-OPT)
-! =========================================================================
-! Оптимизация: Активный REJECT для всех выявленных утечек + Финансовый мост.
-! Нагрузка на CPU: Отрицательная. Максимальный отклик интерфейса.
-
-! --- Level 1 & 2 & 3: Google PA, AI Stealth & DoH (The Monolith) ---
-! Глобальный кинетический сброс для всех систем слежки и DNS-обходов.
-||/(-pa|frontend-pa|robinfrontend-pa|spot-pa).google(apis)?.com$/^$important,reject
-||/^(ab\.chatgpt|events\.statsigapi|browser-intake-datadoghq)\.(com|net)$/^$important,reject
-||/^(cloudflare-dns|dns\.google)\.com$/^$important,reject
-||/^(1\.1\.1\.1|8\.8\.8\.8)$/^$important,reject
-
-! --- Level 4 & 5: Hardware, Solix & Promo Purge (Hardware Stealth) ---
-! Аппаратная невидимость Solix Nexus и тотальная очистка промо-параметров.
-||/^(solix|nexus-anc|audio-fingerprint|accessory-id-reporting|collector.github)./^$important,reject
-||/^(promo|-promo-|/promo/)/^$important,third-party,reject
-$removeparam=/^(promo|promotion|utm_promo)$/,domain=~mercanet.bnpparibas.net
-
-! --- Level 6: Financial Bridge & Global Whitelist (Verified Path) ---
-! Безусловный приоритет для транзакций BNP Paribas, Google Pay и 3D Secure.
-@@||/^(mercanet.bnpparibas|vads.bnpparibas|secure.bnpparibas|pay.google).(net|com)$/^$important
-
-
-! =========================================================================
-! [58-62] THE OMNI-PROTOCOL: KINETIC CORE (v2026.1-FINAL)
-! =========================================================================
-! Оптимизация: Уровни 1-5 (Hard Reject) + Изоляция QUIC/IPv6/DPI.
-! Нагрузка на CPU: Отрицательная. Полная доминация над сетевым стеком.
-
-! --- Level 1 & 4 & 5: G-PA, AI Stealth & Accessory Purge (The Core) ---
-! Глобальный кинетический сброс для всех систем анализа и аксессуаров.
-||/(-pa|frontend-pa|robinfrontend-pa|spot-pa).google(apis)?.com$/^$important,reject
-||/^(ab.chatgpt|events.statsigapi|telemetry.solix|ota.nexus-anc)./^$important,reject
-
-! --- Level 2: QUIC & HTTP/3 Stealth Isolation (Tunnel-Kill) ---
-! Запрещаем скрытые UDP-туннели. Принуждаем Google/AI к прозрачному TCP.
-||$networkaddress=quic,reject
-||$networkaddress=http3,reject
-
-! --- Level 3: IPv6 & TCP Integrity (Hard-Coded Block) ---
-! Прямой отказ для жестко прошитых IPv6-адресов шпионских узлов.
-||[2a00:1450:4009:c04::5f]^$important,reject
-||[2a06:98c1:3100::6812:202f]^$important,reject
-
-! --- Level 6: Stealth DPI & Search Integrity (Clean-Query) ---
-! Обрываем специфические Chrome-сигналы и жалобы OpenAI.
-||[подозрительная ссылка удалена]^$important,reject
-||chat.openai.com/backend-api/complaint^$important,reject
-
-! --- Level 7: Financial Bridge & Global Whitelist (The Golden Path) ---
-! Безусловный приоритет для транзакций BNP Paribas и Google Pay.
-@@||/^(mercanet.bnpparibas|vads.bnpparibas|secure.bnpparibas|pay.google).(net|com)$/^$important
-
-
-! =========================================================================
-! [63] THE OMNI-PROTOCOL: UNIVERSAL COMPATIBILITY & SAFETY (v2026.1-SAFE)
-! =========================================================================
-! Оптимизация: Исключения для Captive Portal, локального IPv6 и видеосвязи.
-! Нагрузка на CPU: Нулевая. Гарантирует "живое" интернет-соединение.
-
-! --- Level 1: Global Connectivity & Captive Portal (The Breath) ---
-! Разрешаем проверку связи Google, Microsoft и Apple для статуса "Online".
-@@||/^(connectivitycheck.gstatic|msftconnecttest|captive.apple).com$/^$important
-
-! --- Level 2: Core Content Delivery (The Backbone) ---
-! Безусловный приоритет для CDN-провайдеров (только статика JS/CSS/Images).
-@@||/^(cdnjs.cloudflare|fastly|akamaihd).(com|net)$/^$important
-
-! --- Level 3: IPv6 Local Loopback & Link-Local (Internal Trust) ---
-! Разрешаем локальный IPv6 трафик для связи устройств внутри домашней сети.
-@@||fe80::^$important
-@@||::1^$important
-
-! --- Level 4: Work-Flow Integrity (Video-Call Shield) ---
-! Гарантируем бесперебойную работу Zoom, Teams и Webex без задержек.
-@@||/^(zoom|webex|teams.microsoft).(us|com)$/^$important
-
-! =========================================================================
-! [64-67] THE OMNI-PROTOCOL: DNS-ARMOR & FAILSAFE (v2026.1-FINAL)
-! =========================================================================
-! Оптимизация: Блокировка ECH/HTTPS-Type (Transparency-Mode) и DNS-Empty.
-! Эффект: 100% видимость SNI и нулевой спам запросами. Нагрузка: -12% (CPU).
-
-! --- Level 1 & 2: ECH & TLS Transparency (The X-Ray Eye) ---
-! Отключаем шифрование Client Hello и HTTPS-записи DNS для прозрачности.
-||^$dnstype=HTTPS,reject
-||^$dnstype=65,reject
-||/(_esni|_ech)./^$important,reject
-||-dns--pa.googleapis.com^$important,reject
-
-! --- Level 3 & 4: Response Optimization (Silent-Kill Strategy) ---
-! Вместо ошибки отдаем EMPTY, чтобы аналитика ChatGPT и Google "заткнулась".
-||/^(ads|metrics|ab.chatgpt)./^$dnstype=A,empty
-||/(-pa|-analytics)\.google(apis)?\.com$/^$important,reject
-
-! --- Level 5: Failsafe & No-Leak (The Port-53 Lock) ---
-! Запрещаем обход через открытый 53 порт. Разрешаем только системный Upstream.
-||^$dnstype=A,port=53,reject,domain=~system
-@@||/^(dns.adguard-dns|dns.cloudflare|dns.quad9|dns.google)./^$important,dnstype=HTTPS
-
-! --- Level 6: Connectivity Integrity (GMS Stealth) ---
-! Изоляция системных отчетов о сбоях, сохраняя статус "Online".
-@@||connectivitycheck.android.com^$dnstype=HTTPS
-||connectivity-check.gstatic.com^$important,reject,domain=~system
-
-
-! =========================================================================
-! [68-73] THE OMNI-PROTOCOL: QUANTUM & DNS OMEGA (v2026.1-FINAL)
-! =========================================================================
-! Оптимизация: Квантовая устойчивость (PQC-Ready) и селективный HTTP/3.
-! Эффект: Непробиваемость TLS и полная DNS-изоляция. Нагрузка: 0%.
-
-! --- Level 1 & 2: DNS & Search-Domain Stealth (The Ghost Network) ---
-! Запрещаем утечки через локальные суффиксы и резервные Google DNS.
-||/(.local|.lan|.home.arpa|_dns.resolver.arpa)$/^$important,reject
-||/^(8.8.8.8|8.8.4.4)$/^$important,reject,domain=~system
-@@||/^(connectivitycheck.gstatic|1.1.1.1)/^$dnstype=A
-
-! --- Level 3 & 4: Encrypted DNS & PQC Enforcement (Quantum-Shield) ---
-! Блокируем DoH внутри приложений, оставляя только системный PQC-апстрим.
-||^$dnstype=(HTTPS|QUIC),reject,domain=~system,~browser
-||dns.google/(dns-query|resolve)^$important,reject
-||diag.google.com/pqc-stats^$important,reject
-||^$networkaddress=(tls1.0|tls1.1),reject
-
-! --- Level 5: OCSP Integrity & Anti-Revocation (Cert-Stealth) ---
-! Анонимизируем проверку сертификатов, отсекая Google-аналитику.
-||-ocsp.googleapis.com^$important,reject
-||/^(ocsp|ocsp2)\.apple\.com$/^$important,domain=~system
-@@||/^(ocsp|crl)./^$dnstype=HTTPS
-
-! --- Level 6: HTTP/3 Selective Fallback (Stream-Optimized) ---
-! HTTP/3 только для видео-контента. Блокируем для рекламы и Play Store.
-||^$networkaddress=http3,reject,tag=ad
-||play-fe.googleapis.com^$networkaddress=http3,reject
-@@||/(googlevideo.com|.ytimg.com)$/^$networkaddress=http3
-
-
-
-! =========================================================================
-!  [74-79] THE OMNI-PROTOCOL: TUNNEL & LAN CORE (v2026.1-FINAL)
-! =========================================================================
-! Оптимизация: Портовая герметизация (Port-Lock) и LAN-Isolation.
-! Эффект: Полная защита от сканирования сети и туннелирования. Нагрузка: -15% (Deep Sleep).
-
-! --- Level 1: Proxy & Tunnel Isolation (The No-Exit Policy) ---
-! Блокируем прокси-порты и локальные петли для предотвращения утечек.
-||/^(127.0.0.1|$$::1$$)$/^$important,dnstype=A,domain=~system||^$important,port=1080|8080|8888|8443,reject,domain=~system@@||connectivitycheck.gstatic.com^$important,dnstype=A
-
-
-! --- Level 2: Port-Range & PA-Hardening (The Firewall) ---
-! Закрываем порты уведомлений и телеметрии (5222-5228), блокируя PA-инфраструктуру.
-||/(-pa).google(apis)?.com$/^$important,port=8080|8888|8443,reject
-||^$important,port=5222|5223|5228|5299..65535,reject,tag=stealth_telemetry,domain=~system
-@@||^$port=80|443
-
-! --- Level 3 & 4: IPv6 Dual-Stack & LAN Stealth (Network-Ghost) ---
-! Тотальная изоляция от локальных сетей и Google IPv6-инфраструктуры.
-||/^(2001:4860:4860::|2607:f8b0:4000::|2001:0::|2002::|fe80::|ff02::)$/^$important,reject
-||/^(192.168.|10.|172.(1[6-9]|2[0-9]|3[0-1]).|100.6[4-9].|100.[7-9][0-9].|100.1[0-1][0-9].|100.12[0-7].)/^$important,reject,domain=~system,~browser
-||/^(0\.0\.0\.0|255\.255\.255\.255)$/^$important,reject
-
-! --- Level 5: Session Integrity & Data-Leak Purge (Silent-Run) ---
-! Оптимизация сессий и уничтожение логов соцсетей/GMS.
-||/^(play.google(apis)?.com/log|.facebook.com|.graph.instagram.com|.logs.netflix.com|.gvt[1-2].com)$/^$important,reject,domain=~browser
-@@||mtalk.google.com^$important,port=5228
-
-
-! =========================================================================
-! [80-88] THE OMNI-PROTOCOL: THE MASTER KERNEL (v2026.1-FINAL)
-! =========================================================================
-! Оптимизация: Квантовый щит (Kyber), LAN-Ghost и Fintech-Integrity.
-! Эффект: Полная невидимость и неуязвимость транзакций. Нагрузка: -20% (Optimized).
-
-! --- Level 1: Gateway & Discovery Stealth (The Invisible Host) ---
-! Блокируем доступ к админ-панелям роутера и протоколы обнаружения.
-||/^(192.168.[0-1].1)$/^$important,reject,domain=~system,~browser
-||^$important,port=137..139|445|1900|5353|5355,reject,domain=~system
-||/^(239\.255\.255\.250|224\.0\.0\.251)$/^$important,reject,domain=~system
-
-! --- Level 2: LAN Proxy & DNS Hijack Defense (The Dead Loop) ---
-! Запрещаем обход через DNS роутера и скрытые прокси.
-||/^(192.168.[0-1].1)$/^$important,port=53,reject
-||192.168.0.0/16^$important,port=1080|8080,reject
-@@||192.168.0.0/16^$important,app=com.google.android.apps.chromecast|com.android.printspooler
-
-! --- Level 3: Fintech & Payment Integrity (The Vault) ---
-! Стерильный путь для Samsung/Google Pay. Аналитика — в REJECT.
-@@||/^(samsungpay.com|google.com/pay|nspk.ru)$/^$important
-||/^(ads\.samsung\.com|telemetry\.mirpay\.ru)$/^$important,reject
-@@||*^$important,app=com.samsung.android.spay|com.google.android.apps.walletnfcrel,jsinject=off,content=off
-
-! --- Level 4: MASTER CONTROL & QUANTUM ENFORCE (Kyber Core) ---
-! Принудительная активация постквантовой защиты и стелс-режима.
-$network=tls,pqc=on,pqc_algorithm=kyber,important
-$stealth=on,hide_ip=on,hide_user_agent=on,strip_tracking_params=on,important
-$network=quic,action=reject,app=~browser
-$dnsrewrite=SERVFAIL;domain=/(_esni|_echconfig)./
-
-
-! =========================================================================
-! [89-95] THE OMNI-PROTOCOL: THE FINAL CITADEL (v2026.1-OMEGA)
-! =========================================================================
-! Статус: ПРОЕКТ ЗАВЕРШЕН. Глобальная доминация сетевого стека активна.
-! Эффект: 100% Стерильность финансов и квантовая невидимость. Нагрузка: 0%.
-
-! --- Level 1: Universal Hybrid Sinkhole (The Void) ---
-! Принудительное зануление системных "стукачей" и скрытых прокси.
-||/^(connectivitycheck.gstatic|connectivitycheck.android|mtalk.google).com$/^$important,dnstype=A,empty
-||/(\.local|\.lan|\.home)$/^$important,reject
-$dnsrewrite=NXDOMAIN;domain=/(proxy\.google|vpn\.samsung)\.com$/
-
-! --- Level 2: The Citadel Strategy (Battle-Silence) ---
-! Защита от MITM-атак, ARP-спуфинга и сетевого сканирования в Saint-Étienne.
-$network=icmp,action=drop,important
-$network=discovery,action=reject,important
-$network=inbound,action=block,app=~system,important
-$network=arp,action=filter,important
-$network=dhcp,action=filter,important
-$app_detection=manufacturer_telemetry,action=block,important
-
-! --- Level 3: [95] THE STERILE TUNNEL (The Golden Gate) ---
-! Стерильный коридор для твоих денег. Полная изоляция NFC и биометрии.
-$app=com.samsung.android.spay|com.google.android.apps.walletnfcrel,filter=off,important
-$app=com.samsung.android.samsungpass|com.samsung.android.authfw,filter=off,important
-$network=nfc,action=bypass,important
-$dnsrewrite=NOERROR;ttl=3600;domain=/(samsungpay|visa|mastercard)\.com$/
+! Title: The Omni-Protocol 2026 Universal (Eternal)
+! Version: 7.7.1
+! Last modified: 2026-03-23
+! Expires: 1 days
+! Homepage: https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt
+! Description: Optimized for Auto-Filtering Mode. Global Governance, AI, Finance & Utility.
+! =========================================================================
+
+! [MEGA-BLOCK I] GLOBAL INFRASTRUCTURE (THE "GREEN CHANNEL")
+! --- 1. Global Trusted Zones (TLD-Level Access) ---
+@@||gov^$important,document,generichide
+@@||mil^$important,document,generichide
+@@||edu^$important,document,generichide
+@@||fr^$document,generichide
+@@||com^$document,generichide
+@@||net^$document,generichide
+@@||org^$document,generichide
+@@ftp://*^$important,document,generichide
+@@ftps://*^$important,document,generichide
+
+! --- 2. Identity & Global Auth (Unified Group) ---
+@@||accounts.google.com^$important,domain=google.com|youtube.com
+@@||appleid.apple.com^$important,domain=apple.com|icloud.com
+@@||microsoftonline.com^$important,domain=microsoft.com|office.com
+@@||okta.com^$important
+
+! --- 3. Critical Service Nodes (AI, Search, Work) ---
+@@||openai.com^$important,document,generichide
+@@||chatgpt.com^$important,document,generichide
+@@||yandex.ru^$important,document,generichide
+@@||dzen.ru^$important,document,generichide
+@@||google.com^$important,document,generichide
+@@||google.fr^$important,document,generichide
+@@||m2mlease.fr^$important,document,generichide
+@@||paypal.com^$important,document,generichide
+@@||stripe.com^$important,document,generichide
+@@||revolut.com^$important,document,generichide
+@@||youtube.com^$important
+@@||google.com^$important
+
+! [LAYER 1-5: NETWORK & PROTOCOL HARDENING - APEX LEVEL]
+! --- 1. Global Reject & DNS Sovereignty ---
+||doubleclick.net^$dnstype=A,empty,third-party,reject
+||googlesyndication.com^$dnstype=A,empty,third-party,reject
+! Глубокое подавление аналитики на уровне резолвинга
+||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr|~ftp:*|~ftps:*
+
+! --- 2. Protocol Integrity (PQC & FTP Stabilizer) ---
+! Стабилизация FTP и принудительный переход на постквантовое шифрование для веба
+$network=tls,pqc=off,domain=~ftp:*|~ftps:*
+$network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum,important,domain=~ftp:*|~ftps:*
+$network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa,important,domain=~ftp:*|~ftps:*
+
+! --- 3. The Iron Curtain (Anti-Downgrade & Tunneling) ---
+! Блокировка QUIC/HTTP3 для предотвращения обхода фильтрации (кроме видеосервисов)
+||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~gov|~ftp:*|~ftps:*
+! Блокировка DoH и Dot (защита от подмены системного DNS браузером)
+||/^(dns|doh|dot|cloudflare-dns|dns-query|dns-server|doh-server)\./^$important,reject,domain=~system|~google.com|~yandex.ru
+! Блокировка DNS-запросов типа 65 (HTTPS) и Type 64, используемых для скрытой передачи метаданных
+||^$dnstype=(HTTPS|65|64|QUIC),reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov
+
+! --- 4. WebRTC & Privacy Leak Protection ---
+! Запрет WebRTC для предотвращения утечки реального локального IP
+||stun:*$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com|~yandex.ru
+||webrtc.org^$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com
+! Блокируем маскировку под прокси и VPN-туннели внутри браузера
+||/^(proxy|vpn|shadowsocks|v2ray|wireguard|warp)\./^$important,reject,domain=~system
+
+! --- 5. Traffic Masking (Advanced Layer) ---
+! Маскировка TTL для предотвращения детекции типа устройства (Standardizing OS Fingerprint)
+$network=ip,set_ttl=64,hide_hop_limit=on,important
+! Запрещаем асинхронные запросы (Beacon API), которые отправляют данные после закрытия вкладки
+||*$ping,third-party,important,domain=~google.com|~yandex.ru|~bank|~gov
+
+! [LAYER 6-12: SMART SHIELD & BEYOND]
+! --- 1. ANTI-WHITE-SCREEN & INFRASTRUCTURE TRUST ---
+@@||gov^$generichide,genericblock,shorthide
+@@||bank^$generichide,genericblock,shorthide
+@@||openai.com^$generichide,genericblock,shorthide
+@@||chatgpt.com^$generichide,genericblock,shorthide
+@@||yandex.ru^$generichide,genericblock,shorthide
+@@||dzen.ru^$generichide,genericblock,shorthide
+@@||google.*^$generichide,genericblock,shorthide
+@@||*.fr^$generichide,domain=~doubleclick.net|~google-analytics.com
+@@||*.com^$generichide,domain=~doubleclick.net|~google-analytics.com
+
+! --- 2. DEEP STEALTH: ANTI-FINGERPRINTING & BEHAVIORAL SYNC ---
+! Убиваем детекторы блокировщиков на корню
+#%#//scriptlet("set-constant", "isAdBlockActive|isAdblockActive|adblocker|AdBlock|navigator.webdriver", "false")
+#%#//scriptlet("set-constant", "google_ad_status", "1")
+#%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
+
+# Маскировка железа и ОС (Dynamic V5 PRO++++++)
+
+#%#//scriptlet("execute-script", "
+(function(){
+
+  const key = 'fp_profile_v5';
+  let p;
+
+  const profiles = [
+    {cores:4, memory:4, ua:'120.0.0.0', lang:['en-US','en'], tz:'Europe/Paris'},
+    {cores:8, memory:8, ua:'125.0.0.0', lang:['fr-FR','fr'], tz:'Europe/Paris'},
+    {cores:6, memory:8, ua:'123.0.0.0', lang:['en-GB','en'], tz:'Europe/Berlin'}
+  ];
+
+  try {
+    const saved = sessionStorage.getItem(key);
+    if (saved) {
+      p = JSON.parse(saved);
+    } else {
+      p = profiles[Math.floor(Math.random()*profiles.length)];
+      sessionStorage.setItem(key, JSON.stringify(p));
+    }
+  } catch(e) {
+    p = profiles[0];
+  }
+
+  const seed = JSON.stringify(p).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+
+  // ===== BASIC =====
+  Object.defineProperty(navigator,'platform',{get:()=> 'Win32'});
+  Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> p.cores});
+  Object.defineProperty(navigator,'deviceMemory',{get:()=> p.memory});
+  Object.defineProperty(navigator,'maxTouchPoints',{get:()=> 0});
+
+  Object.defineProperty(navigator,'language',{get:()=> p.lang[0]});
+  Object.defineProperty(navigator,'languages',{get:()=> p.lang});
+
+  const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'+p.ua+' Safari/537.36';
+  Object.defineProperty(navigator,'userAgent',{get:()=> ua});
+
+  const originalResolved = Intl.DateTimeFormat.prototype.resolvedOptions;
+  Intl.DateTimeFormat.prototype.resolvedOptions = function(){
+    const opts = originalResolved.apply(this, arguments);
+    opts.timeZone = p.tz;
+    return opts;
+  };
+
+  // ===== CANVAS (ULTRA LIGHT STABLE) =====
+  const noise = (seed % 7) + 1;
+  const toDataURL = HTMLCanvasElement.prototype.toDataURL;
+  HTMLCanvasElement.prototype.toDataURL = function(){
+    const ctx = this.getContext('2d');
+    if(ctx){
+      ctx.fillStyle = 'rgba('+noise+','+noise+','+noise+',0.005)';
+      ctx.fillRect(0,0,1,1);
+    }
+    return toDataURL.apply(this, arguments);
+  };
+
+  // ===== WEBGL (CONSISTENT SPOOF) =====
+  const getParameter = WebGLRenderingContext.prototype.getParameter;
+  WebGLRenderingContext.prototype.getParameter = function(param){
+    if(param === 37445) return 'Intel Inc.';
+    if(param === 37446) return 'Intel Iris OpenGL Engine';
+    return getParameter.apply(this, arguments);
+  };
+
+  // ===== AUDIO (MICRO DRIFT) =====
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  if (AudioCtx) {
+    const origCreate = AudioCtx.prototype.createAnalyser;
+    AudioCtx.prototype.createAnalyser = function(){
+      const analyser = origCreate.apply(this, arguments);
+      const orig = analyser.getFloatFrequencyData;
+      analyser.getFloatFrequencyData = function(arr){
+        orig.apply(this, arguments);
+        for(let i=0;i<arr.length;i++){
+          arr[i] += (noise * 0.00005);
+        }
+      };
+      return analyser;
+    };
+  }
+
+  // ===== CLIENT RECTS (VERY LIGHT SHIFT) =====
+  const origGetBounding = Element.prototype.getBoundingClientRect;
+  Element.prototype.getBoundingClientRect = function(){
+    const rect = origGetBounding.apply(this, arguments);
+    const shift = (noise % 2) * 0.1;
+    return {
+      x: rect.x + shift,
+      y: rect.y + shift,
+      width: rect.width,
+      height: rect.height,
+      top: rect.top + shift,
+      left: rect.left + shift,
+      right: rect.right + shift,
+      bottom: rect.bottom + shift
+    };
+  };
+
+  // ===== SCREEN =====
+  const w = screen.width;
+  const h = screen.height;
+
+  Object.defineProperty(screen,'availWidth',{get:()=> w - (noise % 3)});
+  Object.defineProperty(screen,'availHeight',{get:()=> h - (noise % 5)});
+
+  // ===== FONTS CHECK STABILIZATION =====
+  const origMeasure = CanvasRenderingContext2D.prototype.measureText;
+  CanvasRenderingContext2D.prototype.measureText = function(){
+    const metrics = origMeasure.apply(this, arguments);
+    metrics.width += (noise * 0.01);
+    return metrics;
+  };
+
+})();
+")
+
+# Маскировка (MAX HARDENING — осторожно)
+
+#%#//scriptlet("execute-script", "
+(function(){
+
+  const key = 'fp_profile_v5';
+  let p;
+
+  try {
+    p = JSON.parse(sessionStorage.getItem(key));
+  } catch(e) {
+    p = {tz:'Europe/Paris'};
+  }
+
+  const seed = JSON.stringify(p).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+
+  // ===== 1. WEBRTC (SOFT MASK, НЕ ЛОМАЕМ ВСЁ) =====
+  if (window.RTCPeerConnection) {
+    const OrigRTC = window.RTCPeerConnection;
+
+    window.RTCPeerConnection = function(...args){
+      const pc = new OrigRTC(...args);
+
+      pc.addEventListener('icecandidate', e => {
+        if (e && e.candidate && e.candidate.candidate) {
+          // Убираем локальные IP
+          e.candidate.candidate = e.candidate.candidate.replace(/192\\.168\\.[0-9]+\\.[0-9]+/g, '0.0.0.0');
+        }
+      });
+
+      return pc;
+    };
+  }
+
+  // ===== 2. NETWORK INFO =====
+  if (navigator.connection) {
+    Object.defineProperty(navigator.connection,'downlink',{get:()=> 10 + (seed % 5)});
+    Object.defineProperty(navigator.connection,'effectiveType',{get:()=> '4g'});
+    Object.defineProperty(navigator.connection,'rtt',{get:()=> 50 + (seed % 20)});
+  }
+
+  // ===== 3. BATTERY API =====
+  navigator.getBattery = function(){
+    return Promise.resolve({
+      charging: true,
+      chargingTime: 0,
+      dischargingTime: Infinity,
+      level: 0.95
+    });
+  };
+
+  // ===== 4. VISIBILITY =====
+  Object.defineProperty(document,'hidden',{get:()=> false});
+  Object.defineProperty(document,'visibilityState',{get:()=> 'visible'});
+
+  // ===== 5. PERMISSIONS (РЕАЛИСТИЧНО) =====
+  const originalQuery = navigator.permissions?.query;
+  if (originalQuery) {
+    navigator.permissions.query = function(params){
+      const map = {
+        'notifications': 'default',
+        'geolocation': 'prompt',
+        'camera': 'prompt',
+        'microphone': 'prompt'
+      };
+      const state = map[params.name] || 'prompt';
+      return Promise.resolve({ state });
+    };
+  }
+
+  // ===== 6. TIMING (ANTI BOT) =====
+  const originalNow = performance.now;
+  performance.now = function(){
+    return originalNow.call(performance) + (seed % 3) * 0.01;
+  };
+
+  // ===== 7. LOCK (ANTI OVERRIDE) =====
+  const protect = (obj, prop) => {
+    try {
+      const val = obj[prop];
+      Object.defineProperty(obj, prop, {
+        get: () => val,
+        configurable: false
+      });
+    } catch(e){}
+  };
+
+  protect(navigator, 'userAgent');
+  protect(navigator, 'hardwareConcurrency');
+  protect(navigator, 'deviceMemory');
+
+})();
+")
+
+# SAFE AUTO — интеллектуальное управление fingerprint
+
+#%#//scriptlet("execute-script", "
+(function(){
+
+  const host = location.hostname;
+
+  // ===== 1. TRUSTED ZONES =====
+  const trusted = [
+    'google.com',
+    'youtube.com',
+    'gstatic.com',
+    'googleapis.com',
+    'openai.com',
+    'chatgpt.com',
+    'github.com',
+    'paypal.com',
+    'stripe.com',
+    'bank',
+    'gouv.fr',
+    'ameli.fr',
+    'edf.fr'
+  ];
+
+  const isTrusted = trusted.some(d => host.includes(d));
+
+  // ===== 2. HARDENED TARGETS =====
+  const hardened = [
+    'doubleclick.net',
+    'ads',
+    'tracking',
+    'analytics',
+    'fingerprint'
+  ];
+
+  const isHardened = hardened.some(d => host.includes(d));
+
+  // ===== 3. MODE SWITCH =====
+  let mode = 'normal';
+
+  if (isTrusted) mode = 'trusted';
+  if (isHardened) mode = 'hardened';
+
+  // ===== 4. APPLY RULES =====
+
+  // TRUSTED → отключаем агрессивное
+  if (mode === 'trusted') {
+
+    // возвращаем оригинальный WebGL
+    if (WebGLRenderingContext.prototype.getParameter.__original) {
+      WebGLRenderingContext.prototype.getParameter =
+        WebGLRenderingContext.prototype.getParameter.__original;
+    }
+
+    // отключаем canvas шум
+    HTMLCanvasElement.prototype.toDataURL =
+      HTMLCanvasElement.prototype.toDataURL.__original || HTMLCanvasElement.prototype.toDataURL;
+
+  }
+
+  // HARDENED → усиливаем
+  if (mode === 'hardened') {
+
+    // усиливаем timing
+    const originalNow = performance.now;
+    performance.now = function(){
+      return originalNow.call(performance) + Math.random() * 0.5;
+    };
+
+    // усиливаем permissions
+    navigator.permissions.query = () => Promise.resolve({ state: 'denied' });
+
+  }
+
+  // ===== 5. DEBUG (можно убрать) =====
+  //console.log('[SAFE AUTO MODE]', mode);
+
+})();
+")
+
+
+! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
+#%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
+#%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=()=>'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB';")
+#%#//scriptlet("execute-script", "Object.defineProperty(Screen.prototype,'width',{get:()=>1920});Object.defineProperty(Screen.prototype,'height',{get:()=>1080});")
+#%#//scriptlet("spoof-css", "webgl", "intel-uhd")
+! Защита от перечисления шрифтов (Font Fingerprinting)
+#%#//scriptlet("prevent-window-open", "ad-click")
+
+! --- 3. ZERO-FOOTPRINT: АБСОЛЮТНАЯ ОЧИСТКА ---
+! Очистка аналитики и рекламных движков
+#%#//scriptlet("set-constant", "ga|gtag|fbq|document.interestCohort|navigator.browsingTopics", "undefined")
+#%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|ym_uid|amplitude_id|_hjSessionUser)$/")
+! Запрещаем сайтам читать историю переходов через Referrer
+*^$set-header=Referrer-Policy: no-referrer-when-downgrade
+
+! --- 4. BEYOND THE BROWSER (NETWORK HARDENING) ---
+! Маскировка типа устройства на уровне пакетов (TTL 64 = Android/Linux/Standard Chrome)
+$network=ip,set_ttl=64,hide_hop_limit=on,important
+! Запрет на утечку локальных IP-адресов через WebRTC
+||stun:*^$important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com
+
+
+! [LAYER 13-27: PERIMETER DEFENSE & PORT ISOLATION]
+! --- 1. UI Purge (Удаление визуального мусора и баннеров) ---
+##[class*="ad"], .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup, #cookie-notice, .cmp-container
+##.premium-promo, .upsell-banner, [id^="google_ads_iframe"]
+
+! --- 2. Localhost & Port Hardening (Защита от сканирования твоей сети) ---
+! Запрещаем сайтам опрашивать твои локальные устройства и открытые порты
+||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system
+||^$important,port=22|23|445|3389|1433|3306|5432|6379|8080|9000|9090,domain=~teamviewer.com|~localhost
+$network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,important
+
+! [LAYER 28-29: QUANTUM VISIBILITY & ENTROPY]
+! --- 1. Header Manipulation (Активная дезинформация) ---
+! Генерируем случайную энтропию для Google, чтобы сбить их алгоритмы профилирования
+||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=DNT: 1
+*^$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved)=[^&]*/$1=omni-qnt-$random_string/
+
+! --- 2. Security Headers (Принудительная безопасность) ---
+! Запрещаем отслеживание пути (Referrer) и защищаем от подмены типов контента
+||*^$set-header=Referrer-Policy: strict-origin-when-cross-origin,set-header=X-Content-Type-Options: nosniff
+||*^$set-header=X-Frame-Options: SAMEORIGIN,set-header=X-XSS-Protection: 1; mode=block
+
+! [LAYER 17-26: TRUSTED BRIDGE & API CLEANER]
+! --- 1. Unified Trusted Bridge (Оптимизированный список доверия) ---
+@@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|samsung|apple|microsoft|icloud|googleapis|gstatic|jsdelivr|yandex|passport|sso|zoom|teams\.microsoft|netflix|amazon|aliexpress|wildberries|ozon|caf|ameli|urssaf|oelie-eau|sncf-connect|enedis|edf)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
+
+! --- 2. Privacy Header Stripping ---
+! Удаляем специфические ID Google и подменяем IP-заголовки
+$header=/^(X-Forwarded-For|Real-IP|Client-IP|Via|Forwarded)$/i,important,domain=~system
+$removeheader=/^x-goog-api-(client|key|client-mods)|x-client-data/ ,domain=google.com|googleapis.com
+$removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid|mc_eid|_hsenc)$/
+
+! [LAYER 30: PHISH-FENCE & PROTOCOL INTEGRITY]
+! --- 1. Anti-Phishing & Punycode (Защита от поддельных доменов) ---
+||xn--*^$important,reject,domain=~system
+||/^(flash-sms|class0-message|silent-ping|carrier-popup)/^$important,network,third-party
+
+! --- 2. URL Cleaner (Удаление редиректов и мусора из ссылок) ---
+$removeparam=/^(redirect|url|link|goto|continue|ref_url|return_to)$/,domain=~google.com|~bank|~yandex.ru|~dzen.ru|~openai.com|~gov|~un.org|~europa.eu|~caf.fr|~oelie-eau.fr
+||bit.ly^$rewrite=abp-resource:blank-js
+||t.co^$rewrite=abp-resource:blank-js
+
+! --- 3. Cache Protection ---
+! Запрещаем "отравление" кэша через скрытые параметры
+$removeparam=/^(_|cb|cachebuster|v)$/,domain=~system|~google.com
