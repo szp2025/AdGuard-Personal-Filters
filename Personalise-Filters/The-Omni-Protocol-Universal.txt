@@ -8,6 +8,7 @@
 ! =========================================================================
 
 ! [MEGA-BLOCK I] CORE: TRUST & STEALTH (WHITELIST)
+! --- 1. Infrastructure & Identity ---
 @@||googlevideo.com^
 @@||googleusercontent.com^
 @@||gstatic.com^
@@ -15,7 +16,52 @@
 @@||ytimg.com^
 @@||accounts.google.com^$important
 @@||appleid.apple.com^$important
-@@||bank^$important
+@@||microsoftonline.com^$important
+@@||okta.com^$important
+
+! --- 2. AI & Productivity (ChatGPT, etc.) ---
+@@||openai.com^$important,document
+@@||chatgpt.com^$important,document
+@@||anthropic.com^$important,document
+@@||claude.ai^$important,document
+@@||deepseek.com^$important,document
+@@||github.com^$important,document
+
+! --- 3. Global Finance & Payments (Sterile Channel) ---
+@@||bank^$important,document
+@@||revolut.com^$important,document
+@@||stripe.com^$important,document
+@@||paypal.com^$important,document
+@@||mastercard.com^$important,document
+@@||visa.com^$important,document
+@@||swift.com^$important,document
+@@||adyen.com^$important,document
+@@||klarna.com^$important,document
+
+! --- 4. Global Search & Services ---
+@@||google.*^$important,document
+@@||bing.com^$important,document
+@@||yahoo.com^$important,document
+@@||duckduckgo.com^$important,document
+@@||baidu.com^$important,document
+@@||yandex.ru^$important,document
+@@||dzen.ru^$important,document
+@@||yastatic.net^$important
+@@||yandex.net^$important
+
+! --- 5. Official Structures & Global Shops ---
+@@||gov^$important,document
+@@||gouv.fr^$important,document
+@@||gosuslugi.ru^$important,document
+@@||amazon.com^$important,document
+@@||aliexpress.com^$important,document
+@@||ebay.com^$important,document
+@@||apple.com^$important,document
+
+!--- 5. Boulot ---
+@@||m2mlease.fr^$important
+
+
 
 ! [LAYER 1-5: NETWORK & PROTOCOL HARDENING]
 ||doubleclick.net^$dnstype=A,empty,third-party,reject
