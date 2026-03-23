@@ -1,15 +1,13 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
-! Version: 7.4.9
-! Last modified: 2026-03-20
-! Description: Универсальный протокол стелс-защиты. Интегрированная система квантовой энтропии и глубокой очистки трафика.
-! License: MIT / Stealth-Non-Commercial
-
-! === [OMNI-CORE: THE UNIVERSAL STEALTH MONOLITH (v2026.V15-ULTIMATE)] ===
-
+! Version: 7.5.0
+! Last modified: 2026-03-23
+! Expires: 30 days
+! Homepage: https://github.com/szp2025/AdGuard-Personal-Filters
+! Description: Ультимативный монолит стелс-защиты. Интеграция квантовой энтропии, анти-фишинга и защиты от мобильных угроз (SMS/SS7).
 ! =========================================================================
-! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE
-! =========================================================================
+
+! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE (WHITELIST)
 @@||googlevideo.com^$important
 @@||googleusercontent.com^$important
 @@||gstatic.com^$important
@@ -23,7 +21,7 @@
 @@||hcaptcha.com^$important
 @@||bank^$important
 
-! --- [LAYER 1-5: PQ-HARDENING & PROTOCOL SUPREMACY] ---
+! [LAYER 1-5: PQ-HARDENING & PROTOCOL SUPREMACY]
 ||/^(ads|metrics|telemetry|track(?:ing|ers?)?|analytics|stats|events(\.|-)|adservice|cloudflareinsights|browser-intake-datadoghq|events\.statsigapi|beacon|log(?:s|ger)?\.|consent|cookie(?:-law)?\.|trustarc|onetrust|quantcast|privacy(?:-|)center|user-report|choice\.microsoft|fingerprintjs|fpjs|hcaptcha|arkoselabs|graph\.facebook|app-measurement|firebaseinstallations|firebase-settings|crashlytics|hotjar|amplitude|mixpanel|clarity|mouseflow|fullstory|doubleclick|adnxs|openx|pubmatic|appsflyer|adjust|branch|kochava|adsystem|adserver|web-beacon|pixel\.)\./^$dnstype=A,empty,websocket,ping,third-party,important,reject,domain=~system
 ||/^([^.]+\.)*(ad-delivery|ad-serv|amazon-adsystem|criteo|mopub|unityads|connect\.facebook|analytics\.tiktok|pixel\.facebook|byteoversea|sentry\.io|snapads|tiktokv|drainer|walletconnect|coin-hive|minr|dhl-delivery|chronopost|laposte|ups-track|secure-verification|revolut-verify|n26-login|gouv-fr|ameli-update|caf-infoconnect|apk-download|pegasus|nso-group|shodan|censys|metasploit|cobalt-strike|openai|anthropic|taboola|outbrain|bt-tracking|altbeacon|ibeacon|ipstack|maxmind|geoip|audio-fingerprint|ultrasonic-beacon|silverpush|camera-access|webcam-probe|samsungads|samsungacr|samba\.tv|tt\.omtrdc|at-o)\./^$important,third-party,websocket,domain=~system|~google.com|~github.com
 $network=tls,pqc=on,pqc_algorithm=ml-kem-1024|kyber,hybrid_pqc=on,pqc_strength=maximum,important
@@ -32,7 +30,7 @@ $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5,important
 ||/(_esni|_echconfig|_pqcconfig)\./^$important,reject
 ||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system
 
-! --- [LAYER 6-12: IDENTITY, DECEPTION & GHOST PROTOCOL] ---
+! [LAYER 6-12: IDENTITY, DECEPTION & GHOST PROTOCOL]
 #%#//scriptlet("set-constant", "navigator.doNotTrack|navigator.msDoNotTrack|window.doNotTrack|navigator.globalPrivacyControl|window.optOut", "true")
 #%#//scriptlet("set-constant", "navigator.hardwareConcurrency|navigator.deviceMemory", "8")
 #%#//scriptlet("set-constant", "navigator.platform", "Win32")
@@ -45,7 +43,7 @@ $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5,important
 $network=ip,set_ttl=64,hide_hop_limit=on,important
 $network=dns,edns=off,important
 
-! --- [LAYER 13-27: NETWORK PERIMETER & DEEP PURGE] ---
+! [LAYER 13-27: NETWORK PERIMETER & DEEP PURGE]
 ##.ad-box, .ads-container, .sponsored-post, .yandex-ad, .mobile-ad-overlay, .cookie-banner, .newsletter-popup, div[data-text-ad], .pla-unit
 ||/^.*(-pa|frontend-pa|robinfrontend-pa|spot-pa|nearby-pa|metadatalearning-pa)\.google(apis)?\.(com|io|net)$/^$important,reject
 ||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|100\.6[4-9]\.)/^$important,reject,domain=~system
@@ -54,7 +52,7 @@ $network=dns,edns=off,important
 $network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,important
 ||*$cname,domain=~google.com|~apple.com|~microsoft.com|~samsung.com|~free.fr|~icloud.com
 
-! --- [LAYER 28-29: QUANTUM ENTROPY & ZERO VISIBILITY] ---
+! [LAYER 28-29: QUANTUM ENTROPY & ZERO VISIBILITY]
 ||youtubei.googleapis.com^$important,domain=~com.google.android.youtube
 ||youtube.com/get_midroll_info*^$important
 ||googlevideo.com/videoplayback?*&ptracking=*^$important
@@ -62,7 +60,7 @@ $network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,
 *^$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved|sourceid|ad_id)=[^&]*/$1=omni-qnt-$random_string/
 ||*^$set-header=X-Quantum-Residue: $random_string$random_string,set-header=Referrer-Policy: no-referrer,set-header=X-Frame-Options: DENY,set-header=X-Content-Type-Options: nosniff
 
-! --- [LAYER 17-26: LIFE BRIDGE & STABILITY (TRUSTED)] ---
+! [LAYER 17-26: LIFE BRIDGE & STABILITY (TRUSTED)]
 @@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|verifiedbyvisa|gomining|samsung|apple|microsoft|windowsupdate|icloud|googleapis|gstatic|connectivitycheck|msftconnecttest|jsdelivr|cdnjs|aspnetcdn|cloudflare-dns|yandex|dzen|passport|sso|maps\.google|googleusercontent|waze|ls\.apple|challenges\.cloudflare|zoom|webex|teams\.microsoft|netflix|nflxvideo|amazonaws|gov|gouv|bund|europa|gosuslugi|amazon|aliexpress|leboncoin|wildberries|ozon|carrefour|billing)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
 @@||/^(samsungpay|nspk|visa|mastercard)\.(com|ru|net)$/^$dnstype=A,ttl=3600,important
 @@||google.com/pay^$dnstype=A,ttl=3600,important
@@ -72,7 +70,19 @@ $header=/^(X-(Forwarded-For|Real-IP|Client-IP)|Via|Forwarded)$/i,important,domai
 $removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com
 $removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid)$/
 
-! --- [GEMINI ACCESS BRIDGE] ---
+! [GEMINI ACCESS BRIDGE]
 @@||gemini.google.com^$important,extension=set-header:User-Agent:Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Mobile Safari/537.36
 @@||www.gstatic.com/lamda/^$important
 @@||apis.google.com^$domain=gemini.google.com
+
+! [LAYER 30: PHISH-FENCE & SMS-SHIELD]
+||/^(flash-sms|class0-message|silent-ping|carrier-popup)/^$important,network,third-party
+$removeparam=/^(redirect|url|link|goto|continue|return_to|ref_url)$/,domain=~google.com|~apple.com|~bank
+||xn--*^$important,reject,domain=~system
+||bit.ly^$rewrite=abp-resource:blank-js,important
+||t.co^$rewrite=abp-resource:blank-js,important
+||tinyurl.com^$rewrite=abp-resource:blank-js,important
+||is.gd^$rewrite=abp-resource:blank-js,important
+##div[class*="login-overlay"]
+##div[class*="verify-account"]
+##iframe[src*="account-update"]
