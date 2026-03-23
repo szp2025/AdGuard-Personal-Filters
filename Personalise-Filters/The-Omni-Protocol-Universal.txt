@@ -35,92 +35,128 @@
 @@||m2mlease.fr^$important,document,generichide
 
 
-! [LAYER 1-5: NETWORK & PROTOCOL HARDENING - MAX LEVEL]
-! --- 1. Global Reject (DNS & Analytics Deep Purge) ---
+! [LAYER 1-5: NETWORK & PROTOCOL HARDENING - APEX LEVEL]
+! --- 1. Global Reject & DNS Sovereignty ---
 ||doubleclick.net^$dnstype=A,empty,third-party,reject
 ||googlesyndication.com^$dnstype=A,empty,third-party,reject
-! Блокируем любые попытки системной аналитики и сбора отпечатков на уровне доменов
+! Глубокое подавление аналитики на уровне резолвинга
 ||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr|~ftp:*|~ftps:*
 
-! --- 2. FTP STABILIZER & TLS ENFORCEMENT ---
-! Отключаем вмешательство только для FTP, для остального - УЛЬТРА-PQC
+! --- 2. Protocol Integrity (PQC & FTP Stabilizer) ---
+! Стабилизация FTP и принудительный переход на постквантовое шифрование для веба
 $network=tls,pqc=off,domain=~ftp:*|~ftps:*
 $network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum,important,domain=~ftp:*|~ftps:*
 $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa,important,domain=~ftp:*|~ftps:*
 
-! --- 3. Anti-Downgrade & Protocol Purge (The Iron Curtain) ---
-! Запрещаем откат на небезопасные протоколы и блокируем QUIC (кроме видео), чтобы исключить обход фильтров
+! --- 3. The Iron Curtain (Anti-Downgrade & Tunneling) ---
+! Блокировка QUIC/HTTP3 для предотвращения обхода фильтрации (кроме видеосервисов)
 ||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~gov|~ftp:*|~ftps:*
-! Блокируем DoH (DNS over HTTPS) сторонних провайдеров, чтобы браузер не сливал DNS мимо нашей системы
-||/^(dns|doh|dot|cloudflare-dns|dns-query)\./^$important,reject,domain=~system|~google.com
+! Блокировка DoH и Dot (защита от подмены системного DNS браузером)
+||/^(dns|doh|dot|cloudflare-dns|dns-query|dns-server|doh-server)\./^$important,reject,domain=~system|~google.com|~yandex.ru
+! Блокировка DNS-запросов типа 65 (HTTPS) и Type 64, используемых для скрытой передачи метаданных
+||^$dnstype=(HTTPS|65|64|QUIC),reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov
 
-! --- 4. WebRTC & Tunneling Protection ---
-! Запрещаем WebRTC (утечка реального IP) для всех сторонних ресурсов
-||stun:*$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com
+! --- 4. WebRTC & Privacy Leak Protection ---
+! Запрет WebRTC для предотвращения утечки реального локального IP
+||stun:*$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com|~yandex.ru
 ||webrtc.org^$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com
-! Блокируем скрытые HTTPS/DNS запросы (Type 65), которые часто используют для обхода блокировок
-||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov
+! Блокируем маскировку под прокси и VPN-туннели внутри браузера
+||/^(proxy|vpn|shadowsocks|v2ray|wireguard|warp)\./^$important,reject,domain=~system
 
-! [LAYER 6-12: AUTO-FILTER COMPATIBILITY (SMART SHIELD)]
-! --- 1. ANTI-WHITE-SCREEN (UI Stability) ---
-! Запрещаем скрывать элементы и блокировать базовые скрипты на критических узлах
-@@||gov^$generichide,genericblock
-@@||gouv.fr^$generichide,genericblock
-@@||bank^$generichide,genericblock
-@@||openai.com^$generichide,genericblock
-@@||chatgpt.com^$generichide,genericblock
-@@||yandex.ru^$generichide,genericblock
-@@||dzen.ru^$generichide,genericblock
-@@||google.*^$generichide,genericblock
-@@||m2mlease.fr^$generichide,genericblock
+! --- 5. Traffic Masking (Advanced Layer) ---
+! Маскировка TTL для предотвращения детекции типа устройства (Standardizing OS Fingerprint)
+$network=ip,set_ttl=64,hide_hop_limit=on,important
+! Запрещаем асинхронные запросы (Beacon API), которые отправляют данные после закрытия вкладки
+||*$ping,third-party,important,domain=~google.com|~yandex.ru|~bank|~gov
+
+! [LAYER 6-12: SMART SHIELD & BEYOND]
+! --- 1. ANTI-WHITE-SCREEN & INFRASTRUCTURE TRUST ---
+@@||gov^$generichide,genericblock,shorthide
+@@||bank^$generichide,genericblock,shorthide
+@@||openai.com^$generichide,genericblock,shorthide
+@@||chatgpt.com^$generichide,genericblock,shorthide
+@@||yandex.ru^$generichide,genericblock,shorthide
+@@||dzen.ru^$generichide,genericblock,shorthide
+@@||google.*^$generichide,genericblock,shorthide
 @@||*.fr^$generichide,domain=~doubleclick.net|~google-analytics.com
 @@||*.com^$generichide,domain=~doubleclick.net|~google-analytics.com
 
-! --- 2. STEALTH & BEHAVIORAL SYNC (Merged & Optimized) ---
-! Эмуляция реального пользователя: убираем признаки автоматизации и блокировщика
+! --- 2. DEEP STEALTH: ANTI-FINGERPRINTING & BEHAVIORAL SYNC ---
+! Убиваем детекторы блокировщиков на корню
 #%#//scriptlet("set-constant", "isAdBlockActive|isAdblockActive|adblocker|AdBlock|navigator.webdriver", "false")
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 #%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
 
-! Подмена характеристик системы (Standardization)
+! Маскировка железа и ОС (Стандартизация под массовый сегмент)
 #%#//scriptlet("set-constant", "navigator.platform|navigator.hardwareConcurrency|navigator.deviceMemory", "Win32|8|8")
+#%#//scriptlet("set-constant", "navigator.maxTouchPoints", "0")
 #%#//scriptlet("set-constant", "navigator.language|navigator.languages", "en-US|en-US,en")
 #%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 
-! Защита от Fingerprinting (Canvas, Permissions, Timezone)
-#%#//scriptlet("execute-script", "navigator.permissions.query=(p)=>Promise.resolve({state:['granted','prompt'][Math.floor(Math.random()*1.5)]});")
+! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
 #%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=()=>'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB';")
+#%#//scriptlet("execute-script", "Object.defineProperty(Screen.prototype,'width',{get:()=>1920});Object.defineProperty(Screen.prototype,'height',{get:()=>1080});")
 #%#//scriptlet("spoof-css", "webgl", "intel-uhd")
+! Защита от перечисления шрифтов (Font Fingerprinting)
+#%#//scriptlet("prevent-window-open", "ad-click")
 
-! --- 3. STORAGE & ANALYTICS PURGE ---
-! Глубокая очистка куков и метрик
+! --- 3. ZERO-FOOTPRINT: АБСОЛЮТНАЯ ОЧИСТКА ---
+! Очистка аналитики и рекламных движков
 #%#//scriptlet("set-constant", "ga|gtag|fbq|document.interestCohort|navigator.browsingTopics", "undefined")
 #%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|ym_uid|amplitude_id|_hjSessionUser)$/")
+! Запрещаем сайтам читать историю переходов через Referrer
+*^$set-header=Referrer-Policy: no-referrer-when-downgrade
 
-! Сетевая невидимость (IP Hardening)
+! --- 4. BEYOND THE BROWSER (NETWORK HARDENING) ---
+! Маскировка типа устройства на уровне пакетов (TTL 64 = Android/Linux/Standard Chrome)
 $network=ip,set_ttl=64,hide_hop_limit=on,important
-! [LAYER 13-27: PERIMETER DEFENSE]
-##[class*="ad"], .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup
-||/^.*(-pa|frontend-pa|spot-pa|metadatalearning-pa)\.google(apis)?\.(com|io|net)$/^$reject
+! Запрет на утечку локальных IP-адресов через WebRTC
+||stun:*^$important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com
+
+
+! [LAYER 13-27: PERIMETER DEFENSE & PORT ISOLATION]
+! --- 1. UI Purge (Удаление визуального мусора и баннеров) ---
+##[class*="ad"], .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup, #cookie-notice, .cmp-container
+##.premium-promo, .upsell-banner, [id^="google_ads_iframe"]
+
+! --- 2. Localhost & Port Hardening (Защита от сканирования твоей сети) ---
+! Запрещаем сайтам опрашивать твои локальные устройства и открытые порты
 ||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system
-||^$important,port=22|23|445|3389|1433|3306|5432|6379|8080,domain=~teamviewer.com
+||^$important,port=22|23|445|3389|1433|3306|5432|6379|8080|9000|9090,domain=~teamviewer.com|~localhost
 $network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,important
 
-! [LAYER 28-29: QUANTUM VISIBILITY]
+! [LAYER 28-29: QUANTUM VISIBILITY & ENTROPY]
+! --- 1. Header Manipulation (Активная дезинформация) ---
+! Генерируем случайную энтропию для Google, чтобы сбить их алгоритмы профилирования
 ||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=DNT: 1
 *^$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved)=[^&]*/$1=omni-qnt-$random_string/
+
+! --- 2. Security Headers (Принудительная безопасность) ---
+! Запрещаем отслеживание пути (Referrer) и защищаем от подмены типов контента
 ||*^$set-header=Referrer-Policy: strict-origin-when-cross-origin,set-header=X-Content-Type-Options: nosniff
+||*^$set-header=X-Frame-Options: SAMEORIGIN,set-header=X-XSS-Protection: 1; mode=block
 
-! [LAYER 17-26: TRUSTED BRIDGE]
+! [LAYER 17-26: TRUSTED BRIDGE & API CLEANER]
+! --- 1. Unified Trusted Bridge (Оптимизированный список доверия) ---
 @@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|samsung|apple|microsoft|icloud|googleapis|gstatic|jsdelivr|yandex|passport|sso|zoom|teams\.microsoft|netflix|amazon|aliexpress|wildberries|ozon|caf|ameli|urssaf|oelie-eau|sncf-connect|enedis|edf)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
-@@||android\.googleapis\.com/v1/safetynet^$important
-$header=/^(X-Forwarded-For|Real-IP|Client-IP|Via|Forwarded)$/i,important,domain=~system
-$removeheader=/^x-goog-api-(client|key)$/,domain=google.com|googleapis.com
-$removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid)$/
 
-! [LAYER 30: PHISH-FENCE]
-||/^(flash-sms|class0-message|silent-ping|carrier-popup)/^$important,network,third-party
-$removeparam=/^(redirect|url|link|goto|continue|ref_url)$/,domain=~google.com|~bank|~yandex.ru|~dzen.ru|~openai.com|~gov|~un.org|~europa.eu|~caf.fr|~oelie-eau.fr
+! --- 2. Privacy Header Stripping ---
+! Удаляем специфические ID Google и подменяем IP-заголовки
+$header=/^(X-Forwarded-For|Real-IP|Client-IP|Via|Forwarded)$/i,important,domain=~system
+$removeheader=/^x-goog-api-(client|key|client-mods)$/,domain=google.com|googleapis.com
+$removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid|mc_eid|_hsenc)$/
+
+! [LAYER 30: PHISH-FENCE & PROTOCOL INTEGRITY]
+! --- 1. Anti-Phishing & Punycode (Защита от поддельных доменов) ---
 ||xn--*^$important,reject,domain=~system
+||/^(flash-sms|class0-message|silent-ping|carrier-popup)/^$important,network,third-party
+
+! --- 2. URL Cleaner (Удаление редиректов и мусора из ссылок) ---
+$removeparam=/^(redirect|url|link|goto|continue|ref_url|return_to)$/,domain=~google.com|~bank|~yandex.ru|~dzen.ru|~openai.com|~gov|~un.org|~europa.eu|~caf.fr|~oelie-eau.fr
 ||bit.ly^$rewrite=abp-resource:blank-js
+||t.co^$rewrite=abp-resource:blank-js
+
+! --- 3. Cache Protection ---
+! Запрещаем "отравление" кэша через скрытые параметры
+$removeparam=/^(_|cb|cachebuster|v)$/,domain=~system|~google.com
