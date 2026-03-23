@@ -1,10 +1,10 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol 2026 Universal (Eternal)
-! Version: 7.5.5
+! Version: 7.5.6
 ! Last modified: 2026-03-23
 ! Expires: 30 days
 ! Homepage: https://github.com/szp2025/AdGuard-Personal-Filters
-! Description: Ultimate Anti-Detect & Privacy Engine. Optimized for AdGuard Android/iOS.
+! Description: Ultimate Privacy Engine. Anti-detect, PQC-Hardening & Compressed Deception.
 ! =========================================================================
 
 ! [MEGA-BLOCK I] CORE: TRUST & STEALTH ENGINE (WHITELIST)
@@ -36,26 +36,24 @@ $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa|dilithium5,important
 ||^$dnstype=(HTTPS|65|QUIC),reject,domain=~system
 
 ! [LAYER 6-12: IDENTITY, DECEPTION & GHOST PROTOCOL]
-! 1. SET-CONSTANT (Консолидация & Реализм)
+! 1. COMPRESSED REALISM (Максимальное сжатие для скорости)
 #%#//scriptlet("set-constant", "navigator.platform|navigator.hardwareConcurrency|navigator.deviceMemory|navigator.language|navigator.languages", "Win32|8|8|en-US|en-US,en")
 #%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
 #%#//scriptlet("set-constant", "navigator.webdriver", "false")
 #%#//scriptlet("set-constant", "isAdBlockActive", "false")
 #%#//scriptlet("set-constant", "google_ad_status", "1")
-! 2. PREVENT / UNDEFINED (Стерилизация)
+! 2. SILENT PURGE (Аналитика & Cookies)
 #%#//scriptlet("set-constant", "ga|gtag|fbq|document.interestCohort|navigator.browsingTopics", "undefined")
-! 3. REMOVE (Storage Purge)
 #%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|ym_uid|amplitude_id|_hjSessionUser)$/")
-! 4. RE-MAP (Spoofing)
+! 3. MEDIA & CANVAS SPOOFING (Без поломок UI)
 #%#//scriptlet("spoof-css", "canvas", "noise")
 #%#//scriptlet("spoof-css", "webgl", "intel-uhd")
-! 5. L7 EXPERIMENTAL (Permissions & Timezone)
+! 4. L7 CONTEXT (Timezone & Permissions)
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
 #%#//scriptlet("execute-script", "const origQuery=navigator.permissions.query;navigator.permissions.query=(q)=>q.name==='notifications'?Promise.resolve({state:'denied'}):origQuery(q);")
 $network=ip,set_ttl=64,hide_hop_limit=on,important
 
 ! [LAYER 13-27: NETWORK PERIMETER & DEEP PURGE]
-! 6. COSMETIC (Оптимизированные селекторы)
 ##.ad-box, .ads-container, .sponsored-post, .mobile-ad-overlay, .cookie-banner, .newsletter-popup
 ||/^.*(-pa|frontend-pa|spot-pa|metadatalearning-pa)\.google(apis)?\.(com|io|net)$/^$reject
 ||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system
