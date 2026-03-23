@@ -89,19 +89,97 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 #%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
 
-# Маскировка железа и ОС (реалистичный профиль)
+# Маскировка железа и ОС (Dynamic V3 PRO — реалистичный профиль)
 
-#%#//scriptlet("set-constant", "navigator.platform", "Win32")
-#%#//scriptlet("set-constant", "navigator.hardwareConcurrency", "8")
-#%#//scriptlet("set-constant", "navigator.deviceMemory", "8")
-#%#//scriptlet("set-constant", "navigator.maxTouchPoints", "0")
+#%#//scriptlet("execute-script", "
+(function(){
 
-#%#//scriptlet("set-constant", "navigator.language", "en-US")
-#%#//scriptlet("set-constant", "navigator.languages", ["en-US","en"])
+  // --- 1. ПУЛ РЕАЛЬНЫХ ПРОФИЛЕЙ ---
+  const profiles = [
+    {
+      cores: 4,
+      memory: 4,
+      ua: '120.0.0.0',
+      lang: ['en-US','en'],
+      tz: 'Europe/Paris'
+    },
+    {
+      cores: 8,
+      memory: 8,
+      ua: '125.0.0.0',
+      lang: ['fr-FR','fr'],
+      tz: 'Europe/Paris'
+    },
+    {
+      cores: 6,
+      memory: 8,
+      ua: '123.0.0.0',
+      lang: ['en-GB','en'],
+      tz: 'Europe/Berlin'
+    }
+  ];
 
-#%#//scriptlet("set-constant", "navigator.userAgent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
+  // --- 2. СТАБИЛЬНЫЙ ВЫБОР (НЕ МЕНЯЕТСЯ В СЕССИИ) ---
+  const key = 'fp_profile_v3';
+  let p;
 
-#%#//scriptlet("set-constant", "Intl.DateTimeFormat.prototype.resolvedOptions", "function(){return {timeZone:'Europe/Paris'}}")
+  try {
+    const saved = sessionStorage.getItem(key);
+    if (saved) {
+      p = JSON.parse(saved);
+    } else {
+      p = profiles[Math.floor(Math.random() * profiles.length)];
+      sessionStorage.setItem(key, JSON.stringify(p));
+    }
+  } catch(e) {
+    p = profiles[0];
+  }
+
+  // --- 3. PLATFORM ---
+  Object.defineProperty(navigator, 'platform', {
+    get: () => 'Win32'
+  });
+
+  // --- 4. HARDWARE ---
+  Object.defineProperty(navigator, 'hardwareConcurrency', {
+    get: () => p.cores
+  });
+
+  Object.defineProperty(navigator, 'deviceMemory', {
+    get: () => p.memory
+  });
+
+  Object.defineProperty(navigator, 'maxTouchPoints', {
+    get: () => 0
+  });
+
+  // --- 5. LANGUAGE ---
+  Object.defineProperty(navigator, 'language', {
+    get: () => p.lang[0]
+  });
+
+  Object.defineProperty(navigator, 'languages', {
+    get: () => p.lang
+  });
+
+  // --- 6. USER AGENT ---
+  const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/' + p.ua + ' Safari/537.36';
+
+  Object.defineProperty(navigator, 'userAgent', {
+    get: () => ua
+  });
+
+  // --- 7. TIMEZONE (СИНХРОНИЗАЦИЯ) ---
+  const originalResolved = Intl.DateTimeFormat.prototype.resolvedOptions;
+
+  Intl.DateTimeFormat.prototype.resolvedOptions = function(){
+    const opts = originalResolved.apply(this, arguments);
+    opts.timeZone = p.tz;
+    return opts;
+  };
+
+})();
+")
 
 ! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
