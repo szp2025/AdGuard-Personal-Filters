@@ -91,19 +91,52 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 #%#//scriptlet("abort-current-inline-script", "/detectAdBlock|fuckAdBlock|blockAdBlock/")
 
+
 #%#//scriptlet("execute-script", "
 (function(){
 
 /**
  * ================================
- * 0. CORE INIT + MULTI ID
+ * 0. CORE INIT + MODE
  * ================================
  */
 const host = location.hostname;
+
 const TRUSTED = /(google|youtube|bank|gov|openai|github|paypal|stripe)/.test(host);
 
-// MULTI ID ROTATION
+/**
+ * Режим анти-adblock
+ */
+function getMode(host){
+  if(/bank|paypal|stripe|secure/.test(host)) return 'trusted';
+  if(/youtube|google|facebook|instagram/.test(host)) return 'social';
+  if(/news|media|blog|magazine/.test(host)) return 'aggressive';
+  return 'default';
+}
+
+const MODE = getMode(host);
+
+/**
+ * ================================
+ * 1. SAFE DEFINE
+ * ================================
+ */
+function safeDefine(obj, prop, value){
+  try{
+    Object.defineProperty(obj, prop, {
+      get: ()=>value,
+      configurable: true
+    });
+  }catch(e){}
+}
+
+/**
+ * ================================
+ * 2. MULTI ID
+ * ================================
+ */
 const ID_POOL = ['alpha','beta','gamma','delta'];
+
 let ID = localStorage.getItem('identity_name');
 
 if (!ID) {
@@ -113,7 +146,7 @@ if (!ID) {
 
 /**
  * ================================
- * 1. ENV SPLIT
+ * 3. ENV SPLIT
  * ================================
  */
 const ENV = (function(){
@@ -126,7 +159,7 @@ const ENV = (function(){
 
 /**
  * ================================
- * 2. SESSION MEMORY
+ * 4. SESSION MEMORY
  * ================================
  */
 const MEM_KEY = 'fp_memory_' + ID;
@@ -144,7 +177,7 @@ localStorage.setItem(MEM_KEY, JSON.stringify(memory));
 
 /**
  * ================================
- * 3. INTENT ENGINE
+ * 5. INTENT ENGINE
  * ================================
  */
 const INTENT = (function(){
@@ -159,7 +192,7 @@ const INTENT = (function(){
 
 /**
  * ================================
- * 4. CONSISTENCY FP
+ * 6. CONSISTENT FP
  * ================================
  */
 const FP_KEY = 'fp_lock_' + ID;
@@ -180,16 +213,19 @@ if (!FP) {
 }
 
 /**
- * APPLY FP (SAFE)
+ * APPLY FP
  */
 if (!TRUSTED) {
 
-  Object.defineProperty(navigator,'hardwareConcurrency',{get:()=>FP.cpu});
-  Object.defineProperty(navigator,'deviceMemory',{get:()=>FP.mem});
-  Object.defineProperty(navigator,'language',{get:()=>FP.lang});
-  Object.defineProperty(screen,'width',{get:()=>FP.screen.w});
-  Object.defineProperty(screen,'height',{get:()=>FP.screen.h});
-  Object.defineProperty(navigator,'userAgent',{get:()=>FP.ua});
+  safeDefine(navigator,'hardwareConcurrency',FP.cpu);
+  safeDefine(navigator,'deviceMemory',FP.mem);
+  safeDefine(navigator,'language',FP.lang);
+
+  safeDefine(screen,'width',FP.screen.w);
+  safeDefine(screen,'height',FP.screen.h);
+
+  // ⚠️ userAgent оставляем (по твоему желанию)
+  safeDefine(navigator,'userAgent',FP.ua);
 
   const origRes = Intl.DateTimeFormat.prototype.resolvedOptions;
   Intl.DateTimeFormat.prototype.resolvedOptions = function(){
@@ -202,23 +238,68 @@ if (!TRUSTED) {
 
 /**
  * ================================
- * 5. ADVANCED FP DEFENSE
+ * 7. ADAPTIVE ADBLOCK PROFILE
+ * ================================
+ */
+function applyProfile(){
+
+  switch(MODE){
+
+    case 'trusted':
+      safeDefine(window,'google_ad_status','1');
+      break;
+
+    case 'social':
+      safeDefine(window,'google_ad_status','1');
+      safeDefine(navigator,'webdriver',false);
+      break;
+
+    case 'aggressive':
+      safeDefine(window,'google_ad_status','1');
+      safeDefine(navigator,'webdriver',false);
+      safeDefine(window,'isAdBlockActive',false);
+      safeDefine(window,'adblocker',false);
+
+      window.gtag = function(){};
+      window.ga = function(){};
+      window.fbq = function(){};
+      break;
+
+    default:
+      safeDefine(navigator,'webdriver',false);
+      safeDefine(window,'google_ad_status','1');
+      break;
+  }
+
+}
+
+applyProfile();
+
+/**
+ * ================================
+ * 8. ADVANCED FP DEFENSE
  * ================================
  */
 if (!TRUSTED) {
 
-  // Canvas spoof (stable per session)
   if (!HTMLCanvasElement.prototype.toDataURL.__spoofed) {
-    const noise = ID.length * 100;
+
+    const orig = HTMLCanvasElement.prototype.toDataURL;
 
     HTMLCanvasElement.prototype.toDataURL = function(){
-      return 'data:image/png;base64,' + btoa(noise);
+      try{
+        const ctx = this.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = 'rgba(0,0,0,0.01)';
+          ctx.fillRect(0,0,1,1);
+        }
+      }catch(e){}
+      return orig.apply(this, arguments);
     };
 
     HTMLCanvasElement.prototype.toDataURL.__spoofed = true;
   }
 
-  // AudioContext
   if (window.AudioContext && !AudioContext.prototype.__spoofed) {
     const orig = AudioContext.prototype.createAnalyser;
     AudioContext.prototype.createAnalyser = function(){
@@ -227,52 +308,41 @@ if (!TRUSTED) {
     AudioContext.prototype.__spoofed = true;
   }
 
-  // Fonts protection (basic)
   document.fonts && (document.fonts.check = ()=>true);
-
 }
 
 /**
  * ================================
- * 6. ANALYTICS KILLER
+ * 9. ANALYTICS CONTROL
  * ================================
  */
 if (!TRUSTED) {
 
-  window.ga = undefined;
-  window.gtag = undefined;
-  window.fbq = undefined;
+  window.ga = window.ga || function(){};
+  window.gtag = window.gtag || function(){};
+  window.fbq = window.fbq || function(){};
 
   try {
-    document.interestCohort = undefined;
     navigator.browsingTopics = undefined;
   } catch(e){}
-
-  Object.defineProperty(navigator,'webdriver',{get:()=>false});
-  window.google_ad_status = 1;
 }
 
 /**
  * ================================
- * 7. SELF-HEAL ENGINE
+ * 10. SELF-HEAL
  * ================================
  */
 setInterval(()=>{
-  try {
-
+  try{
     if (navigator.webdriver !== false) {
-      Object.defineProperty(navigator,'webdriver',{get:()=>false});
+      safeDefine(navigator,'webdriver',false);
     }
-
-    if (!window.ga) window.ga = undefined;
-
-  } catch(e){}
-
-}, 5000);
+  }catch(e){}
+},7000);
 
 /**
  * ================================
- * 8. HUMAN BEHAVIOR
+ * 11. HUMAN BEHAVIOR
  * ================================
  */
 if (!TRUSTED) {
@@ -289,30 +359,11 @@ if (!TRUSTED) {
     localStorage.setItem(MEM_KEY, JSON.stringify(memory));
   }, {passive:true});
 
-  if (!EventTarget.prototype.addEventListener.__human) {
-
-    const orig = EventTarget.prototype.addEventListener;
-
-    EventTarget.prototype.addEventListener = function(type, fn, opt){
-
-      if (type==='click') {
-        const wrap = function(e){
-          setTimeout(()=> fn.call(this,e), rand(10,60));
-        };
-        return orig.call(this,type,wrap,opt);
-      }
-
-      return orig.call(this,type,fn,opt);
-    };
-
-    EventTarget.prototype.addEventListener.__human = true;
-  }
-
 }
 
 /**
  * ================================
- * 9. VISIBILITY
+ * 12. VISIBILITY
  * ================================
  */
 let vis='visible';
@@ -321,8 +372,8 @@ setInterval(()=>{
   vis = Math.random()>0.98 ? 'hidden':'visible';
 },20000);
 
-Object.defineProperty(document,'visibilityState',{get:()=>vis});
-Object.defineProperty(document,'hidden',{get:()=>vis==='hidden'});
+safeDefine(document,'visibilityState',vis);
+safeDefine(document,'hidden',vis==='hidden');
 
 })();
 ")
