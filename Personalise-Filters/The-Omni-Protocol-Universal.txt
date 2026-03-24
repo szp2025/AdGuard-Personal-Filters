@@ -592,3 +592,21 @@ $removeparam=/^(redirect|url|link|goto|continue|ref_url|return_to)$/,domain=~goo
 ! --- 3. Cache Protection ---
 ! Запрещаем "отравление" кэша через скрытые параметры
 $removeparam=/^(_|cb|cachebuster|v)$/,domain=~system|~google.com
+
+
+! [LAYER 31: ANTI-COMPROMISE & EXFILTRATION CONTROL]
+! --- Блокировка утечки через нестандартные порты (Anti-RAT) ---
+||*^$important,port=~80|~443|~53|~853,reject,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov
+
+! --- Запрет скрытых медиа-трансляций (Anti-Mirroring) ---
+||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com
+
+! --- Остановка фоновой активности (Screen-Off Stealth) ---
+||*$ping,third-party,important,domain=~system
+
+! --- Программная блокировка доступа к камере и микрофону в браузере ---
+#%#//scriptlet("set-constant", "navigator.mediaDevices.getUserMedia", "undefined")
+#%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "undefined")
+#%#//scriptlet("set-constant", "navigator.getUserMedia", "undefined")
+#%#//scriptlet("set-constant", "webkitGetUserMedia", "undefined")
+#%#//scriptlet("set-constant", "mozGetUserMedia", "undefined")
