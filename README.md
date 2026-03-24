@@ -7,41 +7,40 @@
 
 ---
 
-## 🇫🇷 Le Protocole Omni (Apex)
-Mise à jour majeure : Moteur de fingerprinting unique, synchronisation cognitive totale et intégration native de **SAFE AUTO**. Aucun conflit, prêt pour la production.
+## 🏆 ИТОГОВЫЙ УРОВЕНЬ / SYSTEM STATUS / NIVEAU DU SYSTÈME
 
-## 🇷🇺 Омни-Протокол (Apex)
-Обновление: Единый движок фингерпринтинга, полная когнитивная синхронизация и встроенный **SAFE AUTO**. Конфликты устранены, система готова к эксплуатации (Production-ready).
-
-## 🇬🇧 English | The Omni-Protocol (Apex)
-Major Update: Unified fingerprint engine, full behavioral sync, and native **SAFE AUTO**. Zero conflicts, production-ready.
-
----
-
-## 🏆 📊 Уровень Системы / System Levels / Niveau du Système
-
-| Category / Категория | Rating / Оценка | Status |
+| Категория / Category | Уровень / Level | Описание / Description |
 | :--- | :---: | :--- |
-| **Fingerprint Engine** | 💀💀💀💀💀💀💀💀💀 | **Unified & Silent** |
-| **Behavioral Sync** | 💀💀💀💀💀💀💀 | **Synchronized** |
-| **Network Hardening** | 💀💀💀💀 | **Apex Ready** |
+| **Fingerprint Engine** | 💀💀💀💀💀💀💀💀💀 | **Unified & Dynamic Noise** |
+| **Behavioral Sync** | 💀💀💀💀💀💀💀 | **Cognitive Logic Alignment** |
+| **Context Engine** | 💀💀💀💀💀 | **Zero Conflict / No Double Wrap** |
+| **Network Hardening** | 💀💀💀💀 | **Protocol Sovereignty** |
 | **Detection Immunity** | 🔒 | **Production-Ready** |
 
 ---
 
-## 📥 Installation / Установка
+## 💀 ЧТО ИСПРАВЛЕНО / WHAT'S FIXED / CORRECTIONS
 
-**URL:** `https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.txt`
+### 🇷🇺 Русский
+* **Zero Conflict:** Убраны дубли CONTEXT и конфликты `ctx`.
+* **Contextual Noise:** Рандомизация стала контекстной и динамической.
+* **Stability Fix:** Устранено «двойное обертывание» (double wrap), стабильность ↑↑↑.
+* **Normalization:** Нормализован системный шум для исключения детекции.
+
+### 🇬🇧 English
+* **No Double Wrap:** Fixed critical script execution issues for maximum stability.
+* **Contextual Rand:** Randomization is now dynamic and site-aware.
+* **Unified Logic:** Removed context duplicates and internal conflicts.
+
+### 🇫🇷 Français
+* **Stabilité Maximale :** Correction du "double wrap" et suppression des conflits `ctx`.
+* **Bruit Contextuel :** La randomisation est désormais dynamique et intelligente.
+* **Optimisation :** Unification du moteur de fingerprinting pour un anonymat total.
 
 ---
 
-## 📜 Changelog / Журнал изменений / Journal des modifications
-
-### [v7.7.2] - 2026-03-24
-* 🚀 **Production-Ready:** Полное устранение конфликтов между защитными слоями.
-* 🧠 **Cognitive Sync:** Синхронизация поведения, языка (en-US) и сетевых заголовков.
-* 🛡️ **Unified Engine:** Единый источник энтропии для всех типов цифровых отпечатков.
-* 🟢 **SAFE AUTO:** Внедрена интеллектуальная адаптация под финансовые (Stripe, Revolut) и гос-сегменты (.gouv.fr).
+## 📥 Установка / Installation
+**URL:** `https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.txt`
 
 ---
 
