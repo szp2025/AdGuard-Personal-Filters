@@ -6,43 +6,42 @@
 
 ---
 
-## CORE ENGINE: 6-STAGE FIREWALL & SYSTEM STATUS
+## 🧩 ULTIMATE CORE ENGINE: SPECIFICATION & DEPLOYMENT (v7.7.1)
 
-| Stage / Param | Level | 🇬🇧 Logic & Tech (EN) | 🇫🇷 Logique & Tech (FR) | 🇷🇺 Логика и Технологии (RU) |
-| :--- | :---: | :--- | :--- | :--- |
-| **1. The Check** | 🛡️ | Recipient check. Personal tastes purged for 3rd parties. | Vérification du destinataire. Goûts purgés pour tiers. | Проверка бенефициара. Личные вкусы вырезаются для 3-х лиц. |
-| **2. Sensitivity**| ☣️ | Block "radioactive" content (Debt, Health, Religion). | Bloque le contenu "radioactif" (Dettes, Santé). | Блок «радиоактивного» контента (Долги, Здоровье). |
-| **3. Domains** | 🌐 | Domain separation. Work != Personal life. | Séparation des domaines. Travail != Vie privée. | Разделение доменов. Работа != Личная жизнь. |
-| **4. Accuracy** | ✅ | Priority of corrections. No hallucinations. | Priorité aux corrections. Pas d'hallucinations. | Приоритет исправлений. Без галлюцинаций. |
-| **5. Diversity** | 🌈 | Anti-Tunneling. Fighting the "echo chamber". | Anti-Tunneling. Lutte contre la chambre d'écho. | Анти-туннелирование. Борьба с «эхо-камерой». |
-| **6. Stealth** | ☠️ | **Silent Operator:** Total ban on bridge phrases. | **Silent Operator:** Interdiction des phrases ponts. | **Silent Operator:** Полный блок фраз-мостиков. |
-| **Fingerprint** | 💀 10/10 | **Sensor Blindness:** Camera/Mic = `undefined`. | **Cécité:** Caméra/Micro = `undefined`. | **Ослепление:** Камера/Микро = `undefined`. |
-| **Exfiltration** | 🛡️ 10/10 | **Anti-RAT Port Cage:** Blocks non-std ports. | **Cage de ports:** Bloque les ports non-std. | **Портовая клетка:** Блок всех не-std портов. |
-| **Network** | 🌐 PQC | **Post-Quantum:** ML-KEM-1024 encryption. | **Post-Quantique:** Chiffrement ML-KEM-1024. | **Пост-квантум:** Шифрование ML-KEM-1024. |
-
----
-
-## DEVICE COMPATIBILITY, DOWNLOADS & COVERAGE
-
-| Platform | Recommended App & Source | 🇬🇧 Setup (EN) | 🇫🇷 Configuration (FR) | 🇷🇺 Установка (RU) | Coverage | Level |
-| :--- | :--- | :--- | :--- | :--- | :--- | :---: |
-| **Android** | **AdGuard (Premium)**<br>[Official](https://adguard.com/) / [GitHub](https://github.com/AdguardTeam/AdguardForAndroid/releases) | Download APK. Add link in "Custom Filters". | Téléchargez l'APK. Ajoutez le lien. | Скачать APK. Добавить ссылку в фильтры. | **Full System** | 💀💀💀💀💀 |
-| **Android** | **AdGuard (Free)**<br>[Official](https://adguard.com/) | Only for Samsung/Yandex browsers. | Uniquement pour Samsung/Yandex. | Только для Samsung/Yandex. | **Web Only** | 💀💀 |
-| **iOS** | **AdGuard Pro**<br>[App Store](https://apps.apple.com/app/adguard-pro-adblock/id1126386264) | Install app. Enable "Advanced Protection". | Activer "Protection avancée". | Включить «Расширенную защиту». | **System-Wide** | 💀💀💀 |
-| **Desktop** | **AdGuard (Win/Mac)**<br>[Official](https://adguard.com/) / [GitHub](https://github.com/AdguardTeam/AdguardForWindows/releases) | Settings -> Filters -> Add by URL. | Paramètres -> Filtres -> Ajouter URL. | Настройки -> Фильтры -> Добавить URL. | **Full System** | 💀💀💀💀💀 |
-| **Browser** | **uBlock Origin**<br>[Official](https://ublockorigin.com/) / [GitHub](https://github.com/gorhill/uBlock/releases) | Dashboard -> Filter lists -> Import. | Listes de filtres -> Importer URL. | Настройки -> Импорт URL. | **Web Only** | 💀💀💀💀 |
+| Layer / Platform | Security | 🇬🇧 Logic, Tech & Sources (EN) | 🇷🇺 Логика, Техно и Ссылки (RU) | App Coverage | Full Compatibility (Analogs) | Efficiency |
+| :--- | :---: | :--- | :--- | :--- | :--- | :---: |
+| **1. The Check** | 🛡️ | **Logic:** Purge tastes for 3rd parties. | **Логика:** Чистка вкусов для 3-х лиц. | AI Agents, Search | Native AI, GPT-4/5 | **100%** |
+| **2. Sensitivity**| ☣️ | **Logic:** Block Debt, Health, Religion. | **Логика:** Блок тем: Долги, Здоровье. | All Data Inputs | Privacy Shield, GDPR | **100%** |
+| **3. Domains** | 🌐 | **Logic:** Work != Personal life. | **Логика:** Работа != Личная жизнь. | CRM, Slack, Mail | Workspace, Office365 | **100%** |
+| **4. Fingerprint**| 💀 | **Tech:** Sensor Blindness (Cam/Mic). | **Техно:** Ослепление (Кам/Мик). | **Browsers, Zoom** | AdGuard, uBO, Brave | **100%** |
+| **5. Exfiltration**| 🛡️ | **Tech:** Anti-RAT Port Cage (Strict). | **Техно:** Портовая клетка (Блок RAT). | **Banking, Crypto** | AdGuard WFP, AdLock | **100%** |
+| **6. Network** | 🌐 | **Tech:** Post-Quantum (ML-KEM-1024).| **Техно:** Пост-квантум шифрование. | **All Web Traffic** | DoH, DoT, Control D | **100%** |
+| **Android (Premium)**| 💀💀💀 | **AdGuard Premium**<br>[Official](https://adguard.com/) / [GitHub](https://github.com/AdguardTeam/AdguardForAndroid/releases) | **Premium:** Полный фильтр Apps + Web. | **TG, WA, Banks** | AdGuard, NextDNS | **100%** |
+| **Android (Free)** | 💀 | **AdGuard Content Blocker**<br>[Official Site](https://adguard.com/) | **Free:** Только выбранные браузеры. | **Samsung/Yandex** | Ghostery, Adblock | **40%** |
+| **iOS (Pro)** | 💀💀 | **AdGuard Pro (App Store)**<br>[App Store](https://apps.apple.com/app/adguard-pro-adblock/id1126386264) | **Pro:** DNS + Расширенная защита Web. | **Safari, System** | Control D, Pi-hole | **85%** |
+| **Desktop (PC/Mac)**| 💀💀💀 | **AdGuard Desktop**<br>[Official](https://adguard.com/) / [GitHub](https://github.com/AdguardTeam/AdguardForWindows/releases) | **AdGuard:** WFP-драйвер уровня системы. | **All EXE/Soft** | WFP, WFP Driver, TDI | **100%** |
+| **Browser (Extension)**| 💀💀 | **uBlock Origin**<br>[Web Store](https://ublockorigin.com/) / [GitHub](https://github.com/gorhill/uBlock/releases) | **uBlock:** Панель -> Импорт URL. | **Browsers Only** | uBO Lite, AdGuard Ext | **95%** |
 
 ---
 
-## INSTALLATION & DOWNLOAD
+## 📊 APP-SPECIFIC PROTECTION STATUS
 
-### 📥 Download & Copy / Télécharger et Copier / Скачать и Копировать
+| Category | Protection | 🇷🇺 Особенности защиты (RU) | Active Tech Type |
+| :--- | :---: | :--- | :--- |
+| **Banking / Finance** | 🟢 100% | Защита транзакций от RAT-перехвата и PQC-шифрование. | **WFP & Port Block** |
+| **Messengers (TG/WA)**| 🟢 90% | Маскировка метаданных и блок телеметрии (AdGuard Premium). | **System Firewall** |
+| **Browsers (All)** | 🟢 100% | Удаление цифрового отпечатка (Anti-Fingerprint) через Scriptlets. | **JS Scriptlets** |
+| **Social Media** | 🟡 80% | Блок скрытых трекеров и Поведенческий щит. | **Cosmetic Shield** |
+| **Smart TV / IoT** | 🔴 30% | Базовая DNS-фильтрация (AdGuard Home / NextDNS). | **DNS Filtering** |
 
-**[Click to Open Filter / Cliquer pour Ouvrir / Открыть прямую ссылку](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)**
+---
 
-**EN:** Copy the URL below to add to your filter manager:
-**FR:** Copiez l'URL ci-dessous pour l'ajouter à votre gestionnaire de filtres :
-**RU:** Скопируйте URL ниже, чтобы добавить в менеджер фильтров:
+## 📥 INSTALLATION & DOWNLOAD
 
+### 🧬 Ссылка на фильтр (The Filter Link)
+
+**[ОТКРЫТЬ ПРЯМУЮ ССЫЛКУ (RAW)](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)**
+
+**RU:** Скопируйте и вставьте этот URL в «Пользовательские фильтры» вашего приложения (**AdGuard** или **uBlock Origin**):
 ```text
 [https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)
