@@ -92,27 +92,82 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 #%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
 
 # ================================
-# V6 GOD MODE + BEHAVIOR + AI FINAL (CLEAN)
+# IDENTITY TAG SYSTEM (FIRST LOAD)
+# ================================
+
+#%#//scriptlet("execute-script", "
+(function(){
+  if (!localStorage.getItem('identity_name')) {
+    const name = 'id_' + Math.floor(Math.random()*100000);
+    localStorage.setItem('identity_name', name);
+  }
+})();
+")
+
+# ================================
+# SYNC GOD MODE
 # ================================
 
 #%#//scriptlet("execute-script", "
 (function(){
 
+const ID = localStorage.getItem('identity_name') || 'default';
+const KEY = 'fp_global_identity_' + ID;
+
+let identity;
+
+try {
+  const stored = localStorage.getItem(KEY);
+  identity = stored ? JSON.parse(stored) : {
+    seed: Math.floor(Math.random()*1000000),
+    created: Date.now()
+  };
+  localStorage.setItem(KEY, JSON.stringify(identity));
+} catch(e){
+  identity = {seed:123456};
+}
+
+try {
+  const channel = new BroadcastChannel('fp_sync');
+  channel.postMessage(identity);
+  channel.onmessage = e => {
+    if (e.data && e.data.seed) identity.seed = e.data.seed;
+  };
+} catch(e){}
+
+const sharedSeed = identity.seed;
+
 /**
- * ================================
- * 1. SAFE AUTO DETECTION
- * ================================
+ * CONSISTENT RANDOM
  */
+Math.random = (function(){
+  let x = sharedSeed;
+  return function(){
+    x = (x * 9301 + 49297) % 233280;
+    return x / 233280;
+  };
+})();
+
+})();
+")
+
+# ================================
+# V6 GOD + BEHAVIOR + DRIFT + AI
+# ================================
+
+#%#//scriptlet("execute-script", "
+(function(){
+
 const host = location.hostname;
 const TRUSTED = /(google|youtube|bank|gov|openai|yandex|github|paypal|stripe)/.test(host);
-const HARDENED = /(ads|tracking|analytics|fingerprint)/.test(host);
 
 /**
  * ================================
- * 2. SESSION PROFILE
+ * SESSION PROFILE
  * ================================
  */
-const KEY = 'fp_v6_profile_' + (localStorage.getItem('identity_name') || 'default');
+const ID = localStorage.getItem('identity_name') || 'default';
+const KEY = 'fp_v6_profile_' + ID;
 
 let profile;
 
@@ -135,33 +190,11 @@ const noise = (seed % 7) + 1;
 
 /**
  * ================================
- * 3. FINGERPRINT CORE (НЕ ДЛЯ TRUSTED)
+ * FINGERPRINT CORE
  * ================================
  */
 if (!TRUSTED) {
 
-/**
- * ================================
- * TIME EVOLUTION
- * ================================
- */
-const age = (Date.now() - drift.created) / 1000; // секунды
-
-// постепенная усталость
-const fatigueFactor = Math.min(1.5, 1 + age / 600); // растёт со временем
-
-// случайные микроколебания
-const micro = (behaviorSeed % 10) * 0.01;
-
-/**
- * ================================
- * ADAPTIVE RANDOM
- * ================================
- */
-const humanRand = (min, max) => {
-  const base = min + (behaviorSeed % (max - min));
-  return base * drift.speed * fatigueFactor + micro;
-};
   Object.defineProperty(navigator,'platform',{get:()=> 'Win32'});
   Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> profile.cpu});
   Object.defineProperty(navigator,'deviceMemory',{get:()=> profile.mem});
@@ -173,166 +206,113 @@ const humanRand = (min, max) => {
   const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'+profile.ua+' Safari/537.36';
   Object.defineProperty(navigator,'userAgent',{get:()=> ua});
 
-  const originalResolved = Intl.DateTimeFormat.prototype.resolvedOptions;
+  const origRes = Intl.DateTimeFormat.prototype.resolvedOptions;
   Intl.DateTimeFormat.prototype.resolvedOptions = function(){
-    const opts = originalResolved.apply(this, arguments);
+    const opts = origRes.apply(this, arguments);
     opts.timeZone = profile.tz;
     return opts;
   };
 
-  // WEBGL
-  const originalGetParameter = WebGLRenderingContext.prototype.getParameter;
+  const origGL = WebGLRenderingContext.prototype.getParameter;
   WebGLRenderingContext.prototype.getParameter = function(param){
     if(param === 37445) return profile.vendor;
     if(param === 37446) return profile.gpu;
-    return originalGetParameter.apply(this, arguments);
+    return origGL.apply(this, arguments);
   };
-  WebGLRenderingContext.prototype.getParameter.__original = originalGetParameter;
 
-  // CANVAS
-  const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
+  const origCanvas = HTMLCanvasElement.prototype.toDataURL;
   HTMLCanvasElement.prototype.toDataURL = function(){
     const ctx = this.getContext('2d');
     if(ctx){
       ctx.fillStyle = 'rgba('+noise+','+noise+','+noise+',0.004)';
       ctx.fillRect(0,0,1,1);
     }
-    return originalToDataURL.apply(this, arguments);
+    return origCanvas.apply(this, arguments);
   };
-  HTMLCanvasElement.prototype.toDataURL.__original = originalToDataURL;
 
-  // AUDIO
-  const AudioCtx = window.AudioContext || window.webkitAudioContext;
-  if (AudioCtx) {
-    const origCreate = AudioCtx.prototype.createAnalyser;
-    AudioCtx.prototype.createAnalyser = function(){
-      const analyser = origCreate.apply(this, arguments);
-      const orig = analyser.getFloatFrequencyData;
-      analyser.getFloatFrequencyData = function(arr){
-        orig.apply(this, arguments);
-        for(let i=0;i<arr.length;i++){
-          arr[i] += noise * 0.00003;
-        }
-      };
-      return analyser;
-    };
-  }
-
-  // SCREEN
-  const w = screen.width;
-  const h = screen.height;
-  Object.defineProperty(screen,'availWidth',{get:()=> w - (noise % 2)});
-  Object.defineProperty(screen,'availHeight',{get:()=> h - (noise % 3)});
-  Object.defineProperty(screen,'colorDepth',{get:()=> 24});
-
-  // PERFORMANCE (ЕДИНСТВЕННЫЙ)
-  const originalNow = performance.now;
+  const origNow = performance.now;
   performance.now = function(){
-    return originalNow.call(performance) + (noise * 0.01);
+    return origNow.call(performance) + (noise * 0.01);
   };
 
-  // WEBDRIVER
   Object.defineProperty(navigator,'webdriver',{get:()=> false});
-
 }
 
 /**
  * ================================
- * 4. VISIBILITY (REALISTIC)
+ * VISIBILITY
  * ================================
  */
 let hidden = false;
-setInterval(()=>{
-  hidden = Math.random() > 0.97;
-}, 15000);
+setInterval(()=> hidden = Math.random() > 0.97, 15000);
 
 Object.defineProperty(document,'hidden',{get:()=> hidden});
-Object.defineProperty(document,'visibilityState',{get:()=> hidden ? 'hidden' : 'visible'});
+Object.defineProperty(document,'visibilityState',{get:()=> hidden ? 'hidden':'visible'});
 
 /**
  * ================================
- * 5. BEHAVIOR GOD (НЕ ДЛЯ TRUSTED)
+ * BEHAVIOR + DRIFT
  * ================================
  */
 if (!TRUSTED) {
 
-  /**
-   * ================================
-   * BEHAVIOR SEED (IDENTITY SYNC)
-   * ================================
-   */
-  const ID = localStorage.getItem('identity_name') || 'default';
-
-  let globalIdentity;
+  let identity;
   try {
-    globalIdentity = JSON.parse(
-      localStorage.getItem('fp_global_identity_' + ID) || '{"seed":12345}'
-    );
-  } catch(e){
-    globalIdentity = {seed:12345};
+    identity = JSON.parse(localStorage.getItem('fp_global_identity_' + ID));
+  } catch(e){ identity = {seed:12345}; }
+
+  const behaviorSeed = identity.seed + (ID.length * 100);
+
+  /**
+   * DRIFT
+   */
+  const DRIFT_KEY = 'fp_drift_' + ID;
+
+  let drift;
+  try {
+    drift = JSON.parse(localStorage.getItem(DRIFT_KEY));
+  } catch(e){}
+
+  if (!drift) {
+    drift = {
+      created: Date.now(),
+      speed: 0.8 + Math.random()*0.4
+    };
+    localStorage.setItem(DRIFT_KEY, JSON.stringify(drift));
   }
 
-  const behaviorSeed = globalIdentity.seed + (ID.length * 100);
+  const age = (Date.now() - drift.created) / 1000;
+  const fatigue = Math.min(1.5, 1 + age / 600);
 
-/**
- * ================================
- * DRIFT ENGINE (HUMAN TIME EVOLUTION)
- * ================================
- */
-const DRIFT_KEY = 'fp_drift_' + ID;
-
-let drift;
-
-try {
-  drift = JSON.parse(localStorage.getItem(DRIFT_KEY));
-} catch(e){}
-
-if (!drift) {
-  drift = {
-    created: Date.now(),
-    fatigue: Math.random(),      // усталость
-    focus: Math.random(),        // концентрация
-    speed: 0.8 + Math.random()*0.4 // базовая скорость
+  const rand = (min,max)=>{
+    const base = min + (behaviorSeed % (max-min));
+    return base * drift.speed * fatigue;
   };
-  localStorage.setItem(DRIFT_KEY, JSON.stringify(drift));
-}
-
-  /**
-   * ================================
-   * RANDOM ENGINE (STABLE)
-   * ================================
-   */
-  const rand = (min,max)=> min + (behaviorSeed % (max-min));
 
   let lastMove = 0;
 
-  window.addEventListener('mousemove', function(e){
+  window.addEventListener('mousemove', e=>{
     const now = performance.now();
     if (now - lastMove < rand(5,20)) return;
     lastMove = now;
   }, {passive:true});
 
-  const originalScroll = window.scrollTo;
+  const origScroll = window.scrollTo;
   window.scrollTo = function(){
-    setTimeout(()=> originalScroll.apply(window, arguments), rand(5,30));
+    setTimeout(()=> origScroll.apply(window, arguments), rand(5,30));
   };
 
-  /**
-   * ================================
-   * SAFE WRAP (ANTI DOUBLE WRAP)
-   * ================================
-   */
   if (!EventTarget.prototype.addEventListener.__wrapped) {
-    const originalAdd = EventTarget.prototype.addEventListener;
+    const origAdd = EventTarget.prototype.addEventListener;
 
     EventTarget.prototype.addEventListener = function(type, listener, options){
       if(type === 'click'){
         const wrapped = function(e){
           setTimeout(()=> listener.call(this,e), rand(10,40));
         };
-        return originalAdd.call(this, type, wrapped, options);
+        return origAdd.call(this, type, wrapped, options);
       }
-      return originalAdd.call(this, type, listener, options);
+      return origAdd.call(this, type, listener, options);
     };
 
     EventTarget.prototype.addEventListener.__wrapped = true;
@@ -340,21 +320,9 @@ if (!drift) {
 
 }
 
-# IDENTITY TAG SYSTEM
-
-#%#//scriptlet("execute-script", "
-(function(){
-
-  if (!localStorage.getItem('identity_name')) {
-    const name = 'id_' + Math.floor(Math.random()*100000);
-    localStorage.setItem('identity_name', name);
-  }
-
-})();
-")
 /**
  * ================================
- * 6. AI MIMIC (НЕ ДЛЯ TRUSTED)
+ * AI MIMIC
  * ================================
  */
 if (!TRUSTED) {
@@ -371,7 +339,6 @@ if (!TRUSTED) {
     return Math.min(3000, words * 5);
   };
 
-  // только если ещё не обёрнут
   if (!EventTarget.prototype.addEventListener.__aiwrapped) {
     const origAdd = EventTarget.prototype.addEventListener;
 
@@ -401,137 +368,6 @@ if (!TRUSTED) {
 
 })();
 ")
-
-# SYNC GOD MODE — Cross-Tab Identity Sync (APEX)
-
-#%#//scriptlet("execute-script", "
-(function(){
-
-/**
- * ================================
- * 1. GLOBAL IDENTITY (CROSS TAB)
- * ================================
- */
-const ID = localStorage.getItem('identity_name') || 'default';
-const KEY = 'fp_global_identity_' + ID;
-let identity;
-
-try {
-  const stored = localStorage.getItem(KEY);
-
-  if (stored) {
-    identity = JSON.parse(stored);
-  } else {
-    identity = {
-      seed: Math.floor(Math.random()*1000000),
-      created: Date.now()
-    };
-    localStorage.setItem(KEY, JSON.stringify(identity));
-  }
-
-} catch(e){
-  identity = { seed: 123456 };
-}
-
-/**
- * ================================
- * 2. BROADCAST CHANNEL SYNC
- * ================================
- */
-try {
-  const channel = new BroadcastChannel('fp_sync');
-
-  channel.onmessage = function(e){
-    if (e.data && e.data.seed) {
-      identity.seed = e.data.seed;
-    }
-  };
-
-  channel.postMessage(identity);
-
-} catch(e){}
-
-/**
- * ================================
- * 3. SHARED RANDOM ENGINE
- * ================================
- */
-const sharedSeed = identity.seed;
-
-Math.random = (function(){
-  let x = sharedSeed;
-  return function(){
-    x = (x * 9301 + 49297) % 233280;
-    return x / 233280;
-  };
-})();
-
-/**
- * ================================
- * 4. TIME CONSISTENCY
- * ================================
- */
-const baseNow = performance.now();
-
-const originalNow = performance.now;
-performance.now = function(){
-  return originalNow.call(performance) + (sharedSeed % 10) * 0.01;
-};
-
-/**
- * ================================
- * 5. STORAGE CONSISTENCY
- * ================================
- */
-try {
-  const originalSet = localStorage.setItem;
-
-  localStorage.setItem = function(k,v){
-    return originalSet.apply(this, arguments);
-  };
-
-} catch(e){}
-
-/**
- * ================================
- * 6. TAB ACTIVITY SYNC
- * ================================
- */
-try {
-  window.addEventListener('focus', ()=>{
-    localStorage.setItem('fp_last_focus', Date.now());
-  });
-
-  window.addEventListener('blur', ()=>{
-    localStorage.setItem('fp_last_blur', Date.now());
-  });
-
-} catch(e){}
-
-/**
- * ================================
- * 7. SESSION CONSISTENCY
- * ================================
- */
-try {
-  const sessionKey = 'fp_session_sync';
-
-  if (!sessionStorage.getItem(sessionKey)) {
-    sessionStorage.setItem(sessionKey, identity.seed);
-  }
-
-} catch(e){}
-
-/**
- * ================================
- * DEBUG
- * ================================
- */
-// console.log('[SYNC GOD ACTIVE]', identity);
-
-})();
-")
-
 
 ! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
