@@ -7,11 +7,9 @@
 
 ---
 
-## 🏗️ SYSTEM ARCHITECTURE: 6-STAGE FIREWALL
-### 🏗️ АРХИТЕКТУРА СИСТЕМЫ: 6-СТУПЕНЧАТЫЙ ФАЙЕРВОЛ
-### 🏗️ ARCHITECTURE DU SYSTÈME : FIREWALL À 6 ÉTAPES
+## SYSTEM ARCHITECTURE: 6-STAGE FIREWALL
 
-| Stage / Этап | Name / Название | Logic / Логика / Logique |
+| Stage | Name | Logic / Логика / Logique |
 | :--- | :--- | :--- |
 | **1** | **The Check** | **RU:** Определение бенефициара. Если запрос для 3-х лиц — личные вкусы вырезаются.<br>**EN:** Recipient check. If for 3rd parties, personal tastes are purged.<br>**FR:** Vérification du destinataire. Si pour tiers, les goûts personnels sont purgés. |
 | **2** | **Sensitivity** | **RU:** Блокировка «радиоактивного» контента (долги, болезни, суды, религия).<br>**EN:** Block "radioactive" content (debts, illness, lawsuits, religion).<br>**FR:** Blocage du contenu "radioactif" (dettes, maladies, procès, religion). |
@@ -22,21 +20,20 @@
 
 ---
 
-## 🏆 💀 SYSTEM STATUS / SYSTEM LEVEL (APEX)
+## SYSTEM STATUS / SYSTEM LEVEL (APEX)
 
-| Параметр / Parameter | Уровень / Level | Статус / Status |
+| Parameter | Level | Status |
 | :--- | :---: | :--- |
-| **Fingerprint (Отпечаток)** | 💀💀💀💀💀💀💀💀💀💀 | **MAX ENTROPY (10/10)** |
+| **Fingerprint** | 💀💀💀💀💀💀💀💀💀💀 | **MAX ENTROPY (10/10)** |
 | **Exfiltration Defense** | 🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️ | **ANTI-RAT ISOLATION** |
-| **Network (Сеть)** | 🌐🌐🌐🌐🌐 | **PORT HARDENING (PQC)** |
-| **Stealth (Скрытность)** | ☠️ MAX | **TOTAL IMMUNITY** |
+| **Network** | 🌐🌐🌐🌐🌐 | **PORT HARDENING (PQC)** |
+| **Stealth** | ☠️ MAX | **TOTAL IMMUNITY** |
 
 ---
 
-## 💀 HARDCORE SECURITY STACK (TRILINGUAL)
-Интеграция системной защиты от компрометации, прослушки и зеркалирования.
+## HARDCORE SECURITY STACK (TRILINGUAL)
 
-| Feature / Функция | 🇷🇺 Описание (RU) | 🇬🇧 Description (EN) | 🇫🇷 Description (FR) |
+| Feature | 🇷🇺 Описание (RU) | 🇬🇧 Description (EN) | 🇫🇷 Description (FR) |
 | :--- | :--- | :--- | :--- |
 | **Anti-RAT Port Cage** | Блокировка всех портов, кроме 80/443/53/853. Стоп слив данных. | Blocks all non-std ports. Prevents data exfiltration. | Bloque tous les ports non-std. Empêche l'exfiltration. |
 | **Sensor Blindness** | Камера и микрофон = `undefined`. Ослепление шпионов. | Camera/Mic = `undefined`. Blinds web-spyware. | Caméra/Micro = `undefined`. Aveugle les logiciels espions. |
@@ -47,23 +44,23 @@
 
 ---
 
-## 🧠 ADVANCED LAYERS (ТЕХНИЧЕСКИЕ СЛОИ)
+## ADVANCED LAYERS
 
-### 🌐 1. NETWORK & PROTOCOL STEALTH
+### NETWORK & PROTOCOL STEALTH
 * **Jitter Dynamics:** Рандомизация задержек `fetch` (30-180ms) для имитации живого человека.
 * **DNS Sovereignty:** Полная блокировка DoH, Type 65 и QUIC для предотвращения обхода фильтрации.
-* **TTL Masking:** Принудительный TTL 64 (Standard OS Fingerprint) для всех исходящих пакетов во всем телефоне.
+* **TTL Masking:** Принудительный TTL 64 (Standard OS Fingerprint) для всех исходящих пакетов.
 
-### 🤖 2. COGNITIVE BEHAVIOR ENGINE
+### COGNITIVE BEHAVIOR ENGINE
 * **Reading Emulation:** Автоматический скролл и микро-движения мыши для легитимности сессии.
 * **Visibility Spoofing:** Случайные циклы `hidden/visible` для обхода детекторов активности.
 * **Identity Multi-Pool:** Локальная ротация виртуальных ID (Alpha/Beta/Gamma) для разделения сессий.
 
 ---
 
-## 🛠️ ТЕХНИЧЕСКИЕ ПАРАМЕТРЫ (AI PARAMETERS)
+## AI PARAMETERS
 
-| Параметр | Значение / Описание |
+| Parameter | Value / Description |
 | :--- | :--- |
 | **Strategy Type** | Zero-Footprint, Utility-First, Anti-Compromise |
 | **Data Visibility** | Invisible Execution (Скрытое исполнение) |
@@ -73,14 +70,15 @@
 
 ---
 
-## 🚀 📊 COMPARISON / СРАВНЕНИЕ
-| Solution / Решение | Level / Уровень | Exfiltration Risk |
+## COMPARISON
+
+| Solution | Level | Exfiltration Risk |
 | :--- | :---: | :---: |
-| Standard User / Обычный пользователь | 🔴 | High |
+| Standard User | 🔴 | High |
 | Anti-detect Browsers (Basic) | 💀💀 | Medium |
 | **Omni-Protocol v7.7.1 (Ultimate)** | 💀💀💀💀 | **ZERO** |
 
 ---
 
-## ⚖️ License
+## License
 Distributed under the **MIT License**. Privacy is not a crime. It is a Human Right. 🦾🛡️⚛️🛰️🏁
