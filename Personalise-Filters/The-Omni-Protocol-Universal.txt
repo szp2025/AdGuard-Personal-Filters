@@ -515,6 +515,63 @@ performance.now = function(){
   return origNow.call(performance) + humanRandom(0.001,0.03);
 };
 
+/**
+ * ================================
+ * CONSISTENCY LOCK (CRITICAL)
+ * ================================
+ */
+
+/**
+ * ГЕНЕРИРУЕМ ЕДИНЫЙ ID СЕССИИ
+ */
+const FP_KEY = 'fp_consistency_' + ID;
+
+let FP;
+
+try {
+  FP = JSON.parse(sessionStorage.getItem(FP_KEY));
+} catch(e){}
+
+/**
+ * ЕСЛИ НЕТ — СОЗДАЕМ
+ */
+if (!FP) {
+
+  FP = {
+    cpu: navigator.hardwareConcurrency || 4,
+    mem: navigator.deviceMemory || 8,
+    lang: navigator.language || 'en-US',
+    tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    ua: navigator.userAgent
+  };
+
+  sessionStorage.setItem(FP_KEY, JSON.stringify(FP));
+}
+
+/**
+ * LOCK ВСЕГО ПРОФИЛЯ
+ */
+Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> FP.cpu});
+Object.defineProperty(navigator,'deviceMemory',{get:()=> FP.mem});
+Object.defineProperty(navigator,'language',{get:()=> FP.lang});
+
+const origRes = Intl.DateTimeFormat.prototype.resolvedOptions;
+Intl.DateTimeFormat.prototype.resolvedOptions = function(){
+  const o = origRes.apply(this, arguments);
+  o.timeZone = FP.tz;
+  return o;
+};
+
+Object.defineProperty(navigator,'userAgent',{get:()=> FP.ua});
+
+/**
+ * SAFE PERFORMANCE (БЕЗ ПАЛЕВА)
+ */
+const origNow = performance.now.bind(performance);
+
+performance.now = function(){
+  return origNow() + (Math.random()*0.005);
+};
 
 })();
 ")
