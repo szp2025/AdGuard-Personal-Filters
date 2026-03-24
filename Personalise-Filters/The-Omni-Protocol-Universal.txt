@@ -78,7 +78,8 @@ $network=ip,set_mtu=1400,important
 ! --- 3. NETWORK KILL-SWITCH (STRICT) ---
 ! Блокировка всех запросов к IP-адресам напрямую (минуя DNS), что характерно для ботнетов
 ||^$networkaddress=ip,important,reject,domain=~google.com|~yandex.ru|~openai.com
-! Блокировка соединений с портами управления удаленным рабочим столом (Anti-RDP/VNC)
+
+! Блокировка и уведомление об атаках на критические порты (Anti-RDP/VNC/SSH/SMB)
 ||*^$important,port=3389|5900|5901|22|23|445,reject,domain=~localhost,notify,tag=ATTACK_DETECTED
 
 
