@@ -7,44 +7,54 @@
 
 ---
 
-## 🧠 ТЕКУЩЕЕ СОСТОЯНИЕ / SYSTEM STATE (ALL-IN-ONE)
-
-| Категория / Category | Уровень / Level | Описание / Description |
-| :--- | :---: | :--- |
-| **Fingerprint Engine** | 💀x9 | Unified, dynamic & context-aware |
-| **Behavioral Sync** | 💀x9 | Human-like (lags, focus, idle) |
-| **Intent Simulation** | 💀x5 | Поведение зависит от цели (Shopping/Work) |
-| **Session Memory** | 💀x5 | Эмуляция истории кликов и скролла |
-| **Detection Risk** | 🔒🔒 | **Ultra Low** (Below 95% of solutions) |
-
----
-
-## 🏆 📊 ГЛОБАЛЬНЫЙ АУДИТ / GLOBAL AUDIT
-
-### ⚡ PERFORMANCE (ОПТИМИЗАЦИЯ)
-| Параметр | Оценка | Детали |
-| :--- | :---: | :--- |
-| **CPU / RAM** | 🟢 | Нет тяжёлых циклов и утечек памяти |
-| **JS Engine** | 🟢 | Без двойных wrap и конфликтов ctx |
-| **Speed** | ⚡x5 | Быстрее "чистого" браузера за счёт пре-блока |
-
-### 💀 КЛЮЧЕВЫЕ ТЕХНОЛОГИИ (WHAT'S INSIDE)
-
-#### 🇷🇺 Русский: ПОВЕДЕНЧЕСКАЯ МОДЕЛЬ
-* **INTENT ENGINE:** Поведение меняется в зависимости от типа сайта (Банки/Соцсети).
-* **SESSION MEMORY:** Сайт «видит», что вы уже были, кликали и скроллили.
-* **HUMAN SIMULATION:** Имитация расфокусировки, микро-задержек и "человеческих" пауз.
-* **ENV SPLIT:** Разные режимы работы для разных доменных зон (.fr, .com, .gov).
-
-#### 🇬🇧 English: BEHAVIORAL MODELING
-* **REAL USER SIMULATION:** Not just a filter, but a cognitive model with focus/blur events.
-* **NO DOUBLE WRAP:** Critical fix for maximum stability and performance.
-* **STABILITY:** Production-safe architecture with consistent data alignment.
-
----
-
-## 📥 Установка / Installation
+## 📥 Installation / Установка
 **URL:** `https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.txt`
+
+---
+
+## 🏆 📊 SYSTEM AUDIT / АУДИТ СИСТЕМЫ (APEX LEVEL)
+
+| Category / Категория | Level | Description / Описание |
+| :--- | :---: | :--- |
+| **Fingerprint Engine** | 💀x9 | Unified, dynamic & context-aware / Единый динамический движок |
+| **Behavioral Sync** | 💀x9 | Human-like (lags, focus, idle) / Эмуляция живого человека |
+| **Intent Simulation** | 💀x5 | Goal-oriented behavior / Поведение зависит от цели (Shopping/Work) |
+| **Session Memory** | 💀x5 | Click/Scroll history emulation / Память сессии (клики, скролл) |
+| **Detection Risk** | 🔒🔒 | **Ultra Low** (Immune to 95% of anti-frod) / Иммунитет к детекту |
+
+---
+
+## 💀 KEY TECHNOLOGIES / КЛЮЧЕВЫЕ ТЕХНОЛОГИИ / TECHNOLOGIES CLÉS
+
+| Feature | 🇷🇺 Русский | 🇬🇧 English | 🇫🇷 Français |
+| :--- | :--- | :--- | :--- |
+| **Intent Engine** | Смена логики под тип сайта (Банки vs Соцсети). | Adaptive logic based on site type (Bank vs Social). | Logique adaptative selon le site (Banque vs Social). |
+| **Human Sim** | Имитация расфокусировки, задержек и пауз. | Simulation of focus loss, lags, and human pauses. | Simulation de perte de focus, lags et pauses humaines. |
+| **Session Memory** | Эмуляция истории: сайт «видит» клики и скролл. | Site "remembers" your clicks and scrolling history. | Le site "voit" l'historique de vos clics et scrolls. |
+| **Env Split** | Разные режимы для зон .fr, .com, .gov. | Distinct modes for .fr, .com, and .gov zones. | Modes distincts pour les zones .fr, .com et .gov. |
+| **No Double Wrap** | Critical Fix: Максимальная стабильность кода. | Critical Fix: Maximum code execution stability. | Correctif Critique : Stabilité maximale du code. |
+
+---
+
+## ⚡ PERFORMANCE (ОПТИМИЗАЦИЯ)
+
+| Параметр / Parameter | Оценка | Детали / Details |
+| :--- | :---: | :--- |
+| **CPU / RAM** | 🟢 | No heavy cycles or leaks / Нет тяжёлых циклов и утечек |
+| **JS Engine** | 🟢 | Zero context conflicts / Без конфликтов и двойных обёрток |
+| **Network** | 🟢 | Pre-block optimization / Оптимизация до загрузки ресурсов |
+| **Speed** | ⚡x5 | Faster than "vanilla" browser / Быстрее «голого» браузера |
+
+---
+
+## 🚀 📊 COMPARISON / СРАВНЕНИЕ / COMPARAISON
+| Solution / Решение | Level / Уровень |
+| :--- | :---: |
+| Standard User / Обычный пользователь | 🔴 |
+| AdGuard / uBlock (Default) | 🟡 |
+| **The Omni-Protocol (Apex Stack)** | 💀 |
+| Anti-detect Browsers (Basic) | 💀💀 |
+| **Omni-Protocol v7.7.5 (Ultimate)** | 💀💀💀 |
 
 ---
 
