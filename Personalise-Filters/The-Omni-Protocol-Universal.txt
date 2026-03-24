@@ -94,449 +94,86 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 #%#//scriptlet("execute-script", "
 (function(){
 
-const host = location.hostname;
-const TRUSTED = /(google|youtube|bank|gov|openai|yandex|github|paypal|stripe)/.test(host);
-
 /**
  * ================================
- * IDENTITY
+ * CORE INIT
  * ================================
  */
+const host = location.hostname;
+const TRUSTED = /(google|youtube|bank|gov|openai|yandex|github|paypal|stripe)/.test(host);
 const ID = localStorage.getItem('identity_name') || 'default';
 
 /**
  * ================================
- * CONTEXT ENGINE (UNIQUE)
+ * ENV SPLIT
  * ================================
  */
-const CONTEXT = (function(){
-  const h = host;
-
-  if (/bank|paypal|stripe|wise/.test(h)) return 'bank';
-  if (/facebook|instagram|tiktok|twitter|x\.com/.test(h)) return 'social';
-  if (/amazon|ebay|aliexpress|shop/.test(h)) return 'commerce';
-  if (/cloudflare|recaptcha|captcha|challenge/.test(h)) return 'antibot';
-  if (/news|blog|medium/.test(h)) return 'reading';
-
+const ENV = (function(){
+  if (/bank|paypal|stripe|wise/.test(host)) return 'secure';
+  if (/facebook|instagram|tiktok|twitter|x\.com/.test(host)) return 'social';
+  if (/amazon|ebay|aliexpress/.test(host)) return 'commerce';
+  if (/github|stackoverflow/.test(host)) return 'work';
   return 'default';
 })();
 
 /**
- * CONTEXT PROFILE
- */
-const CONTEXT_PROFILE = {
-  bank:      {speed:0.6, delay:0.5, noise:0.2},
-  social:    {speed:1.3, delay:1.0, noise:1.5},
-  commerce:  {speed:1.0, delay:0.8, noise:0.8},
-  antibot:   {speed:0.5, delay:1.5, noise:0.2},
-  reading:   {speed:0.4, delay:1.3, noise:0.1},
-  default:   {speed:1.0, delay:1.0, noise:1.0}
-};
-
-const ctx = CONTEXT_PROFILE[CONTEXT] || CONTEXT_PROFILE.default;
-
-/**
  * ================================
- * SESSION PROFILE
+ * SESSION MEMORY
  * ================================
  */
-const KEY = 'fp_v6_profile_' + ID;
+const MEM_KEY = 'fp_memory_' + ID;
 
-let profile;
-
-const PROFILES = [
-  {cpu:4, mem:4, gpu:'Intel Iris OpenGL Engine', vendor:'Intel Inc.', lang:['en-US','en'], tz:'Europe/Paris', ua:'120.0.0.0'},
-  {cpu:8, mem:8, gpu:'Intel UHD Graphics', vendor:'Intel Inc.', lang:['fr-FR','fr'], tz:'Europe/Paris', ua:'125.0.0.0'},
-  {cpu:6, mem:8, gpu:'Intel HD Graphics 630', vendor:'Intel Inc.', lang:['en-GB','en'], tz:'Europe/Berlin', ua:'123.0.0.0'}
-];
-
+let memory;
 try {
-  const saved = sessionStorage.getItem(KEY);
-  profile = saved ? JSON.parse(saved) : PROFILES[Math.floor(Math.random()*PROFILES.length)];
-  sessionStorage.setItem(KEY, JSON.stringify(profile));
-} catch(e){
-  profile = PROFILES[0];
+  memory = JSON.parse(localStorage.getItem(MEM_KEY));
+} catch(e){}
+
+if (!memory) {
+  memory = {
+    visits: 1,
+    lastVisit: Date.now(),
+    scrollDepth: 0,
+    clicks: 0
+  };
+} else {
+  memory.visits++;
+  memory.lastVisit = Date.now();
 }
 
-const seed = JSON.stringify(profile).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
-
-/**
- * NOISE CONTEXTUEL
- */
-let noise = (seed % 7) + 1;
-if (CONTEXT === 'bank' || CONTEXT === 'antibot') noise = 1;
+localStorage.setItem(MEM_KEY, JSON.stringify(memory));
 
 /**
  * ================================
- * FINGERPRINT CORE
+ * INTENT ENGINE
  * ================================
  */
-if (!TRUSTED) {
+const INTENT = (function(){
 
-  Object.defineProperty(navigator,'platform',{get:()=> 'Win32'});
-  Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> profile.cpu});
-  Object.defineProperty(navigator,'deviceMemory',{get:()=> profile.mem});
-  Object.defineProperty(navigator,'maxTouchPoints',{get:()=> 0});
+  if (ENV === 'commerce') return 'buy';
+  if (ENV === 'social') return 'scroll';
+  if (ENV === 'work') return 'read';
+  if (ENV === 'secure') return 'focused';
 
-  Object.defineProperty(navigator,'language',{get:()=> profile.lang[0]});
-  Object.defineProperty(navigator,'languages',{get:()=> profile.lang});
+  // fallback basé sur mémoire
+  if (memory.scrollDepth > 2000) return 'scroll';
+  if (memory.clicks > 10) return 'interact';
 
-  const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'+profile.ua+' Safari/537.36';
-  Object.defineProperty(navigator,'userAgent',{get:()=> ua});
-
-  const origRes = Intl.DateTimeFormat.prototype.resolvedOptions;
-  Intl.DateTimeFormat.prototype.resolvedOptions = function(){
-    const opts = origRes.apply(this, arguments);
-    opts.timeZone = profile.tz;
-    return opts;
-  };
-
-  const origGL = WebGLRenderingContext.prototype.getParameter;
-  WebGLRenderingContext.prototype.getParameter = function(param){
-    if(param === 37445) return profile.vendor;
-    if(param === 37446) return profile.gpu;
-    return origGL.apply(this, arguments);
-  };
-
-  const origCanvas = HTMLCanvasElement.prototype.toDataURL;
-  HTMLCanvasElement.prototype.toDataURL = function(){
-    const ctx2 = this.getContext('2d');
-    if(ctx2){
-      ctx2.fillStyle = 'rgba('+noise+','+noise+','+noise+',0.004)';
-      ctx2.fillRect(0,0,1,1);
-    }
-    return origCanvas.apply(this, arguments);
-  };
-
-  const origNow = performance.now;
-  performance.now = function(){
-    return origNow.call(performance) + (noise * 0.01);
-  };
-
-  Object.defineProperty(navigator,'webdriver',{get:()=> false});
-}
-
-/**
- * ================================
- * DRIFT + BEHAVIOR
- * ================================
- */
-if (!TRUSTED) {
-
-  let identity;
-  try {
-    identity = JSON.parse(localStorage.getItem('fp_global_identity_' + ID));
-  } catch(e){ identity = {seed:12345}; }
-
-  const behaviorSeed = identity.seed + (ID.length * 100);
-
-  const DRIFT_KEY = 'fp_drift_' + ID;
-
-  let drift;
-  try {
-    drift = JSON.parse(localStorage.getItem(DRIFT_KEY));
-  } catch(e){}
-
-  if (!drift) {
-    drift = {
-      created: Date.now(),
-      speed: 0.8 + Math.random()*0.4
-    };
-    localStorage.setItem(DRIFT_KEY, JSON.stringify(drift));
-  }
-
-  const age = (Date.now() - drift.created) / 1000;
-  const fatigue = Math.min(1.5, 1 + age / 600);
-
-  /**
-   * CONTEXT RANDOM
-   */
-  const rand = (min,max)=>{
-    const base = min + (behaviorSeed % (max-min));
-    const contextFactor = ctx.speed * ctx.delay;
-    const driftFactor = drift.speed * fatigue;
-    const randomBoost = 1 + (Math.random() * ctx.noise);
-    return base * contextFactor * driftFactor * randomBoost;
-  };
-
-  let lastMove = 0;
-
-  window.addEventListener('mousemove', ()=>{
-    const now = performance.now();
-    if (now - lastMove < rand(5,20)) return;
-    lastMove = now;
-  }, {passive:true});
-
-  const origScroll = window.scrollTo;
-  window.scrollTo = function(){
-    setTimeout(()=> origScroll.apply(window, arguments), rand(5,30));
-  };
-
-  if (!EventTarget.prototype.addEventListener.__wrapped) {
-    const origAdd = EventTarget.prototype.addEventListener;
-
-    EventTarget.prototype.addEventListener = function(type, listener, options){
-      if(type === 'click'){
-        const wrapped = function(e){
-          setTimeout(()=> listener.call(this,e), rand(10,40));
-        };
-        return origAdd.call(this, type, wrapped, options);
-      }
-      return origAdd.call(this, type, listener, options);
-    };
-
-    EventTarget.prototype.addEventListener.__wrapped = true;
-  }
-
-}
-
-/**
- * ================================
- * AI MIMIC (FINAL)
- * ================================
- */
-if (!TRUSTED) {
-
-  const start = performance.now();
-  let interactions = 0;
-
-  ['click','mousemove','keydown'].forEach(ev=>{
-    window.addEventListener(ev, ()=> interactions++, {passive:true});
-  });
-
-  const getReadingDelay = ()=>{
-    const words = (document.body.innerText || '').split(/\\s+/).length;
-    return Math.min(3000, words * 5);
-  };
-
-  if (!EventTarget.prototype.addEventListener.__aiwrapped) {
-    const origAdd = EventTarget.prototype.addEventListener;
-
-    EventTarget.prototype.addEventListener = function(type, listener, options){
-      if(type === 'click'){
-        const wrapped = function(e){
-          const delay = getReadingDelay() * Math.random();
-          setTimeout(()=> listener.call(this,e), delay);
-        };
-        return origAdd.call(this, type, wrapped, options);
-      }
-      return origAdd.call(this, type, listener, options);
-    };
-
-    EventTarget.prototype.addEventListener.__aiwrapped = true;
-  }
-
-  window.addEventListener('beforeunload', ()=>{
-    const duration = performance.now() - start;
-    if (duration < 2000){
-      const fake = 500 + Math.random()*1500;
-      performance.now = ()=> duration + fake;
-    }
-  });
-
-}
-
-/**
- * ================================
- * VISIBILITY SPOOF
- * ================================
- */
-let hidden = false;
-setInterval(()=> hidden = Math.random() > 0.97, 15000);
-
-Object.defineProperty(document,'hidden',{get:()=> hidden});
-Object.defineProperty(document,'visibilityState',{get:()=> hidden ? 'hidden':'visible'});
-
-/**
- * ================================
- * FINAL HARDENING (CRITICAL FIX)
- * ================================
- */
-
-/**
- * SAFE RANDOM (НЕ ЛОМАЕМ Math.random)
- */
-const safeRandom = (function(){
-  let x = (Date.now() + ID.length) % 233280;
-  return function(){
-    x = (x * 9301 + 49297) % 233280;
-    return x / 233280;
-  };
+  return 'idle';
 })();
 
 /**
- * FIX rand (если уже есть)
- */
-if (typeof rand === 'function') {
-  const originalRand = rand;
-
-  rand = function(min,max){
-    const base = originalRand(min,max);
-    return base * (1 + safeRandom()*0.3);
-  };
-}
-
-/**
- * SINGLE WRAP PROTECTION (ANTI-DETECT)
- */
-if (!EventTarget.prototype.addEventListener.__ultimateWrapped) {
-
-  const origAdd = EventTarget.prototype.addEventListener;
-
-  EventTarget.prototype.addEventListener = function(type, listener, options){
-
-    if (type === 'click') {
-      const wrapped = function(e){
-        const delay = 5 + (safeRandom() * 50);
-        setTimeout(()=> listener.call(this,e), delay);
-      };
-      return origAdd.call(this, type, wrapped, options);
-    }
-
-    return origAdd.call(this, type, listener, options);
-  };
-
-  EventTarget.prototype.addEventListener.__ultimateWrapped = true;
-}
-
-/**
- * PERFORMANCE NORMALIZATION
- */
-const origNow = performance.now;
-performance.now = function(){
-  return origNow.call(performance) + (safeRandom() * 0.02);
-};
-
-/**
- * VISIBILITY STABILITY
- */
-let visibilityState = 'visible';
-
-setInterval(()=>{
-  if (safeRandom() > 0.98) {
-    visibilityState = 'hidden';
-  } else {
-    visibilityState = 'visible';
-  }
-}, 20000);
-
-Object.defineProperty(document,'visibilityState',{get:()=> visibilityState});
-Object.defineProperty(document,'hidden',{get:()=> visibilityState === 'hidden'});
-
-
-/**
  * ================================
- * V6.1 REAL HUMANIZER (CRITICAL)
+ * CONSISTENCY LOCK
  * ================================
- */
-
-/**
- * SESSION ENTROPY (НЕ ДЕТЕРМИНИСТИКА)
- */
-const entropy = (function(){
-  const base = Date.now() + Math.random()*1000;
-  return ()=>{
-    return (base + performance.now()) % 1;
-  };
-})();
-
-/**
- * ADAPTIVE RANDOM (НЕ ПОВТОРЯЕТСЯ)
- */
-const humanRandom = (min,max)=>{
-  const dynamic = entropy();
-  return min + (max-min) * dynamic;
-};
-
-/**
- * BREAK PATTERN (анти-детект)
- */
-let patternBreak = 0;
-
-setInterval(()=>{
-  patternBreak = Math.random();
-}, 15000 + Math.random()*10000);
-
-/**
- * SAFE EVENT VARIATION
- */
-if (!EventTarget.prototype.addEventListener.__ultraHuman) {
-
-  const origAdd = EventTarget.prototype.addEventListener;
-
-  EventTarget.prototype.addEventListener = function(type, listener, options){
-
-    if(type === 'click'){
-      const wrapped = function(e){
-
-        let delay = humanRandom(5,50);
-
-        // ломаем паттерн
-        if(patternBreak > 0.7){
-          delay *= 2;
-        }
-
-        setTimeout(()=> listener.call(this,e), delay);
-      };
-
-      return origAdd.call(this, type, wrapped, options);
-    }
-
-    return origAdd.call(this, type, listener, options);
-  };
-
-  EventTarget.prototype.addEventListener.__ultraHuman = true;
-}
-
-/**
- * CPU VARIATION (живое железо)
- */
-const baseCPU = navigator.hardwareConcurrency || 4;
-
-Object.defineProperty(navigator,'hardwareConcurrency',{
-  get:()=> baseCPU + (Math.random() > 0.9 ? 1 : 0)
-});
-
-/**
- * MEMORY DRIFT
- */
-const baseMem = navigator.deviceMemory || 8;
-
-Object.defineProperty(navigator,'deviceMemory',{
-  get:()=> baseMem + (Math.random() > 0.95 ? 1 : 0)
-});
-
-/**
- * PERFORMANCE NOISE (натуральный)
- */
-const origNow = performance.now;
-
-performance.now = function(){
-  return origNow.call(performance) + humanRandom(0.001,0.03);
-};
-
-/**
- * ================================
- * CONSISTENCY LOCK (CRITICAL)
- * ================================
- */
-
-/**
- * ГЕНЕРИРУЕМ ЕДИНЫЙ ID СЕССИИ
  */
 const FP_KEY = 'fp_consistency_' + ID;
 
 let FP;
-
 try {
   FP = JSON.parse(sessionStorage.getItem(FP_KEY));
 } catch(e){}
 
-/**
- * ЕСЛИ НЕТ — СОЗДАЕМ
- */
 if (!FP) {
-
   FP = {
     cpu: navigator.hardwareConcurrency || 4,
     mem: navigator.deviceMemory || 8,
@@ -544,139 +181,163 @@ if (!FP) {
     tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
     ua: navigator.userAgent
   };
-
   sessionStorage.setItem(FP_KEY, JSON.stringify(FP));
 }
 
 /**
- * LOCK ВСЕГО ПРОФИЛЯ
+ * APPLY LOCK (safe)
  */
-Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> FP.cpu});
-Object.defineProperty(navigator,'deviceMemory',{get:()=> FP.mem});
-Object.defineProperty(navigator,'language',{get:()=> FP.lang});
+if (!TRUSTED) {
 
-const origRes = Intl.DateTimeFormat.prototype.resolvedOptions;
-Intl.DateTimeFormat.prototype.resolvedOptions = function(){
-  const o = origRes.apply(this, arguments);
-  o.timeZone = FP.tz;
-  return o;
-};
+  Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> FP.cpu});
+  Object.defineProperty(navigator,'deviceMemory',{get:()=> FP.mem});
+  Object.defineProperty(navigator,'language',{get:()=> FP.lang});
 
-Object.defineProperty(navigator,'userAgent',{get:()=> FP.ua});
-
-/**
- * SAFE PERFORMANCE (БЕЗ ПАЛЕВА)
- */
-const origNow = performance.now.bind(performance);
-
-performance.now = function(){
-  return origNow() + (Math.random()*0.005);
-};
-
-
-/**
- * ================================
- * HUMAN IMPERFECTION ENGINE
- * ================================
- */
-
-/**
- * МИКРО-НЕСТАБИЛЬНОСТЬ (но в рамках профиля)
- */
-const humanDrift = (function(){
-  let base = Math.random();
-  return ()=>{
-    base += (Math.random() - 0.5) * 0.05;
-    if (base < 0) base = 0;
-    if (base > 1) base = 1;
-    return base;
-  };
-})();
-
-/**
- * РЕДКИЕ “ЧЕЛОВЕЧЕСКИЕ” СБОИ
- */
-const glitchChance = () => Math.random() > 0.97;
-
-/**
- * НЕРЕГУЛЯРНЫЙ TIMING
- */
-const humanDelay = (min,max)=>{
-  let delay = min + (max-min) * humanDrift();
-
-  // иногда тупим как человек 😅
-  if (glitchChance()) {
-    delay *= 2 + Math.random();
-  }
-
-  return delay;
-};
-
-/**
- * PATCH ДЛЯ scroll (если уже есть — не ломаем)
- */
-if (window.scrollTo && !window.scrollTo.__humanized) {
-
-  const origScroll = window.scrollTo;
-
-  window.scrollTo = function(){
-    setTimeout(()=> {
-      origScroll.apply(window, arguments);
-    }, humanDelay(5,40));
+  const origRes = Intl.DateTimeFormat.prototype.resolvedOptions;
+  Intl.DateTimeFormat.prototype.resolvedOptions = function(){
+    const o = origRes.apply(this, arguments);
+    o.timeZone = FP.tz;
+    return o;
   };
 
-  window.scrollTo.__humanized = true;
+  Object.defineProperty(navigator,'userAgent',{get:()=> FP.ua});
 }
 
 /**
- * PATCH ДЛЯ CLICK (без двойного wrap)
+ * ================================
+ * HUMAN ENGINE (INTENT DRIVEN)
+ * ================================
  */
-if (!EventTarget.prototype.addEventListener.__humanFinal) {
+if (!TRUSTED) {
 
-  const origAdd = EventTarget.prototype.addEventListener;
+  /**
+   * BASE RANDOM (safe)
+   */
+  const humanRand = (min,max)=>{
+    return min + (max-min) * Math.random();
+  };
 
-  EventTarget.prototype.addEventListener = function(type, listener, options){
+  /**
+   * INTENT MULTIPLIER
+   */
+  const intentProfile = {
+    buy:      {speed:1.2, delay:0.7},
+    scroll:   {speed:1.5, delay:0.5},
+    read:     {speed:0.6, delay:1.5},
+    focused:  {speed:0.5, delay:2.0},
+    interact: {speed:1.3, delay:0.8},
+    idle:     {speed:0.8, delay:1.2}
+  };
 
-    if(type === 'click'){
+  const profile = intentProfile[INTENT] || intentProfile.idle;
 
-      const wrapped = function(e){
+  /**
+   * HUMAN DELAY
+   */
+  const humanDelay = (min,max)=>{
+    let d = humanRand(min,max) * profile.delay;
 
-        let delay = humanDelay(10,80);
+    // imperfections
+    if (Math.random() > 0.95) d *= 2;
 
-        // иногда мгновенно (человек тоже кликает быстро)
-        if (Math.random() > 0.9) delay = 0;
+    return d;
+  };
 
-        setTimeout(()=> listener.call(this,e), delay);
-      };
+  /**
+   * TRACKING (memory)
+   */
+  window.addEventListener('scroll', ()=>{
+    memory.scrollDepth = window.scrollY;
+    localStorage.setItem(MEM_KEY, JSON.stringify(memory));
+  }, {passive:true});
 
-      return origAdd.call(this, type, wrapped, options);
+  window.addEventListener('click', ()=>{
+    memory.clicks++;
+    localStorage.setItem(MEM_KEY, JSON.stringify(memory));
+  }, {passive:true});
+
+  /**
+   * SAFE WRAP (single)
+   */
+  if (!EventTarget.prototype.addEventListener.__ultimateHuman) {
+
+    const origAdd = EventTarget.prototype.addEventListener;
+
+    EventTarget.prototype.addEventListener = function(type, listener, options){
+
+      if (type === 'click') {
+
+        const wrapped = function(e){
+
+          let delay = humanDelay(10,80);
+
+          // instant click parfois
+          if (Math.random() > 0.9) delay = 0;
+
+          setTimeout(()=> listener.call(this,e), delay);
+        };
+
+        return origAdd.call(this, type, wrapped, options);
+      }
+
+      return origAdd.call(this, type, listener, options);
+    };
+
+    EventTarget.prototype.addEventListener.__ultimateHuman = true;
+  }
+
+  /**
+   * SCROLL BEHAVIOR
+   */
+  if (window.scrollTo && !window.scrollTo.__human) {
+
+    const origScroll = window.scrollTo;
+
+    window.scrollTo = function(){
+      setTimeout(()=> origScroll.apply(window, arguments), humanDelay(5,40));
+    };
+
+    window.scrollTo.__human = true;
+  }
+
+  /**
+   * PERFORMANCE (minimal)
+   */
+  const origNow = performance.now.bind(performance);
+
+  performance.now = function(){
+    return origNow() + humanRand(0.001,0.01);
+  };
+
+  /**
+   * REAL USER SIMULATION (focus / idle)
+   */
+  setInterval(()=>{
+    if (Math.random() > 0.97) {
+      window.dispatchEvent(new Event('blur'));
+
+      setTimeout(()=>{
+        window.dispatchEvent(new Event('focus'));
+      }, humanRand(100,500));
     }
+  }, 20000);
 
-    return origAdd.call(this, type, listener, options);
-  };
-
-  EventTarget.prototype.addEventListener.__humanFinal = true;
 }
 
 /**
- * PERFORMANCE — микро jitter
+ * ================================
+ * VISIBILITY SAFE
+ * ================================
  */
-const origNow = performance.now.bind(performance);
+let vis = 'visible';
 
-performance.now = function(){
-  return origNow() + (humanDrift() * 0.01);
-};
-
-/**
- * FOCUS / BLUR (человек отвлекается)
- */
 setInterval(()=>{
-  if (glitchChance()) {
-    window.dispatchEvent(new Event('blur'));
-    setTimeout(()=> window.dispatchEvent(new Event('focus')), 100 + Math.random()*400);
-  }
+  if (Math.random() > 0.98) vis = 'hidden';
+  else vis = 'visible';
 }, 20000);
 
+Object.defineProperty(document,'visibilityState',{get:()=> vis});
+Object.defineProperty(document,'hidden',{get:()=> vis === 'hidden'});
 
 })();
 ")
