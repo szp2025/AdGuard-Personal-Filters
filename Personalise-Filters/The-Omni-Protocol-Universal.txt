@@ -318,6 +318,136 @@ if (!TRUSTED) {
 })();
 ")
 
+# SYNC GOD MODE — Cross-Tab Identity Sync (APEX)
+
+#%#//scriptlet("execute-script", "
+(function(){
+
+/**
+ * ================================
+ * 1. GLOBAL IDENTITY (CROSS TAB)
+ * ================================
+ */
+const KEY = 'fp_global_identity';
+
+let identity;
+
+try {
+  const stored = localStorage.getItem(KEY);
+
+  if (stored) {
+    identity = JSON.parse(stored);
+  } else {
+    identity = {
+      seed: Math.floor(Math.random()*1000000),
+      created: Date.now()
+    };
+    localStorage.setItem(KEY, JSON.stringify(identity));
+  }
+
+} catch(e){
+  identity = { seed: 123456 };
+}
+
+/**
+ * ================================
+ * 2. BROADCAST CHANNEL SYNC
+ * ================================
+ */
+try {
+  const channel = new BroadcastChannel('fp_sync');
+
+  channel.onmessage = function(e){
+    if (e.data && e.data.seed) {
+      identity.seed = e.data.seed;
+    }
+  };
+
+  channel.postMessage(identity);
+
+} catch(e){}
+
+/**
+ * ================================
+ * 3. SHARED RANDOM ENGINE
+ * ================================
+ */
+const sharedSeed = identity.seed;
+
+Math.random = (function(){
+  let x = sharedSeed;
+  return function(){
+    x = (x * 9301 + 49297) % 233280;
+    return x / 233280;
+  };
+})();
+
+/**
+ * ================================
+ * 4. TIME CONSISTENCY
+ * ================================
+ */
+const baseNow = performance.now();
+
+const originalNow = performance.now;
+performance.now = function(){
+  return originalNow.call(performance) + (sharedSeed % 10) * 0.01;
+};
+
+/**
+ * ================================
+ * 5. STORAGE CONSISTENCY
+ * ================================
+ */
+try {
+  const originalSet = localStorage.setItem;
+
+  localStorage.setItem = function(k,v){
+    return originalSet.apply(this, arguments);
+  };
+
+} catch(e){}
+
+/**
+ * ================================
+ * 6. TAB ACTIVITY SYNC
+ * ================================
+ */
+try {
+  window.addEventListener('focus', ()=>{
+    localStorage.setItem('fp_last_focus', Date.now());
+  });
+
+  window.addEventListener('blur', ()=>{
+    localStorage.setItem('fp_last_blur', Date.now());
+  });
+
+} catch(e){}
+
+/**
+ * ================================
+ * 7. SESSION CONSISTENCY
+ * ================================
+ */
+try {
+  const sessionKey = 'fp_session_sync';
+
+  if (!sessionStorage.getItem(sessionKey)) {
+    sessionStorage.setItem(sessionKey, identity.seed);
+  }
+
+} catch(e){}
+
+/**
+ * ================================
+ * DEBUG
+ * ================================
+ */
+// console.log('[SYNC GOD ACTIVE]', identity);
+
+})();
+")
+
 
 ! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
