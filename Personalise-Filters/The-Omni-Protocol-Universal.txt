@@ -424,6 +424,97 @@ Object.defineProperty(document,'visibilityState',{get:()=> visibilityState});
 Object.defineProperty(document,'hidden',{get:()=> visibilityState === 'hidden'});
 
 
+/**
+ * ================================
+ * V6.1 REAL HUMANIZER (CRITICAL)
+ * ================================
+ */
+
+/**
+ * SESSION ENTROPY (НЕ ДЕТЕРМИНИСТИКА)
+ */
+const entropy = (function(){
+  const base = Date.now() + Math.random()*1000;
+  return ()=>{
+    return (base + performance.now()) % 1;
+  };
+})();
+
+/**
+ * ADAPTIVE RANDOM (НЕ ПОВТОРЯЕТСЯ)
+ */
+const humanRandom = (min,max)=>{
+  const dynamic = entropy();
+  return min + (max-min) * dynamic;
+};
+
+/**
+ * BREAK PATTERN (анти-детект)
+ */
+let patternBreak = 0;
+
+setInterval(()=>{
+  patternBreak = Math.random();
+}, 15000 + Math.random()*10000);
+
+/**
+ * SAFE EVENT VARIATION
+ */
+if (!EventTarget.prototype.addEventListener.__ultraHuman) {
+
+  const origAdd = EventTarget.prototype.addEventListener;
+
+  EventTarget.prototype.addEventListener = function(type, listener, options){
+
+    if(type === 'click'){
+      const wrapped = function(e){
+
+        let delay = humanRandom(5,50);
+
+        // ломаем паттерн
+        if(patternBreak > 0.7){
+          delay *= 2;
+        }
+
+        setTimeout(()=> listener.call(this,e), delay);
+      };
+
+      return origAdd.call(this, type, wrapped, options);
+    }
+
+    return origAdd.call(this, type, listener, options);
+  };
+
+  EventTarget.prototype.addEventListener.__ultraHuman = true;
+}
+
+/**
+ * CPU VARIATION (живое железо)
+ */
+const baseCPU = navigator.hardwareConcurrency || 4;
+
+Object.defineProperty(navigator,'hardwareConcurrency',{
+  get:()=> baseCPU + (Math.random() > 0.9 ? 1 : 0)
+});
+
+/**
+ * MEMORY DRIFT
+ */
+const baseMem = navigator.deviceMemory || 8;
+
+Object.defineProperty(navigator,'deviceMemory',{
+  get:()=> baseMem + (Math.random() > 0.95 ? 1 : 0)
+});
+
+/**
+ * PERFORMANCE NOISE (натуральный)
+ */
+const origNow = performance.now;
+
+performance.now = function(){
+  return origNow.call(performance) + humanRandom(0.001,0.03);
+};
+
 
 })();
 ")
