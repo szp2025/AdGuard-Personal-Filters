@@ -36,8 +36,6 @@
 
 ---
 
-## 📥 INSTALLATION & DOWNLOAD
-
 ## 📥 INSTALLATION & DEPLOYMENT
 
 ### 🧬 Прямая установка / Direct Install / Installation Directe
@@ -51,7 +49,9 @@
 **EN:** Click **"ADD TO ADGUARD"** to trigger the automatic filter import window.
 **FR:** Cliquez sur **"ADD TO ADGUARD"** pour lancer l'importation automatique du filtre.
 
+---
 
-**RU:** Скопируйте и вставьте этот URL в «Пользовательские фильтры» вашего приложения (**AdGuard** или **uBlock Origin**):
+### 🧬 Копировать URL вручную (Manual Copy)
+Если авто-установка не сработала, скопируйте эту ссылку в «Пользовательские фильтры»:
 ```text
 [https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)
