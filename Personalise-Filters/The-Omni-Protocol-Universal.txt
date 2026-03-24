@@ -112,7 +112,8 @@ const HARDENED = /(ads|tracking|analytics|fingerprint)/.test(host);
  * 2. SESSION PROFILE
  * ================================
  */
-const KEY = 'fp_v6_profile';
+const KEY = 'fp_v6_profile_' + (localStorage.getItem('identity_name') || 'default');
+
 let profile;
 
 const PROFILES = [
@@ -268,6 +269,18 @@ if (!TRUSTED) {
 
 }
 
+# IDENTITY TAG SYSTEM
+
+#%#//scriptlet("execute-script", "
+(function(){
+
+  if (!localStorage.getItem('identity_name')) {
+    const name = 'id_' + Math.floor(Math.random()*100000);
+    localStorage.setItem('identity_name', name);
+  }
+
+})();
+")
 /**
  * ================================
  * 6. AI MIMIC (НЕ ДЛЯ TRUSTED)
