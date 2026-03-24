@@ -91,70 +91,6 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 #%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
 
-# ================================
-# IDENTITY TAG SYSTEM (FIRST LOAD)
-# ================================
-
-#%#//scriptlet("execute-script", "
-(function(){
-  if (!localStorage.getItem('identity_name')) {
-    const name = 'id_' + Math.floor(Math.random()*100000);
-    localStorage.setItem('identity_name', name);
-  }
-})();
-")
-
-# ================================
-# SYNC GOD MODE
-# ================================
-
-#%#//scriptlet("execute-script", "
-(function(){
-
-const ID = localStorage.getItem('identity_name') || 'default';
-const KEY = 'fp_global_identity_' + ID;
-
-let identity;
-
-try {
-  const stored = localStorage.getItem(KEY);
-  identity = stored ? JSON.parse(stored) : {
-    seed: Math.floor(Math.random()*1000000),
-    created: Date.now()
-  };
-  localStorage.setItem(KEY, JSON.stringify(identity));
-} catch(e){
-  identity = {seed:123456};
-}
-
-try {
-  const channel = new BroadcastChannel('fp_sync');
-  channel.postMessage(identity);
-  channel.onmessage = e => {
-    if (e.data && e.data.seed) identity.seed = e.data.seed;
-  };
-} catch(e){}
-
-const sharedSeed = identity.seed;
-
-/**
- * CONSISTENT RANDOM
- */
-Math.random = (function(){
-  let x = sharedSeed;
-  return function(){
-    x = (x * 9301 + 49297) % 233280;
-    return x / 233280;
-  };
-})();
-
-})();
-")
-
-# ================================
-# V6 GOD + BEHAVIOR + DRIFT + AI
-# ================================
-
 #%#//scriptlet("execute-script", "
 (function(){
 
@@ -163,10 +99,44 @@ const TRUSTED = /(google|youtube|bank|gov|openai|yandex|github|paypal|stripe)/.t
 
 /**
  * ================================
- * SESSION PROFILE
+ * IDENTITY
  * ================================
  */
 const ID = localStorage.getItem('identity_name') || 'default';
+
+/**
+ * ================================
+ * CONTEXT ENGINE (ЕДИНЫЙ)
+ * ================================
+ */
+const CONTEXT = (function(){
+  const h = location.hostname;
+
+  if (/bank|paypal|stripe|wise/.test(h)) return 'bank';
+  if (/facebook|instagram|tiktok|twitter|x\\.com/.test(h)) return 'social';
+  if (/amazon|ebay|aliexpress|shop/.test(h)) return 'commerce';
+  if (/cloudflare|recaptcha|captcha|challenge/.test(h)) return 'antibot';
+  if (/news|blog|medium/.test(h)) return 'reading';
+
+  return 'default';
+})();
+
+const CONTEXT_PROFILE = {
+  bank:      {speed:0.6, delay:0.4, noise:0.2},
+  social:    {speed:1.3, delay:1.0, noise:1.5},
+  commerce:  {speed:1.0, delay:0.8, noise:0.8},
+  antibot:   {speed:0.5, delay:1.5, noise:0.2},
+  reading:   {speed:0.4, delay:1.3, noise:0.1},
+  default:   {speed:1.0, delay:1.0, noise:1.0}
+};
+
+const ctx = CONTEXT_PROFILE[CONTEXT] || CONTEXT_PROFILE.default;
+
+/**
+ * ================================
+ * SESSION PROFILE
+ * ================================
+ */
 const KEY = 'fp_v6_profile_' + ID;
 
 let profile;
@@ -185,8 +155,19 @@ try {
   profile = PROFILES[0];
 }
 
+/**
+ * ================================
+ * SEED + NOISE
+ * ================================
+ */
 const seed = JSON.stringify(profile).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
-const noise = (seed % 7) + 1;
+
+let noise = (seed % 7) + 1;
+
+/* CONTEXT STABILIZATION */
+if (CONTEXT === 'bank' || CONTEXT === 'antibot') {
+  noise = 1;
+}
 
 /**
  * ================================
@@ -222,10 +203,10 @@ if (!TRUSTED) {
 
   const origCanvas = HTMLCanvasElement.prototype.toDataURL;
   HTMLCanvasElement.prototype.toDataURL = function(){
-    const ctx = this.getContext('2d');
-    if(ctx){
-      ctx.fillStyle = 'rgba('+noise+','+noise+','+noise+',0.004)';
-      ctx.fillRect(0,0,1,1);
+    const ctx2 = this.getContext('2d');
+    if(ctx2){
+      ctx2.fillStyle = 'rgba('+noise+','+noise+','+noise+',0.004)';
+      ctx2.fillRect(0,0,1,1);
     }
     return origCanvas.apply(this, arguments);
   };
@@ -251,7 +232,7 @@ Object.defineProperty(document,'visibilityState',{get:()=> hidden ? 'hidden':'vi
 
 /**
  * ================================
- * BEHAVIOR + DRIFT
+ * BEHAVIOR + DRIFT + CONTEXT
  * ================================
  */
 if (!TRUSTED) {
@@ -284,9 +265,15 @@ if (!TRUSTED) {
   const age = (Date.now() - drift.created) / 1000;
   const fatigue = Math.min(1.5, 1 + age / 600);
 
+  /**
+   * RANDOM HUMAN
+   */
   const rand = (min,max)=>{
     const base = min + (behaviorSeed % (max-min));
-    return base * drift.speed * fatigue;
+    const contextFactor = ctx.speed * ctx.delay;
+    const driftFactor = drift.speed * fatigue;
+    const randomBoost = 1 + (Math.random() * ctx.noise);
+    return base * contextFactor * driftFactor * randomBoost;
   };
 
   let lastMove = 0;
@@ -317,90 +304,16 @@ if (!TRUSTED) {
 
     EventTarget.prototype.addEventListener.__wrapped = true;
   }
-
 }
 
 /**
  * ================================
- * CONTEXT DETECTION ENGINE
- * ================================
- */
-const CONTEXT = (function(){
-
-  const h = location.hostname;
-
-  if (/bank|paypal|stripe|wise/.test(h)) return 'bank';
-  if (/facebook|instagram|tiktok|twitter|x\\.com/.test(h)) return 'social';
-  if (/amazon|ebay|aliexpress|shop/.test(h)) return 'commerce';
-  if (/cloudflare|recaptcha|captcha|challenge/.test(h)) return 'antibot';
-  if (/news|blog|medium/.test(h)) return 'reading';
-
-  return 'default';
-
-})();
-
-/**
- * ================================
- * CONTEXT GOD ENGINE (STABLE)
- * ================================
- */
-const CONTEXT = (function(){
-
-  const h = location.hostname;
-
-  if (/bank|paypal|stripe|wise/.test(h)) return 'bank';
-  if (/facebook|instagram|tiktok|twitter|x\.com/.test(h)) return 'social';
-  if (/amazon|ebay|aliexpress|shop/.test(h)) return 'commerce';
-  if (/cloudflare|recaptcha|captcha|challenge/.test(h)) return 'antibot';
-  if (/news|blog|medium/.test(h)) return 'reading';
-
-  return 'default';
-
-})();
-
-/**
- * Profils comportementaux par contexte
- */
-const CONTEXT_PROFILE = {
-  bank:      {speed:0.6, delay:0.4, noise:0.2},
-  social:    {speed:1.3, delay:1.0, noise:1.5},
-  commerce:  {speed:1.0, delay:0.8, noise:0.8},
-  antibot:   {speed:0.5, delay:1.5, noise:0.2},
-  reading:   {speed:0.4, delay:1.3, noise:0.1},
-  default:   {speed:1.0, delay:1.0, noise:1.0}
-};
-
-const ctx = CONTEXT_PROFILE[CONTEXT] || CONTEXT_PROFILE.default;
-
-/**
- * ================================
- * CONTEXT PROFILES
- * ================================
- */
-const CONTEXT_BEHAVIOR = {
-  bank:      {speed:0.7, delay:0.5, randomness:0.2},
-  social:    {speed:1.2, delay:1.0, randomness:1.5},
-  commerce:  {speed:1.0, delay:0.8, randomness:0.8},
-  antibot:   {speed:0.6, delay:1.5, randomness:0.3},
-  reading:   {speed:0.5, delay:1.2, randomness:0.2},
-  default:   {speed:1.0, delay:1.0, randomness:1.0}
-};
-
-const ctx = CONTEXT_BEHAVIOR[CONTEXT] || CONTEXT_BEHAVIOR.default;
-
-/**
- * ================================
- * AI MIMIC
+ * AI MIMIC (FINAL)
  * ================================
  */
 if (!TRUSTED) {
 
   const start = performance.now();
-  let interactions = 0;
-
-  ['click','mousemove','keydown'].forEach(ev=>{
-    window.addEventListener(ev, ()=> interactions++, {passive:true});
-  });
 
   const getReadingDelay = ()=>{
     const words = (document.body.innerText || '').split(/\\s+/).length;
@@ -413,7 +326,7 @@ if (!TRUSTED) {
     EventTarget.prototype.addEventListener = function(type, listener, options){
       if(type === 'click'){
         const wrapped = function(e){
-          const delay = getReadingDelay() * Math.random();
+          const delay = getReadingDelay() * Math.random() * ctx.delay;
           setTimeout(()=> listener.call(this,e), delay);
         };
         return origAdd.call(this, type, wrapped, options);
@@ -436,6 +349,7 @@ if (!TRUSTED) {
 
 })();
 ")
+
 
 ! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
