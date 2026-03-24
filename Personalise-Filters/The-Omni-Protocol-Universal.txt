@@ -375,6 +375,158 @@ setInterval(()=>{
 safeDefine(document,'visibilityState',vis);
 safeDefine(document,'hidden',vis==='hidden');
 
+
+/**
+ * ================================
+ * 13. NETWORK STEALTH (FETCH/XHR)
+ * ================================
+ */
+if (!TRUSTED) {
+
+  const rand = (a,b)=> a + Math.random()*(b-a);
+
+  /**
+   * Обертка fetch с jitter задержкой
+   */
+  if (!window.fetch.__stealth) {
+
+    const origFetch = window.fetch;
+
+    window.fetch = async function(...args){
+
+      const delay = rand(30, 180);
+
+      await new Promise(r => setTimeout(r, delay));
+
+      return origFetch.apply(this, args);
+    };
+
+    window.fetch.__stealth = true;
+  }
+
+  /**
+   * Обертка XMLHttpRequest
+   */
+  if (!XMLHttpRequest.prototype.__stealth) {
+
+    const origOpen = XMLHttpRequest.prototype.open;
+    const origSend = XMLHttpRequest.prototype.send;
+
+    XMLHttpRequest.prototype.open = function(){
+      this.__delay = rand(20,150);
+      return origOpen.apply(this, arguments);
+    };
+
+    XMLHttpRequest.prototype.send = function(){
+      setTimeout(()=>{
+        origSend.apply(this, arguments);
+      }, this.__delay || 0);
+    };
+
+    XMLHttpRequest.prototype.__stealth = true;
+  }
+
+}
+
+/**
+ * ================================
+ * 14. AI HUMAN BEHAVIOR ENGINE
+ * ================================
+ */
+if (!TRUSTED) {
+
+  const rand = (a,b)=> a + Math.random()*(b-a);
+
+  /**
+   * Имитация чтения страницы
+   */
+  function simulateReading(){
+
+    const scrollStep = rand(50,150);
+
+    window.scrollBy({
+      top: scrollStep,
+      behavior: 'smooth'
+    });
+
+    memory.scroll += scrollStep;
+    localStorage.setItem(MEM_KEY, JSON.stringify(memory));
+  }
+
+  /**
+   * Случайные паузы (как человек)
+   */
+  function humanIdle(){
+
+    const delay = rand(2000, 7000);
+
+    setTimeout(()=>{
+
+      if (Math.random() > 0.4) {
+        simulateReading();
+      }
+
+      humanIdle();
+
+    }, delay);
+  }
+
+  /**
+   * Микро движения мыши (очень легкие)
+   */
+  function microMovement(){
+
+    const evt = new MouseEvent('mousemove', {
+      clientX: rand(0, window.innerWidth),
+      clientY: rand(0, window.innerHeight)
+    });
+
+    document.dispatchEvent(evt);
+  }
+
+  setInterval(()=>{
+    if (Math.random() > 0.7) {
+      microMovement();
+    }
+  }, rand(2000,5000));
+
+  humanIdle();
+
+}
+
+/**
+ * ================================
+ * 15. NETWORK TIMING SPOOF
+ * ================================
+ */
+if (!TRUSTED && performance && performance.now) {
+
+  const origNow = performance.now.bind(performance);
+
+  performance.now = function(){
+    return origNow() + (Math.random() * 5);
+  };
+
+}
+
+/**
+ * ================================
+ * 16. CPU / FPS VARIATION
+ * ================================
+ */
+if (!TRUSTED) {
+
+  const origRAF = window.requestAnimationFrame;
+
+  window.requestAnimationFrame = function(cb){
+    const jitter = Math.random() * 10;
+    return origRAF(function(t){
+      cb(t + jitter);
+    });
+  };
+
+}
+
 })();
 ")
 
