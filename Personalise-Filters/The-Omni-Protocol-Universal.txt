@@ -341,8 +341,8 @@ if (!TRUSTED) {
  * 1. GLOBAL IDENTITY (CROSS TAB)
  * ================================
  */
-const KEY = 'fp_global_identity';
-
+const ID = localStorage.getItem('identity_name') || 'default';
+const KEY = 'fp_global_identity_' + ID;
 let identity;
 
 try {
