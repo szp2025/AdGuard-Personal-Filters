@@ -234,8 +234,30 @@ Object.defineProperty(document,'visibilityState',{get:()=> hidden ? 'hidden' : '
  */
 if (!TRUSTED) {
 
-  const seed2 = Date.now() % 10000;
-  const rand = (min,max)=> min + (seed2 % (max-min));
+  /**
+   * ================================
+   * BEHAVIOR SEED (IDENTITY SYNC)
+   * ================================
+   */
+  const ID = localStorage.getItem('identity_name') || 'default';
+
+  let globalIdentity;
+  try {
+    globalIdentity = JSON.parse(
+      localStorage.getItem('fp_global_identity_' + ID) || '{"seed":12345}'
+    );
+  } catch(e){
+    globalIdentity = {seed:12345};
+  }
+
+  const behaviorSeed = globalIdentity.seed + (ID.length * 100);
+
+  /**
+   * ================================
+   * RANDOM ENGINE (STABLE)
+   * ================================
+   */
+  const rand = (min,max)=> min + (behaviorSeed % (max-min));
 
   let lastMove = 0;
 
@@ -250,7 +272,11 @@ if (!TRUSTED) {
     setTimeout(()=> originalScroll.apply(window, arguments), rand(5,30));
   };
 
-  // защита от двойного wrap
+  /**
+   * ================================
+   * SAFE WRAP (ANTI DOUBLE WRAP)
+   * ================================
+   */
   if (!EventTarget.prototype.addEventListener.__wrapped) {
     const originalAdd = EventTarget.prototype.addEventListener;
 
