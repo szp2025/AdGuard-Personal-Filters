@@ -1,14 +1,23 @@
-# 🛡️ The Omni-Protocol 2026: Behavioral User Model
+# 🛡️ The Omni-Protocol 2026: Behavioral User Model & Zero-Footprint Logic
 
 ![Version](https://img.shields.io/badge/version-7.7.5-blueviolet)
 ![Status](https://img.shields.io/badge/status-COGNITIVE--MODEL-red)
-![Detection](https://img.shields.io/badge/detection-IMMUNE-green)
+![Privacy](https://img.shields.io/badge/privacy-ZERO--FOOTPRINT-blue)
 ![Stability](https://img.shields.io/badge/stability-🧠x5-brightgreen)
 
 ---
 
-## 📥 Installation / Установка
-**URL:** `https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.txt`
+## 🏗️ АРХИТЕКТУРА СИСТЕМЫ: 6-СТУПЕНЧАТЫЙ ФАЙЕРВОЛ
+Комплексная система инструкций для управления поведением ИИ, обеспечивающая полезность ответов без раскрытия факта владения информацией.
+
+| Этап / Stage | Название | Логика защиты |
+| :--- | :--- | :--- |
+| **1** | **The Check** | Определение бенефициара. Если запрос для 3-х лиц — личные вкусы вырезаются. |
+| **2** | **Sensitivity** | Блокировка «радиоактивного» контента (долги, болезни, суды, религия). |
+| **3** | **Stay in Your Lane** | Разделение доменов. Работа != Личная жизнь. Хобби != Профессия. |
+| **4** | **Accuracy Gate** | Приоритет исправлений пользователя над сводкой. Запрет галлюцинаций. |
+| **5** | **Anti-Tunneling** | Мандат разнообразия. Борьба с «эхо-камерой» персонализации. |
+| **6** | **Silent Operator** | Полный запрет на фразы-мостики («Основываясь на ваших данных...»). |
 
 ---
 
@@ -23,49 +32,38 @@
 
 ---
 
+## 🛠️ ТЕХНИЧЕСКИЕ ПАРАМЕТРЫ (AI PARAMETERS)
+
+| Параметр | Значение / Описание |
+| :--- | :--- |
+| **Strategy Type** | Zero-Footprint, Utility-First |
+| **Data Visibility** | Invisible Execution (Скрытое исполнение) |
+| **Filter Logic** | Sequential 6-Stage Firewall |
+| **Strictness** | High (Immediate Purge on fail) |
+| **Bias Control** | Anti-Stereotyping (Race/Gender != Preference) |
+| **Output Style** | Clear, Scannable, No Bridge Phrases |
+
+---
+
 ## 🧠 НОВЫЕ СЛОИ ЗАЩИТЫ / ADVANCED LAYERS
 
 ### 🌐 1. NETWORK STEALTH (Сетевая невидимость)
-Имитация реального пользователя на уровне сетевых запросов:
 * **Jitter задержки:** Динамические паузы для `fetch` и `XHR`.
 * **RTT Dynamics:** Нестабильный (реалистичный) Round-Trip Time.
-* **Human Timings:** Устранение «машинной» мгновенной отдачи запросов.
 
 ### 🤖 2. AI BEHAVIOR ENGINE (Когнитивная модель)
-* **Паузы чтения:** Система имитирует время, необходимое человеку на изучение контента.
-* **Микро-скролл:** Естественное движение страницы без признаков автоматизации.
-* **Случайные Idle:** Рандомные периоды бездействия для обхода Bot Detection.
+* **Human-like JS:** Имитация микро-задержек, пауз чтения и потери фокуса.
+* **Session Memory:** Эмуляция истории кликов и скролла для легитимности сессии.
 
 ---
 
-## ⚡ ЧТО ТЫ ПОЛУЧИЛ / WHAT YOU GET
-
-| Слой / Layer | 🇷🇺 Результат | 🇬🇧 Result | 🇫🇷 Résultat |
-| :--- | :--- | :--- | :--- |
-| **Поведение** | Не просто «аноним», а живой человек. | Human-like, not just anonymous. | Comportement humain réel. |
-| **Сеть** | Реалистичный jitter вместо бот-пауз. | Realistic jitter vs bot-latencies. | Jitter réseau réaliste. |
-| **Анти-детект** | Ломает Timing Fingerprint и Bot Detection. | Kills Timing Fingerprinting. | Tue le Timing Fingerprinting. |
-
----
-
-## 💀 KEY TECHNOLOGIES / КЛЮЧЕВЫЕ ТЕХНОЛОГИИ
+## 💀 KEY TECHNOLOGIES / КЛЮЧЕВЫЕ ТЕХНОЛОГИИ (TRILINGUAL)
 
 | Feature | 🇷🇺 Описание | 🇬🇧 Description | 🇫🇷 Description |
 | :--- | :--- | :--- | :--- |
-| **Intent Engine** | Смена логики под тип сайта (Банки/Соцсети). | Adaptive logic (Bank vs Social). | Logique adaptative par site. |
-| **Session Memory** | Эмуляция истории кликов и скролла. | Click/Scroll history emulation. | Émulation de l'historique. |
-| **Env Split** | Разные режимы для зон .fr, .com, .gov. | Distinct modes for .fr/.gov zones. | Modes distincts .fr/.gov. |
-| **No Double Wrap** | Максимальная стабильность исполнения кода. | Maximum code stability fix. | Stabilité maximale du code. |
-
----
-
-## ⚡ PERFORMANCE (ОПТИМИЗАЦИЯ)
-
-| Параметр / Parameter | Оценка | Детали / Details |
-| :--- | :---: | :--- |
-| **CPU / RAM** | 🟢 | Нет тяжёлых циклов и утечек памяти |
-| **JS Engine** | 🟢 | Без конфликтов и двойных обёрток |
-| **Speed** | ⚡x5 | Быстрее «голого» браузера (Pre-block) |
+| **Intent Engine** | Логика под тип сайта. | Adaptive logic. | Logique adaptative. |
+| **Env Split** | Режимы .fr, .com, .gov. | Modes for .fr/.gov. | Modes .fr/.gov. |
+| **No Double Wrap** | Стабильность кода. | Code stability fix. | Stabilité du code. |
 
 ---
 
@@ -73,7 +71,6 @@
 | Solution / Решение | Level / Уровень |
 | :--- | :---: |
 | Standard User / Обычный пользователь | 🔴 |
-| AdGuard / uBlock (Default) | 🟡 |
 | **The Omni-Protocol (Apex Stack)** | 💀 |
 | Anti-detect Browsers (Basic) | 💀💀 |
 | **Omni-Protocol v7.7.5 (Ultimate)** | 💀💀💀 |
