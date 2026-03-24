@@ -322,6 +322,41 @@ if (!TRUSTED) {
 
 /**
  * ================================
+ * CONTEXT DETECTION ENGINE
+ * ================================
+ */
+const CONTEXT = (function(){
+
+  const h = location.hostname;
+
+  if (/bank|paypal|stripe|wise/.test(h)) return 'bank';
+  if (/facebook|instagram|tiktok|twitter|x\\.com/.test(h)) return 'social';
+  if (/amazon|ebay|aliexpress|shop/.test(h)) return 'commerce';
+  if (/cloudflare|recaptcha|captcha|challenge/.test(h)) return 'antibot';
+  if (/news|blog|medium/.test(h)) return 'reading';
+
+  return 'default';
+
+})();
+
+/**
+ * ================================
+ * CONTEXT PROFILES
+ * ================================
+ */
+const CONTEXT_BEHAVIOR = {
+  bank:      {speed:0.7, delay:0.5, randomness:0.2},
+  social:    {speed:1.2, delay:1.0, randomness:1.5},
+  commerce:  {speed:1.0, delay:0.8, randomness:0.8},
+  antibot:   {speed:0.6, delay:1.5, randomness:0.3},
+  reading:   {speed:0.5, delay:1.2, randomness:0.2},
+  default:   {speed:1.0, delay:1.0, randomness:1.0}
+};
+
+const ctx = CONTEXT_BEHAVIOR[CONTEXT] || CONTEXT_BEHAVIOR.default;
+
+/**
+ * ================================
  * AI MIMIC
  * ================================
  */
