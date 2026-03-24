@@ -2,8 +2,7 @@
 
 ![Version](https://img.shields.io/badge/version-7.7.1--ULTIMATE-blueviolet)
 ![Status](https://img.shields.io/badge/status-💀--LEVEL--DEATH-red)
-![Privacy](https://img.shields.io/badge/privacy-QUANTUM--RESISTANT-blue)
-![Stability](https://img.shields.io/badge/stability-🧠x10-brightgreen)
+![Compatibility](https://img.shields.io/badge/compatibility-ADGUARD--uBLOCK-brightgreen)
 
 ---
 
@@ -31,52 +30,51 @@
 
 ---
 
+## COMPATIBILITY & ANALOGS
+
+| Software | Compatibility | Functionality |
+| :--- | :---: | :--- |
+| **AdGuard (Android/iOS/PC)** | **100% (Native)** | Full support for Network rules + Scriptlets. |
+| **uBlock Origin** | **95%** | Scriptlet support + High-speed filtering. |
+| **Adblock Plus** | **80%** | Basic network rules support. |
+| **DNS-level Filters** | **50%** | Only Network/DNS rules (no scriptlets). |
+
+---
+
 ## HARDCORE SECURITY STACK (TRILINGUAL)
 
 | Feature | 🇷🇺 Описание (RU) | 🇬🇧 Description (EN) | 🇫🇷 Description (FR) |
 | :--- | :--- | :--- | :--- |
 | **Anti-RAT Port Cage** | Блокировка всех портов, кроме 80/443/53/853. Стоп слив данных. | Blocks all non-std ports. Prevents data exfiltration. | Bloque tous les ports non-std. Empêche l'exfiltration. |
 | **Sensor Blindness** | Камера и микрофон = `undefined`. Ослепление шпионов. | Camera/Mic = `undefined`. Blinds web-spyware. | Caméra/Micro = `undefined`. Aveugle les logiciels espions. |
-| **Anti-Mirroring** | Запрет на захват и трансляцию экрана ($media). | Blocks screen capture and media streaming ($media). | Bloque la capture d'écran et le streaming ($media). |
 | **Post-Quantum (PQC)** | Защита от дешифровки квантовыми компьютерами (ML-KEM). | ML-KEM-1024 encryption. Future-proof security. | Chiffrement ML-KEM-1024. Sécurité post-quantique. |
-| **Network Kill-Switch** | Блокировка прямых IP-запросов (минуя DNS). | Rejects direct IP requests. Blocks botnet C&C. | Rejette les requêtes IP directes. Bloque les botnets. |
-| **Exfiltration Trap** | Удаление аппаратных ID из заголовков (X-Device-ID). | Strips hardware IDs from HTTP headers. | Supprime les ID matériels des en-têtes HTTP. |
 
 ---
 
-## ADVANCED LAYERS
+## INSTALLATION & SETUP
 
-### NETWORK & PROTOCOL STEALTH
-* **Jitter Dynamics:** Рандомизация задержек `fetch` (30-180ms) для имитации живого человека.
-* **DNS Sovereignty:** Полная блокировка DoH, Type 65 и QUIC для предотвращения обхода фильтрации.
-* **TTL Masking:** Принудительный TTL 64 (Standard OS Fingerprint) для всех исходящих пакетов.
+### 📥 Where to download / Где скачать / Où télécharger
+**Link:** `https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt`
 
-### COGNITIVE BEHAVIOR ENGINE
-* **Reading Emulation:** Автоматический скролл и микро-движения мыши для легитимности сессии.
-* **Visibility Spoofing:** Случайные циклы `hidden/visible` для обхода детекторов активности.
-* **Identity Multi-Pool:** Локальная ротация виртуальных ID (Alpha/Beta/Gamma) для разделения сессий.
+### ⚙️ How to add / Как добавить / Comment ajouter
+1. **Open AdGuard** -> Settings -> Content Blocking -> Filters.
+2. **Custom Filters** -> Add Custom Filter.
+3. **Paste the Link** above and click "Subscribe".
 
----
-
-## AI PARAMETERS
-
-| Parameter | Value / Description |
-| :--- | :--- |
-| **Strategy Type** | Zero-Footprint, Utility-First, Anti-Compromise |
-| **Data Visibility** | Invisible Execution (Скрытое исполнение) |
-| **Encryption Mode** | Forced PQC (Post-Quantum Hybrid) |
-| **Port Policy** | Strict Whitelist (80, 443, 53, 853, 123) |
-| **Sensor State** | Permanently Null / Undefined |
+### 🛠️ Proper Configuration / Правильная настройка
+* **HTTPS Filtering:** Must be **ON** (Required for Scriptlets).
+* **DNS Filtering:** Use **System Default** or AdGuard DNS.
+* **Filter Update:** Set to **Daily** (v7.7.1 updates frequently).
 
 ---
 
 ## COMPARISON
 
-| Solution | Level | Exfiltration Risk |
-| :--- | :---: | :---: |
-| Standard User | 🔴 | High |
-| Anti-detect Browsers (Basic) | 💀💀 | Medium |
-| **Omni-Protocol v7.7.1 (Ultimate)** | 💀💀💀💀 | **ZERO** |
+| Solution | Level | Exfiltration Risk | Status |
+| :--- | :--- | :---: | :--- |
+| Standard User | 🔴 | High | Vulnerable |
+| Anti-detect Browsers | 💀💀 | Medium | Limited |
+| **Omni-Protocol v7.7.1** | **💀💀💀💀💀** | **ZERO** | **APEX DEFENSE** |
 
 ---
 
