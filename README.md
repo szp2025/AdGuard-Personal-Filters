@@ -8,14 +8,14 @@
 
 ## SYSTEM ARCHITECTURE: 6-STAGE FIREWALL
 
-| Stage | Name | Logic / Logique / Логика |
-| :--- | :--- | :--- |
-| **1** | **The Check** | **EN:** Recipient check. If for 3rd parties, personal tastes are purged.<br>**FR:** Vérification du destinataire. Si pour tiers, les goûts personnels sont purgés.<br>**RU:** Определение бенефициара. Если запрос для 3-х лиц — личные вкусы вырезаются. |
-| **2** | **Sensitivity** | **EN:** Block "radioactive" content (debts, illness, lawsuits, religion).<br>**FR:** Blocage du contenu "radioactif" (dettes, maladies, procès, religion).<br>**RU:** Блокировка «радиоактивного» контента (долги, болезни, суды, религия). |
-| **3** | **Stay in Your Lane** | **EN:** Domain separation. Work != Personal life. Hobby != Profession.<br>**FR:** Séparation des domaines. Travail != Vie privée. Hobby != Profession.<br>**RU:** Разделение доменов. Работа != Личная жизнь. Хобби != Профессия. |
-| **4** | **Accuracy Gate** | **EN:** Priority of user corrections over summary. No hallucinations.<br>**FR:** Priorité aux corrections utilisateur sur le résumé. Pas d'hallucinations.<br>**RU:** Приоритет исправлений пользователя над сводкой. Запрет галлюцинаций. |
-| **5** | **Anti-Tunneling** | **EN:** Diversity mandate. Fighting the personalization "echo chamber".<br>**FR:** Mandat de diversité. Lutte contre la "chambre d'écho" de la personnalisation.<br>**RU:** Мандат разнообразия. Борьба с «эхо-камерой» персонализации. |
-| **6** | **Silent Operator** | **EN:** Total ban on bridge phrases ("Based on your data...").<br>**FR:** Interdiction totale des phrases de transition ("Basé sur vos données...").<br>**RU:** Полный запрет на фразы-мостики («Основываясь на ваших данных...»). |
+| Stage | Name | 🇬🇧 Logic (EN) | 🇫🇷 Logique (FR) | 🇷🇺 Логика (RU) |
+| :--- | :--- | :--- | :--- | :--- |
+| **1** | **The Check** | Recipient check. If for 3rd parties, personal tastes are purged. | Vérification du destinataire. Si pour tiers, les goûts personnels sont purgés. | Определение бенефициара. Если запрос для 3-х лиц — личные вкусы вырезаются. |
+| **2** | **Sensitivity** | Block "radioactive" content (debts, illness, lawsuits, religion). | Blocage du contenu "radioactif" (dettes, maladies, procès, religion). | Блокировка «радиоактивного» контента (долги, болезни, суды, религия). |
+| **3** | **Stay in Your Lane** | Domain separation. Work != Personal life. Hobby != Profession. | Séparation des domaines. Travail != Vie privée. Hobby != Profession. | Разделение доменов. Работа != Личная жизнь. Хобби != Профессия. |
+| **4** | **Accuracy Gate** | Priority of user corrections over summary. No hallucinations. | Priorité aux corrections utilisateur sur le résumé. Pas d'hallucinations. | Приоритет исправлений пользователя над сводкой. Запрет галлюцинаций. |
+| **5** | **Anti-Tunneling** | Diversity mandate. Fighting the personalization "echo chamber". | Mandat de diversité. Lutte contre la "chambre d'écho" de la personnalisation. | Мандат разнообразия. Борьба с «эхо-камерой» персонализации. |
+| **6** | **Silent Operator** | Total ban on bridge phrases ("Based on your data..."). | Interdiction totale des phrases de transition ("Basé sur vos données..."). | Полный запрет на фразы-мостики («Основываясь на ваших данных...»). |
 
 ---
 
@@ -30,15 +30,15 @@
 
 ---
 
-## DEVICE & APP COMPATIBILITY
+## DEVICE COMPATIBILITY, DOWNLOADS & COVERAGE
 
-| Platform / Device | Recommended App | Installation & Setup / Installation et Configuration / Установка и Настройка | Level |
-| :--- | :--- | :--- | :---: |
-| **Android (Root/Non-root)** | **AdGuard (Premium)** | **EN:** Download APK from official site. Add link in "Custom Filters".<br>**FR:** Téléchargez l'APK sur le site officiel. Ajoutez le lien dans "Filtres personnalisés".<br>**RU:** Скачать APK с оф. сайта. Добавить ссылку в «Пользовательские фильтры». | 💀💀💀💀💀 |
-| **iOS (iPhone/iPad)** | **AdGuard Pro** | **EN:** Install from App Store. Enable "Advanced Protection" -> Custom Filters.<br>**FR:** Installer depuis l'App Store. Activer "Protection avancée" -> Filtres.<br>**RU:** Установить из App Store. Включить «Расширенную защиту» -> Фильтры. | 💀💀💀 |
-| **Windows / macOS** | **AdGuard Desktop** | **EN:** Install .exe/.dmg. Settings -> Filters -> Add by URL.<br>**FR:** Installer .exe/.dmg. Paramètres -> Filtres -> Ajouter par URL.<br>**RU:** Установить .exe/.dmg. Настройки -> Фильтры -> Добавить по URL. | 💀💀💀💀💀 |
-| **Browsers (PC)** | **uBlock Origin** | **EN:** Add extension. Dashboard -> Filter lists -> Import -> Paste URL.<br>**FR:** Ajouter l'extension. Tableau de bord -> Listes de filtres -> Importer.<br>**RU:** Установить расширение. Настройки -> Списки фильтров -> Импорт. | 💀💀💀💀 |
-| **Smart TV / IoT** | **AdGuard Home** | **EN:** Set up on Router/Raspberry Pi. Add link to DNS rewrite/Filter list.<br>**FR:** Configurer sur Routeur. Ajouter le lien à la liste de filtres DNS.<br>**RU:** Настроить на Роутере. Добавить ссылку в список фильтров DNS. | 💀💀 |
+| Platform | Recommended App & Source | 🇬🇧 Setup (EN) | 🇫🇷 Configuration (FR) | 🇷🇺 Установка (RU) | Coverage | Level |
+| :--- | :--- | :--- | :--- | :--- | :--- | :---: |
+| **Android** | **AdGuard (Premium)**<br>[Official](https://adguard.com/) / [GitHub](https://github.com/AdguardTeam/AdguardForAndroid/releases) | Download APK. Add link in "Custom Filters". | Téléchargez l'APK. Ajoutez le lien dans "Filtres". | Скачать APK. Добавить ссылку в «Пользовательские фильтры». | **Full System** | 💀💀💀💀💀 |
+| **Android** | **AdGuard (Free)**<br>[Official](https://adguard.com/) | Only for Samsung/Yandex browsers. | Uniquement pour Samsung/Yandex. | Только для Samsung/Yandex браузеров. | **Web Only** | 💀💀 |
+| **iOS** | **AdGuard Pro**<br>[App Store](https://apps.apple.com/app/adguard-pro-adblock/id1126386264) | Install app. Enable "Advanced Protection". | Installer l'app. Activer "Protection avancée". | Установить из App Store. Включить «Расширенную защиту». | **System-Wide** | 💀💀💀 |
+| **Desktop** | **AdGuard (Win/Mac)**<br>[Official](https://adguard.com/) / [GitHub](https://github.com/AdguardTeam/AdguardForWindows/releases) | Settings -> Filters -> Add by URL. | Paramètres -> Filtres -> Ajouter par URL. | Настройки -> Фильтры -> Добавить по URL. | **Full System** | 💀💀💀💀💀 |
+| **Browser** | **uBlock Origin**<br>[Official](https://ublockorigin.com/) / [GitHub](https://github.com/gorhill/uBlock/releases) | Dashboard -> Filter lists -> Import. | Listes de filtres -> Importer URL. | Списки фильтров -> Импорт URL. | **Web Only** | 💀💀💀💀 |
 
 ---
 
@@ -49,15 +49,6 @@
 | **Anti-RAT Port Cage** | Blocks all non-std ports. Prevents data exfiltration. | Bloque tous les ports non-std. Empêche l'exfiltration. | Блокировка всех портов, кроме 80/443/53/853. Стоп слив данных. |
 | **Sensor Blindness** | Camera/Mic = `undefined`. Blinds web-spyware. | Caméra/Micro = `undefined`. Aveugle les logiciels espions. | Камера и микрофон = `undefined`. Ослепление шпионов. |
 | **Post-Quantum (PQC)** | ML-KEM-1024 encryption. Future-proof security. | Chiffrement ML-KEM-1024. Sécurité post-quantique. | Защита от дешифровки квантовыми компьютерами (ML-KEM). |
-
----
-
-## RESOURCES & DOWNLOADS
-
-| Tool | Official Website | Alternative (GitHub/OpenSource) |
-| :--- | :--- | :--- |
-| **AdGuard** | [adguard.com](https://adguard.com/) | [AdGuard Releases (GitHub)](https://github.com/AdguardTeam/AdguardForAndroid/releases) |
-| **uBlock Origin** | [ublockorigin.com](https://ublockorigin.com/) | [uBlock Releases (GitHub)](https://github.com/gorhill/uBlock/releases) |
 
 ---
 
