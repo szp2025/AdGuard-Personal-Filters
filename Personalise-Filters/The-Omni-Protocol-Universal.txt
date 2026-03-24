@@ -142,29 +142,6 @@ if (!TRUSTED) {
 
 /**
  * ================================
- * DRIFT ENGINE (HUMAN TIME EVOLUTION)
- * ================================
- */
-const DRIFT_KEY = 'fp_drift_' + ID;
-
-let drift;
-
-try {
-  drift = JSON.parse(localStorage.getItem(DRIFT_KEY));
-} catch(e){}
-
-if (!drift) {
-  drift = {
-    created: Date.now(),
-    fatigue: Math.random(),      // усталость
-    focus: Math.random(),        // концентрация
-    speed: 0.8 + Math.random()*0.4 // базовая скорость
-  };
-  localStorage.setItem(DRIFT_KEY, JSON.stringify(drift));
-}
-
-/**
- * ================================
  * TIME EVOLUTION
  * ================================
  */
@@ -296,6 +273,29 @@ if (!TRUSTED) {
   }
 
   const behaviorSeed = globalIdentity.seed + (ID.length * 100);
+
+/**
+ * ================================
+ * DRIFT ENGINE (HUMAN TIME EVOLUTION)
+ * ================================
+ */
+const DRIFT_KEY = 'fp_drift_' + ID;
+
+let drift;
+
+try {
+  drift = JSON.parse(localStorage.getItem(DRIFT_KEY));
+} catch(e){}
+
+if (!drift) {
+  drift = {
+    created: Date.now(),
+    fatigue: Math.random(),      // усталость
+    focus: Math.random(),        // концентрация
+    speed: 0.8 + Math.random()*0.4 // базовая скорость
+  };
+  localStorage.setItem(DRIFT_KEY, JSON.stringify(drift));
+}
 
   /**
    * ================================
