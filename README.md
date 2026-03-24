@@ -24,15 +24,15 @@
 
 ---
 
-## 📊 APP-SPECIFIC PROTECTION STATUS
+## 📊 APP-SPECIFIC PROTECTION STATUS (TRILINGUAL)
 
-| Category | Protection | 🇷🇺 Особенности защиты (RU) | Active Tech Type |
-| :--- | :---: | :--- | :--- |
-| **Banking / Finance** | 🟢 100% | Защита транзакций от RAT-перехвата и PQC-шифрование. | **WFP & Port Block** |
-| **Messengers (TG/WA)**| 🟢 90% | Маскировка метаданных и блок телеметрии (AdGuard Premium). | **System Firewall** |
-| **Browsers (All)** | 🟢 100% | Удаление цифрового отпечатка (Anti-Fingerprint) через Scriptlets. | **JS Scriptlets** |
-| **Social Media** | 🟡 80% | Блок скрытых трекеров и Поведенческий щит. | **Cosmetic Shield** |
-| **Smart TV / IoT** | 🔴 30% | Базовая DNS-фильтрация (AdGuard Home / NextDNS). | **DNS Filtering** |
+| Category | Protection | 🇬🇧 Features (EN) | 🇫🇷 Fonctions (FR) | 🇷🇺 Особенности (RU) | Active Tech |
+| :--- | :---: | :--- | :--- | :--- | :--- |
+| **Banking / Finance** | 🟢 100% | Anti-RAT & PQC Encryption. | Anti-RAT & Chiffrement PQC. | Защита от RAT и PQC-шифрование. | **WFP & Port Block** |
+| **Messengers** | 🟢 90% | Metadata masking (Premium). | Masquage métadonnées (Premium). | Маскировка метаданных (Premium). | **System Firewall** |
+| **Browsers** | 🟢 100% | Anti-Fingerprint Scriptlets. | Scriptlets JS Anti-Fingerprint. | Удаление отпечатка (Anti-FP). | **JS Scriptlets** |
+| **Social Media** | 🟡 80% | Behavioral shield & Tracker block. | Bouclier & Bloc trackers. | Поведенческий щит и блок трекеров. | **Cosmetic Shield** |
+| **Smart TV / IoT** | 🔴 30% | Basic DNS-level filtering only. | Filtrage basique au niveau DNS. | Базовая фильтрация на уровне DNS. | **DNS Filtering** |
 
 ---
 
