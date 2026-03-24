@@ -79,16 +79,24 @@ $network=ip,set_mtu=1400,important
 ! Блокировка всех запросов к IP-адресам напрямую (минуя DNS), что характерно для ботнетов
 ||^$networkaddress=ip,important,reject,domain=~google.com|~yandex.ru|~openai.com
 ! Блокировка соединений с портами управления удаленным рабочим столом (Anti-RDP/VNC)
-||*^$important,port=3389|5900|5901|22|23|445,reject,domain=~localhost
+||*^$important,port=3389|5900|5901|22|23|445,reject,domain=~localhost,notify,tag=ATTACK_DETECTED
 
 
-! --- IDS: PORT INTRUSION ALERTS ---
-||0.0.0.0^$network,port=22,important,notify
-||0.0.0.0^$network,port=23,important,notify
-||0.0.0.0^$network,port=445,important,notify
-||0.0.0.0^$network,port=3389,important,notify
-||0.0.0.0^$network,port=5555,important,notify
-||0.0.0.0^$network,port=8080,important,notify
+! ###########################################################
+! # THE OMNI-PROTOCOL: ACTIVE IDS & PORT HONEYPOTS (v7.8.5) #
+! ###########################################################
+! [ACTION]: Блокировка и мгновенный PUSH при атаке на порты.
+! [REQUIRED]: pref.firewall.notifications.enabled = true
+
+||0.0.0.0^$network,port=22,important,notify,tag=IDS-SSH
+||0.0.0.0^$network,port=23,important,notify,tag=IDS-TELNET
+||0.0.0.0^$network,port=445,important,notify,tag=IDS-SMB
+||0.0.0.0^$network,port=3389,important,notify,tag=IDS-RDP
+||0.0.0.0^$network,port=5555,important,notify,tag=IDS-ADB
+||0.0.0.0^$network,port=8080,important,notify,tag=IDS-PROXY
+
+! ###########################################################
+
 
 ! --- 4. DATA EXFILTRATION TRAP (HONEYPOT) ---
 ! Блокируем передачу метаданных в заголовках, которые часто используют RAT
