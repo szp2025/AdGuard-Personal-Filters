@@ -19,14 +19,14 @@
 
 ---
 
-## SYSTEM STATUS / SYSTEM LEVEL (APEX)
+## SYSTEM STATUS & SECURITY STACK (APEX)
 
-| Parameter | Level | Status |
-| :--- | :---: | :--- |
-| **Fingerprint** | 💀💀💀💀💀💀💀💀💀💀 | **MAX ENTROPY (10/10)** |
-| **Exfiltration Defense** | 🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️🛡️ | **ANTI-RAT ISOLATION** |
-| **Network** | 🌐🌐🌐🌐🌐 | **PORT HARDENING (PQC)** |
-| **Stealth** | ☠️ MAX | **TOTAL IMMUNITY** |
+| Parameter | Level | 🇬🇧 Technology (EN) | 🇫🇷 Technologie (FR) | 🇷🇺 Технология (RU) |
+| :--- | :---: | :--- | :--- | :--- |
+| **Fingerprint** | 💀 10/10 | **Sensor Blindness:** Camera/Mic = `undefined`. | **Cécité des capteurs:** Caméra/Micro = `undefined`. | **Ослепление сенсоров:** Камера/Микро = `undefined`. |
+| **Exfiltration** | 🛡️ 10/10 | **Anti-RAT Port Cage:** Blocks non-std ports. | **Cage de ports:** Bloque les ports non-std. | **Портовая клетка:** Блок всех не-std портов. |
+| **Network** | 🌐 PQC | **Post-Quantum:** ML-KEM-1024 encryption. | **Post-Quantique:** Chiffrement ML-KEM-1024. | **Пост-квантум:** Шифрование ML-KEM-1024. |
+| **Stealth** | ☠️ MAX | **Zero-Footprint:** Total behavioral immunity. | **Zéro-Empreinte:** Immunité comportementale. | **Zero-Footprint:** Поведенческий иммунитет. |
 
 ---
 
@@ -39,16 +39,6 @@
 | **iOS** | **AdGuard Pro**<br>[App Store](https://apps.apple.com/app/adguard-pro-adblock/id1126386264) | Install app. Enable "Advanced Protection". | Installer l'app. Activer "Protection avancée". | Установить из App Store. Включить «Расширенную защиту». | **System-Wide** | 💀💀💀 |
 | **Desktop** | **AdGuard (Win/Mac)**<br>[Official](https://adguard.com/) / [GitHub](https://github.com/AdguardTeam/AdguardForWindows/releases) | Settings -> Filters -> Add by URL. | Paramètres -> Filtres -> Ajouter par URL. | Настройки -> Фильтры -> Добавить по URL. | **Full System** | 💀💀💀💀💀 |
 | **Browser** | **uBlock Origin**<br>[Official](https://ublockorigin.com/) / [GitHub](https://github.com/gorhill/uBlock/releases) | Dashboard -> Filter lists -> Import. | Listes de filtres -> Importer URL. | Списки фильтров -> Импорт URL. | **Web Only** | 💀💀💀💀 |
-
----
-
-## HARDCORE SECURITY STACK (TRILINGUAL)
-
-| Feature | 🇬🇧 Description (EN) | 🇫🇷 Description (FR) | 🇷🇺 Описание (RU) |
-| :--- | :--- | :--- | :--- |
-| **Anti-RAT Port Cage** | Blocks all non-std ports. Prevents data exfiltration. | Bloque tous les ports non-std. Empêche l'exfiltration. | Блокировка всех портов, кроме 80/443/53/853. Стоп слив данных. |
-| **Sensor Blindness** | Camera/Mic = `undefined`. Blinds web-spyware. | Caméra/Micro = `undefined`. Aveugle les logiciels espions. | Камера и микрофон = `undefined`. Ослепление шпионов. |
-| **Post-Quantum (PQC)** | ML-KEM-1024 encryption. Future-proof security. | Chiffrement ML-KEM-1024. Sécurité post-quantique. | Защита от дешифровки квантовыми компьютерами (ML-KEM). |
 
 ---
 
