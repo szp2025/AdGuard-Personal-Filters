@@ -573,6 +573,111 @@ performance.now = function(){
   return origNow() + (Math.random()*0.005);
 };
 
+
+/**
+ * ================================
+ * HUMAN IMPERFECTION ENGINE
+ * ================================
+ */
+
+/**
+ * МИКРО-НЕСТАБИЛЬНОСТЬ (но в рамках профиля)
+ */
+const humanDrift = (function(){
+  let base = Math.random();
+  return ()=>{
+    base += (Math.random() - 0.5) * 0.05;
+    if (base < 0) base = 0;
+    if (base > 1) base = 1;
+    return base;
+  };
+})();
+
+/**
+ * РЕДКИЕ “ЧЕЛОВЕЧЕСКИЕ” СБОИ
+ */
+const glitchChance = () => Math.random() > 0.97;
+
+/**
+ * НЕРЕГУЛЯРНЫЙ TIMING
+ */
+const humanDelay = (min,max)=>{
+  let delay = min + (max-min) * humanDrift();
+
+  // иногда тупим как человек 😅
+  if (glitchChance()) {
+    delay *= 2 + Math.random();
+  }
+
+  return delay;
+};
+
+/**
+ * PATCH ДЛЯ scroll (если уже есть — не ломаем)
+ */
+if (window.scrollTo && !window.scrollTo.__humanized) {
+
+  const origScroll = window.scrollTo;
+
+  window.scrollTo = function(){
+    setTimeout(()=> {
+      origScroll.apply(window, arguments);
+    }, humanDelay(5,40));
+  };
+
+  window.scrollTo.__humanized = true;
+}
+
+/**
+ * PATCH ДЛЯ CLICK (без двойного wrap)
+ */
+if (!EventTarget.prototype.addEventListener.__humanFinal) {
+
+  const origAdd = EventTarget.prototype.addEventListener;
+
+  EventTarget.prototype.addEventListener = function(type, listener, options){
+
+    if(type === 'click'){
+
+      const wrapped = function(e){
+
+        let delay = humanDelay(10,80);
+
+        // иногда мгновенно (человек тоже кликает быстро)
+        if (Math.random() > 0.9) delay = 0;
+
+        setTimeout(()=> listener.call(this,e), delay);
+      };
+
+      return origAdd.call(this, type, wrapped, options);
+    }
+
+    return origAdd.call(this, type, listener, options);
+  };
+
+  EventTarget.prototype.addEventListener.__humanFinal = true;
+}
+
+/**
+ * PERFORMANCE — микро jitter
+ */
+const origNow = performance.now.bind(performance);
+
+performance.now = function(){
+  return origNow() + (humanDrift() * 0.01);
+};
+
+/**
+ * FOCUS / BLUR (человек отвлекается)
+ */
+setInterval(()=>{
+  if (glitchChance()) {
+    window.dispatchEvent(new Event('blur'));
+    setTimeout(()=> window.dispatchEvent(new Event('focus')), 100 + Math.random()*400);
+  }
+}, 20000);
+
+
 })();
 ")
 
