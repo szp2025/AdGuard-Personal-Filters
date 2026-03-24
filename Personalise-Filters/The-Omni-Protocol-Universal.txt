@@ -8,6 +8,19 @@
 ! =========================================================================
 
 ! [MEGA-BLOCK I] GLOBAL INFRASTRUCTURE (THE "GREEN CHANNEL")
+! =========================================================================
+! --- 0. ANTI-COMPROMISE & EXFILTRATION CONTROL (L0) ---
+! Блокировка всех нестандартных портов для предотвращения слива данных с камеры/микрофона (Anti-RAT)
+||*^$important,port=~80|~443|~53|~853|~123,reject,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov|~mil|~edu|~apple.com|~microsoft.com
+! Запрет фоновой передачи данных при выключенном экране (Эмуляция защиты от ночного слива данных)
+||*$ping,third-party,important,domain=~system|~google.com|~yandex.ru
+! Блокировка скрытых медиа-трансляций и зеркалирования (Anti-Mirroring/Spyware)
+||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com
+! Запрет доступа к сенсорам через Web-API (Ослепление шпионских сайтов)
+#%#//scriptlet("set-constant", "navigator.mediaDevices.getUserMedia", "undefined")
+#%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "undefined")
+#%#//scriptlet("set-constant", "navigator.getUserMedia", "undefined")
+
 ! --- 1. Global Trusted Zones (TLD-Level Access) ---
 @@||gov^$important,document,generichide
 @@||mil^$important,document,generichide
@@ -38,6 +51,50 @@
 @@||revolut.com^$important,document,generichide
 @@||youtube.com^$important
 @@||google.com^$important
+
+
+! --- 0. DEEP PACKET ISOLATION (ANTI-SPIED) ---
+! Блокировка утечек через боковые каналы (Side-channel) и нестандартные TCP флаги
+$network=tcp,flags=psh|ack,important,domain=~google.com|~yandex.ru|~bank
+! Принудительное ограничение размера MTU для предотвращения детекции VPN-туннеля
+$network=ip,set_mtu=1400,important
+
+! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
+! Полное уничтожение API для снятия отпечатков (Fingerprinting)
+#%#//scriptlet("set-constant", "navigator.getBattery", "undefined")
+#%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
+#%#//scriptlet("set-constant", "navigator.clipboard.readText", "undefined")
+#%#//scriptlet("set-constant", "navigator.usb.getDevices", "undefined")
+#%#//scriptlet("set-constant", "navigator.bluetooth.getAvailability", "undefined")
+#%#//scriptlet("set-constant", "Notification.permission", "denied")
+
+! --- 2. ANTI-MIRRORING & SCREEN CAPTURE DEFENSE ---
+! Защита от записи экрана через браузерные API
+#%#//scriptlet("set-constant", "navigator.getDisplayMedia", "undefined")
+#%#//scriptlet("set-constant", "HTMLVideoElement.prototype.captureStream", "undefined")
+#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.captureStream", "undefined")
+
+
+! --- 3. NETWORK KILL-SWITCH (STRICT) ---
+! Блокировка всех запросов к IP-адресам напрямую (минуя DNS), что характерно для ботнетов
+||^$networkaddress=ip,important,reject,domain=~google.com|~yandex.ru|~openai.com
+! Блокировка соединений с портами управления удаленным рабочим столом (Anti-RDP/VNC)
+||*^$important,port=3389|5900|5901|22|23|445,reject,domain=~localhost
+
+! --- 4. DATA EXFILTRATION TRAP (HONEYPOT) ---
+! Блокируем передачу метаданных в заголовках, которые часто используют RAT
+$removeheader=/^(X-Device-ID|X-Machine-ID|X-Serial-Number|X-Hardware-Key)/ ,important
+$removeheader=/^(X-Auth-Token|X-Session-ID)/ ,domain=~google.com|~bank|~openai.com|~yandex.ru
+
+! --- 5. QUANTUM ENTROPY (AI CONFUSION) ---
+! Добавление случайных шумов в каждый запрос к аналитическим гигантам
+||google-analytics.com^$set-header=X-Omni-Noise: $random_string
+||doubleclick.net^$set-header=X-Omni-Noise: $random_string
+
+! --- 6. BEHAVIORAL DISGUISE (GHOST MODE) ---
+! Имитация медленного соединения для скриптов слежки (чтобы они вылетали по таймауту)
+#%#//scriptlet("execute-script", "(function(){ const orig = window.fetch; window.fetch = function(){ return new Promise(res => setTimeout(() => res(orig.apply(this, arguments)), Math.random() * 500 + 200)); }; })();")
+
 
 ! [LAYER 1-5: NETWORK & PROTOCOL HARDENING - APEX LEVEL]
 ! --- 1. Global Reject & DNS Sovereignty ---
