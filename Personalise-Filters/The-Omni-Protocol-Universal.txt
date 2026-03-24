@@ -89,7 +89,7 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 ! Убиваем детекторы блокировщиков на корню
 #%#//scriptlet("set-constant", "isAdBlockActive|isAdblockActive|adblocker|AdBlock|navigator.webdriver", "false")
 #%#//scriptlet("set-constant", "google_ad_status", "1")
-#%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
+#%#//scriptlet("abort-current-inline-script", "/detectAdBlock|fuckAdBlock|blockAdBlock/")
 
 #%#//scriptlet("execute-script", "
 (function(){
@@ -327,19 +327,13 @@ Object.defineProperty(document,'hidden',{get:()=>vis==='hidden'});
 })();
 ")
 
-
-! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
-#%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
-#%#//scriptlet("execute-script", "HTMLCanvasElement.prototype.toDataURL=()=>'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB';")
-#%#//scriptlet("execute-script", "Object.defineProperty(Screen.prototype,'width',{get:()=>1920});Object.defineProperty(Screen.prototype,'height',{get:()=>1080});")
-#%#//scriptlet("spoof-css", "webgl", "intel-uhd")
 ! Защита от перечисления шрифтов (Font Fingerprinting)
 #%#//scriptlet("prevent-window-open", "ad-click")
 
 ! --- 3. ZERO-FOOTPRINT: АБСОЛЮТНАЯ ОЧИСТКА ---
 ! Очистка аналитики и рекламных движков
-#%#//scriptlet("set-constant", "ga|gtag|fbq|document.interestCohort|navigator.browsingTopics", "undefined")
-#%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|ym_uid|amplitude_id|_hjSessionUser)$/")
+#%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp)$/")
+
 ! Запрещаем сайтам читать историю переходов через Referrer
 *^$set-header=Referrer-Policy: no-referrer-when-downgrade
 
