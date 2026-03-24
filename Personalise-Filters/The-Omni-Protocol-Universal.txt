@@ -96,16 +96,24 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 
 /**
  * ================================
- * CORE INIT
+ * 0. CORE INIT + MULTI ID
  * ================================
  */
 const host = location.hostname;
-const TRUSTED = /(google|youtube|bank|gov|openai|yandex|github|paypal|stripe)/.test(host);
-const ID = localStorage.getItem('identity_name') || 'default';
+const TRUSTED = /(google|youtube|bank|gov|openai|github|paypal|stripe)/.test(host);
+
+// MULTI ID ROTATION
+const ID_POOL = ['alpha','beta','gamma','delta'];
+let ID = localStorage.getItem('identity_name');
+
+if (!ID) {
+  ID = ID_POOL[Math.floor(Math.random()*ID_POOL.length)];
+  localStorage.setItem('identity_name', ID);
+}
 
 /**
  * ================================
- * ENV SPLIT
+ * 1. ENV SPLIT
  * ================================
  */
 const ENV = (function(){
@@ -118,136 +126,161 @@ const ENV = (function(){
 
 /**
  * ================================
- * SESSION MEMORY
+ * 2. SESSION MEMORY
  * ================================
  */
 const MEM_KEY = 'fp_memory_' + ID;
 
 let memory;
-try {
-  memory = JSON.parse(localStorage.getItem(MEM_KEY));
-} catch(e){}
+try { memory = JSON.parse(localStorage.getItem(MEM_KEY)); } catch(e){}
 
 if (!memory) {
-  memory = {
-    visits: 1,
-    lastVisit: Date.now(),
-    scrollDepth: 0,
-    clicks: 0
-  };
+  memory = { visits:1, scroll:0, clicks:0 };
 } else {
   memory.visits++;
-  memory.lastVisit = Date.now();
 }
 
 localStorage.setItem(MEM_KEY, JSON.stringify(memory));
 
 /**
  * ================================
- * INTENT ENGINE
+ * 3. INTENT ENGINE
  * ================================
  */
 const INTENT = (function(){
-
-  if (ENV === 'commerce') return 'buy';
-  if (ENV === 'social') return 'scroll';
-  if (ENV === 'work') return 'read';
-  if (ENV === 'secure') return 'focused';
-
-  // fallback basé sur mémoire
-  if (memory.scrollDepth > 2000) return 'scroll';
+  if (ENV==='commerce') return 'buy';
+  if (ENV==='social') return 'scroll';
+  if (ENV==='work') return 'read';
+  if (ENV==='secure') return 'focused';
+  if (memory.scroll > 2000) return 'scroll';
   if (memory.clicks > 10) return 'interact';
-
   return 'idle';
 })();
 
 /**
  * ================================
- * CONSISTENCY LOCK
+ * 4. CONSISTENCY FP
  * ================================
  */
-const FP_KEY = 'fp_consistency_' + ID;
+const FP_KEY = 'fp_lock_' + ID;
 
 let FP;
-try {
-  FP = JSON.parse(sessionStorage.getItem(FP_KEY));
-} catch(e){}
+try { FP = JSON.parse(sessionStorage.getItem(FP_KEY)); } catch(e){}
 
 if (!FP) {
   FP = {
-    cpu: navigator.hardwareConcurrency || 4,
-    mem: navigator.deviceMemory || 8,
-    lang: navigator.language || 'en-US',
-    tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    cpu: 4 + Math.floor(Math.random()*4),
+    mem: [4,8,16][Math.floor(Math.random()*3)],
+    lang: 'en-US',
+    tz: 'Europe/Paris',
+    screen: {w:1920,h:1080},
     ua: navigator.userAgent
   };
   sessionStorage.setItem(FP_KEY, JSON.stringify(FP));
 }
 
 /**
- * APPLY LOCK (safe)
+ * APPLY FP (SAFE)
  */
 if (!TRUSTED) {
 
-  Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> FP.cpu});
-  Object.defineProperty(navigator,'deviceMemory',{get:()=> FP.mem});
-  Object.defineProperty(navigator,'language',{get:()=> FP.lang});
+  Object.defineProperty(navigator,'hardwareConcurrency',{get:()=>FP.cpu});
+  Object.defineProperty(navigator,'deviceMemory',{get:()=>FP.mem});
+  Object.defineProperty(navigator,'language',{get:()=>FP.lang});
+  Object.defineProperty(screen,'width',{get:()=>FP.screen.w});
+  Object.defineProperty(screen,'height',{get:()=>FP.screen.h});
+  Object.defineProperty(navigator,'userAgent',{get:()=>FP.ua});
 
   const origRes = Intl.DateTimeFormat.prototype.resolvedOptions;
   Intl.DateTimeFormat.prototype.resolvedOptions = function(){
     const o = origRes.apply(this, arguments);
     o.timeZone = FP.tz;
+    o.locale = FP.lang;
     return o;
   };
-
-  Object.defineProperty(navigator,'userAgent',{get:()=> FP.ua});
 }
 
 /**
  * ================================
- * HUMAN ENGINE (INTENT DRIVEN)
+ * 5. ADVANCED FP DEFENSE
  * ================================
  */
 if (!TRUSTED) {
 
-  /**
-   * BASE RANDOM (safe)
-   */
-  const humanRand = (min,max)=>{
-    return min + (max-min) * Math.random();
-  };
+  // Canvas spoof (stable per session)
+  if (!HTMLCanvasElement.prototype.toDataURL.__spoofed) {
+    const noise = ID.length * 100;
 
-  /**
-   * INTENT MULTIPLIER
-   */
-  const intentProfile = {
-    buy:      {speed:1.2, delay:0.7},
-    scroll:   {speed:1.5, delay:0.5},
-    read:     {speed:0.6, delay:1.5},
-    focused:  {speed:0.5, delay:2.0},
-    interact: {speed:1.3, delay:0.8},
-    idle:     {speed:0.8, delay:1.2}
-  };
+    HTMLCanvasElement.prototype.toDataURL = function(){
+      return 'data:image/png;base64,' + btoa(noise);
+    };
 
-  const profile = intentProfile[INTENT] || intentProfile.idle;
+    HTMLCanvasElement.prototype.toDataURL.__spoofed = true;
+  }
 
-  /**
-   * HUMAN DELAY
-   */
-  const humanDelay = (min,max)=>{
-    let d = humanRand(min,max) * profile.delay;
+  // AudioContext
+  if (window.AudioContext && !AudioContext.prototype.__spoofed) {
+    const orig = AudioContext.prototype.createAnalyser;
+    AudioContext.prototype.createAnalyser = function(){
+      return orig.apply(this, arguments);
+    };
+    AudioContext.prototype.__spoofed = true;
+  }
 
-    // imperfections
-    if (Math.random() > 0.95) d *= 2;
+  // Fonts protection (basic)
+  document.fonts && (document.fonts.check = ()=>true);
 
-    return d;
-  };
+}
 
-  /**
-   * TRACKING (memory)
-   */
+/**
+ * ================================
+ * 6. ANALYTICS KILLER
+ * ================================
+ */
+if (!TRUSTED) {
+
+  window.ga = undefined;
+  window.gtag = undefined;
+  window.fbq = undefined;
+
+  try {
+    document.interestCohort = undefined;
+    navigator.browsingTopics = undefined;
+  } catch(e){}
+
+  Object.defineProperty(navigator,'webdriver',{get:()=>false});
+  window.google_ad_status = 1;
+}
+
+/**
+ * ================================
+ * 7. SELF-HEAL ENGINE
+ * ================================
+ */
+setInterval(()=>{
+  try {
+
+    if (navigator.webdriver !== false) {
+      Object.defineProperty(navigator,'webdriver',{get:()=>false});
+    }
+
+    if (!window.ga) window.ga = undefined;
+
+  } catch(e){}
+
+}, 5000);
+
+/**
+ * ================================
+ * 8. HUMAN BEHAVIOR
+ * ================================
+ */
+if (!TRUSTED) {
+
+  const rand = (a,b)=> a + Math.random()*(b-a);
+
   window.addEventListener('scroll', ()=>{
-    memory.scrollDepth = window.scrollY;
+    memory.scroll = window.scrollY;
     localStorage.setItem(MEM_KEY, JSON.stringify(memory));
   }, {passive:true});
 
@@ -256,91 +289,44 @@ if (!TRUSTED) {
     localStorage.setItem(MEM_KEY, JSON.stringify(memory));
   }, {passive:true});
 
-  /**
-   * SAFE WRAP (single)
-   */
-  if (!EventTarget.prototype.addEventListener.__ultimateHuman) {
+  if (!EventTarget.prototype.addEventListener.__human) {
 
-    const origAdd = EventTarget.prototype.addEventListener;
+    const orig = EventTarget.prototype.addEventListener;
 
-    EventTarget.prototype.addEventListener = function(type, listener, options){
+    EventTarget.prototype.addEventListener = function(type, fn, opt){
 
-      if (type === 'click') {
-
-        const wrapped = function(e){
-
-          let delay = humanDelay(10,80);
-
-          // instant click parfois
-          if (Math.random() > 0.9) delay = 0;
-
-          setTimeout(()=> listener.call(this,e), delay);
+      if (type==='click') {
+        const wrap = function(e){
+          setTimeout(()=> fn.call(this,e), rand(10,60));
         };
-
-        return origAdd.call(this, type, wrapped, options);
+        return orig.call(this,type,wrap,opt);
       }
 
-      return origAdd.call(this, type, listener, options);
+      return orig.call(this,type,fn,opt);
     };
 
-    EventTarget.prototype.addEventListener.__ultimateHuman = true;
+    EventTarget.prototype.addEventListener.__human = true;
   }
-
-  /**
-   * SCROLL BEHAVIOR
-   */
-  if (window.scrollTo && !window.scrollTo.__human) {
-
-    const origScroll = window.scrollTo;
-
-    window.scrollTo = function(){
-      setTimeout(()=> origScroll.apply(window, arguments), humanDelay(5,40));
-    };
-
-    window.scrollTo.__human = true;
-  }
-
-  /**
-   * PERFORMANCE (minimal)
-   */
-  const origNow = performance.now.bind(performance);
-
-  performance.now = function(){
-    return origNow() + humanRand(0.001,0.01);
-  };
-
-  /**
-   * REAL USER SIMULATION (focus / idle)
-   */
-  setInterval(()=>{
-    if (Math.random() > 0.97) {
-      window.dispatchEvent(new Event('blur'));
-
-      setTimeout(()=>{
-        window.dispatchEvent(new Event('focus'));
-      }, humanRand(100,500));
-    }
-  }, 20000);
 
 }
 
 /**
  * ================================
- * VISIBILITY SAFE
+ * 9. VISIBILITY
  * ================================
  */
-let vis = 'visible';
+let vis='visible';
 
 setInterval(()=>{
-  if (Math.random() > 0.98) vis = 'hidden';
-  else vis = 'visible';
-}, 20000);
+  vis = Math.random()>0.98 ? 'hidden':'visible';
+},20000);
 
-Object.defineProperty(document,'visibilityState',{get:()=> vis});
-Object.defineProperty(document,'hidden',{get:()=> vis === 'hidden'});
+Object.defineProperty(document,'visibilityState',{get:()=>vis});
+Object.defineProperty(document,'hidden',{get:()=>vis==='hidden'});
 
 })();
 ")
+
 
 ! Защита от продвинутой слежки (Canvas, WebGL, Fonts, Audio)
 #%#//scriptlet("execute-script", "window.Intl.DateTimeFormat.prototype.resolvedOptions=()=>({timeZone:'Europe/Paris',locale:'en-US'});")
