@@ -347,6 +347,84 @@ setInterval(()=> hidden = Math.random() > 0.97, 15000);
 Object.defineProperty(document,'hidden',{get:()=> hidden});
 Object.defineProperty(document,'visibilityState',{get:()=> hidden ? 'hidden':'visible'});
 
+/**
+ * ================================
+ * FINAL HARDENING (CRITICAL FIX)
+ * ================================
+ */
+
+/**
+ * SAFE RANDOM (НЕ ЛОМАЕМ Math.random)
+ */
+const safeRandom = (function(){
+  let x = (Date.now() + ID.length) % 233280;
+  return function(){
+    x = (x * 9301 + 49297) % 233280;
+    return x / 233280;
+  };
+})();
+
+/**
+ * FIX rand (если уже есть)
+ */
+if (typeof rand === 'function') {
+  const originalRand = rand;
+
+  rand = function(min,max){
+    const base = originalRand(min,max);
+    return base * (1 + safeRandom()*0.3);
+  };
+}
+
+/**
+ * SINGLE WRAP PROTECTION (ANTI-DETECT)
+ */
+if (!EventTarget.prototype.addEventListener.__ultimateWrapped) {
+
+  const origAdd = EventTarget.prototype.addEventListener;
+
+  EventTarget.prototype.addEventListener = function(type, listener, options){
+
+    if (type === 'click') {
+      const wrapped = function(e){
+        const delay = 5 + (safeRandom() * 50);
+        setTimeout(()=> listener.call(this,e), delay);
+      };
+      return origAdd.call(this, type, wrapped, options);
+    }
+
+    return origAdd.call(this, type, listener, options);
+  };
+
+  EventTarget.prototype.addEventListener.__ultimateWrapped = true;
+}
+
+/**
+ * PERFORMANCE NORMALIZATION
+ */
+const origNow = performance.now;
+performance.now = function(){
+  return origNow.call(performance) + (safeRandom() * 0.02);
+};
+
+/**
+ * VISIBILITY STABILITY
+ */
+let visibilityState = 'visible';
+
+setInterval(()=>{
+  if (safeRandom() > 0.98) {
+    visibilityState = 'hidden';
+  } else {
+    visibilityState = 'visible';
+  }
+}, 20000);
+
+Object.defineProperty(document,'visibilityState',{get:()=> visibilityState});
+Object.defineProperty(document,'hidden',{get:()=> visibilityState === 'hidden'});
+
+
+
 })();
 ")
 
