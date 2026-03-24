@@ -91,74 +91,94 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 #%#//scriptlet("abort-current-inline-script", "detectAdBlock|adBlockDetected")
 
-# Маскировка железа и ОС (Dynamic V5 PRO++++++)
+# ================================
+# V6 GOD MODE + BEHAVIOR + AI FINAL (CLEAN)
+# ================================
 
 #%#//scriptlet("execute-script", "
 (function(){
 
-  const key = 'fp_profile_v5';
-  let p;
+/**
+ * ================================
+ * 1. SAFE AUTO DETECTION
+ * ================================
+ */
+const host = location.hostname;
+const TRUSTED = /(google|youtube|bank|gov|openai|yandex|github|paypal|stripe)/.test(host);
+const HARDENED = /(ads|tracking|analytics|fingerprint)/.test(host);
 
-  const profiles = [
-    {cores:4, memory:4, ua:'120.0.0.0', lang:['en-US','en'], tz:'Europe/Paris'},
-    {cores:8, memory:8, ua:'125.0.0.0', lang:['fr-FR','fr'], tz:'Europe/Paris'},
-    {cores:6, memory:8, ua:'123.0.0.0', lang:['en-GB','en'], tz:'Europe/Berlin'}
-  ];
+/**
+ * ================================
+ * 2. SESSION PROFILE
+ * ================================
+ */
+const KEY = 'fp_v6_profile';
+let profile;
 
-  try {
-    const saved = sessionStorage.getItem(key);
-    if (saved) {
-      p = JSON.parse(saved);
-    } else {
-      p = profiles[Math.floor(Math.random()*profiles.length)];
-      sessionStorage.setItem(key, JSON.stringify(p));
-    }
-  } catch(e) {
-    p = profiles[0];
-  }
+const PROFILES = [
+  {cpu:4, mem:4, gpu:'Intel Iris OpenGL Engine', vendor:'Intel Inc.', lang:['en-US','en'], tz:'Europe/Paris', ua:'120.0.0.0'},
+  {cpu:8, mem:8, gpu:'Intel UHD Graphics', vendor:'Intel Inc.', lang:['fr-FR','fr'], tz:'Europe/Paris', ua:'125.0.0.0'},
+  {cpu:6, mem:8, gpu:'Intel HD Graphics 630', vendor:'Intel Inc.', lang:['en-GB','en'], tz:'Europe/Berlin', ua:'123.0.0.0'}
+];
 
-  const seed = JSON.stringify(p).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+try {
+  const saved = sessionStorage.getItem(KEY);
+  profile = saved ? JSON.parse(saved) : PROFILES[Math.floor(Math.random()*PROFILES.length)];
+  sessionStorage.setItem(KEY, JSON.stringify(profile));
+} catch(e){
+  profile = PROFILES[0];
+}
 
-  // ===== BASIC =====
+const seed = JSON.stringify(profile).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+const noise = (seed % 7) + 1;
+
+/**
+ * ================================
+ * 3. FINGERPRINT CORE (НЕ ДЛЯ TRUSTED)
+ * ================================
+ */
+if (!TRUSTED) {
+
   Object.defineProperty(navigator,'platform',{get:()=> 'Win32'});
-  Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> p.cores});
-  Object.defineProperty(navigator,'deviceMemory',{get:()=> p.memory});
+  Object.defineProperty(navigator,'hardwareConcurrency',{get:()=> profile.cpu});
+  Object.defineProperty(navigator,'deviceMemory',{get:()=> profile.mem});
   Object.defineProperty(navigator,'maxTouchPoints',{get:()=> 0});
 
-  Object.defineProperty(navigator,'language',{get:()=> p.lang[0]});
-  Object.defineProperty(navigator,'languages',{get:()=> p.lang});
+  Object.defineProperty(navigator,'language',{get:()=> profile.lang[0]});
+  Object.defineProperty(navigator,'languages',{get:()=> profile.lang});
 
-  const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'+p.ua+' Safari/537.36';
+  const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/'+profile.ua+' Safari/537.36';
   Object.defineProperty(navigator,'userAgent',{get:()=> ua});
 
   const originalResolved = Intl.DateTimeFormat.prototype.resolvedOptions;
   Intl.DateTimeFormat.prototype.resolvedOptions = function(){
     const opts = originalResolved.apply(this, arguments);
-    opts.timeZone = p.tz;
+    opts.timeZone = profile.tz;
     return opts;
   };
 
-  // ===== CANVAS (ULTRA LIGHT STABLE) =====
-  const noise = (seed % 7) + 1;
-  const toDataURL = HTMLCanvasElement.prototype.toDataURL;
+  // WEBGL
+  const originalGetParameter = WebGLRenderingContext.prototype.getParameter;
+  WebGLRenderingContext.prototype.getParameter = function(param){
+    if(param === 37445) return profile.vendor;
+    if(param === 37446) return profile.gpu;
+    return originalGetParameter.apply(this, arguments);
+  };
+  WebGLRenderingContext.prototype.getParameter.__original = originalGetParameter;
+
+  // CANVAS
+  const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
   HTMLCanvasElement.prototype.toDataURL = function(){
     const ctx = this.getContext('2d');
     if(ctx){
-      ctx.fillStyle = 'rgba('+noise+','+noise+','+noise+',0.005)';
+      ctx.fillStyle = 'rgba('+noise+','+noise+','+noise+',0.004)';
       ctx.fillRect(0,0,1,1);
     }
-    return toDataURL.apply(this, arguments);
+    return originalToDataURL.apply(this, arguments);
   };
+  HTMLCanvasElement.prototype.toDataURL.__original = originalToDataURL;
 
-  // ===== WEBGL (CONSISTENT SPOOF) =====
-  const getParameter = WebGLRenderingContext.prototype.getParameter;
-  WebGLRenderingContext.prototype.getParameter = function(param){
-    if(param === 37445) return 'Intel Inc.';
-    if(param === 37446) return 'Intel Iris OpenGL Engine';
-    return getParameter.apply(this, arguments);
-  };
-
-  // ===== AUDIO (MICRO DRIFT) =====
+  // AUDIO
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
   if (AudioCtx) {
     const origCreate = AudioCtx.prototype.createAnalyser;
@@ -168,218 +188,132 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
       analyser.getFloatFrequencyData = function(arr){
         orig.apply(this, arguments);
         for(let i=0;i<arr.length;i++){
-          arr[i] += (noise * 0.00005);
+          arr[i] += noise * 0.00003;
         }
       };
       return analyser;
     };
   }
 
-  // ===== CLIENT RECTS (VERY LIGHT SHIFT) =====
-  const origGetBounding = Element.prototype.getBoundingClientRect;
-  Element.prototype.getBoundingClientRect = function(){
-    const rect = origGetBounding.apply(this, arguments);
-    const shift = (noise % 2) * 0.1;
-    return {
-      x: rect.x + shift,
-      y: rect.y + shift,
-      width: rect.width,
-      height: rect.height,
-      top: rect.top + shift,
-      left: rect.left + shift,
-      right: rect.right + shift,
-      bottom: rect.bottom + shift
-    };
-  };
-
-  // ===== SCREEN =====
+  // SCREEN
   const w = screen.width;
   const h = screen.height;
+  Object.defineProperty(screen,'availWidth',{get:()=> w - (noise % 2)});
+  Object.defineProperty(screen,'availHeight',{get:()=> h - (noise % 3)});
+  Object.defineProperty(screen,'colorDepth',{get:()=> 24});
 
-  Object.defineProperty(screen,'availWidth',{get:()=> w - (noise % 3)});
-  Object.defineProperty(screen,'availHeight',{get:()=> h - (noise % 5)});
-
-  // ===== FONTS CHECK STABILIZATION =====
-  const origMeasure = CanvasRenderingContext2D.prototype.measureText;
-  CanvasRenderingContext2D.prototype.measureText = function(){
-    const metrics = origMeasure.apply(this, arguments);
-    metrics.width += (noise * 0.01);
-    return metrics;
-  };
-
-})();
-")
-
-# Маскировка (MAX HARDENING — осторожно)
-
-#%#//scriptlet("execute-script", "
-(function(){
-
-  const key = 'fp_profile_v5';
-  let p;
-
-  try {
-    p = JSON.parse(sessionStorage.getItem(key));
-  } catch(e) {
-    p = {tz:'Europe/Paris'};
-  }
-
-  const seed = JSON.stringify(p).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
-
-  // ===== 1. WEBRTC (SOFT MASK, НЕ ЛОМАЕМ ВСЁ) =====
-  if (window.RTCPeerConnection) {
-    const OrigRTC = window.RTCPeerConnection;
-
-    window.RTCPeerConnection = function(...args){
-      const pc = new OrigRTC(...args);
-
-      pc.addEventListener('icecandidate', e => {
-        if (e && e.candidate && e.candidate.candidate) {
-          // Убираем локальные IP
-          e.candidate.candidate = e.candidate.candidate.replace(/192\\.168\\.[0-9]+\\.[0-9]+/g, '0.0.0.0');
-        }
-      });
-
-      return pc;
-    };
-  }
-
-  // ===== 2. NETWORK INFO =====
-  if (navigator.connection) {
-    Object.defineProperty(navigator.connection,'downlink',{get:()=> 10 + (seed % 5)});
-    Object.defineProperty(navigator.connection,'effectiveType',{get:()=> '4g'});
-    Object.defineProperty(navigator.connection,'rtt',{get:()=> 50 + (seed % 20)});
-  }
-
-  // ===== 3. BATTERY API =====
-  navigator.getBattery = function(){
-    return Promise.resolve({
-      charging: true,
-      chargingTime: 0,
-      dischargingTime: Infinity,
-      level: 0.95
-    });
-  };
-
-  // ===== 4. VISIBILITY =====
-  Object.defineProperty(document,'hidden',{get:()=> false});
-  Object.defineProperty(document,'visibilityState',{get:()=> 'visible'});
-
-  // ===== 5. PERMISSIONS (РЕАЛИСТИЧНО) =====
-  const originalQuery = navigator.permissions?.query;
-  if (originalQuery) {
-    navigator.permissions.query = function(params){
-      const map = {
-        'notifications': 'default',
-        'geolocation': 'prompt',
-        'camera': 'prompt',
-        'microphone': 'prompt'
-      };
-      const state = map[params.name] || 'prompt';
-      return Promise.resolve({ state });
-    };
-  }
-
-  // ===== 6. TIMING (ANTI BOT) =====
+  // PERFORMANCE (ЕДИНСТВЕННЫЙ)
   const originalNow = performance.now;
   performance.now = function(){
-    return originalNow.call(performance) + (seed % 3) * 0.01;
+    return originalNow.call(performance) + (noise * 0.01);
   };
 
-  // ===== 7. LOCK (ANTI OVERRIDE) =====
-  const protect = (obj, prop) => {
-    try {
-      const val = obj[prop];
-      Object.defineProperty(obj, prop, {
-        get: () => val,
-        configurable: false
-      });
-    } catch(e){}
+  // WEBDRIVER
+  Object.defineProperty(navigator,'webdriver',{get:()=> false});
+
+}
+
+/**
+ * ================================
+ * 4. VISIBILITY (REALISTIC)
+ * ================================
+ */
+let hidden = false;
+setInterval(()=>{
+  hidden = Math.random() > 0.97;
+}, 15000);
+
+Object.defineProperty(document,'hidden',{get:()=> hidden});
+Object.defineProperty(document,'visibilityState',{get:()=> hidden ? 'hidden' : 'visible'});
+
+/**
+ * ================================
+ * 5. BEHAVIOR GOD (НЕ ДЛЯ TRUSTED)
+ * ================================
+ */
+if (!TRUSTED) {
+
+  const seed2 = Date.now() % 10000;
+  const rand = (min,max)=> min + (seed2 % (max-min));
+
+  let lastMove = 0;
+
+  window.addEventListener('mousemove', function(e){
+    const now = performance.now();
+    if (now - lastMove < rand(5,20)) return;
+    lastMove = now;
+  }, {passive:true});
+
+  const originalScroll = window.scrollTo;
+  window.scrollTo = function(){
+    setTimeout(()=> originalScroll.apply(window, arguments), rand(5,30));
   };
 
-  protect(navigator, 'userAgent');
-  protect(navigator, 'hardwareConcurrency');
-  protect(navigator, 'deviceMemory');
+  // защита от двойного wrap
+  if (!EventTarget.prototype.addEventListener.__wrapped) {
+    const originalAdd = EventTarget.prototype.addEventListener;
 
-})();
-")
-
-# SAFE AUTO — интеллектуальное управление fingerprint
-
-#%#//scriptlet("execute-script", "
-(function(){
-
-  const host = location.hostname;
-
-  // ===== 1. TRUSTED ZONES =====
-  const trusted = [
-    'google.com',
-    'youtube.com',
-    'gstatic.com',
-    'googleapis.com',
-    'openai.com',
-    'chatgpt.com',
-    'github.com',
-    'paypal.com',
-    'stripe.com',
-    'bank',
-    'gouv.fr',
-    'ameli.fr',
-    'edf.fr'
-  ];
-
-  const isTrusted = trusted.some(d => host.includes(d));
-
-  // ===== 2. HARDENED TARGETS =====
-  const hardened = [
-    'doubleclick.net',
-    'ads',
-    'tracking',
-    'analytics',
-    'fingerprint'
-  ];
-
-  const isHardened = hardened.some(d => host.includes(d));
-
-  // ===== 3. MODE SWITCH =====
-  let mode = 'normal';
-
-  if (isTrusted) mode = 'trusted';
-  if (isHardened) mode = 'hardened';
-
-  // ===== 4. APPLY RULES =====
-
-  // TRUSTED → отключаем агрессивное
-  if (mode === 'trusted') {
-
-    // возвращаем оригинальный WebGL
-    if (WebGLRenderingContext.prototype.getParameter.__original) {
-      WebGLRenderingContext.prototype.getParameter =
-        WebGLRenderingContext.prototype.getParameter.__original;
-    }
-
-    // отключаем canvas шум
-    HTMLCanvasElement.prototype.toDataURL =
-      HTMLCanvasElement.prototype.toDataURL.__original || HTMLCanvasElement.prototype.toDataURL;
-
-  }
-
-  // HARDENED → усиливаем
-  if (mode === 'hardened') {
-
-    // усиливаем timing
-    const originalNow = performance.now;
-    performance.now = function(){
-      return originalNow.call(performance) + Math.random() * 0.5;
+    EventTarget.prototype.addEventListener = function(type, listener, options){
+      if(type === 'click'){
+        const wrapped = function(e){
+          setTimeout(()=> listener.call(this,e), rand(10,40));
+        };
+        return originalAdd.call(this, type, wrapped, options);
+      }
+      return originalAdd.call(this, type, listener, options);
     };
 
-    // усиливаем permissions
-    navigator.permissions.query = () => Promise.resolve({ state: 'denied' });
-
+    EventTarget.prototype.addEventListener.__wrapped = true;
   }
 
-  // ===== 5. DEBUG (можно убрать) =====
-  //console.log('[SAFE AUTO MODE]', mode);
+}
+
+/**
+ * ================================
+ * 6. AI MIMIC (НЕ ДЛЯ TRUSTED)
+ * ================================
+ */
+if (!TRUSTED) {
+
+  const start = performance.now();
+  let interactions = 0;
+
+  ['click','mousemove','keydown'].forEach(ev=>{
+    window.addEventListener(ev, ()=> interactions++, {passive:true});
+  });
+
+  const getReadingDelay = ()=>{
+    const words = (document.body.innerText || '').split(/\\s+/).length;
+    return Math.min(3000, words * 5);
+  };
+
+  // только если ещё не обёрнут
+  if (!EventTarget.prototype.addEventListener.__aiwrapped) {
+    const origAdd = EventTarget.prototype.addEventListener;
+
+    EventTarget.prototype.addEventListener = function(type, listener, options){
+      if(type === 'click'){
+        const wrapped = function(e){
+          const delay = getReadingDelay() * Math.random();
+          setTimeout(()=> listener.call(this,e), delay);
+        };
+        return origAdd.call(this, type, wrapped, options);
+      }
+      return origAdd.call(this, type, listener, options);
+    };
+
+    EventTarget.prototype.addEventListener.__aiwrapped = true;
+  }
+
+  window.addEventListener('beforeunload', ()=>{
+    const duration = performance.now() - start;
+    if (duration < 2000){
+      const fake = 500 + Math.random()*1500;
+      performance.now = ()=> duration + fake;
+    }
+  });
+
+}
 
 })();
 ")
