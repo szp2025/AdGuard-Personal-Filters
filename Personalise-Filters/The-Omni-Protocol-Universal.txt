@@ -18,8 +18,16 @@
 ! [REQUIRED]: pref.firewall.notifications.enabled = true
 
 
-! Блокировка нестандартных портов (Anti-RAT) с уведомлением
-||*^$important,port=~80|~443|~53|~853|~123,reject,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov|~mil|~edu|~apple.com|~microsoft.com,notify,tag=RAT_PORT_DETECTION
+! ###########################################################
+! # THE OMNI-PROTOCOL: ULTRA-APEX CORE (v8.5)               #
+! ###########################################################
+! [1] ВЫСОКИЙ ПРИОРИТЕТ: Именные ловушки (Specific IDS)
+||*^$important,port=22|23|445|1433|1723|1883|3306|3389|5037|5060|5061|5432|5555|5900|5901|6379|6667|8080|8883|9000|9090|14147|27017|33434|4444|55555,reject,domain=~localhost,notify,tag=ATTACK_SPECIFIC
+
+! [2] ФОНОВЫЙ ПРИОРИТЕТ: Глобальный Anti-RAT (All other non-std ports)
+||*^$important,port=~80|~443|~53|~853|~123,reject,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov|~mil|~edu|~apple.com|~microsoft.com,notify,tag=RAT_GENERAL_DETECTION
+! ###########################################################
+
 
 ! Запрет фоновой передачи данных (Anti-Data Leak) с уведомлением
 ||*$ping,third-party,important,domain=~system|~google.com|~yandex.ru,notify,tag=BACKGROUND_LEAK
@@ -89,9 +97,6 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ! --- 3. NETWORK KILL-SWITCH (STRICT) ---
 ! Блокировка всех запросов к IP-адресам напрямую (минуя DNS), что характерно для ботнетов
 ||^$networkaddress=ip,important,reject,domain=~google.com|~yandex.ru|~openai.com
-
-! Блокировка и уведомление об атаках на критические порты (Anti-RDP/VNC/SSH/SMB)
-||*^$important,port=3389|5900|5555|5901|22|23|8080|445,reject,domain=~localhost,notify,tag=ATTACK_DETECTED
 
 
 ! --- 4. DATA EXFILTRATION TRAP (HONEYPOT) ---
