@@ -19,21 +19,24 @@
 
 
 ! ###########################################################
-! # THE OMNI-PROTOCOL: ULTRA-APEX CORE (v8.5)               #
+! # THE OMNI-PROTOCOL: ULTRA-APEX CORE (v9.0)               #
 ! ###########################################################
-! [1] ВЫСОКИЙ ПРИОРИТЕТ: Именные ловушки (Specific IDS)
+
+! [L1] IDS: Именные ловушки (Критические порты: ADB, SSH, RDP, DB)
 ||*^$important,port=22|23|445|1433|1723|1883|3306|3389|5037|5060|5061|5432|5555|5900|5901|6379|6667|8080|8883|9000|9090|14147|27017|33434|4444|55555,reject,domain=~localhost,notify,tag=ATTACK_SPECIFIC
 
-! [2] ФОНОВЫЙ ПРИОРИТЕТ: Глобальный Anti-RAT (All other non-std ports)
+! [L2] RAT: Глобальный Anti-RAT (Все нестандартные порты)
 ||*^$important,port=~80|~443|~53|~853|~123,reject,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov|~mil|~edu|~apple.com|~microsoft.com,notify,tag=RAT_GENERAL_DETECTION
+
+! [L3] LEAK: Запрет фоновых пингов (Anti-Data Leak)
+||*$ping,third-party,important,domain=~system|~google.com|~yandex.ru,notify,tag=BACKGROUND_LEAK
+
+! [L4] SPY: Блокировка скрытых трансляций (Anti-Mirroring)
+||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,notify,tag=MEDIA_SPY_BLOCK
+
 ! ###########################################################
 
 
-! Запрет фоновой передачи данных (Anti-Data Leak) с уведомлением
-||*$ping,third-party,important,domain=~system|~google.com|~yandex.ru,notify,tag=BACKGROUND_LEAK
-
-! Блокировка скрытых трансляций и зеркалирования (Anti-Spyware) с уведомлением
-||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,notify,tag=MEDIA_SPY_BLOCK
 
 ! Запрет доступа к сенсорам через Web-API (Ослепление шпионских сайтов)
 #%#//scriptlet("set-constant", "navigator.mediaDevices.getUserMedia", "undefined")
