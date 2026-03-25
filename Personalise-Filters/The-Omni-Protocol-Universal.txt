@@ -10,12 +10,15 @@
 ! [MEGA-BLOCK I] GLOBAL INFRASTRUCTURE (THE "GREEN CHANNEL")
 ! =========================================================================
 ! --- 0. ANTI-COMPROMISE & EXFILTRATION CONTROL (L0) ---
-! Блокировка всех нестандартных портов для предотвращения слива данных с камеры/микрофона (Anti-RAT)
-||*^$important,port=~80|~443|~53|~853|~123,reject,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov|~mil|~edu|~apple.com|~microsoft.com
-! Запрет фоновой передачи данных при выключенном экране (Эмуляция защиты от ночного слива данных)
-||*$ping,third-party,important,domain=~system|~google.com|~yandex.ru
-! Блокировка скрытых медиа-трансляций и зеркалирования (Anti-Mirroring/Spyware)
-||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com
+! Блокировка нестандартных портов (Anti-RAT) с уведомлением
+||*^$important,port=~80|~443|~53|~853|~123,reject,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov|~mil|~edu|~apple.com|~microsoft.com,notify,tag=RAT_PORT_DETECTION
+
+! Запрет фоновой передачи данных (Anti-Data Leak) с уведомлением
+||*$ping,third-party,important,domain=~system|~google.com|~yandex.ru,notify,tag=BACKGROUND_LEAK
+
+! Блокировка скрытых трансляций и зеркалирования (Anti-Spyware) с уведомлением
+||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,notify,tag=MEDIA_SPY_BLOCK
+
 ! Запрет доступа к сенсорам через Web-API (Ослепление шпионских сайтов)
 #%#//scriptlet("set-constant", "navigator.mediaDevices.getUserMedia", "undefined")
 #%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "undefined")
@@ -55,9 +58,9 @@
 
 ! --- 0. DEEP PACKET ISOLATION (ANTI-SPIED) ---
 ! Блокировка утечек через боковые каналы (Side-channel) и нестандартные TCP флаги
-$network=tcp,flags=psh|ack,important,domain=~google.com|~yandex.ru|~bank
+$network=tcp,flags=psh|ack,important,domain=~google.com|~yandex.ru|~bank,notify,tag=TCP_SIDE_CHANNEL
 ! Принудительное ограничение размера MTU для предотвращения детекции VPN-туннеля
-$network=ip,set_mtu=1400,important
+$network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
 ! Полное уничтожение API для снятия отпечатков (Fingerprinting)
