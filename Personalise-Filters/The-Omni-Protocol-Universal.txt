@@ -16,8 +16,7 @@
 
 ! [ACTION]: Блокировка и мгновенный PUSH при атаке на порты.
 ! [REQUIRED]: pref.firewall.notifications.enabled = true
-
-
+! [REQUIRED]: pref.logging.adblock.blocked = true
 ! ###########################################################
 ! # THE OMNI-PROTOCOL: ULTRA-APEX CORE (v10.0)              #
 ! ###########################################################
