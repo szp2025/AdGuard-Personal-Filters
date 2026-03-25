@@ -10,6 +10,14 @@
 ! [MEGA-BLOCK I] GLOBAL INFRASTRUCTURE (THE "GREEN CHANNEL")
 ! =========================================================================
 ! --- 0. ANTI-COMPROMISE & EXFILTRATION CONTROL (L0) ---
+
+! ###########################################################
+! # THE OMNI-PROTOCOL: ACTIVE IDS & PORT HONEYPOTS (v7.8.5) #
+
+! [ACTION]: Блокировка и мгновенный PUSH при атаке на порты.
+! [REQUIRED]: pref.firewall.notifications.enabled = true
+
+
 ! Блокировка нестандартных портов (Anti-RAT) с уведомлением
 ||*^$important,port=~80|~443|~53|~853|~123,reject,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov|~mil|~edu|~apple.com|~microsoft.com,notify,tag=RAT_PORT_DETECTION
 
@@ -83,23 +91,7 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ||^$networkaddress=ip,important,reject,domain=~google.com|~yandex.ru|~openai.com
 
 ! Блокировка и уведомление об атаках на критические порты (Anti-RDP/VNC/SSH/SMB)
-||*^$important,port=3389|5900|5901|22|23|445,reject,domain=~localhost,notify,tag=ATTACK_DETECTED
-
-
-! ###########################################################
-! # THE OMNI-PROTOCOL: ACTIVE IDS & PORT HONEYPOTS (v7.8.5) #
-! ###########################################################
-! [ACTION]: Блокировка и мгновенный PUSH при атаке на порты.
-! [REQUIRED]: pref.firewall.notifications.enabled = true
-
-||0.0.0.0^$network,port=22,important,notify,tag=IDS-SSH
-||0.0.0.0^$network,port=23,important,notify,tag=IDS-TELNET
-||0.0.0.0^$network,port=445,important,notify,tag=IDS-SMB
-||0.0.0.0^$network,port=3389,important,notify,tag=IDS-RDP
-||0.0.0.0^$network,port=5555,important,notify,tag=IDS-ADB
-||0.0.0.0^$network,port=8080,important,notify,tag=IDS-PROXY
-
-! ###########################################################
+||*^$important,port=3389|5900|5555|5901|22|23|8080|445,reject,domain=~localhost,notify,tag=ATTACK_DETECTED
 
 
 ! --- 4. DATA EXFILTRATION TRAP (HONEYPOT) ---
