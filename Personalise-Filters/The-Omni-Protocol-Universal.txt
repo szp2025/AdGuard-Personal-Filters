@@ -19,8 +19,12 @@
 
 
 ! ###########################################################
-! # THE OMNI-PROTOCOL: ULTRA-APEX CORE (v9.0)               #
+! # THE OMNI-PROTOCOL: ULTRA-APEX CORE (v10.0)              #
 ! ###########################################################
+
+! [L0] DPI: Глубокая изоляция пакетов (Anti-Fingerprinting)
+$network=tcp,flags=psh|ack,important,domain=~google.com|~yandex.ru|~bank,notify,tag=TCP_SIDE_CHANNEL
+$network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 
 ! [L1] IDS: Именные ловушки (Критические порты: ADB, SSH, RDP, DB)
 ||*^$important,port=22|23|445|1433|1723|1883|3306|3389|5037|5060|5061|5432|5555|5900|5901|6379|6667|8080|8883|9000|9090|14147|27017|33434|4444|55555,reject,domain=~localhost,notify,tag=ATTACK_SPECIFIC
@@ -35,7 +39,6 @@
 ||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,notify,tag=MEDIA_SPY_BLOCK
 
 ! ###########################################################
-
 
 
 ! Запрет доступа к сенсорам через Web-API (Ослепление шпионских сайтов)
@@ -74,12 +77,6 @@
 @@||youtube.com^$important
 @@||google.com^$important
 
-
-! --- 0. DEEP PACKET ISOLATION (ANTI-SPIED) ---
-! Блокировка утечек через боковые каналы (Side-channel) и нестандартные TCP флаги
-$network=tcp,flags=psh|ack,important,domain=~google.com|~yandex.ru|~bank,notify,tag=TCP_SIDE_CHANNEL
-! Принудительное ограничение размера MTU для предотвращения детекции VPN-туннеля
-$network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
 ! Полное уничтожение API для снятия отпечатков (Fingerprinting)
