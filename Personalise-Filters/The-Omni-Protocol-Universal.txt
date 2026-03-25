@@ -624,9 +624,10 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 
 ! --- 2. Localhost & Port Hardening (Защита от сканирования твоей сети) ---
 ! Запрещаем сайтам опрашивать твои локальные устройства и открытые порты
-||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system
+||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system,notify,tag=LOCAL_SCAN_DETECTED
+
 ||^$important,port=22|23|445|3389|1433|3306|5432|6379|8080|9000|9090,domain=~teamviewer.com|~localhost
-$network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,important
+$network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,important,notify,tag=PORT_ATTACK_ALERT
 
 ! [LAYER 28-29: QUANTUM VISIBILITY & ENTROPY]
 ! --- 1. Header Manipulation (Активная дезинформация) ---
