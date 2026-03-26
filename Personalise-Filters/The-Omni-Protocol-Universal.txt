@@ -696,7 +696,7 @@ if (!TRUSTED && navigator.permissions) {
 
     if (params && params.name) {
       return Promise.resolve({
-        state: 'granted'
+        state: ['granted','prompt','denied'][Math.floor(Math.random()*3)]
       });
     }
 
