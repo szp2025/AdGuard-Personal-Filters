@@ -1,10 +1,11 @@
 [Adblock Plus 2.0]
-! Title: The Omni-Protocol 2026 Universal (Eternal)
-! Version: 7.7.1
-! Last modified: 2026-03-23
-! Expires: 1 days
+! Title: The Omni-Protocol: Ultra-Apex Core (v10.0)
+! Version: 10.0.0-APEX
+! Last modified: 2026-03-26
+! Expires: 12 hours
 ! Homepage: https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt
-! Description: Optimized for Auto-Filtering Mode. Global Governance, AI, Finance & Utility.
+! Description: IPS/IDS Intelligence, LAN Isolation & Anti-Fingerprint. Optimized for Banking Gambit (Revolut/LCL).
+! License: https://github.com/szp2025/AdGuard-Personal-Filters
 ! =========================================================================
 
 ! [MEGA-BLOCK I] GLOBAL INFRASTRUCTURE (THE "GREEN CHANNEL")
