@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Omni-Protocol: Eternal Agent (APEX MAX)
-// @version      10.0.0
+// @version      10.0.1
 // @description  Maximalist Cyber-Shield: Neural Noise, Audio-SDR, Font-Masking & Battery-Ghost.
 // @author       szp2025 & Gemini AI
 // @match        *://*/*
@@ -8,16 +8,16 @@
 // @run-at       document-start
 // @namespace    https://github.com/szp2025
 // @updateURL    https://cdn.jsdelivr.net/gh/szp2025/AdGuard-Personal-Filters@main/Personalise-Filters/Omni_Eternal.user.js
-// @downloadURL  https://cdn.jsdelivr.net/gh/szp2025/AdGuard-Personal-Filters@main/Personalise-Filters/Omni_Eternal.user.js
-// ==UserScript==
+// @downloadURL  https://cdn.JSdelivr.net/gh/szp2025/AdGuard-Personal-Filters@main/Personalise-Filters/Omni_Eternal.user.js
+// ==/UserScript==
 
 (function() {
     'use strict';
 
-    // 1. КОНФИГ ПЕРВОГО КЛАССА (БИЗНЕС-ДЖЕТ)
+    // 1. КОНФИГ ПЕРВОГО КЛАССА
     const apexConfig = {
-        hc: 8, // Hardware Concurrency
-        dm: 8, // Device Memory
+        hc: 8,
+        dm: 8,
         pl: "Win32",
         vendor: "Intel Inc.",
         renderer: "Intel(R) UHD Graphics",
@@ -42,38 +42,57 @@
     };
     spoof(navigator);
 
-    // 3. AUDIO-FINGERPRINT SHIELD (НОВОЕ!)
-    // Искажаем способ, которым сайты анализируют твою звуковую карту
+    // 3. FONT-MASKING (НОВОЕ: Защита от слежки через список шрифтов)
+    const fontShield = () => {
+        const orgOffsetWidth = HTMLElement.prototype.__lookupGetter__('offsetWidth');
+        const orgOffsetHeight = HTMLElement.prototype.__lookupGetter__('offsetHeight');
+        if (orgOffsetWidth && orgOffsetHeight) {
+            Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+                get: function() {
+                    const val = orgOffsetWidth.apply(this);
+                    return val > 0 ? val + (Math.random() > 0.5 ? 1 : 0) : val;
+                }
+            });
+        }
+    };
+    fontShield();
+
+    // 4. WEBRTC LEAK PROTECTION (НОВОЕ: Блокировка утечки локального IP)
+    if (window.RTCPeerConnection) {
+        window.RTCPeerConnection = function() {
+            return {
+                createOffer: () => Promise.reject("WebRTC Blocked by Omni-Protocol"),
+                setLocalDescription: () => {},
+                close: () => {}
+            };
+        };
+    }
+
+    // 5. AUDIO-FINGERPRINT SHIELD
     const audioShield = () => {
-        const orgGetByteFrequencyData = AudioAnalyserNode && AudioAnalyserNode.prototype.getByteFrequencyData;
+        const orgGetByteFrequencyData = window.AudioAnalyserNode && AudioAnalyserNode.prototype.getByteFrequencyData;
         if (orgGetByteFrequencyData) {
             AudioAnalyserNode.prototype.getByteFrequencyData = function(array) {
                 orgGetByteFrequencyData.apply(this, arguments);
-                for (let i = 0; i < array.length; i += 10) {
-                    array[i] ^= 1; // Микро-шум в аудио-поток
-                }
+                for (let i = 0; i < array.length; i += 16) { array[i] ^= 1; }
             };
         }
     };
     audioShield();
 
-    // 4. BATTERY-GHOST (Блокировка слежки через заряд батареи)
+    // 6. BATTERY-GHOST (Скрытие уровня заряда)
     if (navigator.getBattery) {
         navigator.getBattery = () => Promise.resolve({
-            charging: true,
-            level: 0.99,
-            chargingTime: 0,
-            dischargingTime: Infinity,
-            addEventListener: () => {}
+            charging: true, level: 0.99, chargingTime: 0, dischargingTime: Infinity, addEventListener: () => {}
         });
     }
 
-    // 5. CANVAS & WEBGL NEURAL NOISE (MAX SPEED)
+    // 7. CANVAS & WEBGL NEURAL NOISE
     const injectNoise = () => {
         const orgG = CanvasRenderingContext2D.prototype.getImageData;
         CanvasRenderingContext2D.prototype.getImageData = function() {
             const d = orgG.apply(this, arguments);
-            d.data[Math.floor(Math.random() * d.data.length)] ^= 1;
+            d.data[Math.floor(Math.random() * 10)] ^= 1;
             return d;
         };
 
@@ -86,13 +105,15 @@
     };
     injectNoise();
 
-    // 6. ANTI-ANTI-ADBLOCK (APEX ENGINE)
+    // 8. ANTI-ANTI-ADBLOCK & COOKIE-KILLER
     const killPopups = () => {
         const obs = new MutationObserver((mutations) => {
             for (let m of mutations) {
                 for (let n of m.addedNodes) {
                     if (n.nodeType === 1) {
-                        if (/adblock|блокировщик|disable ad|advertising|cookies/i.test(n.innerText) && n.style.position === 'fixed') {
+                        const t = n.innerText || "";
+                        if (/adblock|блокировщик|disable ad|advertising|cookies|accept all/i.test(t) && 
+                           (window.getComputedStyle(n).position === 'fixed' || window.getComputedStyle(n).zIndex > 100)) {
                             n.remove();
                             document.body.style.setProperty('overflow', 'auto', 'important');
                             document.documentElement.style.setProperty('overflow', 'auto', 'important');
@@ -104,12 +125,11 @@
         obs.observe(document.documentElement, { childList: true, subtree: true });
     };
 
-    // 7. ЗАПУСК СИСТЕМЫ
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', killPopups);
     } else {
         killPopups();
     }
 
-    console.log("%c[APEX MAX: SYSTEM ARMED]", "color: #00ffff; font-weight: bold; text-shadow: 0 0 10px #00ffff;");
+    console.log("%c[APEX MAX ARMED: AUTO-UPDATE ACTIVE]", "color: #00ffff; font-weight: bold; text-shadow: 0 0 10px #00ffff;");
 })();
