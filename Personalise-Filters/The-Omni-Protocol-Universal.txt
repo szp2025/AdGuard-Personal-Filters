@@ -638,6 +638,111 @@ if (!TRUSTED) {
 
 }
 
+/**
+ * ================================
+ * 17. WEBRTC PROTECTION
+ * ================================
+ */
+if (!TRUSTED && window.RTCPeerConnection) {
+
+  const OrigRTC = window.RTCPeerConnection;
+
+  window.RTCPeerConnection = function(...args){
+    const pc = new OrigRTC(...args);
+
+    pc.addEventListener('icecandidate', function(e){
+      if (e && e.candidate && e.candidate.candidate) {
+        // блокируем локальные IP
+        e.candidate.candidate = e.candidate.candidate.replace(
+          /([0-9]{1,3}\.){3}[0-9]{1,3}/g,
+          '0.0.0.0'
+        );
+      }
+    });
+
+    return pc;
+  };
+}
+
+/**
+ * ================================
+ * 18. NAVIGATOR CONNECTION SPOOF
+ * ================================
+ */
+if (!TRUSTED && navigator.connection) {
+
+  const conn = {
+    downlink: 10 + Math.random()*40,
+    effectiveType: ['4g','3g'][Math.floor(Math.random()*2)],
+    rtt: 50 + Math.random()*100,
+    saveData: false
+  };
+
+  Object.defineProperty(navigator, 'connection', {
+    get: ()=> conn
+  });
+}
+
+/**
+ * ================================
+ * 19. PERMISSIONS SPOOF
+ * ================================
+ */
+if (!TRUSTED && navigator.permissions) {
+
+  const origQuery = navigator.permissions.query;
+
+  navigator.permissions.query = function(params){
+
+    if (params && params.name) {
+      return Promise.resolve({
+        state: 'granted'
+      });
+    }
+
+    return origQuery.apply(this, arguments);
+  };
+}
+
+/**
+ * ================================
+ * 20. BATTERY SPOOF
+ * ================================
+ */
+if (!TRUSTED && navigator.getBattery) {
+
+  navigator.getBattery = function(){
+    return Promise.resolve({
+      charging: true,
+      level: 0.76 + Math.random()*0.2,
+      chargingTime: 0,
+      dischargingTime: Infinity
+    });
+  };
+}
+
+/**
+ * ================================
+ * 21. VISIBILITY HUMANIZER (УЛУЧШЕННЫЙ)
+ * ================================
+ */
+if (!TRUSTED) {
+
+  let vis = 'visible';
+
+  setInterval(()=>{
+    const rnd = Math.random();
+
+    if (rnd > 0.995) vis = 'hidden';
+    else if (rnd > 0.98) vis = 'visible';
+
+  }, 15000 + Math.random()*10000);
+
+  Object.defineProperty(document,'visibilityState',{get:()=>vis});
+  Object.defineProperty(document,'hidden',{get:()=>vis==='hidden'});
+
+}
+
 })();
 ")
 
