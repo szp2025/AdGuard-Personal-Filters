@@ -167,6 +167,19 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 #%#//scriptlet("abort-current-inline-script", "/detectAdBlock|fuckAdBlock|blockAdBlock/")
 
+! --- [Omni-Protocol v10.0: Anti-Fingerprinting Patch] ---
+! 1. Подавление уникального языкового отпечатка (language-shame)
+#%#(function() { var originalLang = navigator.language; Object.defineProperty(navigator, 'language', { get: function() { return 'fr-FR'; } }); Object.defineProperty(navigator, 'languages', { get: function() { return ['fr-FR', 'fr', 'en-US', 'en']; } }); })();
+
+! 2. Нейтрализация Canvas-отпечатка (Canvas-shame)
+! Подменяем методы рисования, добавляя микро-шум к каждому рендерингу
+#%#(function() { var originalGetImageData = CanvasRenderingContext2D.prototype.getImageData; CanvasRenderingContext2D.prototype.getImageData = function() { var imageData = originalGetImageData.apply(this, arguments); for (var i = 0; i < imageData.data.length; i += 4) { imageData.data[i] = imageData.data[i] + (Math.random() > 0.5 ? 1 : -1); imageData.data[i+1] = imageData.data[i+1] + (Math.random() > 0.5 ? 1 : -1); imageData.data[i+2] = imageData.data[i+2] + (Math.random() > 0.5 ? 1 : -1); } return imageData; }; })();
+
+! 3. Защита от поведенческого трекинга (Behavioral-shame)
+! Модифицируем Pointer и Touch API, чтобы скрыть точную динамику движений
+#%#(function() { var noop = function() {}; window.PointerEvent = noop; window.TouchEvent = noop; })();
+
+
 ! --- [Omni-Protocol: Social Media Stealth] ---
 ||connect.facebook.net^$important,third-party
 ||platform.twitter.com^$important,third-party
