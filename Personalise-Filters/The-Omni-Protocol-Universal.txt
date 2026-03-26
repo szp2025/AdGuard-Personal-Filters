@@ -812,6 +812,17 @@ Object.defineProperty(screen, 'height', { get: () => profile.h });
 
 Object.defineProperty(window, 'innerWidth', { get: () => profile.w });
 Object.defineProperty(window, 'innerHeight', { get: () => profile.h - 40 });
+/**
+ * PLATFORM CONSISTENCY FIX
+ */
+Object.defineProperty(navigator, 'platform', {
+  get: () => 'Win32'
+});
+
+Object.defineProperty(navigator, 'userAgentData', {
+  get: () => undefined
+});
+
 
 /**
  * ==========================================
