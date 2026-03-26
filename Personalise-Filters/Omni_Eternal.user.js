@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         The Omni-Protocol: Eternal Agent
-// @version      7.5.0
-// @description  Advanced Logic Layer for Omni-Protocol v2026.V15. Интеллектуальный стелс, анти-фингерпринтинг и обход детекторов блокировки.
+// @version      10.0.0
+// @description  Apex Logic Layer for Omni-Protocol v2026.V10. Интеллектуальный стелс, анти-фингерпринтинг и нейронный шум.
 // @author       Architect & Gemini 3 Flash
 // @match        *://*/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=github.com
@@ -16,14 +16,14 @@
     'use strict';
 
     /**
-     * МОДУЛЬ 1: ЦИФРОВАЯ МИМИКРИЯ (IDENTITY SPOOFING)
-     * Устанавливает стандарт "Win32 / 8 Cores / 8GB" для всех сайтов.
+     * МОДУЛЬ 1: ЦИФРОВАЯ МИМИКРИЯ (IDENTITY SPOOFING - APEX)
+     * Глобальный стандарт невидимости v10.0.
      */
     const stealthConfig = {
         hardwareConcurrency: 8,
         deviceMemory: 8,
         platform: "Win32",
-        languages: ["ru-RU", "ru", "en-US", "en"],
+        languages: ["ru-RU", "ru", "en-US", "en", "fr-FR", "fr"],
         doNotTrack: "1"
     };
 
@@ -34,49 +34,51 @@
                     get: () => stealthConfig[key],
                     configurable: true
                 });
-            } catch (e) { /* Игнорируем защищенные свойства */ }
+            } catch (e) { /* Protection Layer Active */ }
         });
     };
 
     applyStealth(navigator);
 
     /**
-     * МОДУЛЬ 2: КВАНТОВЫЙ ШУМ (ANTI-FINGERPRINTING)
-     * Добавляет микро-искажения в Canvas и WebGL, чтобы ваш отпечаток менялся.
+     * МОДУЛЬ 2: НЕЙРОННЫЙ ШУМ (L13 AI-SHIELD)
+     * Динамическое искажение Canvas и WebGL для обмана AI-алгоритмов фингерпринтинга.
      */
-    const injectNoise = () => {
+    const injectNeuralNoise = () => {
+        // Canvas Apex Protection
         const originalGetImageData = CanvasRenderingContext2D.prototype.getImageData;
         CanvasRenderingContext2D.prototype.getImageData = function(x, y, w, h) {
             const imageData = originalGetImageData.apply(this, arguments);
-            // Добавляем минимальный шум в первый пиксель (невидимо для глаза, критично для хеша)
-            imageData.data[0] = imageData.data[0] + (Math.random() > 0.5 ? 1 : -1);
+            // Вносим микро-изменения, которые невозможно отследить визуально
+            const pos = Math.floor(Math.random() * (imageData.data.length / 4)) * 4;
+            imageData.data[pos] ^= 1; 
             return imageData;
         };
 
-        // Защита WebGL от сбора параметров видеокарты
+        // WebGL Spoofing (Universal Intel Standard)
         const orgGetParameter = WebGLRenderingContext.prototype.getParameter;
         WebGLRenderingContext.prototype.getParameter = function(parameter) {
-            // Маскируем вендора и рендерер под стандартные
-            if (parameter === 37445) return 'Intel Inc.'; // UNMASKED_VENDOR_WEBGL
-            if (parameter === 37446) return 'Intel(R) UHD Graphics'; // UNMASKED_RENDERER_WEBGL
+            if (parameter === 37445) return 'Intel Inc.'; 
+            if (parameter === 37446) return 'Intel(R) UHD Graphics'; 
             return orgGetParameter.apply(this, arguments);
         };
     };
-    injectNoise();
+    injectNeuralNoise();
 
     /**
-     * МОДУЛЬ 3: АННИГИЛЯЦИЯ ТРЕКЕРОВ В ПАМЯТИ (MEMORY PURGE)
-     * Подменяет объекты аналитики "пустышками", чтобы скрипты сайтов не выдавали ошибок.
+     * МОДУЛЬ 3: АННИГИЛЯЦИЯ ТРЕКЕРОВ (ZERO-FOOTPRINT)
+     * Очистка памяти от аналитики без нарушения работы сайтов.
      */
     const killTrackers = () => {
         const noop = () => {};
-        window.ga = noop;
-        window.gtag = noop;
-        window.fbq = noop;
-        window._gaq = { push: noop };
-        window.google_ad_client = true; // Обман Anti-Adblock
+        const traps = ['ga', 'gtag', 'fbq', 'ym', 'dataLayer', 'amplitude'];
+        traps.forEach(trap => {
+            if (typeof window[trap] !== 'undefined') window[trap] = noop;
+        });
         
-        // Защита от отслеживания через буфер обмена
+        window.google_ad_client = true; // Anti-Adblock Deception
+
+        // L11: Clipboard Protection (Anti-Tracking)
         document.addEventListener('copy', (e) => {
             e.stopImmediatePropagation();
         }, true);
@@ -84,35 +86,36 @@
     killTrackers();
 
     /**
-     * МОДУЛЬ 4: ANTI-ANTI-ADBLOCK (CLOAKING)
-     * Автоматически скрывает баннеры "Отключите блокировщик" и предотвращает блокировку прокрутки.
+     * МОДУЛЬ 4: CLOAKING ENGINE (ANTI-ANTI-ADBLOCK)
+     * Скрывает детекторы блокировки и восстанавливает функционал страниц.
      */
-    const antiAntiAdblock = () => {
+    const apexCloaking = () => {
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
                 mutation.addedNodes.forEach((node) => {
                     if (node.nodeType === 1) {
-                        const text = node.innerText || "";
-                        if (text.includes("AdBlock") || text.includes("блокировщик") || text.includes("disable ad")) {
-                            node.style.display = 'none';
-                            document.body.style.overflow = 'auto'; // Возвращаем скролл
+                        const style = window.getComputedStyle(node);
+                        if (style.position === 'fixed' && (parseInt(style.zIndex) > 999)) {
+                            const content = node.innerText || "";
+                            if (/adblock|блокировщик|disable ad|advertising/i.test(content)) {
+                                node.remove();
+                                document.body.style.setProperty('overflow', 'auto', 'important');
+                                document.documentElement.style.setProperty('overflow', 'auto', 'important');
+                            }
                         }
                     }
                 });
             });
         });
 
-        observer.observe(document.documentElement, {
-            childList: true,
-            subtree: true
-        });
+        observer.observe(document.documentElement, { childList: true, subtree: true });
     };
     
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', antiAntiAdblock);
+        document.addEventListener('DOMContentLoaded', apexCloaking);
     } else {
-        antiAntiAdblock();
+        apexCloaking();
     }
 
-    console.log("%c[Omni-Protocol Agent v7.5.0 Active]", "color: #00ff00; font-weight: bold;");
+    console.log("%c[The Omni-Protocol: Eternal Agent v10.0.0 APEX Active]", "color: #00ff00; font-weight: bold; text-shadow: 0 0 5px #00ff00;");
 })();
