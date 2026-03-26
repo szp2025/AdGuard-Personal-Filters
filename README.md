@@ -16,15 +16,33 @@
 | **4. Fingerprint**| 💀 | **Tech:** Sensor Blindness (Cam/Mic). | **Техно:** Ослепление (Кам/Мик). | **Browsers, Zoom** | AdGuard, uBO, Brave | **100%** |
 | **5. Exfiltration**| 🛡️ | **Tech:** Anti-RAT Port Cage (Strict). | **Техно:** Портовая клетка (Блок RAT). | **Banking, Crypto** | AdGuard WFP, AdLock | **100%** |
 | **6. Network** | 🌐 | **Tech:** Post-Quantum (ML-KEM-1024).| **Техно:** Пост-квантум шифрование. | **All Web Traffic** | DoH, DoT, Control D | **100%** |
+| **7. IPS / IDS** | 🛰️ | **Tech:** Real-time Port Cage & Push Notify. | **Техно:** Мгновенный PUSH при атаке на порты. | **System Wide** | **IDS/IPS Engine** | **100%** |
+| **8. Lateral Def.**| ☣️ | **Tech:** LAN Anti-Scan (L5 Isolation). | **Техно:** Защита от сканирования в Wi-Fi. | **Local Network** | **AdGuard L5 Filter** | **100%** |
+| **9. DNS Cloak** | 🔒 | **Tech:** Anti-DoH Bypass (L6 Protection). | **Техно:** Блок скрытых DNS-каналов. | **All Web Traffic** | **NextDNS, AdGuard** | **100%** |
+| **10. Geo-Shield**| 🌍 | **Tech:** GEO-Shame & TLD Block (L7). | **Техно:** Блок опасных зон (.zip, .top). | **IoT, Browsers** | **L7 GEO Filter** | **100%** |
+| **Omni Eternal** | 💎 | **Logic:** Pure UI & No Paywall Engine. | **Логика:** Чистый UI и обход Paywall. | **Browsers** | **UserJS Script** | **100%** |
 | **Android (Premium)**| 💀💀💀 | **AdGuard Premium**<br>[Official](https://adguard.com/) / [GitHub](https://github.com/AdguardTeam/AdguardForAndroid/releases) | **Premium:** Полный фильтр Apps + Web. | **TG, WA, Banks** | AdGuard, NextDNS | **100%** |
 | **Android (Free)** | 💀 | **AdGuard Content Blocker**<br>[Official Site](https://adguard.com/) | **Free:** Только выбранные браузеры. | **Samsung/Yandex** | Ghostery, Adblock | **40%** |
-| **iOS (Pro)** | 💀💀 | **AdGuard Pro (App Store)**<br>[App Store](https://apps.apple.com/app/adguard-pro-adblock/id1126386264) | **Pro:** DNS + Расширенная защита Web. | **Safari, System** | Control D, Pi-hole | **85%** |
+| **iOS (Pro)** | 💀💀 | **AdGuard Pro (App Store)**<br>[App Store](https://apps.apple.com/app/adguard-pro-adblock/id1126386264) | **Pro:** DNS + Расширенная защита Web. | **Safari, System** | Control D, Pi-hole | **85%**|
 | **Desktop (PC/Mac)**| 💀💀💀 | **AdGuard Desktop**<br>[Official](https://adguard.com/) / [GitHub](https://github.com/AdguardTeam/AdguardForWindows/releases) | **AdGuard:** WFP-драйвер уровня системы. | **All EXE/Soft** | WFP, WFP Driver, TDI | **100%** |
 | **Browser (Extension)**| 💀💀 | **uBlock Origin**<br>[Web Store](https://ublockorigin.com/) / [GitHub](https://github.com/gorhill/uBlock/releases) | **uBlock:** Панель -> Импорт URL. | **Browsers Only** | uBO Lite, AdGuard Ext | **95%** |
 
 ---
 
-## 📊 APP-SPECIFIC PROTECTION STATUS (TRILINGUAL)
+## 🚀 ULTRA-APEX PROTECTION STATUS (v10.0 CURRENT)
+
+> **Status Update [2026-03-26]:** Внедрена система активного противодействия (IPS/IDS) и изоляция локальной сети (L5-L7).
+
+| Category | Protection | 🇬🇧 Logic & Tech (EN) | 🇫🇷 Logique & Tech (FR) | 🇷🇺 Логика и Техно (RU) | Active Tech |
+| :--- | :---: | :--- | :--- | :--- | :--- |
+| **Banking / Finance** | 🟢 100% | **IPS:** Port Cage & LAN Isolation. | **IPS:** Cage de ports & Isolat. LAN. | **IPS:** Клетка портов и изоляция LAN. | **IDS/IPS & L5** |
+| **Messengers** | 🟢 100% | **Anti-Leak:** DoH & Metadata Purge. | **Anti-Leak:** DoH & Purge métadonnées. | **Anti-Leak:** Блок DoH и чистка данных. | **System Firewall & L6** |
+| **Browsers** | 🟢 100% | **Apex:** Canvas Noise & Lang Cloak. | **Apex:** Bruit Canvas & Masquage Lang. | **Apex:** Шум Canvas и маскировка Lang. | **JS Omni Eternal** |
+| **Home / IoT / TV** | 🟢 100% | **Stealth:** GEO-Shame & DNS-Rewrite. | **Stealth:** GEO-Shame & DNS-Rewrite. | **Stealth:** Блок GEO-зон и DNS-Rewrite. | **L7 & DNS-Filtering** |
+
+---
+
+## 📊 APP-SPECIFIC PROTECTION STATUS (TRILINGUAL - v7.7.1 LEGACY)
 
 | Category | Protection | 🇬🇧 Features (EN) | 🇫🇷 Fonctions (FR) | 🇷🇺 Особенности (RU) | Active Tech |
 | :--- | :---: | :--- | :--- | :--- | :--- |
@@ -33,7 +51,6 @@
 | **Browsers** | 🟢 100% | Anti-Fingerprint Scriptlets. | Scriptlets JS Anti-Fingerprint. | Удаление отпечатка (Anti-FP). | **JS Scriptlets** |
 | **Social Media** | 🟢 100% | Fingerprint masking & JS Sanitizer. | Masquage d'empreintes & Sanitisation JS. | Маскировка отпечатка и очистка JS. | **Cosmetic Shield + Stealth** |
 | **Smart TV / IoT** | 🟢 100% | Forced DNS Intercept & IoT Profiling. | Intercept. DNS forcé & Profilage IoT. | Принудительный перехват DNS и профиль. | **DNS over TLS/HTTPS** |
-
 ---
 
 ## 📥 INSTALLATION & DEPLOYMENT
