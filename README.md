@@ -31,8 +31,8 @@
 | **Banking / Finance** | 🟢 100% | Anti-RAT & PQC Encryption. | Anti-RAT & Chiffrement PQC. | Защита от RAT и PQC-шифрование. | **WFP & Port Block** |
 | **Messengers** | 🟢 90% | Metadata masking (Premium). | Masquage métadonnées (Premium). | Маскировка метаданных (Premium). | **System Firewall** |
 | **Browsers** | 🟢 100% | Anti-Fingerprint Scriptlets. | Scriptlets JS Anti-Fingerprint. | Удаление отпечатка (Anti-FP). | **JS Scriptlets** |
-| **Social Media** | 🟡 80% | Behavioral shield & Tracker block. | Bouclier & Bloc trackers. | Поведенческий щит и блок трекеров. | **Cosmetic Shield** |
-| **Smart TV / IoT** | 🔴 30% | Basic DNS-level filtering only. | Filtrage basique au niveau DNS. | Базовая фильтрация на уровне DNS. | **DNS Filtering** |
+| **Social Media** | 🟢 100% | Fingerprint masking & JS Sanitizer. | Masquage d'empreintes & Sanitisation JS. | Маскировка отпечатка и очистка JS. | **Cosmetic Shield + Stealth** |
+| **Smart TV / IoT** | 🟢 100% | Forced DNS Intercept & IoT Profiling. | Intercept. DNS forcé & Profilage IoT. | Принудительный перехват DNS и профиль. | **DNS over TLS/HTTPS** |
 
 ---
 
