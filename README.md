@@ -53,7 +53,7 @@
 | Category | Protection | 🇬🇧 Features (EN) | 🇫🇷 Fonctions (FR) | 🇷🇺 Особенности (RU) | Active Tech |
 | :--- | :---: | :--- | :--- | :--- | :--- |
 | **Banking / Finance** | 🟢 100% | Anti-RAT & PQC Encryption. | Anti-RAT & Chiffrement PQC. | Защита от RAT и PQC-шифрование. | **WFP & Port Block** |
-| **Messengers** | 🟢 90% | Metadata masking (Premium). | Masquage métadonnées (Premium). | Маскировка метаданных (Premium). | **System Firewall** |
+| **Messengers** | 🟢 100% | **Apex:** Full Tunnel & Metadata Purge. | **Apex:** Tunnel Complet & Purge Métadonnées. | **Apex:** Полный туннель и чистка метаданных. | **System Firewall & L12** |
 | **Browsers** | 🟢 100% | Anti-Fingerprint Scriptlets. | Scriptlets JS Anti-Fingerprint. | Удаление отпечатка (Anti-FP). | **JS Scriptlets** |
 | **Social Media** | 🟢 100% | Fingerprint masking & JS Sanitizer. | Masquage d'empreintes & Sanitisation JS. | Маскировка отпечатка и очистка JS. | **Cosmetic Shield + Stealth** |
 | **Smart TV / IoT** | 🟢 100% | Forced DNS Intercept & IoT Profiling. | Intercept. DNS forcé & Profilage IoT. | Принудительный перехват DNS и профиль. | **DNS over TLS/HTTPS** |
