@@ -165,6 +165,43 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 #%#//scriptlet("abort-current-inline-script", "/detectAdBlock|fuckAdBlock|blockAdBlock/")
 
+! --- [Omni-Protocol: Social Media Stealth] ---
+||connect.facebook.net^$important,third-party
+||platform.twitter.com^$important,third-party
+||tiktokv.com^$important,third-party
+||snapchat.com^$important,third-party
+! Блокировка инъекций скриптов социальных сетей
+#%#var FB_REMOVABLE = true;
+#%#var AT_REMOVABLE = true;
+
+! --- [Omni-Protocol: Behavioral & Fingerprinting Shield] ---
+$client=/^com\.callapp/,$important
+$client=/^com\.whatsapp/,$important
+! Нейтрализация функций отслеживания поведения
+#%#(function() { var noop = function() {}; window.PointerEvent = noop; window.DeviceMotionEvent = noop; })();
+! Блокировка методов сбора отпечатков браузера/системы
+#%#Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+
+
+! --- [Omni-Protocol: IoT & Smart TV Deep Filter] ---
+||samsungotn.net^$dnsrewrite=0.0.0.0
+||samsungads.com^$dnsrewrite=0.0.0.0
+||log-config.samsungcloud.com^$dnsrewrite=0.0.0.0
+||config.samsungads.com^$dnsrewrite=0.0.0.0
+||events.samsungads.com^$dnsrewrite=0.0.0.0
+||acr0.samsungcloud.com^$dnsrewrite=0.0.0.0
+! Блокировка аналитики умных устройств на уровне доменов
+||metrics.icloud.com^$dnsrewrite=0.0.0.0
+||telemetry.microsoft.com^$dnsrewrite=0.0.0.0
+
+
+! --- [Omni-Protocol: Advanced Cosmetic Cleanup] ---
+##.ads-container
+##div[class*="Sponsored"]
+##div[id*="ad-slot"]
+! Убираем пустые места после блокировки рекламы
+#?#div:has(> iframe[src*="ads"])
+
 
 #%#//scriptlet("execute-script", "
 (function(){
