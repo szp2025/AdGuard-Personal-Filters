@@ -7,8 +7,8 @@
 // @grant        none
 // @run-at       document-start
 // @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
-// @updateURL    https://cdn.jsdelivr.net/gh/szp2025/AdGuard-Personal-Filters@main/Personalise-Filters/Omni_Eternal.user.js
-// @downloadURL  https://cdn.jsdelivr.net/gh/szp2025/AdGuard-Personal-Filters@main/Personalise-Filters/Omni_Eternal.user.js
+// @updateURL   https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
+// @downloadURL https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
 // ==UserScript==
 
 (function() {
