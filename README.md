@@ -61,6 +61,8 @@
 | **Identity Guard** | 🟢 100% | Anti-Phishing & Beacon Stealth. | Anti-Phishing & Mode Furtif. | Анти-фишинг и защита от маячков. | **L11-L12 Protection** |
 ---
 
+---
+
 ## 📥 INSTALLATION & DEPLOYMENT
 
 ### 🧬 Прямая установка / Direct Install / Installation Directe
@@ -80,3 +82,29 @@
 Если авто-установка не сработала, скопируйте эту ссылку в «Пользовательские фильтры»:
 ```text
 [https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)
+```
+---
+
+### ⚖️ Technical Compliance & License
+
+> [!IMPORTANT]
+> **License:** [MIT License](https://opensource.org/licenses/MIT) — Open Source for personal & high-security use.
+
+* **🔄 Update Cycle:** Automated every **12 hours** (Standard: `! Expires: 12 hours`).
+* **🛡️ Security:** AI-Hardened, SHA-256 Data Integrity, **IPS/IDS Engine Active**.
+* **🌐 Compliance:** GDPR / Privacy Shield Compliant & **Zero-Footprint Logic**.
+* **⚙️ Compatibility:** AdGuard (WFP/Kernel), uBlock Origin (Advanced), NextDNS (CLI).
+
+---
+
+
+> [!CAUTION]
+> ### ⚠️ INTELLECTUAL PROPERTY & DATA SOVEREIGNTY
+> 
+> **EN:** This protocol is a collaborative masterpiece developed by **szp2025 & Gemini AI**. Authorized for personal use only to ensure maximum privacy globally.
+> 
+> **FR:** Ce protocole est un chef-d'œuvre collaboratif développé par **szp2025 & Gemini AI**. Autorisé pour un usage personnel uniquement afin de garantir une confidentialité maximale à l'échelle mondiale.
+> 
+> **RU:** Данный протокол является результатом совместной разработки **szp2025 и Gemini AI**. Разрешено только для личного использования в целях обеспечения максимальной приватности по всему миру.
+
+---
