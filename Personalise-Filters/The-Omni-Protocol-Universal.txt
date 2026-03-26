@@ -53,6 +53,32 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ||*.zip^$important,notify,tag=RISK_TLD
 ||*.review^$important,notify,tag=RISK_TLD
 
+! [L8] TRAP: Ловушка на веб-сканеры (Honeypot — AUTO-REJECT)
+||*^$important,port=81|8000|8008|8081|8443|8888,reject,domain=~localhost,notify,tag=ATTACK_SCANNER_REJECTED
+
+! [L9] SILENCE: Блокировка фоновой аналитики ОС (Anti-Telemetry — MONITOR)
+||*.telemetry.microsoft.com^$important,notify,tag=OS_SPY
+||*.data.microsoft.com^$important,notify,tag=OS_SPY
+||*.google-analytics.com^$important,notify,tag=OS_SPY
+||*.crashlytics.com^$important,notify,tag=OS_SPY
+
+! [L10] CRYPTO: Мгновенный блок эксплойтов кошельков (Anti-Drainer — REJECT)
+||*$websocket,third-party,important,domain=~binance.com|~revolut.com|~metamask.io|~bank,reject,notify,tag=CRYPTO_DRAIN_REJECTED
+
+! [L11] PHISH: Блок сторонних JS в банкинге (Anti-Phishing — REJECT)
+||*$websocket,third-party,important,domain=~revolut.com|~lcl.fr|~google.com|~apple.com,reject,notify,tag=PHISHING_REJECTED
+||*$script,third-party,important,domain=~revolut.com|~lcl.fr|~bank,reject,notify,tag=BANK_SHIELD_REJECTED
+
+! [L12] BEACON: Отслеживание скрытых маячков (Anti-Tracking — MONITOR)
+||*/pixel/*$important,notify,tag=BEACON_BLOCKED
+||*/track/*$important,notify,tag=BEACON_BLOCKED
+||*/telemetry/*$important,notify,tag=TELEMETRY_BLOCKED
+
+! [L13] AI: Блок AI-краулеров (Data Sovereignty — REJECT)
+||*.claudebot.com^$important,reject,notify,tag=AI_CRAWLER_REJECTED
+||*.gptbot.com^$important,reject,notify,tag=AI_CRAWLER_REJECTED
+||*.commoncrawl.org^$important,reject,notify,tag=AI_CRAWLER_REJECTED
+
 ! ###########################################################
 
 
