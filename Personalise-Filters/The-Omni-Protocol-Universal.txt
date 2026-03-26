@@ -37,6 +37,21 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ! [L4] SPY: Блокировка скрытых трансляций (Anti-Mirroring)
 ||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,notify,tag=MEDIA_SPY_BLOCK
 
+! [L5] TRAP: Защита от внутреннего сканирования (Anti-Lateral Movement)
+||192.168.0.0/16^$important,domain=~localhost,notify,tag=LAN_INTRUSION
+||10.0.0.0/8^$important,domain=~localhost,notify,tag=LAN_INTRUSION
+||172.16.0.0/12^$important,domain=~localhost,notify,tag=LAN_INTRUSION
+
+! [L6] CLOAK: Блокировка скрытых DNS-каналов (Anti-DoH/DoH Bypass)
+||dns.google^$important,notify,tag=DOH_BYPASS_ATTEMPT
+||dns.cloudflare.com^$important,notify,tag=DOH_BYPASS_ATTEMPT
+||doh.opendns.com^$important,notify,tag=DOH_BYPASS_ATTEMPT
+
+! [L7] GEO: Блокировка опасных TLD (High-Risk Zones)
+||*.top^$important,notify,tag=RISK_TLD
+||*.zip^$important,notify,tag=RISK_TLD
+||*.review^$important,notify,tag=RISK_TLD
+
 ! ###########################################################
 
 
