@@ -819,6 +819,181 @@ if (!TRUSTED) {
 
 }
 
+/**
+ * ================================
+ * 23. ULTRA FP (CONSISTENT PROFILE)
+ * WebGL EXT + Canvas + Device + Plugins
+ * ================================
+ */
+if (!TRUSTED) {
+
+  /**
+   * ================================
+   * 23.1 DEVICE PROFILE (CONSISTENCY)
+   * ================================
+   */
+  (function(){
+
+    const DEVICE_PROFILE = {
+      memory: 8,
+      cores: 8,
+      dpr: 1,
+      width: 1920,
+      height: 1080
+    };
+
+    Object.defineProperty(navigator, 'deviceMemory', {
+      get: () => DEVICE_PROFILE.memory
+    });
+
+    Object.defineProperty(navigator, 'hardwareConcurrency', {
+      get: () => DEVICE_PROFILE.cores
+    });
+
+    Object.defineProperty(window, 'devicePixelRatio', {
+      get: () => DEVICE_PROFILE.dpr
+    });
+
+    Object.defineProperty(screen, 'width', {
+      get: () => DEVICE_PROFILE.width
+    });
+
+    Object.defineProperty(screen, 'height', {
+      get: () => DEVICE_PROFILE.height
+    });
+
+  })();
+
+
+  /**
+   * ================================
+   * 23.2 WEBGL EXTENSIONS SYNC
+   * ================================
+   */
+  (function(){
+
+    const EXTENSIONS = [
+      "OES_texture_float",
+      "OES_standard_derivatives",
+      "WEBGL_debug_renderer_info",
+      "WEBGL_lose_context"
+    ];
+
+    const getExt = WebGLRenderingContext.prototype.getSupportedExtensions;
+
+    WebGLRenderingContext.prototype.getSupportedExtensions = function(){
+      return EXTENSIONS;
+    };
+
+  })();
+
+
+  /**
+   * ================================
+   * 23.3 CANVAS SESSION NOISE
+   * ================================
+   */
+  (function(){
+
+    const sessionNoise = Math.random() * 0.00001;
+
+    const toDataURL = HTMLCanvasElement.prototype.toDataURL;
+
+    HTMLCanvasElement.prototype.toDataURL = function(){
+
+      const ctx = this.getContext('2d');
+
+      if (ctx) {
+        ctx.fillStyle = "rgba(0,0,0," + sessionNoise + ")";
+        ctx.fillRect(0, 0, 1, 1);
+      }
+
+      return toDataURL.apply(this, arguments);
+    };
+
+  })();
+
+
+  /**
+   * ================================
+   * 23.4 WEBGL PRECISION SPOOF
+   * ================================
+   */
+  (function(){
+
+    const getPrecision = WebGLRenderingContext.prototype.getShaderPrecisionFormat;
+
+    WebGLRenderingContext.prototype.getShaderPrecisionFormat = function(){
+      return {
+        rangeMin: 127,
+        rangeMax: 127,
+        precision: 23
+      };
+    };
+
+  })();
+
+
+  /**
+   * ================================
+   * 23.5 AUDIO CONTEXT HARDENING
+   * ================================
+   */
+  (function(){
+
+    const orig = AudioContext.prototype.createOscillator;
+
+    AudioContext.prototype.createOscillator = function(){
+      const osc = orig.apply(this, arguments);
+
+      const origFreq = osc.frequency.value;
+      osc.frequency.value = origFreq + (Math.random() * 0.01);
+
+      return osc;
+    };
+
+  })();
+
+
+  /**
+   * ================================
+   * 23.6 PLUGINS SPOOF (SAFE)
+   * ================================
+   */
+  (function(){
+
+    const fakePlugins = [
+      { name: "Chrome PDF Plugin" },
+      { name: "Chrome PDF Viewer" },
+      { name: "Native Client" }
+    ];
+
+    Object.defineProperty(navigator, 'plugins', {
+      get: () => fakePlugins
+    });
+
+  })();
+
+
+  /**
+   * ================================
+   * 23.7 SCREEN CONSISTENCY FIX
+   * ================================
+   */
+  (function(){
+
+    Object.defineProperty(window, 'innerWidth', {
+      get: () => 1920
+    });
+
+    Object.defineProperty(window, 'innerHeight', {
+      get: () => 1040
+    });
+
+  })();
+
+}
+
 
 })();
 ")
