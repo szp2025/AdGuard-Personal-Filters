@@ -1,135 +1,125 @@
 // ==UserScript==
-// @name         Omni-Protocol: Eternal Agent (APEX MAX)
-// @version      10.0.1
-// @description  Maximalist Cyber-Shield: Neural Noise, Audio-SDR, Font-Masking & Battery-Ghost.
+// @name         The Omni-Protocol: Eternal Agent (APEX ULTRA)
+// @version      10.0.5
+// @description  Apex Logic Layer v2026.V10. Deep Spoofing, Font-Masking, WebRTC Block & Neural Noise.
 // @author       szp2025 & Gemini AI
 // @match        *://*/*
 // @grant        none
 // @run-at       document-start
-// @namespace    https://github.com/szp2025
+// @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
 // @updateURL    https://cdn.jsdelivr.net/gh/szp2025/AdGuard-Personal-Filters@main/Personalise-Filters/Omni_Eternal.user.js
-// @downloadURL  https://cdn.JSdelivr.net/gh/szp2025/AdGuard-Personal-Filters@main/Personalise-Filters/Omni_Eternal.user.js
-// ==/UserScript==
+// @downloadURL  https://cdn.jsdelivr.net/gh/szp2025/AdGuard-Personal-Filters@main/Personalise-Filters/Omni_Eternal.user.js
+// ==UserScript==
 
 (function() {
     'use strict';
 
-    // 1. КОНФИГ ПЕРВОГО КЛАССА
-    const apexConfig = {
-        hc: 8,
-        dm: 8,
+    // === КОНФИГ ПЕРВОГО КЛАССА ===
+    const s = {
+        hc: 8, // Cores
+        dm: 8, // Memory (GB)
         pl: "Win32",
         vendor: "Intel Inc.",
         renderer: "Intel(R) UHD Graphics",
         ln: ["ru-RU", "ru", "en-US", "en", "fr-FR", "fr"]
     };
 
-    // 2. ГЛУБОКАЯ МИМИКРИЯ (NAVIGATOR & HARDWARE)
-    const spoof = (obj) => {
-        const props = {
-            hardwareConcurrency: apexConfig.hc,
-            deviceMemory: apexConfig.dm,
-            platform: apexConfig.pl,
-            languages: apexConfig.ln,
-            webdriver: false,
-            doNotTrack: "1"
-        };
-        for (let key in props) {
+    // === МОДУЛЬ 1: ГЛУБОКАЯ МИМИКРИЯ (NAVIGATOR SPOOF) ===
+    // Используем Prototype Spoofing — это труднее обнаружить
+    const applyDeepSpoof = () => {
+        const p = navigator.__proto__;
+        const d = (prop, val) => {
             try {
-                Object.defineProperty(obj, key, { get: () => props[key], configurable: true });
+                Object.defineProperty(p, prop, { get: () => val, configurable: true });
             } catch (e) {}
-        }
-    };
-    spoof(navigator);
+        };
 
-    // 3. FONT-MASKING (НОВОЕ: Защита от слежки через список шрифтов)
-    const fontShield = () => {
-        const orgOffsetWidth = HTMLElement.prototype.__lookupGetter__('offsetWidth');
-        const orgOffsetHeight = HTMLElement.prototype.__lookupGetter__('offsetHeight');
-        if (orgOffsetWidth && orgOffsetHeight) {
+        d('hardwareConcurrency', s.hc);
+        d('deviceMemory', s.dm);
+        d('platform', s.pl);
+        d('languages', s.ln);
+        d('webdriver', false);
+        d('doNotTrack', "1");
+    };
+    applyDeepSpoof();
+
+    // === МОДУЛЬ 2: FONT-MASKING (Защита от слежки через шрифты) ===
+    const fontMask = () => {
+        const offsetWidth = HTMLElement.prototype.__lookupGetter__('offsetWidth');
+        const offsetHeight = HTMLElement.prototype.__lookupGetter__('offsetHeight');
+        if (offsetWidth && offsetHeight) {
             Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
                 get: function() {
-                    const val = orgOffsetWidth.apply(this);
+                    const val = offsetWidth.apply(this);
+                    return val > 0 ? val + (Math.random() > 0.5 ? 1 : 0) : val;
+                }
+            });
+            Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+                get: function() {
+                    const val = offsetHeight.apply(this);
                     return val > 0 ? val + (Math.random() > 0.5 ? 1 : 0) : val;
                 }
             });
         }
     };
-    fontShield();
+    fontMask();
 
-    // 4. WEBRTC LEAK PROTECTION (НОВОЕ: Блокировка утечки локального IP)
+    // === МОДУЛЬ 3: WEBRTC LEAK PROTECTION (Блокировка локального IP) ===
     if (window.RTCPeerConnection) {
         window.RTCPeerConnection = function() {
             return {
-                createOffer: () => Promise.reject("WebRTC Blocked by Omni-Protocol"),
+                createOffer: () => Promise.reject("WebRTC Blocked"),
                 setLocalDescription: () => {},
                 close: () => {}
             };
         };
     }
 
-    // 5. AUDIO-FINGERPRINT SHIELD
-    const audioShield = () => {
-        const orgGetByteFrequencyData = window.AudioAnalyserNode && AudioAnalyserNode.prototype.getByteFrequencyData;
-        if (orgGetByteFrequencyData) {
-            AudioAnalyserNode.prototype.getByteFrequencyData = function(array) {
-                orgGetByteFrequencyData.apply(this, arguments);
-                for (let i = 0; i < array.length; i += 16) { array[i] ^= 1; }
-            };
-        }
-    };
-    audioShield();
-
-    // 6. BATTERY-GHOST (Скрытие уровня заряда)
-    if (navigator.getBattery) {
-        navigator.getBattery = () => Promise.resolve({
-            charging: true, level: 0.99, chargingTime: 0, dischargingTime: Infinity, addEventListener: () => {}
-        });
-    }
-
-    // 7. CANVAS & WEBGL NEURAL NOISE
-    const injectNoise = () => {
-        const orgG = CanvasRenderingContext2D.prototype.getImageData;
+    // === МОДУЛЬ 4: CANVAS & WEBGL NEURAL NOISE (Искажение отпечатка) ===
+    const injectNeuralNoise = () => {
+        const orgGetImageData = CanvasRenderingContext2D.prototype.getImageData;
         CanvasRenderingContext2D.prototype.getImageData = function() {
-            const d = orgG.apply(this, arguments);
-            d.data[Math.floor(Math.random() * 10)] ^= 1;
-            return d;
+            const imageData = orgGetImageData.apply(this, arguments);
+            imageData.data[Math.floor(Math.random() * 10)] ^= 1;
+            return imageData;
         };
 
-        const orgP = WebGLRenderingContext.prototype.getParameter;
+        const orgGetParameter = WebGLRenderingContext.prototype.getParameter;
         WebGLRenderingContext.prototype.getParameter = function(p) {
-            if (p === 37445) return apexConfig.vendor;
-            if (p === 37446) return apexConfig.renderer;
-            return orgP.apply(this, arguments);
+            if (p === 37445) return s.vendor;
+            if (p === 37446) return s.renderer;
+            return orgGetParameter.apply(this, arguments);
         };
     };
-    injectNoise();
+    injectNeuralNoise();
 
-    // 8. ANTI-ANTI-ADBLOCK & COOKIE-KILLER
-    const killPopups = () => {
-        const obs = new MutationObserver((mutations) => {
-            for (let m of mutations) {
-                for (let n of m.addedNodes) {
-                    if (n.nodeType === 1) {
-                        const t = n.innerText || "";
-                        if (/adblock|блокировщик|disable ad|advertising|cookies|accept all/i.test(t) && 
-                           (window.getComputedStyle(n).position === 'fixed' || window.getComputedStyle(n).zIndex > 100)) {
-                            n.remove();
-                            document.body.style.setProperty('overflow', 'auto', 'important');
-                            document.documentElement.style.setProperty('overflow', 'auto', 'important');
+    // === МОДУЛЬ 5: CLOAKING ENGINE (ANTI-ANTI-ADBLOCK & COOKIES) ===
+    const apexCloaking = () => {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType === 1) {
+                        const style = window.getComputedStyle(node);
+                        if (style.position === 'fixed' && (parseInt(style.zIndex) > 99)) {
+                            const content = node.innerText || "";
+                            if (/adblock|блокировщик|disable ad|advertising|cookies|accept all/i.test(content)) {
+                                node.remove();
+                                document.body.style.setProperty('overflow', 'auto', 'important');
+                                document.documentElement.style.setProperty('overflow', 'auto', 'important');
+                            }
                         }
                     }
-                }
-            }
+                });
+            });
         });
-        obs.observe(document.documentElement, { childList: true, subtree: true });
+        observer.observe(document.documentElement, { childList: true, subtree: true });
     };
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', killPopups);
+        document.addEventListener('DOMContentLoaded', apexCloaking);
     } else {
-        killPopups();
+        apexCloaking();
     }
 
-    console.log("%c[APEX MAX ARMED: AUTO-UPDATE ACTIVE]", "color: #00ffff; font-weight: bold; text-shadow: 0 0 10px #00ffff;");
+    console.log("%c[Omni-Protocol Eternal v10.0.5 APEX ULTRA Active]", "color: #00ffff; font-weight: bold; text-shadow: 0 0 10px #00ffff;");
 })();
