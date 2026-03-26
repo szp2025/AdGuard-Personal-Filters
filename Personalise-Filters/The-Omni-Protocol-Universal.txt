@@ -170,6 +170,10 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 ! --- [Omni-Protocol v10.0: Anti-Fingerprinting Patch] ---
 ! 1. Подавление уникального языкового отпечатка (language-shame)
 #%#(function() { var originalLang = navigator.language; Object.defineProperty(navigator, 'language', { get: function() { return 'fr-FR'; } }); Object.defineProperty(navigator, 'languages', { get: function() { return ['fr-FR', 'fr', 'en-US', 'en']; } }); })();
+! Подменяем методы доступа к шрифтам, возвращая пустой или стандартный набор
+#%#(function() { var noop = function() {}; Object.defineProperty(HTMLElement.prototype, 'offsetHeight', { get: function() { return 0; } }); Object.defineProperty(HTMLElement.prototype, 'offsetWidth', { get: function() { return 0; } }); })();
+! Подменяем значения ширины/высоты на более типичные для мобильных устройств
+#%#(function() { Object.defineProperty(screen, 'width', { get: function() { return 360; } }); Object.defineProperty(screen, 'height', { get: function() { return 800; } }); Object.defineProperty(screen, 'availWidth', { get: function() { return 360; } }); Object.defineProperty(screen, 'availHeight', { get: function() { return 800; } }); })();
 
 ! 2. Нейтрализация Canvas-отпечатка (Canvas-shame)
 ! Подменяем методы рисования, добавляя микро-шум к каждому рендерингу
@@ -178,6 +182,7 @@ $network=ip,set_ttl=64,hide_hop_limit=on,important
 ! 3. Защита от поведенческого трекинга (Behavioral-shame)
 ! Модифицируем Pointer и Touch API, чтобы скрыть точную динамику движений
 #%#(function() { var noop = function() {}; window.PointerEvent = noop; window.TouchEvent = noop; })();
+
 
 
 ! --- [Omni-Protocol: Social Media Stealth] ---
