@@ -9,6 +9,30 @@
 // @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
 // @updateURL   https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
 // @downloadURL https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
+/**
+ * Автообновление скрипта
+ */
+async function checkUpdate() {
+    try {
+        const url = "https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js";
+        const res = await fetch(url, { cache: "no-store" });
+        const text = await res.text();
+
+        const remoteVersion = text.match(/@version\s+([0-9.]+)/)?.[1];
+        const localVersion = "10.0.5";
+
+        if (remoteVersion && remoteVersion !== localVersion) {
+            console.log("[Omni] Update available:", remoteVersion);
+
+            // можно уведомление или reload
+            location.reload();
+        }
+    } catch (e) {
+        console.log("[Omni] Update check failed");
+    }
+}
+
+checkUpdate();
 // ==UserScript==
 
 (function() {
