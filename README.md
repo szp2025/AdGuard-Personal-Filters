@@ -1,12 +1,13 @@
 # 🛡️ The Omni-Protocol 2026: Behavioral User Model & Zero-Footprint Logic
 
-![Version](https://img.shields.io/badge/version-7.7.1--ULTIMATE-blueviolet)
-![Status](https://img.shields.io/badge/status-💀--LEVEL--DEATH-red)
+![Version](https://img.shields.io/badge/version-10.0.0--APEX-blueviolet)
+![Status](https://img.shields.io/badge/status-💎--LEVEL--ETERNAL-cyan)
+![Authors](https://img.shields.io/badge/authors-szp2025--&--Gemini--AI-orange)
 ![Compatibility](https://img.shields.io/badge/compatibility-ADGUARD--uBLOCK-brightgreen)
 
 ---
 
-## 🧩 ULTIMATE CORE ENGINE: SPECIFICATION & DEPLOYMENT (v7.7.1)
+## 🧩 ULTIMATE CORE ENGINE: SPECIFICATION & DEPLOYMENT (v10.0 APEX)
 
 | Layer / Platform | Security | 🇬🇧 Logic, Tech & Sources (EN) | 🇷🇺 Логика, Техно и Ссылки (RU) | App Coverage | Full Compatibility (Analogs) | Efficiency |
 | :--- | :---: | :--- | :--- | :--- | :--- | :---: |
@@ -20,6 +21,10 @@
 | **8. Lateral Def.**| ☣️ | **Tech:** LAN Anti-Scan (L5 Isolation). | **Техно:** Защита от сканирования в Wi-Fi. | **Local Network** | **AdGuard L5 Filter** | **100%** |
 | **9. DNS Cloak** | 🔒 | **Tech:** Anti-DoH Bypass (L6 Protection). | **Техно:** Блок скрытых DNS-каналов. | **All Web Traffic** | **NextDNS, AdGuard** | **100%** |
 | **10. Geo-Shield**| 🌍 | **Tech:** GEO-Shame & TLD Block (L7). | **Техно:** Блок опасных зон (.zip, .top). | **IoT, Browsers** | **L7 GEO Filter** | **100%** |
+| **10. Geo-Shield**| 🌍 | **Tech:** GEO-Shame & TLD Block (L7). | **Техно:** Блок опасных зон (.zip, .top). | **IoT, Browsers** | **L7 GEO Filter** | **100%** |
+| **11. Phish Block**| 🎣 | **Tech:** Anti-Keylog & Script Sandbox. | **Техно:** Блок перехвата ввода и фишинга. | **Banking, Login** | **Secure Input L11** | **100%** |
+| **12. Stealth** | 🕯️ | **Tech:** Anti-Beacon & Tracker Purge. | **Техно:** Удаление маячков и трекеров. | **System Apps** | **Beacon Shield L12** | **100%** |
+| **13. AI-Shield** | 🤖 | **Tech:** Scraper & AI-Crawler Block. | **Техно:** Блок парсинга данных для AI. | **Web Content** | **Data Sovereignty** | **100%** |
 | **Omni Eternal** | 💎 | **Logic:** Pure UI & No Paywall Engine. | **Логика:** Чистый UI и обход Paywall. | **Browsers** | **UserJS Script** | **100%** |
 | **Android (Premium)**| 💀💀💀 | **AdGuard Premium**<br>[Official](https://adguard.com/) / [GitHub](https://github.com/AdguardTeam/AdguardForAndroid/releases) | **Premium:** Полный фильтр Apps + Web. | **TG, WA, Banks** | AdGuard, NextDNS | **100%** |
 | **Android (Free)** | 💀 | **AdGuard Content Blocker**<br>[Official Site](https://adguard.com/) | **Free:** Только выбранные браузеры. | **Samsung/Yandex** | Ghostery, Adblock | **40%** |
@@ -39,6 +44,7 @@
 | **Messengers** | 🟢 100% | **Anti-Leak:** DoH & Metadata Purge. | **Anti-Leak:** DoH & Purge métadonnées. | **Anti-Leak:** Блок DoH и чистка данных. | **System Firewall & L6** |
 | **Browsers** | 🟢 100% | **Apex:** Canvas Noise & Lang Cloak. | **Apex:** Bruit Canvas & Masquage Lang. | **Apex:** Шум Canvas и маскировка Lang. | **JS Omni Eternal** |
 | **Home / IoT / TV** | 🟢 100% | **Stealth:** GEO-Shame & DNS-Rewrite. | **Stealth:** GEO-Shame & DNS-Rewrite. | **Stealth:** Блок GEO-зон и DNS-Rewrite. | **L7 & DNS-Filtering** |
+| **Privacy / AI** | 🟢 100% | **BEYOND:** Anti-Phish & AI-Shield. | **BEYOND:** Anti-Phish & AI-Shield. | **BEYOND:** Анти-фишинг и AI-защита. | **L11, L12 & L13** |
 
 ---
 
@@ -51,6 +57,8 @@
 | **Browsers** | 🟢 100% | Anti-Fingerprint Scriptlets. | Scriptlets JS Anti-Fingerprint. | Удаление отпечатка (Anti-FP). | **JS Scriptlets** |
 | **Social Media** | 🟢 100% | Fingerprint masking & JS Sanitizer. | Masquage d'empreintes & Sanitisation JS. | Маскировка отпечатка и очистка JS. | **Cosmetic Shield + Stealth** |
 | **Smart TV / IoT** | 🟢 100% | Forced DNS Intercept & IoT Profiling. | Intercept. DNS forcé & Profilage IoT. | Принудительный перехват DNS и профиль. | **DNS over TLS/HTTPS** |
+| **AI Security** | 🟢 100% | Anti-Scraping & Crawler Block. | Anti-Scraping & Blocage Crawler. | Блок парсинга данных и AI-ботов. | **L13 AI-Shield** |
+| **Identity Guard** | 🟢 100% | Anti-Phishing & Beacon Stealth. | Anti-Phishing & Mode Furtif. | Анти-фишинг и защита от маячков. | **L11-L12 Protection** |
 ---
 
 ## 📥 INSTALLATION & DEPLOYMENT
