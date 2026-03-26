@@ -53,6 +53,7 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 @@||com^$document,generichide
 @@||net^$document,generichide
 @@||org^$document,generichide
+@@||life^$$document,generichide
 @@ftp://*^$important,document,generichide
 @@ftps://*^$important,document,generichide
 
@@ -75,6 +76,7 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 @@||revolut.com^$important,document,generichide
 @@||youtube.com^$important
 @@||google.com^$important
+
 
 
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
@@ -742,6 +744,81 @@ if (!TRUSTED) {
   Object.defineProperty(document,'hidden',{get:()=>vis==='hidden'});
 
 }
+
+/**
+ * ================================
+ * 22. HARD FP SPOOF (SAFE MODE)
+ * WebGL + Audio + Fonts
+ * ================================
+ */
+if (!TRUSTED) {
+
+  /**
+   * ================================
+   * 22.1 WEBGL SPOOF (РЕАЛИСТИЧНЫЙ)
+   * ================================
+   */
+  (function(){
+
+    const getParameter = WebGLRenderingContext.prototype.getParameter;
+
+    WebGLRenderingContext.prototype.getParameter = function(param){
+
+      // UNMASKED_VENDOR_WEBGL
+      if (param === 37445) return "Intel Inc.";
+
+      // UNMASKED_RENDERER_WEBGL
+      if (param === 37446) return "Intel Iris OpenGL Engine";
+
+      return getParameter.apply(this, arguments);
+    };
+
+  })();
+
+  /**
+   * ================================
+   * 22.2 AUDIO FP NOISE
+   * ================================
+   */
+  (function(){
+
+    const getChannelData = AudioBuffer.prototype.getChannelData;
+
+    AudioBuffer.prototype.getChannelData = function(){
+
+      const data = getChannelData.apply(this, arguments);
+
+      // добавляем минимальный шум (не ломает звук)
+      for (let i = 0; i < data.length; i += 100) {
+        data[i] = data[i] + (Math.random() * 0.0000001);
+      }
+
+      return data;
+    };
+
+  })();
+
+  /**
+   * ================================
+   * 22.3 FONT FP DEFENSE
+   * ================================
+   */
+  (function(){
+
+    const originalCheck = document.fonts.check;
+
+    document.fonts.check = function(){
+
+      // рандомизируем ответ (но не ломаем)
+      if (Math.random() > 0.9) return false;
+
+      return originalCheck.apply(this, arguments);
+    };
+
+  })();
+
+}
+
 
 })();
 ")
