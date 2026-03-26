@@ -745,254 +745,184 @@ if (!TRUSTED) {
 
 }
 
-/**
- * ================================
- * 22. HARD FP SPOOF (SAFE MODE)
- * WebGL + Audio + Fonts
- * ================================
- */
-if (!TRUSTED) {
 
-  /**
-   * ================================
-   * 22.1 WEBGL SPOOF (РЕАЛИСТИЧНЫЙ)
-   * ================================
-   */
-  (function(){
 
-    const getParameter = WebGLRenderingContext.prototype.getParameter;
-
-    WebGLRenderingContext.prototype.getParameter = function(param){
-
-      // UNMASKED_VENDOR_WEBGL
-      if (param === 37445) return "Intel Inc.";
-
-      // UNMASKED_RENDERER_WEBGL
-      if (param === 37446) return "Intel Iris OpenGL Engine";
-
-      return getParameter.apply(this, arguments);
-    };
-
-  })();
-
-  /**
-   * ================================
-   * 22.2 AUDIO FP NOISE
-   * ================================
-   */
-  (function(){
-
-    const getChannelData = AudioBuffer.prototype.getChannelData;
-
-    AudioBuffer.prototype.getChannelData = function(){
-
-      const data = getChannelData.apply(this, arguments);
-
-      // добавляем минимальный шум (не ломает звук)
-      for (let i = 0; i < data.length; i += 100) {
-        data[i] = data[i] + (Math.random() * 0.0000001);
-      }
-
-      return data;
-    };
-
-  })();
-
-  /**
-   * ================================
-   * 22.3 FONT FP DEFENSE
-   * ================================
-   */
-  (function(){
-
-    const originalCheck = document.fonts.check;
-
-    document.fonts.check = function(){
-
-      // рандомизируем ответ (но не ломаем)
-      if (Math.random() > 0.9) return false;
-
-      return originalCheck.apply(this, arguments);
-    };
-
-  })();
-
-}
 
 /**
- * ================================
- * 23. ULTRA FP (CONSISTENT PROFILE)
- * WebGL EXT + Canvas + Device + Plugins
- * ================================
+ * ==========================================
+ * 22. UNIFIED FP ENGINE (HARD + ULTRA + DYNAMIC)
+ * ==========================================
  */
-if (!TRUSTED) {
+(function(){
 
-  /**
-   * ================================
-   * 23.1 DEVICE PROFILE (CONSISTENCY)
-   * ================================
-   */
-  (function(){
+if (TRUSTED) return;
 
-    const DEVICE_PROFILE = {
-      memory: 8,
-      cores: 8,
-      dpr: 1,
-      width: 1920,
-      height: 1080
-    };
+/**
+ * ==========================================
+ * 24.1 SESSION SEED (СТАБИЛЬНОСТЬ)
+ * ==========================================
+ */
+const seed = (sessionStorage.getItem('fp_seed') || (function(){
+  const s = Math.random().toString(36).substring(2);
+  sessionStorage.setItem('fp_seed', s);
+  return s;
+})());
 
-    Object.defineProperty(navigator, 'deviceMemory', {
-      get: () => DEVICE_PROFILE.memory
-    });
-
-    Object.defineProperty(navigator, 'hardwareConcurrency', {
-      get: () => DEVICE_PROFILE.cores
-    });
-
-    Object.defineProperty(window, 'devicePixelRatio', {
-      get: () => DEVICE_PROFILE.dpr
-    });
-
-    Object.defineProperty(screen, 'width', {
-      get: () => DEVICE_PROFILE.width
-    });
-
-    Object.defineProperty(screen, 'height', {
-      get: () => DEVICE_PROFILE.height
-    });
-
-  })();
-
-
-  /**
-   * ================================
-   * 23.2 WEBGL EXTENSIONS SYNC
-   * ================================
-   */
-  (function(){
-
-    const EXTENSIONS = [
-      "OES_texture_float",
-      "OES_standard_derivatives",
-      "WEBGL_debug_renderer_info",
-      "WEBGL_lose_context"
-    ];
-
-    const getExt = WebGLRenderingContext.prototype.getSupportedExtensions;
-
-    WebGLRenderingContext.prototype.getSupportedExtensions = function(){
-      return EXTENSIONS;
-    };
-
-  })();
-
-
-  /**
-   * ================================
-   * 23.3 CANVAS SESSION NOISE
-   * ================================
-   */
-  (function(){
-
-    const sessionNoise = Math.random() * 0.00001;
-
-    const toDataURL = HTMLCanvasElement.prototype.toDataURL;
-
-    HTMLCanvasElement.prototype.toDataURL = function(){
-
-      const ctx = this.getContext('2d');
-
-      if (ctx) {
-        ctx.fillStyle = "rgba(0,0,0," + sessionNoise + ")";
-        ctx.fillRect(0, 0, 1, 1);
-      }
-
-      return toDataURL.apply(this, arguments);
-    };
-
-  })();
-
-
-  /**
-   * ================================
-   * 23.4 WEBGL PRECISION SPOOF
-   * ================================
-   */
-  (function(){
-
-    const getPrecision = WebGLRenderingContext.prototype.getShaderPrecisionFormat;
-
-    WebGLRenderingContext.prototype.getShaderPrecisionFormat = function(){
-      return {
-        rangeMin: 127,
-        rangeMax: 127,
-        precision: 23
-      };
-    };
-
-  })();
-
-
-  /**
-   * ================================
-   * 23.5 AUDIO CONTEXT HARDENING
-   * ================================
-   */
-  (function(){
-
-    const orig = AudioContext.prototype.createOscillator;
-
-    AudioContext.prototype.createOscillator = function(){
-      const osc = orig.apply(this, arguments);
-
-      const origFreq = osc.frequency.value;
-      osc.frequency.value = origFreq + (Math.random() * 0.01);
-
-      return osc;
-    };
-
-  })();
-
-
-  /**
-   * ================================
-   * 23.6 PLUGINS SPOOF (SAFE)
-   * ================================
-   */
-  (function(){
-
-    const fakePlugins = [
-      { name: "Chrome PDF Plugin" },
-      { name: "Chrome PDF Viewer" },
-      { name: "Native Client" }
-    ];
-
-    Object.defineProperty(navigator, 'plugins', {
-      get: () => fakePlugins
-    });
-
-  })();
-
-
-  /**
-   * ================================
-   * 23.7 SCREEN CONSISTENCY FIX
-   * ================================
-   */
-  (function(){
-
-    Object.defineProperty(window, 'innerWidth', {
-      get: () => 1920
-    });
-
-    Object.defineProperty(window, 'innerHeight', {
-      get: () => 1040
-    });
-
-  })();
-
+/**
+ * Генератор псевдо-рандома (стабильный)
+ */
+function rand(seedStr){
+  let h = 0;
+  for (let i = 0; i < seedStr.length; i++) {
+    h = Math.imul(31, h) + seedStr.charCodeAt(i) | 0;
+  }
+  return function(){
+    h = Math.imul(1664525, h) + 1013904223;
+    return (h >>> 0) / 4294967296;
+  }
 }
+
+const random = rand(seed);
+
+/**
+ * ==========================================
+ * 24.2 DEVICE PROFILES (РЕАЛЬНЫЕ)
+ * ==========================================
+ */
+const profiles = [
+  { name: "win_chrome_intel", mem: 8, cores: 8, gpu: "Intel Inc.", renderer: "Intel Iris OpenGL Engine", w:1920, h:1080, dpr:1 },
+  { name: "win_chrome_amd", mem: 16, cores: 12, gpu: "ATI Technologies Inc.", renderer: "AMD Radeon RX 580", w:1920, h:1080, dpr:1 },
+  { name: "laptop_low", mem: 4, cores: 4, gpu: "Intel Inc.", renderer: "Intel HD Graphics 620", w:1366, h:768, dpr:1 }
+];
+
+const profile = profiles[Math.floor(random() * profiles.length)];
+
+/**
+ * ==========================================
+ * 24.3 DEVICE CONSISTENCY
+ * ==========================================
+ */
+Object.defineProperty(navigator, 'deviceMemory', { get: () => profile.mem });
+Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => profile.cores });
+
+Object.defineProperty(window, 'devicePixelRatio', { get: () => profile.dpr });
+
+Object.defineProperty(screen, 'width', { get: () => profile.w });
+Object.defineProperty(screen, 'height', { get: () => profile.h });
+
+Object.defineProperty(window, 'innerWidth', { get: () => profile.w });
+Object.defineProperty(window, 'innerHeight', { get: () => profile.h - 40 });
+
+/**
+ * ==========================================
+ * 24.4 WEBGL (FULL SPOOF)
+ * ==========================================
+ */
+(function(){
+
+  const getParameter = WebGLRenderingContext.prototype.getParameter;
+
+  WebGLRenderingContext.prototype.getParameter = function(param){
+    if (param === 37445) return profile.gpu;
+    if (param === 37446) return profile.renderer;
+    return getParameter.apply(this, arguments);
+  };
+
+  const EXT = [
+    "OES_texture_float",
+    "OES_standard_derivatives",
+    "WEBGL_debug_renderer_info",
+    "WEBGL_lose_context"
+  ];
+
+  WebGLRenderingContext.prototype.getSupportedExtensions = () => EXT;
+
+  WebGLRenderingContext.prototype.getShaderPrecisionFormat = () => ({
+    rangeMin: 127,
+    rangeMax: 127,
+    precision: 23
+  });
+
+})();
+
+/**
+ * ==========================================
+ * 24.5 CANVAS (SESSION NOISE)
+ * ==========================================
+ */
+(function(){
+
+  const noise = random() * 0.00001;
+  const toDataURL = HTMLCanvasElement.prototype.toDataURL;
+
+  HTMLCanvasElement.prototype.toDataURL = function(){
+    const ctx = this.getContext('2d');
+    if (ctx) {
+      ctx.fillStyle = "rgba(0,0,0," + noise + ")";
+      ctx.fillRect(0,0,1,1);
+    }
+    return toDataURL.apply(this, arguments);
+  };
+
+})();
+
+/**
+ * ==========================================
+ * 24.6 AUDIO FP (STABLE NOISE)
+ * ==========================================
+ */
+(function(){
+
+  const getChannelData = AudioBuffer.prototype.getChannelData;
+
+  AudioBuffer.prototype.getChannelData = function(){
+    const data = getChannelData.apply(this, arguments);
+    for (let i = 0; i < data.length; i += 100) {
+      data[i] += (random() * 0.0000001);
+    }
+    return data;
+  };
+
+  const origOsc = AudioContext.prototype.createOscillator;
+
+  AudioContext.prototype.createOscillator = function(){
+    const osc = origOsc.apply(this, arguments);
+    osc.frequency.value += (random() * 0.01);
+    return osc;
+  };
+
+})();
+
+/**
+ * ==========================================
+ * 24.7 FONTS DEFENSE
+ * ==========================================
+ */
+(function(){
+
+  const orig = document.fonts.check;
+
+  document.fonts.check = function(){
+    if (random() > 0.9) return false;
+    return orig.apply(this, arguments);
+  };
+
+})();
+
+/**
+ * ==========================================
+ * 24.8 PLUGINS (REALISTIC)
+ * ==========================================
+ */
+Object.defineProperty(navigator, 'plugins', {
+  get: () => [
+    { name: "Chrome PDF Plugin" },
+    { name: "Chrome PDF Viewer" },
+    { name: "Native Client" }
+  ]
+});
+
+})();
 
 
 })();
