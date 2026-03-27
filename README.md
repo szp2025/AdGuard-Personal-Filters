@@ -12,24 +12,26 @@
 
 ### 🛡️ Ключевые Обновления (v11.0):
 
-| Уровень | Технология | Описание | Статус |
-| :--- | :--- | :--- | :---: |
-| **🌐 L0-L13** | **Active IDS/IPS** | Встроенная система обнаружения вторжений. Блокировка RAT, сканеров портов и защита от Lateral Movement в локальной сети. | **Active** |
-| **🛰️ Network** | **Nebula Hardening** | Маскировка сетевого стека (TTL 64, MTU 1400, TCP Window). Твой трафик неотличим от эталонного Android/Linux устройства. | **Active** |
-| **🧪 Search** | **Universal Ghosting** | Квантовая дезинформация для Google и Yandex. Подмена ID, вечных токенов и генерация энтропии в заголовках. | **Active** |
-| **🧹 Cleanup** | **Zero-Footprint** | Ультимативный шредер кук (RegExp v11.0). Мгновенное удаление рекламных идентификаторов Yandex, Google и FB. | **Active** |
-| **🎨 Stealth** | **Font Randomizer** | Защита от Fingerprinting через рандомизацию замеров Canvas и системных шрифтов. | **Active** |
+### 🌐 GLOBAL STEALTH SPECIFICATION (EN / FR / RU)
+
+| Layer | Technology | Description (EN) | Description (FR) | Описание (RU) | Status |
+| :--- | :--- | :--- | :--- | :--- | :---: |
+| **🌐 L0-L13** | **Active IDS/IPS** | Intrusion detection (RAT/Port scan). | Détection d'intrusion (RAT/Scan). | Блокировка RAT и сканеров портов. | **Active** |
+| **🛰️ Network** | **Nebula Hardening** | TCP/TTL Masking (MTU 1400/TTL 64). | Masquage TCP/TTL (Android/Linux). | Маскировка сетевого стека (TTL 64). | **Active** |
+| **🧪 Search** | **Universal Ghosting** | Quantum entropy for Google/Yandex. | Entropie quantique (Anonymisation). | Квантовая энтропия для Google/Yandex. | **Active** |
+| **🧹 Cleanup** | **Zero-Footprint** | Cookie Shredder (Yandex/GA/FB). | Destructeur de cookies (v11.0). | Ультимативный шредер кук и ID. | **Active** |
+| **🎨 Stealth** | **Font Randomizer** | Anti-fingerprint (Canvas/Fonts). | Anti-fingerprint (Polices système). | Защита от Fingerprinting шрифтов. | **Active** |
 
 ---
 
-### 🛠️ Архитектура Безопасности:
+### 🛠️ CORE ARCHITECTURE / ARCHITECTURE CORE / ЯДРО СИСТЕМЫ
 
-* **Anti-RAT Port Cage:** Запечатывает все нестандартные порты, оставляя только критические каналы (Web, DNS, Mail). Любая попытка скрытой передачи данных вызывает срабатывание системы.
-* **Privacy-First Headers:** Принудительная установка `Referrer-Policy: no-referrer-when-downgrade` и блокировка `Permissions-Policy` (геолокация, камера, микрофон).
-* **AI-Crawler Shield:** Защита твоего контента от сбора данных нейросетями (GPTBot, ClaudeBot, CommonCrawl).
-* **Banking Gambit:** Оптимизированная логика, защищающая финансовые транзакции через блокировку сторонних WebSocket и скриптов на банковских доменах.
-
----
+| Feature | English (EN) | Français (FR) | Русский (RU) |
+| :--- | :--- | :--- | :--- |
+| **🛡️ Anti-RAT** | Seals all non-standard ports. | Scelle les ports non-standard. | Запечатывает нестандартные порты. |
+| **🔒 Privacy** | No-Referrer & Permissions-Policy. | Policy strict (Géo/Caméra/Micro). | Принудительный No-Referrer и блок. |
+| **🤖 AI-Shield** | Block GPTBot, ClaudeBot, CCrawl. | Protection contre les IA. | Защита от AI-краулеров и парсеров. |
+| **💰 Banking** | Financial transaction security. | Sécurité bancaire (LCL, Revolut). | Защита банков и крипто-кошельков. |
 
 ---
 
