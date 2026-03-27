@@ -77,6 +77,9 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ||stun.services.mozilla.com^$important
 ||turnserver.net^$important
 |https://$websocket,domain=~google.com,~youtube.com
+​||stun*.l.google.com^$important
+​||stun.services.mozilla.com^$important
+​||stun*.vox-options.com^$important
 
 ||*$script,third-party,important,domain=~revolut.com|~lcl.fr|~bank,reject,notify,tag=BANK_SHIELD_REJECTED
 
