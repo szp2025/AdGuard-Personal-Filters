@@ -101,6 +101,10 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 @@||life^$$document,generichide
 @@ftp://*^$important,document,generichide
 @@ftps://*^$important,document,generichide
+@@||outlook.live.com^$important,document,generichide
+@@||login.live.com^$important,document,generichide
+@@||outlook.office365.com^$important,document,generichide
+
 
 ! --- 2. Identity & Global Auth (Unified Group) ---
 @@||accounts.google.com^$important,domain=google.com|youtube.com
