@@ -1089,16 +1089,19 @@ $removeparam=/^(_|cb|cachebuster|v)$/,domain=~system|~google.com
 #%#//scriptlet("set-constant", "mozGetUserMedia", "undefined")
 
 
-! --- 7. SEARCH QUERY STEALTH (DEEP ENCRYPTION) ---
-! Подмешивание случайной энтропии в заголовки поисковых запросов
-||google.com/search?*$set-header=X-Search-Entropy: $random_string,domain=~google.com
-||yandex.ru/search?*$set-header=X-Search-Entropy: $random_string,domain=~yandex.ru
-||duckduckgo.com/?*$set-header=X-Search-Entropy: $random_string,domain=~duckduckgo.com
+! --- 7. UNIVERSAL SEARCH STEALTH (BASE64 ENTROPY) ---
+! 1. Впрыск энтропии в заголовки для всех поисковых систем
+||google.*$set-header=X-Omni-Search-Key: $random_string
+||yandex.*$set-header=X-Omni-Search-Key: $random_string
+||bing.com^$set-header=X-Omni-Search-Key: $random_string
+||duckduckgo.com^$set-header=X-Omni-Search-Key: $random_string
+||yahoo.com^$set-header=X-Omni-Search-Key: $random_string
+||baidu.com^$set-header=X-Omni-Search-Key: $random_string
 
-! Маскировка Referer: скрываем, по какому именно поисковому запросу вы перешли на сайт
-||*$set-header=Referer: https://omni-protocol.secure/,domain=~google.com|~yandex.ru|~openai.com|~bing.com
+! 2. Глобальный Referer Spoofing (скрывает поисковый запрос от целевых сайтов)
+||*$set-header=Referer: https://omni-protocol.secure/v10.3/,domain=~google.*|~yandex.*|~duckduckgo.*|~bing.com|~yahoo.com
 
-! Динамическая обфускация URL поиска (скриптлет для подмешивания шума в адресную строку)
-#%#//scriptlet("execute-script", "(function(){ const url = new URL(window.location); if(url.searchParams.has('q') || url.searchParams.has('text')){ url.searchParams.append('omni_noise', btoa(Math.random().toString())); window.history.replaceState({}, '', url); } })();")
+! 3. Универсальный URL-Masking Scriptlet (для всех поисковых параметров q, text, p, word)
+#%#//scriptlet("execute-script", "(function(){ const url = new URL(window.location); const params = ['q', 'text', 'p', 'query', 'word', 'wd']; let found = false; params.forEach(p => { if(url.searchParams.has(p)) found = true; }); if(found){ const ghost = btoa(Math.random().toString(36).substring(2)); url.searchParams.append('enc_meta', ghost); url.searchParams.append('omni_apex', 'true'); window.history.replaceState({}, '', url); } })();")
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
