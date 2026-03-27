@@ -7,10 +7,12 @@
 // @grant        none
 // @run-at       document-start
 // @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
-// @updateURL   https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
-// @downloadURL https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
+// @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
+// @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
+// ==/UserScript==
+
 /**
- * Автообновление скрипта
+ * Автообновление скрипта (Вынесено за пределы метаданных)
  */
 async function checkUpdate() {
     try {
@@ -23,8 +25,6 @@ async function checkUpdate() {
 
         if (remoteVersion && remoteVersion !== localVersion) {
             console.log("[Omni] Update available:", remoteVersion);
-
-            // можно уведомление или reload
             location.reload();
         }
     } catch (e) {
@@ -33,23 +33,21 @@ async function checkUpdate() {
 }
 
 checkUpdate();
-// ==UserScript==
 
 (function() {
     'use strict';
 
     // === КОНФИГ ПЕРВОГО КЛАССА ===
     const s = {
-        hc: 8, // Cores
-        dm: 8, // Memory (GB)
+        hc: 8, 
+        dm: 8, 
         pl: "Win32",
         vendor: "Intel Inc.",
         renderer: "Intel(R) UHD Graphics",
         ln: ["ru-RU", "ru", "en-US", "en", "fr-FR", "fr"]
     };
 
-    // === МОДУЛЬ 1: ГЛУБОКАЯ МИМИКРИЯ (NAVIGATOR SPOOF) ===
-    // Используем Prototype Spoofing — это труднее обнаружить
+    // === МОДУЛЬ 1: ГЛУБОКАЯ МИМИКРИЯ ===
     const applyDeepSpoof = () => {
         const p = navigator.__proto__;
         const d = (prop, val) => {
@@ -57,7 +55,6 @@ checkUpdate();
                 Object.defineProperty(p, prop, { get: () => val, configurable: true });
             } catch (e) {}
         };
-
         d('hardwareConcurrency', s.hc);
         d('deviceMemory', s.dm);
         d('platform', s.pl);
@@ -67,7 +64,7 @@ checkUpdate();
     };
     applyDeepSpoof();
 
-    // === МОДУЛЬ 2: FONT-MASKING (Защита от слежки через шрифты) ===
+    // === МОДУЛЬ 2: FONT-MASKING ===
     const fontMask = () => {
         const offsetWidth = HTMLElement.prototype.__lookupGetter__('offsetWidth');
         const offsetHeight = HTMLElement.prototype.__lookupGetter__('offsetHeight');
@@ -88,7 +85,7 @@ checkUpdate();
     };
     fontMask();
 
-    // === МОДУЛЬ 3: WEBRTC LEAK PROTECTION (Блокировка локального IP) ===
+    // === МОДУЛЬ 3: WEBRTC LEAK PROTECTION ===
     if (window.RTCPeerConnection) {
         window.RTCPeerConnection = function() {
             return {
@@ -99,7 +96,7 @@ checkUpdate();
         };
     }
 
-    // === МОДУЛЬ 4: CANVAS & WEBGL NEURAL NOISE (Искажение отпечатка) ===
+    // === МОДУЛЬ 4: CANVAS & WEBGL NEURAL NOISE ===
     const injectNeuralNoise = () => {
         const orgGetImageData = CanvasRenderingContext2D.prototype.getImageData;
         CanvasRenderingContext2D.prototype.getImageData = function() {
@@ -117,7 +114,7 @@ checkUpdate();
     };
     injectNeuralNoise();
 
-    // === МОДУЛЬ 5: CLOAKING ENGINE (ANTI-ANTI-ADBLOCK & COOKIES) ===
+    // === МОДУЛЬ 5: CLOAKING ENGINE ===
     const apexCloaking = () => {
         const observer = new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
