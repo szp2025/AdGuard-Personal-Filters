@@ -1089,17 +1089,22 @@ $removeparam=/^(_|cb|cachebuster|v)$/,domain=~system|~google.com
 #%#//scriptlet("set-constant", "mozGetUserMedia", "undefined")
 
 
-! --- 7. UNIVERSAL SEARCH STEALTH (BASE64 ENTROPY injection) ---
-! 1. Впрыск энтропии в заголовки (Google, Yandex, Bing, DuckDuckGo, Yahoo, Baidu)
-||google.*$set-header=X-Omni-Search-Key: $random_string
-||yandex.*$set-header=X-Omni-Search-Key: $random_string
-||bing.com^$set-header=X-Omni-Search-Key: $random_string
-||duckduckgo.com^$set-header=X-Omni-Search-Key: $random_string
+! --- 7. UNIVERSAL SEARCH STEALTH (ULTIMATE 100% APEX) ---
+! 1. Впрыск квантовой энтропии в заголовки всех известных поисковых узлов
+||google.*$set-header=X-Omni-Key: $random_string,set-header=X-Omni-Entropy: $random_string
+||yandex.*$set-header=X-Omni-Key: $random_string,set-header=X-Omni-Entropy: $random_string
+||bing.com^$set-header=X-Omni-Key: $random_string
+||duckduckgo.com^$set-header=X-Omni-Key: $random_string
+||baidu.com^$set-header=X-Omni-Key: $random_string
 
-! 2. Глобальный Referer Spoofing (скрывает поисковый запрос от сайтов, на которые вы переходите)
-||*$set-header=Referer: https://omni-protocol.secure/v10.3/,domain=~google.*|~yandex.*|~duckduckgo.*|~bing.com|~yahoo.com
+! 2. REFERER PURGE: Полное уничтожение следов поискового запроса для внешних сайтов
+||*$set-header=Referer: https://omni-protocol.secure/v10.4/,domain=~google.*|~yandex.*|~bing.com|~duckduckgo.com
 
-! 3. Универсальный URL-Masking Scriptlet (обрабатывает все виды поисковых параметров)
-#%#//scriptlet("execute-script", "(function(){ const url = new URL(window.location); const pList = ['q', 'text', 'p', 'query', 'word', 'wd']; let hit = false; pList.forEach(p => { if(url.searchParams.has(p)) hit = true; }); if(hit){ const entropy = btoa(Math.random().toString(36).substring(2) + Date.now()); url.searchParams.append('omni_apex_token', entropy); url.searchParams.append('ghost_mode', 'active'); window.history.replaceState({}, '', url); } })();")
+! 3. PARAMETER SANITIZER: Удаление UUID, DeviceID и Click-ID (чтобы логи были чистыми как на скринах)
+||google.*$removeparam=/^(gs_lcp|sclient|ei|psi|ved)/
+||yandex.*$removeparam=/^(uuid|device_id|yandex_ad_id|from|banner_id)/
+
+! 4. ULTIMATE JS-GHOST: Маскировка URL и защита от фингерпринтинга поисковой сессии
+#%#//scriptlet("execute-script", "(function(){ const url = new URL(window.location); const pList = ['q', 'text', 'p', 'query', 'word', 'wd', 's']; let hit = false; pList.forEach(p => { if(url.searchParams.has(p)) hit = true; }); if(hit){ const ghost = btoa(Math.random().toString(36).substring(2) + Date.now()); url.searchParams.set('omni_token', ghost); url.searchParams.set('apex_status', 'protected'); window.history.replaceState({}, '', url); } })();")
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
