@@ -160,40 +160,43 @@ $removeheader=/^(X-Auth-Token|X-Session-ID)/ ,domain=~google.com|~bank|~openai.c
 ! Имитация медленного соединения для скриптов слежки (чтобы они вылетали по таймауту)
 #%#//scriptlet("execute-script", "(function(){ const orig = window.fetch; window.fetch = function(){ return new Promise(res => setTimeout(() => res(orig.apply(this, arguments)), Math.random() * 500 + 200)); }; })();")
 
+! --- 7. CHRONOS SHIELD (ANTI-TIMING ATTACKS) ---
+! Округление времени выполнения задач до 100мс (защита от замера CPU)
+#%#//scriptlet("execute-script", "(function(){ const prec = performance.now; performance.now = function(){ return Math.floor(prec.apply(this, arguments) / 100) * 100; }; })();")
+
+
 
 ! [LAYER 1-5: NETWORK & PROTOCOL HARDENING - APEX LEVEL]
+
 ! --- 1. Global Reject & DNS Sovereignty ---
 ||doubleclick.net^$dnstype=A,empty,third-party,reject
 ||googlesyndication.com^$dnstype=A,empty,third-party,reject
-! Глубокое подавление аналитики на уровне резолвинга
 ||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr|~ftp:*|~ftps:*
 
 ! --- 2. Protocol Integrity (PQC & FTP Stabilizer) ---
-! Стабилизация FTP и принудительный переход на постквантовое шифрование для веба
 $network=tls,pqc=off,domain=~ftp:*|~ftps:*
 $network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum,important,domain=~ftp:*|~ftps:*
 $network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa,important,domain=~ftp:*|~ftps:*
 
 ! --- 3. The Iron Curtain (Anti-Downgrade & Tunneling) ---
-! Блокировка QUIC/HTTP3 для предотвращения обхода фильтрации (кроме видеосервисов)
 ||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~gov|~ftp:*|~ftps:*
-! Блокировка DoH и Dot (защита от подмены системного DNS браузером)
 ||/^(dns|doh|dot|cloudflare-dns|dns-query|dns-server|doh-server)\./^$important,reject,domain=~system|~google.com|~yandex.ru
-! Блокировка DNS-запросов типа 65 (HTTPS) и Type 64, используемых для скрытой передачи метаданных
 ||^$dnstype=(HTTPS|65|64|QUIC),reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov
 
 ! --- 4. WebRTC & Privacy Leak Protection ---
-! Запрет WebRTC для предотвращения утечки реального локального IP
 ||stun:*$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com|~yandex.ru
 ||webrtc.org^$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com
-! Блокируем маскировку под прокси и VPN-туннели внутри браузера
 ||/^(proxy|vpn|shadowsocks|v2ray|wireguard|warp)\./^$important,reject,domain=~system
 
 ! --- 5. Traffic Masking (Advanced Layer) ---
-! Маскировка TTL для предотвращения детекции типа устройства (Standardizing OS Fingerprint)
-$network=ip,set_ttl=64,hide_hop_limit=on,important
-! Запрещаем асинхронные запросы (Beacon API), которые отправляют данные после закрытия вкладки
+! Стандартизация OS Fingerprint (TTL и TCP Window)
+$network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,important
 ||*$ping,third-party,important,domain=~google.com|~yandex.ru|~bank|~gov
+
+! --- 6. ZERO-TRUST DOMAIN ISOLATION ---
+! Полный запрет левых запросов (Только доверенные домены)
+*$third-party,important,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr|~github.com|~microsoft.com|~apple.com
+
 
 ! [LAYER 6-12: SMART SHIELD & BEYOND]
 ! --- 1. ANTI-WHITE-SCREEN & INFRASTRUCTURE TRUST ---
