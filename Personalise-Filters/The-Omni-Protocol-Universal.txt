@@ -85,6 +85,16 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ||*/track/*$important,notify,tag=BEACON_BLOCKED
 ||*/telemetry/*$important,notify,tag=TELEMETRY_BLOCKED
 
+! [WebRTC Hardening - Global Script Block]
+#%#var RTCPeerConnection = undefined;
+#%#var webkitRTCPeerConnection = undefined;
+#%#var RTCDataChannel = undefined;
+
+! [WebRTC Logic Killing]
+||*^$websocket,third-party,domain=~google.com,~youtube.com,~twitch.tv
+||*^$xmlhttprequest,third-party,domain=~google.com,~youtube.com
+
+
 ! [L13] AI: Блок AI-краулеров (Data Sovereignty — REJECT)
 ||*.claudebot.com^$important,reject,notify,tag=AI_CRAWLER_REJECTED
 ||*.gptbot.com^$important,reject,notify,tag=AI_CRAWLER_REJECTED
