@@ -1087,3 +1087,18 @@ $removeparam=/^(_|cb|cachebuster|v)$/,domain=~system|~google.com
 #%#//scriptlet("set-constant", "navigator.getUserMedia", "undefined")
 #%#//scriptlet("set-constant", "webkitGetUserMedia", "undefined")
 #%#//scriptlet("set-constant", "mozGetUserMedia", "undefined")
+
+
+! --- 7. SEARCH QUERY STEALTH (DEEP ENCRYPTION) ---
+! Подмешивание случайной энтропии в заголовки поисковых запросов
+||google.com/search?*$set-header=X-Search-Entropy: $random_string,domain=~google.com
+||yandex.ru/search?*$set-header=X-Search-Entropy: $random_string,domain=~yandex.ru
+||duckduckgo.com/?*$set-header=X-Search-Entropy: $random_string,domain=~duckduckgo.com
+
+! Маскировка Referer: скрываем, по какому именно поисковому запросу вы перешли на сайт
+||*$set-header=Referer: https://omni-protocol.secure/,domain=~google.com|~yandex.ru|~openai.com|~bing.com
+
+! Динамическая обфускация URL поиска (скриптлет для подмешивания шума в адресную строку)
+#%#//scriptlet("execute-script", "(function(){ const url = new URL(window.location); if(url.searchParams.has('q') || url.searchParams.has('text')){ url.searchParams.append('omni_noise', btoa(Math.random().toString())); window.history.replaceState({}, '', url); } })();")
+
+! --- END OF OMNI-PROTOCOL APEX CORE ---
