@@ -1090,7 +1090,7 @@ $removeparam=/^(_|cb|cachebuster|v)$/,domain=~system|~google.com
 
 
 ! --- 7. UNIVERSAL SEARCH STEALTH (BASE64 ENTROPY) ---
-! 1. Впрыск энтропии в заголовки для всех поисковых систем
+! 1. Впрыск энтропии в заголовки (Google, Yandex, Bing, DuckDuckGo, Yahoo, Baidu)
 ||google.*$set-header=X-Omni-Search-Key: $random_string
 ||yandex.*$set-header=X-Omni-Search-Key: $random_string
 ||bing.com^$set-header=X-Omni-Search-Key: $random_string
@@ -1098,10 +1098,10 @@ $removeparam=/^(_|cb|cachebuster|v)$/,domain=~system|~google.com
 ||yahoo.com^$set-header=X-Omni-Search-Key: $random_string
 ||baidu.com^$set-header=X-Omni-Search-Key: $random_string
 
-! 2. Глобальный Referer Spoofing (скрывает поисковый запрос от целевых сайтов)
+! 2. Глобальный Referer Spoofing (скрывает ваш запрос от сайтов-приемников)
 ||*$set-header=Referer: https://omni-protocol.secure/v10.3/,domain=~google.*|~yandex.*|~duckduckgo.*|~bing.com|~yahoo.com
 
-! 3. Универсальный URL-Masking Scriptlet (для всех поисковых параметров q, text, p, word)
+! 3. Универсальный URL-Masking Scriptlet (обрабатывает параметры q, text, p, query, word, wd)
 #%#//scriptlet("execute-script", "(function(){ const url = new URL(window.location); const params = ['q', 'text', 'p', 'query', 'word', 'wd']; let found = false; params.forEach(p => { if(url.searchParams.has(p)) found = true; }); if(found){ const ghost = btoa(Math.random().toString(36).substring(2)); url.searchParams.append('enc_meta', ghost); url.searchParams.append('omni_apex', 'true'); window.history.replaceState({}, '', url); } })();")
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
