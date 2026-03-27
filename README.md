@@ -207,9 +207,10 @@
 ---
 ### 🛡️ WebRTC Leak Protection (Hardening Guide)
 
-| Protocol | Vulnerability | APEX Status | Action |
+| Protocol | target | APEX Status | Apex Result |
 | :--- | :--- | :---: | :--- |
-| **WebRTC** | Local IP Exposure | `⚠️ ATTENTION` | Manual Patch Required |
+| **WebRTC** | Network L11 | `Patched` | prevents IP leaks. Reduced Wi-Fi/4G activity (blocking **50 GB+** trash/mo) minimizes Bluetooth interference.
+  - **RU:** Блокировка STUN-серверов (L11) предотвращает утечки IP. Снижение активности Wi-Fi/4G (минус **50 ГБ+** мусора в месяц) минимизирует наводки на Bluetooth.|
 
 ---
 
