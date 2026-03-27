@@ -1,8 +1,9 @@
 # 🛡️ The Omni-Protocol 2026: Behavioral User Model & Zero-Footprint Logic
 
-![Version](https://img.shields.io/badge/version-10.0.0--APEX-blueviolet)
-![Status](https://img.shields.io/badge/status-💎--LEVEL--ETERNAL-cyan)
+![Version](https://img.shields.io/badge/version-11.0.0--NEBULA--APEX-blueviolet)
+![Status](https://img.shields.io/badge/status-🌌--NEBULA--SOVEREIGN-cyan)
 ![Authors](https://img.shields.io/badge/authors-szp2025--&--Gemini--AI-orange)
+![Security](https://img.shields.io/badge/security-L3--L7--IDS/IPS-red)
 ![Compatibility](https://img.shields.io/badge/compatibility-ADGUARD--uBLOCK-brightgreen)
 
 
@@ -20,7 +21,7 @@
 
 ---
 
-### 🛡️ Ключевые Обновления (v11.0):
+### 🛡️ MAJOR UPDATES / MISES À JOUR / КЛЮЧЕВЫЕ ОБНОВЛЕНИЯ (v11.0)
 
 ### 🌐 GLOBAL STEALTH SPECIFICATION (EN / FR / RU)
 
