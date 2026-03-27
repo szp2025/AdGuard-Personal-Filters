@@ -5,6 +5,32 @@
 ![Authors](https://img.shields.io/badge/authors-szp2025--&--Gemini--AI-orange)
 ![Compatibility](https://img.shields.io/badge/compatibility-ADGUARD--uBLOCK-brightgreen)
 
+
+## 🌌 OMNI-PROTOCOL: NEBULA APEX (v11.0) 🚀
+
+Система **Omni-Protocol** была модернизирована до версии **11.0.0-APEX**. Это не просто набор фильтров, а полноценный комплекс цифрового суверенитета, работающий на уровнях L3-L7.
+
+### 🛡️ Ключевые Обновления (v11.0):
+
+| Уровень | Технология | Описание | Статус |
+| :--- | :--- | :--- | :---: |
+| **🌐 L0-L13** | **Active IDS/IPS** | Встроенная система обнаружения вторжений. Блокировка RAT, сканеров портов и защита от Lateral Movement в локальной сети. | **Active** |
+| **🛰️ Network** | **Nebula Hardening** | Маскировка сетевого стека (TTL 64, MTU 1400, TCP Window). Твой трафик неотличим от эталонного Android/Linux устройства. | **Active** |
+| **🧪 Search** | **Universal Ghosting** | Квантовая дезинформация для Google и Yandex. Подмена ID, вечных токенов и генерация энтропии в заголовках. | **Active** |
+| **🧹 Cleanup** | **Zero-Footprint** | Ультимативный шредер кук (RegExp v11.0). Мгновенное удаление рекламных идентификаторов Yandex, Google и FB. | **Active** |
+| **🎨 Stealth** | **Font Randomizer** | Защита от Fingerprinting через рандомизацию замеров Canvas и системных шрифтов. | **Active** |
+
+---
+
+### 🛠️ Архитектура Безопасности:
+
+* **Anti-RAT Port Cage:** Запечатывает все нестандартные порты, оставляя только критические каналы (Web, DNS, Mail). Любая попытка скрытой передачи данных вызывает срабатывание системы.
+* **Privacy-First Headers:** Принудительная установка `Referrer-Policy: no-referrer-when-downgrade` и блокировка `Permissions-Policy` (геолокация, камера, микрофон).
+* **AI-Crawler Shield:** Защита твоего контента от сбора данных нейросетями (GPTBot, ClaudeBot, CommonCrawl).
+* **Banking Gambit:** Оптимизированная логика, защищающая финансовые транзакции через блокировку сторонних WebSocket и скриптов на банковских доменах.
+
+---
+
 ---
 
 ## 🧩 ULTIMATE CORE ENGINE: SPECIFICATION & DEPLOYMENT (v10.0 APEX)
