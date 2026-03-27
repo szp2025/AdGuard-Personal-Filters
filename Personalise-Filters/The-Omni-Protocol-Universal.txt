@@ -126,6 +126,9 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 @@||youtube.com^$important
 @@||google.com^$important
 
+! [5play.life] - Game Portal Exception
+@@||5play.life^$important,document,generichide
+@@||*.5play.life^$important,document,generichide
 
 
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
