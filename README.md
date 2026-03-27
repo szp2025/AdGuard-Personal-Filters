@@ -87,6 +87,38 @@
 
 ---
 
+
+## 🧩 OMNI-ENGINE: BROWSER EXTENSION DEPLOYMENT (v10.0)
+
+| Category | Protection | 🇬🇧 Features (EN) | 🇫🇷 Fonctions (FR) | 🇷🇺 Особенности (RU) | Active Tech |
+| :--- | :---: | :--- | :--- | :--- | :--- |
+| **UserJS Script** | 🟢 100% | DOM Sanitizer & Ad-Block. | Sanitisation DOM & Ad-Block. | Очистка DOM и Блок рекламы. | **JS Omni Eternal** |
+| **Integration** | 🟢 100% | Native AdGuard Support. | Support Natif AdGuard. | Нативная поддержка AdGuard. | **Scriptlet Engine** |
+
+---
+
+### 🚀 Установка расширения / Script Installation / Installation du Script
+
+**RU: Способ через AdGuard (Рекомендуется):**
+1. Откройте **AdGuard** -> **Расширения** -> **Добавить расширение**.
+2. Используйте URL для автоматической установки:
+`https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js`
+
+**EN: Via AdGuard (Recommended):**
+1. Open **AdGuard** -> **Extensions** -> **Add extension**.
+2. Use the URL for auto-installation:
+`https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js`
+
+**FR: Via AdGuard (Recommandé):**
+1. Ouvrez **AdGuard** -> **Extensions** -> **Ajouter une extension**.
+2. Utilisez l'URL pour l'installation automatique:
+`https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js`
+
+---
+
+> [!TIP]
+> **RU:** Скрипт работает в связке с сетевым фильтром, обеспечивая "чистый" рендеринг страниц без пустых блоков от рекламы.
+> **EN:** The script works in tandem with the network filter, ensuring "clean" page rendering without empty ad blocks.
  
 ---
 
