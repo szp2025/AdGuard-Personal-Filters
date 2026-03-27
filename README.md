@@ -60,11 +60,9 @@
 | **Smart TV / IoT** | 🟢 100% | Forced DNS Intercept & IoT Profiling. | Intercept. DNS forcé & Profilage IoT. | Принудительный перехват DNS и профиль. | **DNS over TLS/HTTPS** |
 | **AI Security** | 🟢 100% | Anti-Scraping & Crawler Block. | Anti-Scraping & Blocage Crawler. | Блок парсинга данных и AI-ботов. | **L13 AI-Shield** |
 | **Identity Guard** | 🟢 100% | Anti-Phishing & Beacon Stealth. | Anti-Phishing & Mode Furtif. | Анти-фишинг и защита от маячков. | **L11-L12 Protection** |
----
-
-
 
 ---
+
 
 ## 🧬 JS-CORE & DATA PERSISTENCE: APEX SPECIFICATION (v10.0)
 
