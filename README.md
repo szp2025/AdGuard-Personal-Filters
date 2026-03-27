@@ -205,6 +205,18 @@
 >* RU: Для максимальной эффективности: Установите интервал обновления AdGuard на 60 минут и используйте Nightly-канал. Это гарантирует получение патчей APEX и обновлений «Омни-Протокола» в реальном времени.
 
 ---
+### 🛡️ WebRTC Leak Protection (Hardening Guide)
+
+| Protocol | Vulnerability | APEX Status | Action |
+| :--- | :--- | :---: | :--- |
+| **WebRTC** | Local IP Exposure | `⚠️ ATTENTION` | Manual Patch Required |
+
+---
+
+> [!CAUTION]
+> **RU:** Фильтры не могут полностью скрыть WebRTC на уровне ядра браузера. Для полной анонимности (чтобы не было как на скрине теста) необходимо отключить "WebRTC local IP handling policy" в настройках браузера.
+> **EN:** Filters cannot fully block WebRTC at the browser core level. To prevent IP leaks, you must manually set "Disable non-proxied UDP" in your browser flags.
+---
 
 ### ⚖️ Technical Compliance & License
 
