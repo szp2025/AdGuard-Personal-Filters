@@ -187,17 +187,16 @@
 >* ** Si vous obtenez une **"Erreur de test"**, c'est un signe de protection ultime. Le système bloque les scripts d'analyse pour empêcher le fingerprinting.
 >* ** Если вы получаете **"Ошибку теста"** при проверке DNS — это признак высшей защиты. Система блокирует скрипты анализатора как попытку фингерпринтинга.
 
-| Category / Catégorie / Категория | Target / Cible / Цель | Apex Result (v11.0) | Status |
-| :--- | :--- | :--- | :---: |
-| **🛡️ Network Stealth** | [BrowserLeaks IP](https://browserleaks.com/ip) | 0 WebRTC leaks, custom TCP/IP stack, hidden IP. / 0 fuite WebRTC. / 0 утечек WebRTC, кастомный стек. | `VERIFIED` |
-| **🧬 JS-Entropy** | [Am I Unique?](https://amiunique.org/) | Canvas & WebGL disintegration. Font masking. / Masquage Canvas et polices. / Дезинтеграция Canvas/WebGL. | `ACTIVE` |
-| **🔪 Meat Grinder** | `Daily Mail (Web)` | **150+** trackers blocked per session (Taboola, Google). / 150+ traqueurs bloqués. / **150+** блокировок. | `ULTIMATE` |
-| **🕵️‍♂️ Zero-Footprint** | [EFF Cover Tracks](https://coveryourtracks.eff.org/) | **"Strong Protection"** status. 100% beacons blocked. / Protection forte. / Статус **"Strong Protection"**. | `PROTECTED` |
-| **🛡️ Port Scanning** | [GRC ShieldsUP!](https://www.grc.com/x/ne.dll?bh0bkyd2) & [Pentest-Tools](https://pentest-tools.com/) | **TruStealth PASSED.** 1000+ ports are invisible. / Cible invisible. / **TruStealth ПРОЙДЕН**. 1000+ портов невидимы. | `IMMUNE` |
-| **🔓 UPnP Exposure** | [GRC ShieldsUP!](https://www.grc.com/x/ne.dll?bh0bkyd2) | **No Response.** Full stealth. / UPnP sécurisé. / **UPnP защищен**. Полная тишина (Stealth). | `SECURE` |
+| Category / Catégorie / Категория | Target / Cible / Цель | Apex Result (v11.0) EN | Apex Result (v11.0) Fr | Apex Result (v11.0) ru   | Status |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| **🛡️ Network Stealth** | [BrowserLeaks IP](https://browserleaks.com/ip) | 0 WebRTC leaks, custom TCP/IP stack, hidden IP. | 0 fuite WebRTC. | 0 утечек WebRTC, кастомный стек. | `VERIFIED` |
+| **🧬 JS-Entropy** | [Am I Unique?](https://amiunique.org/) | Canvas & WebGL disintegration. Font masking. | Masquage Canvas et polices. | Дезинтеграция Canvas/WebGL. | `ACTIVE` |
+| **🔪 Meat Grinder** | `Daily Mail (Web)` | **150+** trackers blocked per session (Taboola, Google).|  150+ traqueurs bloqués.| **150+** блокировок. | `ULTIMATE` |
+| **🕵️‍♂️ Zero-Footprint** | [EFF Cover Tracks](https://coveryourtracks.eff.org/) | **"Strong Protection"** status. 100% beacons blocked. | Protection forte. |Статус **"Strong Protection"**. | `PROTECTED` |
+| **🛡️ Port Scanning** | [GRC ShieldsUP!](https://www.grc.com/x/ne.dll?bh0bkyd2) & [Pentest-Tools](https://pentest-tools.com/) | **TruStealth PASSED.** 1000+ ports are invisible. | Cible invisible. | **TruStealth ПРОЙДЕН**. 1000+ портов невидимы. | `IMMUNE` |
+| **🔓 UPnP Exposure** | [GRC ShieldsUP!](https://www.grc.com/x/ne.dll?bh0bkyd2) | **No Response.** Full stealth. | UPnP sécurisé. | **UPnP защищен**. Полная тишина (Stealth). | `SECURE` |
 
 ---
-
 
 
 ### ⚖️ Technical Compliance & License
