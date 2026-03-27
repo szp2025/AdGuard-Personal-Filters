@@ -199,6 +199,12 @@
 
 ---
 
+> [!TIP]
+>* EN: For maximum efficiency: Set the AdGuard update interval to 60 minutes and use the Nightly channel. This ensures you receive APEX patches and "The Omni-Protocol" updates in real-time.
+>* FR: Pour une efficacité maximale : Réglez l'intervalle de mise à jour d'AdGuard sur 60 minutes et utilisez le canal Nightly. Cela garantit la réception des correctifs APEX et du « Omni-Protocol » en temps réel.
+>* RU: Для максимальной эффективности: Установите интервал обновления AdGuard на 60 минут и используйте Nightly-канал. Это гарантирует получение патчей APEX и обновлений «Омни-Протокола» в реальном времени.
+
+---
 
 ### ⚖️ Technical Compliance & License
 
