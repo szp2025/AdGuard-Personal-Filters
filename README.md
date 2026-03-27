@@ -193,6 +193,7 @@
 | **🧬 JS-Entropy** | [Am I Unique?](https://amiunique.org/) | Canvas & WebGL disintegration. Font masking. / Masquage Canvas et polices. / Дезинтеграция Canvas/WebGL. | `ACTIVE` |
 | **🔪 Meat Grinder** | `Daily Mail (Web)` | **150+** trackers blocked per session (Taboola, Google). / 150+ traqueurs bloqués. / **150+** блокировок. | `ULTIMATE` |
 | **🕵️‍♂️ Zero-Footprint** | [EFF Cover Tracks](https://coveryourtracks.eff.org/) | **"Strong Protection"** status. 100% beacons blocked. / Protection forte. / Статус **"Strong Protection"**. | `PROTECTED` |
+| **🛡️ Port Scanning** | [Pentest-Tools](https://pentest-tools.com/) | **Scan Prohibited / Invisible.** Target is unreachable for external probes. / Cible invisible. / **Цель невидима**. Скан запрещен. | `IMMUNE` |
 
 ---
 
