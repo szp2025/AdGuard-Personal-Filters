@@ -183,9 +183,9 @@
 ## 🧪 FIELD TESTING / LABORATOIRE / ПОЛЕВЫЕ ИСПЫТАНИЯ (v11.0) 🛰️
 
 > [!IMPORTANT]
-> **DNS-SECURITY NOTE:** > If you encounter a **"Test Error"** during DNS checks, it is a sign of ultimate protection. The system identifies analyzer scripts as fingerprinting attempts and preemptively terminates the connection.
-> Si vous obtenez une **"Erreur de test"**, c'est un signe de protection ultime. Le système bloque les scripts d'analyse pour empêcher le fingerprinting.
-> Если вы получаете **"Ошибку теста"** при проверке DNS — это признак высшей защиты. Система блокирует скрипты анализатора как попытку фингерпринтинга.
+>* **DNS-SECURITY NOTE:** > If you encounter a **"Test Error"** during DNS checks, it is a sign of ultimate protection. The system identifies analyzer scripts as fingerprinting attempts and preemptively terminates the connection.
+>* ** Si vous obtenez une **"Erreur de test"**, c'est un signe de protection ultime. Le système bloque les scripts d'analyse pour empêcher le fingerprinting.
+>* ** Если вы получаете **"Ошибку теста"** при проверке DNS — это признак высшей защиты. Система блокирует скрипты анализатора как попытку фингерпринтинга.
 
 | Category / Catégorie / Категория | Target / Cible / Цель | Apex Result (v11.0) | Status |
 | :--- | :--- | :--- | :---: |
