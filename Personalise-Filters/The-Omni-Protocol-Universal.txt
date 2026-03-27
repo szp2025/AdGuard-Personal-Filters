@@ -34,7 +34,7 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ||*^$important,port=22|23|445|1433|1723|1883|3306|3389|5037|5060|5061|5432|5555|5900|5901|6379|6667|8080|8883|9000|9090|14147|27017|33434|4444|55555,reject,domain=~localhost,notify,tag=ATTACK_SPECIFIC
 
 ! [L2] RAT: Глобальный Anti-RAT (Все нестандартные порты)
-||*^$important,port=~80|~443|~53|~853|~123,reject,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov|~mil|~edu|~apple.com|~microsoft.com,notify,tag=RAT_GENERAL_DETECTION
+||*^$important,port=~80|~443|~53|~853|~123,reject,domain=~google.*|~yandex.*|~openai.com|~bank|~gov|~apple.com|~microsoft.com,notify,tag=RAT_GENERAL_DETECTION
 
 ! [L3] LEAK: Запрет фоновых пингов (Anti-Data Leak)
 ||*$ping,third-party,important,domain=~system|~google.com|~yandex.ru,notify,tag=BACKGROUND_LEAK
