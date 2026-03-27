@@ -104,7 +104,6 @@
 | **📡 Network Filter** | **[ADD TO ADGUARD](https://subscribe.adguard.com/?url=https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)** | Click to import main TXT filter. | Cliquez pour importer le filtre TXT. | Нажми для импорта TXT фильтра. | **Win/Android/iOS** |
 | **🧩 UserJS Script** | **[INSTALL SCRIPT](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js)** | Open **Extensions** -> **Add Extension** -> Paste URL. | **Extensions** -> **Ajouter** -> Coller l'URL. | **Расширения** -> **Добавить** -> Вставь URL. | **Browser/AdGuard** |
 | **🧪 Raw Source** | **[VIEW RAW](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)** | Manual copy for uBlock Origin. | Copie manuelle pour uBlock. | Ручной импорт в uBlock Origin. | **Any Blocker** |
-| **💡 Logic Tip** | **Synergy Active** | Ensures clean page rendering. | Assure un rendu de page propre. | Чистый рендеринг страниц. | **Full Protection** |
 ---
 
 
