@@ -62,6 +62,32 @@
 | **Identity Guard** | 🟢 100% | Anti-Phishing & Beacon Stealth. | Anti-Phishing & Mode Furtif. | Анти-фишинг и защита от маячков. | **L11-L12 Protection** |
 ---
 
+
+
+---
+
+## 🧬 JS-CORE & DATA PERSISTENCE: APEX SPECIFICATION (v10.0)
+
+| Category | Protection | 🇬🇧 Features (EN) | 🇫🇷 Fonctions (FR) | 🇷🇺 Особенности (RU) | Active Tech |
+| :--- | :---: | :--- | :--- | :--- | :--- |
+| **Data Logic** | 🟢 100% | CRUD DB Pattern (Strict). | Modèle CRUD DB (Strict). | CRUD-паттерн БД (Строгий). | **JS Core Engine** |
+| **Authentication** | 🟢 100% | 2h Token Life & API Sync. | Sync API & Token de 2h. | Синхронизация API и токен 2ч. | **Secure API L14** |
+
+---
+
+## 🛠️ SYSTEM HARDENING: NETWORK APEX CONFIG (v10.0)
+
+| Category | Protection | 🇬🇧 Features (EN) | 🇫🇷 Fonctions (FR) | 🇷🇺 Особенности (RU) | Active Tech |
+| :--- | :---: | :--- | :--- | :--- | :--- |
+| **DNS Defense** | 🟢 100% | **NxDomain:** Instant Kill. | **NxDomain:** Mort instantanée. | **NxDomain:** Мгновенная смерть. | **DNS-Filtering** |
+| **Traffic Stealth** | 🟢 100% | Anti-DPI & Packet Splitting. | Anti-DPI & Fragmentation. | Anti-DPI и фрагментация. | **Advanced Stack** |
+| **SNI Shield** | 🟢 100% | Forced SNI Exposure (Omni). | Analyse SNI forcée (Omni). | Анализ SNI для Omni. | **ECH Block L15** |
+| **Network Mask** | 🟢 100% | HTTP Extra Space & Augment. | Espace Supplém. & Augment. | Доп. пробелы и шум пакетов. | **Anti-Censorship** |
+| **System Load** | 🟢 100% | **Ultra-Light:** ~33.7MB RAM. | **Ultra-Légère:** ~33.7MB RAM. | **Ultra-Light:** ~33.7МБ ОЗУ. | **Apex Optimizer** |
+
+---
+
+ 
 ---
 
 ## 📥 INSTALLATION & DEPLOYMENT
