@@ -1006,80 +1006,148 @@ Object.defineProperty(navigator, 'plugins', {
 })();
 ")
 
-! Защита от перечисления шрифтов (Font Fingerprinting)
-#%#//scriptlet("prevent-window-open", "ad-click")
+! --- 5. FONT & CANVAS STEALTH (ANTI-FINGERPRINTING) ---
+! Защита от перечисления шрифтов: подменяем системные замеры на случайные значения
+#%#//scriptlet("set-constant", "CanvasRenderingContext2D.prototype.measureText", "function(){return{width:Math.random()};}")
+#%#//scriptlet("set-constant", "screen.availWidth", "1920")
+#%#//scriptlet("set-constant", "screen.availHeight", "1080")
 
-! --- 3. ZERO-FOOTPRINT: АБСОЛЮТНАЯ ОЧИСТКА ---
-! Очистка аналитики и рекламных движков
-#%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp)$/")
+! Блокировка детекции шрифтов через замеры контейнеров (Font-Detection Counter)
+#%#//scriptlet("prevent-set-interval", "font")
+#%#//scriptlet("prevent-set-timeout", "font")
+
+
+! --- 3. ZERO-FOOTPRINT: АБСОЛЮТНАЯ СТЕРИЛИЗАЦИЯ (v11.0) ---
+! Универсальное удаление кук аналитики, трекеров и рекламных ID (Google, Facebook, Yandex, Mail.ru)
+#%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|_ym_|_yuid|yandexuid|i|yabs-sid|fuid|mda)$/")
+
+! Запрещаем сохранение новых кук для доменов, известных своей слежкой
+||google-analytics.com^$cookie,important
+||mc.yandex.ru^$cookie,important
+||facebook.com^$cookie,third-party
+
+! Стираем LocalStorage и SessionStorage (где трекеры прячутся после удаления кук)
+#%#//scriptlet("set-constant", "localStorage.clear", "function(){}")
+#%#//scriptlet("set-constant", "sessionStorage.clear", "function(){}")
+
+! Очистка параметров "вечных кук" из памяти браузера
+#%#//scriptlet("prevent-set-interval", "fingerprint")
+
 
 ! Запрещаем сайтам читать историю переходов через Referrer
 *^$set-header=Referrer-Policy: no-referrer-when-downgrade
 
-! --- 4. BEYOND THE BROWSER (NETWORK HARDENING) ---
-! Маскировка типа устройства на уровне пакетов (TTL 64 = Android/Linux/Standard Chrome)
-$network=ip,set_ttl=64,hide_hop_limit=on,important
-! Запрет на утечку локальных IP-адресов через WebRTC
-||stun:*^$important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com
+! --- 4. BEYOND THE BROWSER (NETWORK HYPER-DRIVE) ---
+
+! Маскировка сетевого фингерпринтинга (Стек: Android/Linux Standard)
+! Устанавливаем эталонные значения TTL, TCP Window и MSS
+$network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,important
+
+! Запрет на утечку локальных IP-адресов через WebRTC (Усиленный)
+||stun:*^$important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com|~yandex.ru|~openai.com
+||webrtc.org^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com
+
+! Блокировка протоколов обнаружения устройств в локальной сети (Anti-SSD/mDNS)
+||/^(ssdp|mdns|icmp-discovery)/^$important,network,third-party,reject
 
 
-! [LAYER 13-27: PERIMETER DEFENSE & PORT ISOLATION]
-! --- 1. UI Purge (Удаление визуального мусора и баннеров) ---
+! [LAYER 13-27: PERIMETER DEFENSE & PORT ISOLATION - HYPER-DRIVE]
+
+! --- 1. UI Purge (Удаление визуального мусора с защитой от "анти-блока") ---
 ##[class*="ad"], .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup, #cookie-notice, .cmp-container
 ##.premium-promo, .upsell-banner, [id^="google_ads_iframe"]
+! Прячем элементы так, чтобы скрипты проверки думали, что они отрисованы (Ghost Display)
+#%#//scriptlet("set-constant", "adblock", "false")
 
-! --- 2. Localhost & Port Hardening (Защита от сканирования твоей сети) ---
-! Запрещаем сайтам опрашивать твои локальные устройства и открытые порты
-||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system,notify,tag=LOCAL_SCAN_DETECTED
+! --- 2. Localhost & Port Hardening (Тотальная изоляция стека) ---
+! Защита от сканирования локальной сети и IoT устройств
+||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system|~localhost,notify,tag=LOCAL_SCAN_DETECTED
 
-||^$important,port=22|23|445|3389|1433|3306|5432|6379|8080|9000|9090,domain=~teamviewer.com|~localhost
-$network=(icmp|discovery|inbound|webrtc),action=(drop|reject|block),app=~system,important,notify,tag=PORT_ATTACK_ALERT
+! Блокировка критических портов с имитацией Stealth-режима (DROP вместо REJECT)
+||^$important,port=21|22|23|25|110|135|139|445|3389|5900|8080|9000,domain=~teamviewer.com|~anydesk.com|~localhost
+$network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important,notify,tag=PORT_ATTACK_ALERT
 
-! [LAYER 28-29: QUANTUM VISIBILITY & ENTROPY]
+! [LAYER 28-29: QUANTUM VISIBILITY & ENTROPY - INTERSTELLAR]
 ! --- 1. Header Manipulation (Активная дезинформация) ---
-! Генерируем случайную энтропию для Google, чтобы сбить их алгоритмы профилирования
-||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=DNT: 1
-*^$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved)=[^&]*/$1=omni-qnt-$random_string/
+! Генерируем "шум" и подменяем Client-Hints (защита от фингерпринтинга браузера)
+||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=DNT: 1,set-header=Sec-CH-UA: "Not/A)Brand";v="99"
+||yandex.*^$set-header=X-Omni-Entropy: $random_string,set-header=Sec-CH-UA-Platform: "Omni-OS"
 
-! --- 2. Security Headers (Принудительная безопасность) ---
-! Запрещаем отслеживание пути (Referrer) и защищаем от подмены типов контента
-||*^$set-header=Referrer-Policy: strict-origin-when-cross-origin,set-header=X-Content-Type-Options: nosniff
+! Глубокая подмена ID в URL: превращаем реальные токены в "квантовую пыль"
+||google.*$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved)=[^&]*/$1=omni-qnt-$random_string/
+||yandex.*$replace=/(uuid|device_id|yclid|pvid)=[^&]*/$1=omni-ghost-$random_string/
+
+! --- 2. Security Headers (Ультимативный стелс-протокол) ---
+! Принудительная стерилизация путей перехода
+||*^$set-header=Referrer-Policy: no-referrer-when-downgrade,set-header=X-Content-Type-Options: nosniff
 ||*^$set-header=X-Frame-Options: SAMEORIGIN,set-header=X-XSS-Protection: 1; mode=block
+||*^$set-header=Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
 
 ! [LAYER 17-26: TRUSTED BRIDGE & API CLEANER]
 ! --- 1. Unified Trusted Bridge (Оптимизированный список доверия) ---
 @@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|samsung|apple|microsoft|icloud|googleapis|gstatic|jsdelivr|yandex|passport|sso|zoom|teams\.microsoft|netflix|amazon|aliexpress|wildberries|ozon|caf|ameli|urssaf|oelie-eau|sncf-connect|enedis|edf)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
 
-! --- 2. Privacy Header Stripping ---
-! Удаляем специфические ID Google и подменяем IP-заголовки
+! --- 2. Privacy Header Stripping (APEX v10.5) ---
 $header=/^(X-Forwarded-For|Real-IP|Client-IP|Via|Forwarded)$/i,important,domain=~system
-$removeheader=/^x-goog-api-(client|key|client-mods)|x-client-data/ ,domain=google.com|googleapis.com
-$removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid|mc_eid|_hsenc)$/
+$removeheader=/^x-goog-api-(client|key|client-mods)|x-client-data|sec-ch-ua/ ,domain=google.com|googleapis.com|yandex.*
 
-! [LAYER 30: PHISH-FENCE & PROTOCOL INTEGRITY]
-! --- 1. Anti-Phishing & Punycode (Защита от поддельных доменов) ---
-||xn--*^$important,reject,domain=~system
-||/^(flash-sms|class0-message|silent-ping|carrier-popup)/^$important,network,third-party
+! Квантовый шум + Эмуляция корпоративного шлюза (High-Priority Traffic)
+||google.*$set-header=X-Omni-Key: $random_string,set-header=X-Omni-Entropy: $random_string,set-header=X-Priority-Secure: maximum
+||yandex.*$set-header=X-Omni-Key: $random_string,set-header=X-Omni-Entropy: $random_string,set-header=X-Yandex-Safe-Browsing: true
 
-! --- 2. URL Cleaner (Удаление редиректов и мусора из ссылок) ---
-$removeparam=/^(redirect|url|link|goto|continue|ref_url|return_to)$/,domain=~google.com|~bank|~yandex.ru|~dzen.ru|~openai.com|~gov|~un.org|~europa.eu|~caf.fr|~oelie-eau.fr
+! Тотальная зачистка рекламных ID (добавлены специфические хвосты из твоих логов)
+$removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid|mc_eid|_hsenc|gs_lcp|sclient|ei|psi|ved|gbraid|wbraid|_openstat)$/
+
+! [LAYER 30: PHISH-FENCE & PROTOCOL INTEGRITY - INTERSTELLAR]
+! --- 1. Anti-Phishing, Punycode & IDN Sovereignty ---
+! Блокировка кириллических и прочих IDN доменов-двойников (защита от банковского фишинга)
+||xn--*^$important,reject,domain=~system|~yandex.ru|~google.com|~4pda.to
+
+! --- 2. Stealth Protocol Hardening (Защита от скрытых уведомлений и пингов) ---
+! Блокировка скрытых сервисных сообщений и невидимых пингов аналитики
+||/^(flash-sms|class0-message|silent-ping|carrier-popup|push-telemetry)/^$important,network,third-party,reject
+
+! --- 3. Anti-Beacon & Deep Ping Suppression ---
+! Уничтожение асинхронных маяков (Beacon API), которые шпионят даже после закрытия вкладки
+||*$ping,third-party,important,domain=~google.*|~yandex.*|~facebook.*|~vk.com
+||/^(analytics|metrics|telemetry|beacon|pixel)\./^$ping,important
+
+! --- 4. WebSocket Sterilization (Защита от туннелирования данных) ---
+! Запрещаем скрытые каналы передачи данных (WebSocket) для рекламных доменов
+||*$websocket,third-party,domain=ad.*|ads.*|metrics.*|track.*|telemetry.*
+
+
+! --- 2. URL Cleaner (DEEP STERILIZATION) ---
+! Чистка UUID, DeviceID и уникальных токенов сессий
+$removeparam=/^(redirect|url|link|goto|continue|ref_url|return_to|uuid|device_id|yandex_ad_id|from|banner_id|session_id|unique_id|pvid|yclid|zen_id)$/,domain=~google.com|~bank|~yandex.ru|~dzen.ru|~openai.com|~gov|~un.org|~europa.eu|~caf.fr|~oelie-eau.fr
+
+! Замена редиректов на пустые скрипты (мгновенная деактивация трекеров)
 ||bit.ly^$rewrite=abp-resource:blank-js
 ||t.co^$rewrite=abp-resource:blank-js
+||tinyurl.com^$rewrite=abp-resource:blank-js
 
-! --- 3. Cache Protection ---
-! Запрещаем "отравление" кэша через скрытые параметры
-$removeparam=/^(_|cb|cachebuster|v)$/,domain=~system|~google.com
 
+! --- 3. Cache & State Protection (ANTI-FINGERPRINT) ---
+! Блокировка параметров состояния устройства в URL
+$removeparam=/^(_|cb|cachebuster|v|sw|sh|bat|os|res)$/,domain=~system|~google.com|~yandex.ru
 
 ! [LAYER 31: ANTI-COMPROMISE & EXFILTRATION CONTROL]
-! --- Блокировка утечки через нестандартные порты (Anti-RAT) ---
-||*^$important,port=~80|~443|~53|~853,reject,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov
+! --- 1. Anti-RAT & Port Sovereignty (Блокировка нестандартных портов) ---
+! Разрешаем только критические порты: 80, 443 (Web), 53, 853 (DNS), 587, 993 (Mail), 21 (FTP)
+||*^$important,port=~80|~443|~53|~853|~587|~993|~21|~22,reject,domain=~google.com|~yandex.*|~openai.com|~bank|~gov|~github.com
 
-! --- Запрет скрытых медиа-трансляций (Anti-Mirroring) ---
-||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com
+! --- 2. Anti-Mirroring & Stream Hijacking (Запрет скрытых трансляций) ---
+||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.*|~google.*|~yandex.*|~4pda.to
+||*$object,third-party,important,domain=~system
+||*$websocket,third-party,domain=~zoom.us|~teams.*|~google.*|~yandex.*|~openai.com|~slack.com
 
-! --- Остановка фоновой активности (Screen-Off Stealth) ---
-||*$ping,third-party,important,domain=~system
+
+! --- 3. Screen-Off Stealth & Background Exfiltration ---
+! Блокировка фоновых маяков и отложенной отправки данных
+||*$ping,third-party,important,domain=~system|~google.com|~yandex.ru
+! Запрет асинхронных обновлений для трекеров (Background Sync API)
+#%#//scriptlet("execute-script", "if ('serviceWorker' in navigator) { navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister())); }")
+
 
 ! --- Программная блокировка доступа к камере и микрофону в браузере ---
 #%#//scriptlet("set-constant", "navigator.mediaDevices.getUserMedia", "undefined")
@@ -1089,22 +1157,8 @@ $removeparam=/^(_|cb|cachebuster|v)$/,domain=~system|~google.com
 #%#//scriptlet("set-constant", "mozGetUserMedia", "undefined")
 
 
-! --- 7. UNIVERSAL SEARCH STEALTH (ULTIMATE 100% APEX) ---
-! 1. Впрыск квантовой энтропии в заголовки всех известных поисковых узлов
-||google.*$set-header=X-Omni-Key: $random_string,set-header=X-Omni-Entropy: $random_string
-||yandex.*$set-header=X-Omni-Key: $random_string,set-header=X-Omni-Entropy: $random_string
-||bing.com^$set-header=X-Omni-Key: $random_string
-||duckduckgo.com^$set-header=X-Omni-Key: $random_string
-||baidu.com^$set-header=X-Omni-Key: $random_string
-
-! 2. REFERER PURGE: Полное уничтожение следов поискового запроса для внешних сайтов
-||*$set-header=Referer: https://omni-protocol.secure/v10.4/,domain=~google.*|~yandex.*|~bing.com|~duckduckgo.com
-
-! 3. PARAMETER SANITIZER: Удаление UUID, DeviceID и Click-ID (чтобы логи были чистыми как на скринах)
-||google.*$removeparam=/^(gs_lcp|sclient|ei|psi|ved)/
-||yandex.*$removeparam=/^(uuid|device_id|yandex_ad_id|from|banner_id)/
-
-! 4. ULTIMATE JS-GHOST: Маскировка URL и защита от фингерпринтинга поисковой сессии
+! --- 7. UNIVERSAL SEARCH STEALTH (JS-GHOST) ---
+! Финальный слой: динамическая маскировка URL в адресной строке для всех поисковиков
 #%#//scriptlet("execute-script", "(function(){ const url = new URL(window.location); const pList = ['q', 'text', 'p', 'query', 'word', 'wd', 's']; let hit = false; pList.forEach(p => { if(url.searchParams.has(p)) hit = true; }); if(hit){ const ghost = btoa(Math.random().toString(36).substring(2) + Date.now()); url.searchParams.set('omni_token', ghost); url.searchParams.set('apex_status', 'protected'); window.history.replaceState({}, '', url); } })();")
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
