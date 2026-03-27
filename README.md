@@ -8,7 +8,17 @@
 
 ## 🌌 OMNI-PROTOCOL: NEBULA APEX (v11.0) 🚀
 
-Система **Omni-Protocol** была модернизирована до версии **11.0.0-APEX**. Это не просто набор фильтров, а полноценный комплекс цифрового суверенитета, работающий на уровнях L3-L7.
+### 🛡️ SYSTEM MANIFEST: MISSION & STATUS (EN / FR / RU)
+
+| Parameter | English (EN) | Français (FR) | Русский (RU) |
+| :--- | :--- | :--- | :--- |
+| **🌌 Codename** | **Nebula Apex** | **Nebula Apex** | **Nebula Apex** |
+| **🚀 Status** | **Version 11.0.0** | **Version 11.0.0** | **Версия 11.0.0** |
+| **🛡️ Mission** | Digital Sovereignty Suite. | Suite de Souveraineté Numérique. | Комплекс цифрового суверенитета. |
+| **⚡ Scope** | Advanced L3-L7 Security. | Sécurité Avancée L3-L7. | Продвинутая защита L3-L7. |
+| **🧬 Core** | Beyond simple filtering. | Au-delà du simple filtrage. | Больше, чем просто фильтрация. |
+
+---
 
 ### 🛡️ Ключевые Обновления (v11.0):
 
