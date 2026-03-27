@@ -104,15 +104,20 @@
 | **📡 Network Filter** | **[ADD TO ADGUARD](https://subscribe.adguard.com/?url=https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)** | Click to import main TXT filter. | Cliquez pour importer le filtre TXT. | Нажми для импорта TXT фильтра. | **Win/Android/iOS** |
 | **🧩 UserJS Script** | **[INSTALL SCRIPT](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js)** | Open **Extensions** -> **Add Extension** -> Paste URL. | **Extensions** -> **Ajouter** -> Coller l'URL. | **Расширения** -> **Добавить** -> Вставь URL. | **Browser/AdGuard** |
 | **🧪 Raw Source** | **[VIEW RAW](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)** | Manual copy for uBlock Origin. | Copie manuelle pour uBlock. | Ручной импорт в uBlock Origin. | **Any Blocker** |
+| **💡 Logic Tip** | **Synergy Active** | Ensures clean page rendering. | Assure un rendu de page propre. | Чистый рендеринг страниц. | **Full Protection** |
+---
+
+
+## 💎 SYNERGY LOGIC: WHY INSTALL BOTH? (v10.0 APEX)
+
+| Level | 🇬🇧 Logic & Benefit (EN) | 🇫🇷 Logique & Avantage (FR) | 🇷🇺 Логика и Выгода (RU) | Active Tech |
+| :--- | :--- | :--- | :--- | :--- |
+| **Network** | Blocks ads before they load. | Bloque les pubs avant le rendu. | Блокирует рекламу до загрузки. | **📡 Filter (TXT)** |
+| **DOM Tree** | Removes empty blocks & placeholders. | Supprime les blocs vides. | Удаляет пустые блоки и заглушки. | **🧩 Script (JS)** |
+| **Synergy** | **Ensures "clean" page rendering.** | **Assure un rendu de page propre.** | **Обеспечивает чистый рендеринг.** | **💎 Full Protection** |
 
 ---
 
-> [!TIP]
-> **RU:** Скрипт работает в связке с сетевым фильтром, обеспечивая "чистый" рендеринг страниц без пустых блоков от рекламы.
-> **EN:** The script works in tandem with the network filter, ensuring "clean" page rendering without empty ad blocks.
-> **FR:** Le script fonctionne en tandem avec le filtre réseau, assurant un rendu de page "propre" sans blocs publicitaires vides.
-
----
 
 ### 🧬 Копировать URL вручную (Manual Copy)
 Если авто-установка не сработала, скопируйте эту ссылку в «Пользовательские фильтры»:
