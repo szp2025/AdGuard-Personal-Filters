@@ -115,6 +115,23 @@
 
 ---
 
+## 💎 SYNERGY LOGIC: MODULAR DEPLOYMENT (v10.0 APEX)
+
+| Active Tech | Mode | Efficiency | 🇬🇧 Logic & Benefit (EN) | 🇫🇷 Logique & Avantage (FR) | 🇷🇺 Логика и Выгода (RU) |
+| :--- | :--- | :---: | :--- | :--- | :--- |
+| **📡 Filter (TXT)** | **Standalone** | **85%** | Works independently (Network). | Fonctionne indépendamment. | Работает автономно (Сеть). |
+| **🧩 Script (JS)** | **Standalone** | **65%** | Pure DOM/JS Sanitization. | Assainissement DOM/JS pur. | Чистая DOM/JS очистка. |
+| **💎 Full Synergy** | **Combined** | **100%** | **Full Stealth & Clean Render.** | **Furtivité & Rendu Propre.** | **Полный стелс и чистый рендеринг.** |
+
+---
+
+> [!NOTE]
+>* **EN:** Modules can work separately, but maximum efficiency (100%) is achieved only when using both components together.
+>* **FR:** Les modules peuvent fonctionner séparément, mais l'efficacité maximale (100%) est atteinte uniquement en utilisant les deux composants ensemble.
+>* **RU:** Модули могут работать раздельно, но максимальный эффект (100%) достигается только при совместном использовании обоих компонентов.
+
+---
+
 
 ### 🧬 Копировать URL вручную (Manual Copy)
 Если авто-установка не сработала, скопируйте эту ссылку в «Пользовательские фильтры»:
