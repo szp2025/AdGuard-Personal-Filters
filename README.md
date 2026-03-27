@@ -194,6 +194,7 @@
 | **🔪 Meat Grinder** | `Daily Mail (Web)` | **150+** trackers blocked per session (Taboola, Google). / 150+ traqueurs bloqués. / **150+** блокировок. | `ULTIMATE` |
 | **🕵️‍♂️ Zero-Footprint** | [EFF Cover Tracks](https://coveryourtracks.eff.org/) | **"Strong Protection"** status. 100% beacons blocked. / Protection forte. / Статус **"Strong Protection"**. | `PROTECTED` |
 | **🛡️ Port Scanning** | [Pentest-Tools](https://pentest-tools.com/) | **Scan Prohibited / Invisible.** Target is unreachable for external probes. / Cible invisible. / **Цель невидима**. Скан запрещен. | `IMMUNE` |
+| **🔓 UPnP Exposure** | [GRC](https://www.grc.com/x/ne.dll?bh0bkyd2) & [IPVoid](https://www.ipvoid.com/upnp-scanner/) | **No Response / Not Found.** Full stealth. / UPnP sécurisé. / **UPnP защищен**. Полная тишина. | `SECURE` |
 
 ---
 
