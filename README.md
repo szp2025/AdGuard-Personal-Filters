@@ -97,43 +97,20 @@
 
 ---
 
-### 🚀 Установка расширения / Script Installation / Installation du Script
+## 📥 INSTALLATION & DEPLOYMENT (v10.0 APEX)
 
-**RU: Способ через AdGuard (Рекомендуется):**
-1. Откройте **AdGuard** -> **Расширения** -> **Добавить расширение**.
-2. Используйте URL для автоматической установки:
-`https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js`
-
-**EN: Via AdGuard (Recommended):**
-1. Open **AdGuard** -> **Extensions** -> **Add extension**.
-2. Use the URL for auto-installation:
-`https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js`
-
-**FR: Via AdGuard (Recommandé):**
-1. Ouvrez **AdGuard** -> **Extensions** -> **Ajouter une extension**.
-2. Utilisez l'URL pour l'installation automatique:
-`https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js`
+| Component | 🚀 Auto-Setup | 🇬🇧 Steps (EN) | 🇫🇷 Étapes (FR) | 🇷🇺 Шаги (RU) | Platform |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **📡 Network Filter** | **[ADD TO ADGUARD](https://subscribe.adguard.com/?url=https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)** | Click to import main TXT filter. | Cliquez pour importer le filtre TXT. | Нажми для импорта TXT фильтра. | **Win/Android/iOS** |
+| **🧩 UserJS Script** | **[INSTALL SCRIPT](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js)** | Open **Extensions** -> **Add Extension** -> Paste URL. | **Extensions** -> **Ajouter** -> Coller l'URL. | **Расширения** -> **Добавить** -> Вставь URL. | **Browser/AdGuard** |
+| **🧪 Raw Source** | **[VIEW RAW](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)** | Manual copy for uBlock Origin. | Copie manuelle pour uBlock. | Ручной импорт в uBlock Origin. | **Any Blocker** |
 
 ---
 
 > [!TIP]
 > **RU:** Скрипт работает в связке с сетевым фильтром, обеспечивая "чистый" рендеринг страниц без пустых блоков от рекламы.
 > **EN:** The script works in tandem with the network filter, ensuring "clean" page rendering without empty ad blocks.
- 
----
-
-## 📥 INSTALLATION & DEPLOYMENT
-
-### 🧬 Прямая установка / Direct Install / Installation Directe
-
-| Method | Link (Auto-Setup) | Platform |
-| :--- | :--- | :--- |
-| **🚀 AUTO-INSTALL (AdGuard)** | **[ADD TO ADGUARD](https://subscribe.adguard.com/?url=https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)** | **Win / Mac / Android / iOS** |
-| **🧬 RAW LINK (Manual)** | **[VIEW RAW FILTER](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)** | **uBlock Origin / Others** |
-
-**RU:** Нажмите **"ADD TO ADGUARD"**, чтобы приложение автоматически предложило импорт.
-**EN:** Click **"ADD TO ADGUARD"** to trigger the automatic filter import window.
-**FR:** Cliquez sur **"ADD TO ADGUARD"** pour lancer l'importation automatique du filtre.
+> **FR:** Le script fonctionne en tandem avec le filtre réseau, assurant un rendu de page "propre" sans blocs publicitaires vides.
 
 ---
 
