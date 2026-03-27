@@ -122,8 +122,8 @@
 | **📡 Filter (TXT)** | **Standalone** | **85%** | Works independently (Network). | Fonctionne indépendamment. | Работает автономно (Сеть). |
 | **🧩 Script (JS)** | **Standalone** | **65%** | Pure DOM/JS Sanitization. | Assainissement DOM/JS pur. | Чистая DOM/JS очистка. |
 | **🚀 Chronos & Zero-Trust** | **Mars Hardening** | **99.9%** | Anti-Timing & Domain Isolation. | Isolation & Anti-Timing. | Анти-тайминг и Изоляция. |
+| **🔐 Search Encryption** | **Ghost Search** | **99.9%** | Query Noise & Referer Masking. | Masquage de recherche. | Шифрование и обфускация поиска. |
 | **💎 Full Synergy** | **Combined** | **100%** | **Full Stealth & Clean Render.** | **Furtivité & Rendu Propre.** | **Полный стелс и чистый рендеринг.** |
-
 ---
 
 > [!NOTE]
