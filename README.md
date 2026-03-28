@@ -289,6 +289,21 @@
 > **FR:** Dans Chrome 146+ (où le masquage IP est bloqué), **The Omni-Protocol** force la suppression de WebRTC. Anonymat garanti avec une consommation de seulement 0,3% par jour.
 ---
 
+### 🌍 Global Financial Stability (v11.0.1)
+
+| Feature / Параметр | Region / Регион | Bank Support / Поддержка | Status |
+| :--- | :--- | :---: | :---: |
+| **🇪🇺 Europe** | EU / France | LCL, Revolut, N26, CAF, BNP. | `VERIFIED` |
+| **🌎 Global** | Worldwide | Visa, Mastercard, Wise, PayPal. | `STABLE` |
+| **🛡️ Privacy** | All | Zero data logging on finance apps. | `SECURE` |
+
+---
+
+> [!IMPORTANT]
+> **RU:** В **The Omni-Protocol** встроен глобальный белый список финансовых систем. Это гарантирует 100% стабильность банковских переводов и систем верификации (KYC) по всему миру. Безопасно для установки родителям.
+> **EN:** **The Omni-Protocol** features a built-in global whitelist for financial systems. This ensures 100% stability for bank transfers and KYC verification worldwide. Parent-safe.
+
+---
 > [!CAUTION]
 > ### ⚠️ INTELLECTUAL PROPERTY & DATA SOVEREIGNTY
 > 
