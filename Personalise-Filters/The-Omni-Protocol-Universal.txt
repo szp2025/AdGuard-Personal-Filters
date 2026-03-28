@@ -262,30 +262,29 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||8.8.4.4^$important
 
 
-! [PERSONAL APEX UPGRADE - v12.1]
-! [TARGET: CHROME 146+ & REVANCED OPTIMIZATION]
+! [PERSONAL APEX UPGRADE - v12.1.1]
+! [TARGET: INSTANT REJECT & PLAY STORE FIX]
 
-! --- 1. Мгновенный разрыв рекламных сессий (Убираем ожидание 300мс) ---
+! --- 1. Google Play Store Fix (Твое решение, интегрированное в систему) ---
+@@||gvt1.com^$important,app=com.android.vending
+@@||gvt1.com^$important,app=com.google.android.gms
+
+! --- 2. Мгновенный разрыв (REJECT) - Снижаем CPU Active Time ---
+! Вместо блокировки мы мгновенно обрываем связь, чтобы не ждать 300 секунд
 ||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important,reject
 ||youtubei.googleapis.com/youtubei/v1/ads*^$important,reject
-||doubleclick.net^$important,reject
 ||googleads.g.doubleclick.net^$important,reject
+||static.doubleclick.net^$important,reject
 
-! --- 2. WebRTC L15 Hardening (Chrome Specific) ---
-! Максимальная изоляция для предотвращения утечек в новых версиях Chrome
-||*/webrtc/*^$important,xmlhttprequest
+! --- 3. Chrome Stealth & Speed ---
+! Убираем лишний "шум" из Chrome, который мы видели на твоих скринах
+||optimizationguide-pa.googleapis.com^$important,reject
+||content-autofill.googleapis.com^$important,reject
+
+! --- 4. WebRTC L15 (Stealth Mode) ---
 ||stun.l.google.com^$important,reject
 ||stun*.l.google.com^$important,reject
 
-! --- 3. Chrome Bloatware Suppression ---
-! Режем аналитику самого браузера, которая активна у тебя на скринах
-||optimizationguide-pa.googleapis.com^$important
-||content-autofill.googleapis.com^$important
-
-! --- 4. Deep Privacy (ReVanced Helper) ---
-! Помогает ReVanced работать чище, убирая скрытые логи
-||s.youtube.com^$important,reject
-||youtube.com/api/stats/ads*^$important,reject
 
 
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
