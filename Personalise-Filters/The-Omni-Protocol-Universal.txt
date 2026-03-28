@@ -261,6 +261,33 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||8.8.8.8^$important
 ||8.8.4.4^$important
 
+
+! [PERSONAL APEX UPGRADE - v12.1]
+! [TARGET: CHROME 146+ & REVANCED OPTIMIZATION]
+
+! --- 1. Мгновенный разрыв рекламных сессий (Убираем ожидание 300мс) ---
+||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important,reject
+||youtubei.googleapis.com/youtubei/v1/ads*^$important,reject
+||doubleclick.net^$important,reject
+||googleads.g.doubleclick.net^$important,reject
+
+! --- 2. WebRTC L15 Hardening (Chrome Specific) ---
+! Максимальная изоляция для предотвращения утечек в новых версиях Chrome
+||*/webrtc/*^$important,xmlhttprequest
+||stun.l.google.com^$important,reject
+||stun*.l.google.com^$important,reject
+
+! --- 3. Chrome Bloatware Suppression ---
+! Режем аналитику самого браузера, которая активна у тебя на скринах
+||optimizationguide-pa.googleapis.com^$important
+||content-autofill.googleapis.com^$important
+
+! --- 4. Deep Privacy (ReVanced Helper) ---
+! Помогает ReVanced работать чище, убирая скрытые логи
+||s.youtube.com^$important,reject
+||youtube.com/api/stats/ads*^$important,reject
+
+
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
 ! Полное уничтожение API для снятия отпечатков (Fingerprinting)
 #%#//scriptlet("set-constant", "navigator.getBattery", "undefined")
