@@ -205,6 +205,11 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ! [Preventing Bloatware Auto-Updates]
 ||cloud-config.samsungdotcom.com^$important
 
+! [YouTube API Hardening - APEX Purity]
+||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important
+||youtubei.googleapis.com/youtubei/v1/ads*^$important
+||googleads.g.doubleclick.net^$important
+||static.doubleclick.net^$important
 
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
 ! Полное уничтожение API для снятия отпечатков (Fingerprinting)
