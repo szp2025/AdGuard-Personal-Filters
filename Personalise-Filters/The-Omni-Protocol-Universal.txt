@@ -71,12 +71,22 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ! [L11] PHISH: Блок сторонних JS в банкинге (Anti-Phishing — REJECT)
 ||*$websocket,third-party,important,domain=~revolut.com|~lcl.fr|~google.com|~apple.com,reject,notify,tag=PHISHING_REJECTED
 
-! [WebRTC & STUN Leak Protection - APEX Hardening]
-||stun*.l.google.com^$important
-||stun*.services.mozilla.com^$important
-||stun*.vox-options.com^$important
-||turnserver.net^$important
-|https://$websocket,domain=~google.com,~youtube.com,~twitch.tv
+! [WebRTC & STUN Extreme Hardening - APEX Stealth]
+||stun*^$important,network
+||stun*.l.google.com^$important,network
+||stun*.services.mozilla.com^$important,network
+||stun*.vox-options.com^$important,network
+||turnserver.net^$important,network
+||*.stun.hosting^$important,network
+
+! [WebRTC Protocol Suppression]
+|https://$websocket,domain=~google.com,~youtube.com,~twitch.tv,~github.com
+||*^$network,udp,domain=~google.com,~youtube.com,~twitch.tv
+
+! [JavaScript WebRTC Killing - L12]
+#%#var RTCPeerConnection = undefined;
+#%#var webkitRTCPeerConnection = undefined;
+
 
 ! [Additional UDP Killer]
 ||*^$network,udp,domain=~google.com,~youtube.com
