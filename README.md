@@ -304,6 +304,20 @@
 > **EN:** **The Omni-Protocol** features a built-in global whitelist for financial systems. This ensures 100% stability for bank transfers and KYC verification worldwide. Parent-safe.
 
 ---
+### 🧹 Bloatware & AppCloud Suppression (Clean OS)
+
+| Feature / Параметр | Target / Цель | Result (RU/EN) | Status |
+| :--- | :--- | :--- | :---: |
+| **🚫 AppCloud Block** | System Bloatware | **RU:** Остановка рекламного мусора. / **EN:** Stops bloatware ads. | `CLEAN` |
+| **🔋 Resource Saving** | Background Apps | **RU:** Снижение жора батареи. / **EN:** Reduced battery drain. | `ACTIVE` |
+
+---
+
+> [!NOTE]
+> **RU:** В **The Omni-Protocol** интегрирована защита от предустановленного рекламного ПО (AppCloud, IronSource). Это делает систему чистой от "рекомендованных" приложений и уведомлений, экономя заряд и нервы.
+> **EN:** **The Omni-Protocol** includes protection against pre-installed bloatware (AppCloud, IronSource). It cleans the OS from unwanted "recommended" apps and notifications.
+
+---
 > [!CAUTION]
 > ### ⚠️ INTELLECTUAL PROPERTY & DATA SOVEREIGNTY
 > 
