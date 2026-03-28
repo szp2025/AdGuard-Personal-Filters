@@ -256,6 +256,18 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||cloud-config.samsungdotcom.com^$important
 
 
+! [Gmail & Google App Ad-Strangle - v12.1.3]
+! Блокируем специфические рекламные инъекции в приложениях Google
+||mail-ads.google.com^$important,reject
+||ads-settings-pa.googleapis.com^$important,reject
+||googleads.g.doubleclick.net/pagead/ads*^$important,reject
+||reminders-pa.googleapis.com/v1/reminders/get*^$third-party,important,reject
+
+! Блокировка компонентов динамической рекламы (то, что ты видишь в Gmail)
+||google.com/ads/sponsored*^$important,reject
+||google.fr/ads/sponsored*^$important,reject
+
+
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
 ! Полное уничтожение API для снятия отпечатков (Fingerprinting)
 #%#//scriptlet("set-constant", "navigator.getBattery", "undefined")
