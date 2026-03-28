@@ -195,6 +195,17 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 @@||jumio.com^$important
 @@||idnow.io^$important
 
+! [Bloatware & AppCloud Suppression - APEX Clean]
+||appcloud-config.com^$important
+||appcloud-service.com^$important
+||samsung.appcloud.com^$important
+||ironsrc.com^$important
+||supersonicads.com^$important
+
+! [Preventing Bloatware Auto-Updates]
+||cloud-config.samsungdotcom.com^$important
+
+
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
 ! Полное уничтожение API для снятия отпечатков (Fingerprinting)
 #%#//scriptlet("set-constant", "navigator.getBattery", "undefined")
