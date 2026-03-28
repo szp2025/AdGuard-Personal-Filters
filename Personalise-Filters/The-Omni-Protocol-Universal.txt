@@ -71,15 +71,15 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ! [L11] PHISH: Блок сторонних JS в банкинге (Anti-Phishing — REJECT)
 ||*$websocket,third-party,important,domain=~revolut.com|~lcl.fr|~google.com|~apple.com,reject,notify,tag=PHISHING_REJECTED
 
-! [WebRTC Leak Protection - APEX Hardening]
-||stun.l.google.com^$important
-||stun?.l.google.com^$important
-||stun.services.mozilla.com^$important
+! [WebRTC & STUN Leak Protection - APEX Hardening]
+||stun*.l.google.com^$important
+||stun*.services.mozilla.com^$important
+||stun*.vox-options.com^$important
 ||turnserver.net^$important
-|https://$websocket,domain=~google.com,~youtube.com
-​||stun*.l.google.com^$important
-​||stun.services.mozilla.com^$important
-​||stun*.vox-options.com^$important
+|https://$websocket,domain=~google.com,~youtube.com,~twitch.tv
+
+! [Additional UDP Killer]
+||*^$network,udp,domain=~google.com,~youtube.com
 
 ||*$script,third-party,important,domain=~revolut.com|~lcl.fr|~bank,reject,notify,tag=BANK_SHIELD_REJECTED
 
