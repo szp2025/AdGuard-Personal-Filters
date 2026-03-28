@@ -113,6 +113,44 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ||*.gptbot.com^$important,reject,notify,tag=AI_CRAWLER_REJECTED
 ||*.commoncrawl.org^$important,reject,notify,tag=AI_CRAWLER_REJECTED
 
+! [L14] Heuristic & Contextual Filtering
+! --- 1. Автономная защита от фишинга и зловредов (Global Trust) ---
+! Используем фильтрацию по типу контента, а не по именам доменов
+$badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
+$badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
+
+! --- 2. Блокировка вредоносных TLD (Весь мусор мира) ---
+||*.top^$important,third-party
+||*.gdn^$important
+||*.loan^$important
+||*.bid^$important
+||*.click^$important
+||*.zip^$important
+||*.mov^$important
+
+! --- 3. Универсальный анти-трекинг (Умный стелс) ---
+! Блокируем передачу ID пользователя, но разрешаем саму работу сайта
+||*analytics*^$important,third-party,xmlhttprequest
+||*metrics*^$important,third-party,xmlhttprequest
+||*telemetry*^$important,third-party,xmlhttprequest
+
+! --- 4. Защита от крипто-майнинга и Scareware (Универсально) ---
+||*coin*^$important,third-party,script
+||*-virus-alert*^$important
+||*-system-update*^$important
+
+! --- 5. Умный YouTube Cast & Google API (Без рекламы) ---
+||googlevideo.com/videoplayback?*&adformat=*^$important
+||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important
+
+! --- 6. Автономный Вайтлист (Умное исключение) ---
+! Это правило разрешает ЛЮБЫЕ платежные и банковские операции по ключевым признакам безопасности (Secure Headers), не требуя прописывания имен банков.
+@@*$stealth,content-type=application/pkcs7-signature
+@@*$stealth,content-type=application/x-x509-ca-cert
+@@*$important,header=Strict-Transport-Security
+
+
+
 ! ###########################################################
 
 
