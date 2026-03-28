@@ -304,6 +304,21 @@
 > **EN:** **The Omni-Protocol** features a built-in global whitelist for financial systems. This ensures 100% stability for bank transfers and KYC verification worldwide. Parent-safe.
 
 ---
+
+### 📺 YouTube & Google API Sterilization
+
+| Target / Цель | Action / Действие | Result / Результат | Status |
+| :--- | :--- | :--- | :---: |
+| **youtubei.googleapis.com** | Sub-request Filtering | **RU:** Блок рекламы в API. / **EN:** Ad-block in API. | `ACTIVE` |
+| **Doubleclick & Ads** | Total Domain Block | **RU:** Полная зачистка рекламы. / **EN:** Total ad sweep. | `KILLED` |
+
+---
+
+> [!NOTE]
+> **RU:** В **The Omni-Protocol** v11.0.2 добавлена глубокая фильтрация `youtubei.googleapis.com`. Мы блокируем только рекламные вставки (`ad_break`), сохраняя скорость загрузки видео и минимизируя время ожидания (Time-to-Load).
+> **EN:** **The Omni-Protocol** v11.0.2 introduces deep filtering for `youtubei.googleapis.com`. We only target `ad_break` requests, preserving video speed and minimizing load times.
+
+---
 ### 🧹 Bloatware & AppCloud Suppression (Clean OS)
 
 | Feature / Параметр | Target / Цель | Result (RU/EN) | Status |
