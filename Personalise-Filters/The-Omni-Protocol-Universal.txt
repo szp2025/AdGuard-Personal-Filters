@@ -253,8 +253,6 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||samsung.appcloud.com^$important
 ||ironsrc.com^$important
 ||supersonicads.com^$important
-
-! [Preventing Bloatware Auto-Updates]
 ||cloud-config.samsungdotcom.com^$important
 
 
