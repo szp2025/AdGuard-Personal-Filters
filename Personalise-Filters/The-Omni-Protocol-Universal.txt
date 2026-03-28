@@ -162,6 +162,39 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 @@||*.5play.life^$important,document,generichide
 
 
+! [GLOBAL BANKING & FINANCE WHITELIST - APEX STEALTH]
+
+! --- Global Fintech & Neobanks ---
+@@||revolut.com^$important
+@@||n26.com^$important
+@@||wise.com^$important
+@@||payoneer.com^$important
+@@||monzo.com^$important
+
+! --- France (LCL, CAF & Major Banks) ---
+@@||lcl.fr^$important
+@@||caf.fr^$important
+@@||labanquepostale.fr^$important
+@@||societegenerale.fr^$important
+@@||bnpparibas.fr^$important
+@@||credit-agricole.fr^$important
+@@||ca-moncompte.fr^$important
+@@||boursobank.com^$important
+
+! --- International Payment Systems (The Backbone) ---
+@@||visa.com^$important
+@@||mastercard.com^$important
+@@||amex.com^$important
+@@||applepay.com^$important
+@@||googlepay.com^$important
+@@||paypal.com^$important
+@@||stripe.com^$important
+
+! --- Global Security & KYC (Necessary for VideoID) ---
+@@||onfido.com^$important
+@@||jumio.com^$important
+@@||idnow.io^$important
+
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
 ! Полное уничтожение API для снятия отпечатков (Fingerprinting)
 #%#//scriptlet("set-constant", "navigator.getBattery", "undefined")
