@@ -114,12 +114,18 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ||*.commoncrawl.org^$important,reject,notify,tag=AI_CRAWLER_REJECTED
 
 ! [L14] Heuristic & Contextual Filtering
-! --- 1. Автономная защита от фишинга и зловредов (Global Trust) ---
-! Используем фильтрацию по типу контента, а не по именам доменов
+! [STATUS: AUTONOMOUS & INSTANT REJECT]
+
+! --- 1. АВТОНОМНЫЙ ВАЙТЛИСТ (Smart Bypass) ---
+@@*$stealth,content-type=application/pkcs7-signature
+@@*$stealth,content-type=application/x-x509-ca-cert
+@@*$important,header=Strict-Transport-Security
+@@||gvt1.com^$important,app=com.android.vending
+@@||gvt1.com^$important,app=com.google.android.gms
+
+! --- 2. GLOBAL THREAT PROTECTION (Heuristics) ---
 $badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
 $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
-
-! --- 2. Блокировка вредоносных TLD (Весь мусор мира) ---
 ||*.top^$important,third-party
 ||*.gdn^$important
 ||*.loan^$important
@@ -128,28 +134,36 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||*.zip^$important
 ||*.mov^$important
 
-! --- 3. Универсальный анти-трекинг (Умный стелс) ---
-! Блокируем передачу ID пользователя, но разрешаем саму работу сайта
-||*analytics*^$important,third-party,xmlhttprequest
-||*metrics*^$important,third-party,xmlhttprequest
-||*telemetry*^$important,third-party,xmlhttprequest
+! --- 3. UNIVERSAL STEALTH & APEX PURITY (Instant Reject) ---
+||*analytics*^$important,third-party,xmlhttprequest,reject
+||*metrics*^$important,third-party,xmlhttprequest,reject
+||*telemetry*^$important,third-party,xmlhttprequest,reject
+||*coin*^$important,third-party,script,reject
+||*-virus-alert*^$important,reject
+||*-system-update*^$important,reject
+||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important,reject
+||youtubei.googleapis.com/youtubei/v1/ads*^$important,reject
+||googleads.g.doubleclick.net^$important,reject
+||static.doubleclick.net^$important,reject
+||googlevideo.com/videoplayback?*&adformat=*^$important,reject
+||googlevideo.com/videoplayback?*&ptracking=*^$important,reject
+||s.youtube.com^$important,reject
+||youtube.com/api/stats/ads*^$important,reject
+||youtube.com/get_midroll_info*^$important,reject
+||optimizationguide-pa.googleapis.com^$important,reject
+||content-autofill.googleapis.com^$important,reject
 
-! --- 4. Защита от крипто-майнинга и Scareware (Универсально) ---
-||*coin*^$important,third-party,script
-||*-virus-alert*^$important
-||*-system-update*^$important
-
-! --- 5. Умный YouTube Cast & Google API (Без рекламы) ---
-||googlevideo.com/videoplayback?*&adformat=*^$important
-||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important
-
-! --- 6. Автономный Вайтлист (Умное исключение) ---
-! Это правило разрешает ЛЮБЫЕ платежные и банковские операции по ключевым признакам безопасности (Secure Headers), не требуя прописывания имен банков.
-@@*$stealth,content-type=application/pkcs7-signature
-@@*$stealth,content-type=application/x-x509-ca-cert
-@@*$important,header=Strict-Transport-Security
+! --- 4. NETWORK HARDENING (DNS & WebRTC) ---
+||stun.l.google.com^$important,reject
+||stun*.l.google.com^$important,reject
+||8.8.8.8^$important
+||8.8.4.4^$important
 
 
+
+! [L15] WebRTC (Stealth Mode) 
+||stun.l.google.com^$important,reject
+||stun*.l.google.com^$important,reject
 
 ! ###########################################################
 
@@ -242,49 +256,6 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 
 ! [Preventing Bloatware Auto-Updates]
 ||cloud-config.samsungdotcom.com^$important
-
-! [YouTube API Hardening - APEX Purity]
-||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important
-||youtubei.googleapis.com/youtubei/v1/ads*^$important
-||googleads.g.doubleclick.net^$important
-||static.doubleclick.net^$important
-
-! [YouTube Cast & Freebox Hardening - APEX Purity]
-||googlevideo.com/videoplayback?*&adformat=*^$important
-||googlevideo.com/videoplayback?*&ptracking=*^$important
-||s.youtube.com^$important
-||youtube.com/api/stats/ads*^$important
-||youtube.com/get_midroll_info*^$important
-
-! [Google DNS Bypass Prevention]
-! Блокируем попытки Cast-устройств идти в обход AdGuard через Google DNS
-||8.8.8.8^$important
-||8.8.4.4^$important
-
-
-! [PERSONAL APEX UPGRADE - v12.1.1]
-! [TARGET: INSTANT REJECT & PLAY STORE FIX]
-
-! --- 1. Google Play Store Fix (Твое решение, интегрированное в систему) ---
-@@||gvt1.com^$important,app=com.android.vending
-@@||gvt1.com^$important,app=com.google.android.gms
-
-! --- 2. Мгновенный разрыв (REJECT) - Снижаем CPU Active Time ---
-! Вместо блокировки мы мгновенно обрываем связь, чтобы не ждать 300 секунд
-||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important,reject
-||youtubei.googleapis.com/youtubei/v1/ads*^$important,reject
-||googleads.g.doubleclick.net^$important,reject
-||static.doubleclick.net^$important,reject
-
-! --- 3. Chrome Stealth & Speed ---
-! Убираем лишний "шум" из Chrome, который мы видели на твоих скринах
-||optimizationguide-pa.googleapis.com^$important,reject
-||content-autofill.googleapis.com^$important,reject
-
-! --- 4. WebRTC L15 (Stealth Mode) ---
-||stun.l.google.com^$important,reject
-||stun*.l.google.com^$important,reject
-
 
 
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
