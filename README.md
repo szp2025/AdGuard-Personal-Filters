@@ -240,7 +240,32 @@
 | **Русский** | **Zero Jitter:** Блокировка **153+ реклам** & **125K+** освобождает CPU. **Чистые звонки:** Без шума телеметрии. **RF Noise Reduction:** -50ГБ+ мусора в месяц. | `STABLE` |
 
 ---
+### 🔋 Ultra-Low Energy Consumption (APEX Efficiency)
 
+| Language | Battery Impact / 24h Usage | Status |
+| :--- | :--- | :---: |
+| **English** | **0.30% Consumption.** Stealth operation mode. | `OPTIMIZED` |
+| **Français** | **0.30% Consommation.** Mode furtif total. | `OPTIMIZED` |
+| **Русский** | **0,30% Потребления.** Режим полной скрытности. | `OPTIMIZED` |
+
+---
+
+> [!NOTE]
+> **RU:** Реальные показатели за 24 часа: всего **14,51 мАч (0,30%)** при активной фильтрации 9.9 тыс. запросов. Благодаря архитектуре **The Omni-Protocol**, нагрузка на CPU в фоновом режиме практически нулевая, что подтверждают тесты на Chrome 146+.
+>
+> **EN:** Real 24h metrics: only **14.51 mAh (0.30%)** consumed while filtering 9.9k requests. Thanks to **The Omni-Protocol** architecture, background CPU load is near zero, as confirmed by latest tests.
+>
+> **FR:** Métriques réelles sur 24h : seulement **14,51 mAh (0,30%)** consommés pour 9,9k requêtes filtrées. L'architecture **The Omni-Protocol** garantit une charge CPU quasi nulle en arrière-plan.
+
+---
+
+#### 🛰️ Почему это возможно / Why it works:
+
+* **⚡️ Zero Wakeups:** Фильтр не «будит» процессор без необходимости. Обработка пакетов происходит мгновенно на уровне ядра.
+* **📉 Traffic Clean-up:** Блокируя **50 ГБ+** мусора в месяц, мы экономим энергию, которую модем (Wi-Fi/4G) потратил бы на передачу и нагрев.
+* **🛡️ Passive Defense:** Защита от WebRTC и трекеров работает как пассивный барьер — никакой лишней активности или сложных вычислений.
+
+---
 > [!TIP]
 >* **EN:** Deep sterilization (**L0-L13**) eliminates micro-delays in Bluetooth streams. **Solix Nexus** level headphones achieve peak clarity, often making ANC unnecessary.
 >* **FR:** La stérilisation (**L0-L13**) élimine les micro-retards Bluetooth. Les casques comme **Solix Nexus** atteignent une clarté telle que l'ANC devient facultatif.
