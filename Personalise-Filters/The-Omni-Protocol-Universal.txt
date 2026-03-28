@@ -211,6 +211,18 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ||googleads.g.doubleclick.net^$important
 ||static.doubleclick.net^$important
 
+! [YouTube Cast & Freebox Hardening - APEX Purity]
+||googlevideo.com/videoplayback?*&adformat=*^$important
+||googlevideo.com/videoplayback?*&ptracking=*^$important
+||s.youtube.com^$important
+||youtube.com/api/stats/ads*^$important
+||youtube.com/get_midroll_info*^$important
+
+! [Google DNS Bypass Prevention]
+! Блокируем попытки Cast-устройств идти в обход AdGuard через Google DNS
+||8.8.8.8^$important
+||8.8.4.4^$important
+
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
 ! Полное уничтожение API для снятия отпечатков (Fingerprinting)
 #%#//scriptlet("set-constant", "navigator.getBattery", "undefined")
