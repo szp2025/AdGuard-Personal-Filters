@@ -154,12 +154,22 @@ $badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
 ||(appcloud-config|appcloud-service|samsung.appcloud|ironsrc|supersonicads|cloud-config.samsungdotcom|mail-ads.google|ads-settings-pa).com^$important,reject
 ||(googleads.g.doubleclick.net/pagead/ads|reminders-pa.googleapis.com/v1/reminders/get|google.*/ads/sponsored)*^$important,reject
 
-! [L15-S4] SEARCH & PORTALS: Глобальная реанимация (v39.0 — OMNI-RECOVERY)
-! [SEARCH-FIX] Бесшовный проход для Поиска, Почты и Порталов (Yahoo, Yandex, Mail, Bing)
-@@/^(https?:\/\/)?([^\/]+\.)?(yandex|ya|dzen|mail|duckduckgo|bing|ecosia|yahoo)\.(ru|com|fr|org)\/.*$/$important,document,generichide,css,xmlhttprequest,referrer
+! [L15-S4] EMERGENCY SEARCH FIX: Полный приоритетный проход (v40.0 — TOTAL REJECT BYPASS)
+! [WHITELIST] Разрешаем всё для стабильности: Google, Yandex, Yahoo, Bing, DuckDuckGo
+@@||google.*^$important,document,xmlhttprequest,css,script,referrer,subdocument
+@@||yandex.*^$important,document,xmlhttprequest,css,script,referrer,subdocument
+@@||ya.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument
+@@||yahoo.com^$important,document,xmlhttprequest,css,script,referrer,subdocument
+@@||bing.com^$important,document,xmlhttprequest,css,script,referrer,subdocument
+@@||duckduckgo.com^$important,document,xmlhttprequest,css,script,referrer,subdocument
+@@||mail.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument
+@@||dzen.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument
 
-! [DNS-TUNING] Снятие ограничений L17 для стабильности поисковых шлюзов
-@@/^(https?:\/\/)?([^\/]+\.)?(yandex|ya|dzen|mail|duckduckgo|bing|ecosia|yahoo)\.(ru|com|fr|org)\/.*$/$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+! [DNS-FORCE] Принудительное отключение фильтрации типов DNS для поиска
+@@||google.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||yandex.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||yahoo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||bing.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 
 
 
