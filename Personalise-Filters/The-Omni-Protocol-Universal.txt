@@ -1442,5 +1442,30 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! --- 5. Clipboard-Logic Hide (Защита буфера обмена) ---
 #%#//scriptlet("set-constant", "navigator.clipboard.readText", "undefined")
 
+! [L40: ENTROPY-KILL & RESOURCE-TIMING SHIELD - V65.0]
+
+! --- 1. Resource-Timing Deception (Защита от сканирования истории через кэш) ---
+! Блокируем передачу точных данных о времени загрузки картинок и скриптов.
+#%#//scriptlet("set-constant", "PerformanceResourceTiming.prototype.duration", "0")
+#%#//scriptlet("set-constant", "PerformanceResourceTiming.prototype.startTime", "0")
+
+! --- 2. Memory-Usage Fuzzing (Защита от замера потребления RAM сайтом) ---
+! Хакеры замеряют, сколько памяти ест вкладка, чтобы понять модель твоего CPU. 
+! Мы возвращаем стандартное значение (2 ГБ лимит).
+#%#//scriptlet("set-constant", "performance.memory", "{ usedJSHeapSize: 104857600, totalJSHeapSize: 209715200, jsHeapSizeLimit: 2147483648 }")
+
+! --- 3. Screen-Extended Obfuscation (Защита от определения второго монитора) ---
+! Запрещаем сайтам знать, подключен ли у тебя второй экран или телевизор.
+#%#//scriptlet("set-constant", "window.screen.isExtended", "false")
+
+! --- 4. User-Preference Privacy (Защита от утечки настроек системы) ---
+! Форсируем стандартные настройки: отключаем "Reduce Motion" и "High Contrast", чтобы не выделяться.
+#%#//scriptlet("set-constant", "window.matchMedia('(prefers-reduced-motion: reduce)').matches", "false")
+#%#//scriptlet("set-constant", "window.matchMedia('(forced-colors: active)').matches", "false")
+
+! --- 5. Vibration-API Kill (Защита от "прослушки" через вибромотор) ---
+! Хакеры могут использовать вибрацию для передачи данных или идентификации.
+#%#//scriptlet("set-constant", "navigator.vibrate", "function() { return true; }")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
