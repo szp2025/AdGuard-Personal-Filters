@@ -154,24 +154,23 @@ $badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
 ||(appcloud-config|appcloud-service|samsung.appcloud|ironsrc|supersonicads|cloud-config.samsungdotcom|mail-ads.google|ads-settings-pa).com^$important,reject
 ||(googleads.g.doubleclick.net/pagead/ads|reminders-pa.googleapis.com/v1/reminders/get|google.*/ads/sponsored)*^$important,reject
 
-! [L15-S4] EMERGENCY SEARCH & DZEN FIX: Полный приоритетный проход (v40.1)
-! [WHITELIST] Разрешаем всё для стабильности: Google, Yandex, Dzen, Yahoo, Bing, DDG
-@@||google.*^$important,document,xmlhttprequest,css,script,referrer,subdocument
-@@||yandex.*^$important,document,xmlhttprequest,css,script,referrer,subdocument
-@@||ya.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument
-@@||dzen.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument
-@@||mail.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument
-@@||yahoo.com^$important,document,xmlhttprequest,css,script,referrer,subdocument
-@@||bing.com^$important,document,xmlhttprequest,css,script,referrer,subdocument
-@@||duckduckgo.com^$important,document,xmlhttprequest,css,script,referrer,subdocument
+! [L15-S4] NUCLEAR SEARCH RECOVERY: Полное исключение из фильтрации (v41.0)
+! [BYPASS] Отключаем все блокировки для Поиска и Дзена (Fixed v41.0)
+@@||google.*^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||yandex.*^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||ya.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||dzen.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||mail.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||yahoo.com^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||bing.com^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||duckduckgo.com^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
 
-! [DNS-FORCE] Принудительное отключение фильтрации типов DNS для Поиска и Дзена
-@@||google.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||yandex.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||ya.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||dzen.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||yahoo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||bing.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+! [NETWORK-EXCLUDE] Исключаем домены из всех сетевых правил L16-L19
+@@||google.*^$networkaddress=~ip,dnstype=~HTTPS,dnstype=~64,dnstype=~65,dnstype=~A,dnstype=~AAAA
+@@||yandex.*^$networkaddress=~ip,dnstype=~HTTPS,dnstype=~64,dnstype=~65,dnstype=~A,dnstype=~AAAA
+@@||ya.ru^$networkaddress=~ip,dnstype=~HTTPS,dnstype=~64,dnstype=~65,dnstype=~A,dnstype=~AAAA
+@@||dzen.ru^$networkaddress=~ip,dnstype=~HTTPS,dnstype=~64,dnstype=~65,dnstype=~A,dnstype=~AAAA
+
 
 
 
