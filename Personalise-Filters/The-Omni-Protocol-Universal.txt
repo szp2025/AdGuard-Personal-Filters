@@ -1467,5 +1467,27 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! Хакеры могут использовать вибрацию для передачи данных или идентификации.
 #%#//scriptlet("set-constant", "navigator.vibrate", "function() { return true; }")
 
+! [L41: GEOMETRY-NOISE & CLIENT-RECTS SHIELD - V66.0]
+
+! --- 1. Geometry-Rounding (Убийца нанопиксельного фингерпринтинга кнопок) ---
+! Мы округляем размеры всех элементов, чтобы скрыть версию драйвера видеокарты.
+#%#//scriptlet("set-constant", "Element.prototype.getClientRects", "function() { return []; }")
+#%#//scriptlet("set-constant", "Element.prototype.getBoundingClientRect", "function() { var rect = this.getBoundingClientRect(); return { top: rect.top, left: rect.left, bottom: rect.bottom, right: rect.right, width: Math.round(rect.width), height: Math.round(rect.height) }; }")
+
+! --- 2. Font-Face Stealth (Защита от деанонимизации по установленному софту) ---
+! Запрещаем сайтам проверять, подгрузились ли специфические шрифты.
+#%#//scriptlet("set-constant", "FontFace.prototype.load", "function() { return Promise.reject(); }")
+
+! --- 3. Screen-Taskbar Masking (Скрытие типа и расположения панели задач ОС) ---
+! Делаем вид, что у нас нет панелей задач, мешающих обзору (чистый экран).
+#%#//scriptlet("set-constant", "window.screen.availTop", "0")
+#%#//scriptlet("set-constant", "window.screen.availLeft", "0")
+#%#//scriptlet("set-constant", "window.screen.availWidth", "1920")
+#%#//scriptlet("set-constant", "window.screen.availHeight", "1080")
+
+! --- 4. Anti-Bot Flag Hardening (Финальное подтверждение "человечности") ---
+! Намертво фиксируем статус обычного пользователя.
+#%#//scriptlet("set-constant", "navigator.webdriver", "false")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
