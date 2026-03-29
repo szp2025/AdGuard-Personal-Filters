@@ -114,58 +114,40 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ||*.commoncrawl.org^$important,reject,notify,tag=AI_CRAWLER_REJECTED
 
 ! [L14] Heuristic & Contextual Filtering
-! [STATUS: UNIVERSAL GOOGLE PURGE & INSTANT REJECT v13.1]
+! [STATUS: ANTI-INVASION & TOTAL PURGE v15.0]
 
-! --- 1. АВТОНОМНЫЙ ВАЙТЛИСТ (Smart Bypass & Play Store Fix) ---
+! --- 1. АВТОНОМНЫЙ ВАЙТЛИСТ (Smart Bypass & Fixes) ---
+! Критически важные исключения для работы системы и банков
 @@*$stealth,content-type=application/pkcs7-signature
 @@*$stealth,content-type=application/x-x509-ca-cert
 @@*$important,header=Strict-Transport-Security
 @@||gvt1.com^$important,app=com.android.vending
 @@||gvt1.com^$important,app=com.google.android.gms
+@@||loirehabitat.fr^$important
 
-! --- 2. GLOBAL THREAT PROTECTION (Total Heuristics & TLD Blacklist) ---
-! Эвристический анализ фишинговых заголовков
+! --- 2. GLOBAL THREAT PROTECTION (The ".TOP" Killer) ---
+! Эвристический анализ и мгновенная блокировка вредоносных зон
 $badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
 $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
+||*.top^$important,reject
+||*.top^$third-party,reject
+||*.zip^$important,reject
+||*.mov^$important,reject
+||*.gdn^$important,reject
+||*.loan^$important,reject
+||*.bid^$important,reject
+||*.click^$important,reject
+||*.work^$important,reject
+||*.buzz^$important,reject
+||*.gq^$important,reject
+||*.tk^$important,reject
+||*.ml^$important,reject
+||*.cf^$important,reject
+||*.ga^$important,reject
+||*.icu^$important,third-party,reject
 
-! Блокировка вредоносных и мусорных доменных зон (Фишинг/Вирусы/Сказочный спам)
-||*.top^$important,third-party
-||*.zip^$important
-||*.mov^$important
-||*.gdn^$important
-||*.loan^$important
-||*.bid^$important
-||*.click^$important
-||*.work^$important
-||*.buzz^$important
-||*.country^$important
-||*.stream^$important
-||*.party^$important
-||*.date^$important
-||*.faith^$important
-||*.trade^$important
-||*.win^$important
-||*.kim^$important
-||*.science^$important
-||*.gq^$important
-||*.tk^$important
-||*.ml^$important
-||*.cf^$important
-||*.ga^$important
-||*.men^$important
-||*.uno^$important
-||*.live^$important,third-party
-||*.surf^$important,third-party
-||*.icu^$important,third-party
-
-! Защита от крипто-майнеров и Scareware на лету
-||*coin*^$important,third-party,script,reject
-||*-virus-alert*^$important,reject
-||*-system-update*^$important,reject
-||*-security-warning*^$important,reject
-
-! --- 3. UNIVERSAL GOOGLE AD-STRANGLE (Deep Injection Kill) ---
-! Бьем по системным компонентам, которые вшивают рекламу в приложения
+! --- 3. UNIVERSAL GOOGLE AD-STRANGLE (Deep GMS Purge) ---
+! Вырезаем "Annonce" и рекламные инъекции во всех Google-сервисах
 ||mail-ads.google.com^$important,reject
 ||ads-settings-pa.googleapis.com^$important,reject
 ||googleads.g.doubleclick.net^$important,reject
@@ -175,12 +157,16 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||google.*/pagead/ads*^$important,reject
 ||pagead2.googlesyndication.com^$important,reject
 ||tpc.googlesyndication.com^$important,reject
-! --- НОВОЕ: Блокировка рекламных конфигов GMS ---
 ||google.android.gms/admob*^$important,reject
 ||google.android.gms/ads*^$important,reject
 ||www.google-analytics.com^$important,reject
 ||safebrowsing.googleapis.com^$important,reject,app=com.google.android.gm
-! --- 4. YOUTUBE, CAST & CHROME (Instant Reject) ---
+||googleads.g.doubleclick.net/pagead/adview*^$important,reject
+||googleads.g.doubleclick.net/pagead/render*^$important,reject
+||tpc.googlesyndication.com/safeframe*^$important,reject
+||www.gstatic.com/generate_204^$important,reject,app=com.google.android.gm
+
+! --- 4. YOUTUBE, CAST & STEALTH (Instant Reject) ---
 ||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important,reject
 ||youtubei.googleapis.com/youtubei/v1/ads*^$important,reject
 ||googlevideo.com/videoplayback?*&adformat=*^$important,reject
@@ -191,7 +177,7 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||optimizationguide-pa.googleapis.com^$important,reject
 ||content-autofill.googleapis.com^$important,reject
 
-! --- 5. UNIVERSAL STEALTH (Анти-трекинг и Телеметрия v2) ---
+! --- 5. UNIVERSAL ANTI-TRACKING (No Logs, No Trace) ---
 ||*analytics*^$important,third-party,xmlhttprequest,reject
 ||*metrics*^$important,third-party,xmlhttprequest,reject
 ||*telemetry*^$important,third-party,xmlhttprequest,reject
@@ -205,6 +191,7 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||stun*.l.google.com^$important,reject
 ||8.8.8.8^$important
 ||8.8.4.4^$important
+
 
 ! --- [GMS & GMAIL INTERFACE PURGE] ---
 ! Блокируем саму отрисовку рекламных "писем" в интерфейсе
