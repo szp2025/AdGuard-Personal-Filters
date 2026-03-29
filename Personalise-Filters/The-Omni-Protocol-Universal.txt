@@ -1224,4 +1224,25 @@ $removeparam=/^(_|cb|cachebuster|v|sw|sh|bat|os|res)$/,domain=~system|~google.co
 ! Финальный слой: динамическая маскировка URL в адресной строке для всех поисковиков
 #%#//scriptlet("execute-script", "(function(){ const url = new URL(window.location); const pList = ['q', 'text', 'p', 'query', 'word', 'wd', 's']; let hit = false; pList.forEach(p => { if(url.searchParams.has(p)) hit = true; }); if(hit){ const ghost = btoa(Math.random().toString(36).substring(2) + Date.now()); url.searchParams.set('omni_token', ghost); url.searchParams.set('apex_status', 'protected'); window.history.replaceState({}, '', url); } })();")
 
+
+! [L32: ADAPTIVE AI-SHIELD & DOM INTEGRITY - THE SINGULARITY]
+
+! --- 1. AI-Tracker Deception (Обман нейросетевых трекеров) ---
+! Подмена данных о движении мыши и скролле (предотвращение тепловых карт Heatmaps)
+#%#(function() { var lastMove = 0; window.addEventListener('mousemove', function(e) { var now = Date.now(); if (now - lastMove < 50) { e.stopImmediatePropagation(); } lastMove = now; }, true); })();
+
+! --- 2. DOM-Polymorphism Shield (Защита от самоменяющегося кода) ---
+! Запрет на создание скрытых элементов, которые пытаются "вырасти" после загрузки
+#%#//scriptlet("abort-on-stack-trace", "createElement", "banner|popup|ad-")
+#%#//scriptlet("set-constant", "canRunAds", "true")
+
+! --- 3. Script-Virtualization (Изоляция рекламных функций) ---
+! Перехват функций проверки видимости (IntersectionObserver), чтобы реклама думала, что она скрыта
+#%#Object.defineProperty(window, 'IntersectionObserver', { value: function() { return { observe: function() {}, unobserve: function() {}, disconnect: function() {} }; } });
+
+! --- 4. Deep URL-Entropy (Квантовое заметание следов) ---
+! Удаление параметров, которые передают информацию о времени клика и пути курсора
+$removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=~google.com|~bank|~yandex.ru
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
