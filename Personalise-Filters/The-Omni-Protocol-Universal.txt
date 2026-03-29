@@ -164,7 +164,8 @@ $badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
 @@||bing.com^$important,document,generichide,css,xmlhttprequest
 @@||ecosia.org^$important,document,generichide,css,xmlhttprequest
 
-@@||yahoo.com^$important,document,generichide,css,xmlhttprequest
+@@||fr.yahoo.com^$important,document,generichide,css,xmlhttprequest
+
 
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
 ! Полное уничтожение API для снятия отпечатков (Fingerprinting)
