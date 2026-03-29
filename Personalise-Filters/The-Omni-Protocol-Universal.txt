@@ -1334,5 +1334,16 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! Подмена данных о частоте обновления экрана (блокировка 120Hz/144Hz фингерпринта)
 #%#//scriptlet("set-constant", "screen.updateInterval", "16.67")
 
+! [L34: ENGINE INTEGRITY & CLOCK SKEW - V59.0]
+
+! --- 1. Client-Hints Neutralization (Ослепление новых методов слежки Google) ---
+#%#//scriptlet("set-constant", "navigator.userAgentData", "undefined")
+
+! --- 2. Clock-Skew Defense (Защита от утечки системного времени и пояса) ---
+#%#//scriptlet("set-constant", "Intl.DateTimeFormat.prototype.resolvedOptions", "function() { return { locale: 'ru-RU', timeZone: 'Europe/Moscow', calendar: 'gregory' }; }")
+
+! --- 3. WebGL-Unmasking (Маскировка видеокарты под стандартную "Intel") ---
+#%#//scriptlet("set-constant", "WebGLRenderingContext.prototype.getParameter", "function(p) { if (p == 37445 || p == 37446) return 'Intel Inc.'; return 0; }")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
