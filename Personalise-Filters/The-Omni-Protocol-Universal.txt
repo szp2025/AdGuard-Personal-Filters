@@ -158,6 +158,7 @@ $badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
 ! [WHITELIST] Разрешаем критические типы запросов для основных поисковиков
 @@||yandex.ru^$important,document,generichide,css,xmlhttprequest
 @@||ya.ru^$important,document,generichide,css,xmlhttprequest
+@@||dzen.ru^$important,document,generichide,css,xmlhttprequest
 @@||duckduckgo.com^$important,document,generichide,css,xmlhttprequest
 @@||bing.com^$important,document,generichide,css,xmlhttprequest
 @@||ecosia.org^$important,document,generichide,css,xmlhttprequest
