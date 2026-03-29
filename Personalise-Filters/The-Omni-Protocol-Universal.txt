@@ -1366,5 +1366,25 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 #%#//scriptlet("set-constant", "window.speechSynthesis", "undefined")
 #%#//scriptlet("set-constant", "window.SpeechRecognition", "undefined")
 
+! [L36: SANDBOX-INTERCEPTION & SOCKET-GUARD - V61.0]
+
+! --- 1. Privacy-Sandbox Deception (Аннигиляция Topics и FLEDGE) ---
+#%#//scriptlet("set-constant", "document.browsingTopics", "undefined")
+#%#//scriptlet("set-constant", "navigator.runAdAuction", "undefined")
+#%#//scriptlet("set-constant", "navigator.joinAdInterestGroup", "undefined")
+
+! --- 2. Shared-Storage Isolation (Защита от межсайтовой склейки ID) ---
+#%#//scriptlet("set-constant", "window.sharedStorage", "undefined")
+
+! --- 3. Web-Transport & Socket Hardening (Блокировка скрытых туннелей данных) ---
+#%#//scriptlet("set-constant", "window.WebTransport", "undefined")
+
+! --- 4. Attribution-Reporting Kill (Запрет отчетов о твоих действиях) ---
+#%#//scriptlet("set-attribute", "a, img, script", "attributionreporting", "undefined")
+#%#//scriptlet("set-constant", "window.attributionReporting", "undefined")
+
+! --- 5. Virtual-Keyboard Geometry (Защита от косвенного кейлоггинга) ---
+#%#//scriptlet("set-constant", "navigator.virtualKeyboard", "undefined")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
