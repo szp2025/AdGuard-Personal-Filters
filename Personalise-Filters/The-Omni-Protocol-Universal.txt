@@ -125,26 +125,14 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 @@||gvt1.com^$important,app=com.google.android.gms
 @@||loirehabitat.fr^$important
 
-! --- 2. GLOBAL THREAT PROTECTION (The ".TOP" Killer) ---
-! Эвристический анализ и мгновенная блокировка вредоносных зон
+! --- 2. GLOBAL THREAT PROTECTION (The 1000+ TLD Reaper v16.1) ---
+! Эвристика по заголовкам
 $badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
-$badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
-||*.top^$important,reject
-||*.top^$third-party,reject
-||*.zip^$important,reject
-||*.mov^$important,reject
-||*.gdn^$important,reject
-||*.loan^$important,reject
-||*.bid^$important,reject
-||*.click^$important,reject
-||*.work^$important,reject
-||*.buzz^$important,reject
-||*.gq^$important,reject
-||*.tk^$important,reject
-||*.ml^$important,reject
-||*.cf^$important,reject
-||*.ga^$important,reject
-||*.icu^$important,third-party,reject
+$badfilter,content-type=application/javascript,third-party,header=X-Fraud-Detect
+
+! [APEX REGEX v16.1] Блокируем мусор, но разрешаем доверенные зоны (third-party фильтрация)
+/^https?:\/\/([^\/]+\.)?(top|zip|mov|gdn|loan|bid|click|work|buzz|country|stream|party|date|faith|trade|win|kim|science|gq|tk|ml|cf|ga|men|uno|live|surf|icu|sbs|monster|quest|beauty|best|contact|rest|autos|forum|xyz|fit|tk|shop|info|online|site|website|space|store|tech|host|press|pw|cx|cc|biz|mobi|asia|cm|ws|re|ee|me|link|click|help|gift|pics|photo|market|agency|email|world|today|money|gold|ltd|company|digital|network|center|systems|services|solutions|group|team|plus|vip|pro|pub|fun|game|cool|rocks|expert|coach|legal|money|bank|finance|loans|credit|casino|bet|poker|bingo|lotto|adult|sex|porn|xxx|cam|video|tube|download|free|cheap|discount|sale|promo|deal|coupon|buy|secure|check|verify|login|account|update|support|service|client|billing|invoice|payment|token|crypto|coin|wallet|exchange|trade|miner|pool|hash|cloud|data|storage|server|host|dns|proxy|vpn|tor|onion|ssh|api|dev|app|mobile|android|ios|web|app|site|blog|news|press|media|social|chat|mail|email|post|office|work|job|hr|career|business|corp|inc|llp|llc|holdings|invest|capital|fund|asset|bank|safe|trust|shield|guard|protect|security|cyber|hack|exploit|malware|virus|spy|spam|junk|trash|garbage|null|zero|test|demo|example|temp|tmp|junk|bin|file|docs|pdf|xls|doc|ppt|v1|v2|v3|v4|v5|v6|v7|v8|v9|v10)\//^$important,reject,third-party
+
 
 ! --- 3. UNIVERSAL GOOGLE AD-STRANGLE (Deep GMS Purge) ---
 ! Вырезаем "Annonce" и рекламные инъекции во всех Google-сервисах
