@@ -164,8 +164,8 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||*-system-update*^$important,reject
 ||*-security-warning*^$important,reject
 
-! --- 3. UNIVERSAL GOOGLE AD-STRANGLE (Ad-Injections Kill) ---
-! Блокируем саму инфраструктуру нативной рекламы (Gmail, Feed, Ads)
+! --- 3. UNIVERSAL GOOGLE AD-STRANGLE (Deep Injection Kill) ---
+! Бьем по системным компонентам, которые вшивают рекламу в приложения
 ||mail-ads.google.com^$important,reject
 ||ads-settings-pa.googleapis.com^$important,reject
 ||googleads.g.doubleclick.net^$important,reject
@@ -173,11 +173,13 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||adservice.google.*^$important,reject
 ||google.*/ads/sponsored*^$important,reject
 ||google.*/pagead/ads*^$important,reject
-||*-pa.googleapis.com/v1/reminders/get*^$third-party,important,reject
-||feedback-pa.googleapis.com^$important,reject
 ||pagead2.googlesyndication.com^$important,reject
 ||tpc.googlesyndication.com^$important,reject
-
+! --- НОВОЕ: Блокировка рекламных конфигов GMS ---
+||google.android.gms/admob*^$important,reject
+||google.android.gms/ads*^$important,reject
+||www.google-analytics.com^$important,reject
+||safebrowsing.googleapis.com^$important,reject,app=com.google.android.gm
 ! --- 4. YOUTUBE, CAST & CHROME (Instant Reject) ---
 ||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important,reject
 ||youtubei.googleapis.com/youtubei/v1/ads*^$important,reject
