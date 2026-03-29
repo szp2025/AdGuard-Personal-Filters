@@ -1386,5 +1386,23 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! --- 5. Virtual-Keyboard Geometry (Защита от косвенного кейлоггинга) ---
 #%#//scriptlet("set-constant", "navigator.virtualKeyboard", "undefined")
 
+! [L37: LAYOUT-STABILITY & RENDER-HARDENING - V62.0]
+
+! --- 1. Font-Metric Rounding (Защита от нанопиксельного фингерпринтинга) ---
+#%#//scriptlet("set-constant", "TextMetrics.prototype.width", "Math.round")
+
+! --- 2. Layout-Shift Neutralization (Ослепление метрик производительности) ---
+#%#//scriptlet("set-constant", "LayoutShift", "undefined")
+#%#//scriptlet("set-constant", "LayoutShiftAttribution", "undefined")
+
+! --- 3. Navigation-Preload Kill (Запрет скрытой предзагрузки данных) ---
+#%#//scriptlet("set-constant", "NavigationPreloadManager", "undefined")
+
+! --- 4. Render-State Masking (Защита от трекинга видимости контента) ---
+#%#//scriptlet("set-constant", "contentvisibilityautostatechangeevent", "undefined")
+
+! --- 5. High-Precision Timing Jitter (Убийца микро-таймингов отрисовки) ---
+#%#//scriptlet("set-constant", "requestAnimationFrame", "function(cb) { return window.setTimeout(cb, 16); }")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
