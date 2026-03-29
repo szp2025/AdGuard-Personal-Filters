@@ -164,17 +164,19 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||*-system-update*^$important,reject
 ||*-security-warning*^$important,reject
 
-! --- 3. UNIVERSAL GOOGLE AD-STRANGLE (Gmail, Drive, Photos, Search) ---
-! Блокируем саму возможность подгрузки нативной рекламы в любые аппки Google
+! --- 3. UNIVERSAL GOOGLE AD-STRANGLE (Ad-Injections Kill) ---
+! Блокируем саму инфраструктуру нативной рекламы (Gmail, Feed, Ads)
 ||mail-ads.google.com^$important,reject
 ||ads-settings-pa.googleapis.com^$important,reject
 ||googleads.g.doubleclick.net^$important,reject
 ||static.doubleclick.net^$important,reject
+||adservice.google.*^$important,reject
 ||google.*/ads/sponsored*^$important,reject
 ||google.*/pagead/ads*^$important,reject
-||adservice.google.*^$important,reject
 ||*-pa.googleapis.com/v1/reminders/get*^$third-party,important,reject
 ||feedback-pa.googleapis.com^$important,reject
+||pagead2.googlesyndication.com^$important,reject
+||tpc.googlesyndication.com^$important,reject
 
 ! --- 4. YOUTUBE, CAST & CHROME (Instant Reject) ---
 ||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important,reject
@@ -187,13 +189,15 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||optimizationguide-pa.googleapis.com^$important,reject
 ||content-autofill.googleapis.com^$important,reject
 
-! --- 5. UNIVERSAL STEALTH (Анти-трекинг и Телеметрия) ---
+! --- 5. UNIVERSAL STEALTH (Анти-трекинг и Телеметрия v2) ---
 ||*analytics*^$important,third-party,xmlhttprequest,reject
 ||*metrics*^$important,third-party,xmlhttprequest,reject
 ||*telemetry*^$important,third-party,xmlhttprequest,reject
+||*log*^$important,third-party,xmlhttprequest,reject
 ||*coin*^$important,third-party,script,reject
 ||*-virus-alert*^$important,reject
 ||*-system-update*^$important,reject
+||*-security-warning*^$important,reject
 
 ! --- 6. NETWORK HARDENING (DNS & WebRTC) ---
 ||stun*.l.google.com^$important,reject
