@@ -262,41 +262,55 @@ $network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,impor
 #%#(function() { var noop = function() {}; window.PointerEvent = noop; window.TouchEvent = noop; })();
 
 
-
-! --- [Omni-Protocol: Social Media Stealth] ---
+! [L20] Social & Behavioral Stealth(v44.0)
+! [L20-S1] SOCIAL: Социальный стелс (v44.0 — SOCIAL-BAN)
+! [SOCIAL-SHIELD] Блокировка виджетов и трекеров соцсетей (FB, X, TikTok, Snap)
 ||connect.facebook.net^$important,third-party
 ||platform.twitter.com^$important,third-party
 ||tiktokv.com^$important,third-party
 ||snapchat.com^$important,third-party
-! Блокировка инъекций скриптов социальных сетей
 #%#var FB_REMOVABLE = true;
 #%#var AT_REMOVABLE = true;
 
-! --- [Omni-Protocol: Behavioral & Fingerprinting Shield] ---
+! [L20-S2] BEHAVIORAL: Поведенческий щит (v44.0 — SENSOR-BLOCK)
+! [ANTI-FINGERPRINT] Нейтрализация датчиков движения и статуса драйвера
+#%#(function() { var noop = function() {}; try { window.PointerEvent = noop; window.DeviceMotionEvent = noop; window.DeviceOrientationEvent = noop; Object.defineProperty(navigator, 'webdriver', { get: () => undefined }); } catch(e) {} })();
+
+! [L20-S3] CLIENT: Изоляция мессенджеров (v44.0 — APP-ISOLATOR)
+! [APP-FILTER] Приоритетная фильтрация для CallApp и WhatsApp
 $client=/^com\.callapp/,$important
 $client=/^com\.whatsapp/,$important
-! Нейтрализация функций отслеживания поведения
-#%#(function() { var noop = function() {}; window.PointerEvent = noop; window.DeviceMotionEvent = noop; })();
-! Блокировка методов сбора отпечатков браузера/системы
-#%#Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
 
-
-! --- [Omni-Protocol: IoT & Smart TV Deep Filter] ---
-
-! [L18] OMNI-TV: Щит переходов и Cast-стабилизатор (v35.0 — TOTAL REJECT)
-! [NEXT-VIDEO SHIELD] Блокировка рекламных инъекций при автовоспроизведении на TV
+! [L21] IoT Deep Filter Monolith (v45.0)
+! [L21-S1] SMART-TV: Щит переходов и Cast-стабилизатор (v45.0 — APEX)
+! [AUTOPLAY-SHIELD] Блокировка рекламных инъекций при автовоспроизведении (Next Video)
 ||(googleads.g.doubleclick|pagead2.googlesyndication|tpc.googlesyndication).net^$important,reject,domain=~google.com|~youtube.com
 ||youtube.com/get_midroll_info*^$important,reject
+
+! [L21-S2] IOT-SILENCE: Тотальный бан телеметрии гигантов (Samsung, LG, Sony)
+! [DNS-REWRITE] Перехват запросов на уровне 0.0.0.0 для «ослепления» слежки Smart TV
 ||/^(.*(samsung(otn|ads|cloud)|lg(smartad|common|musicid)|sony\.net|atsc\.tv|metrics\.icloud|telemetry\.microsoft)\.com|samsungotn\.net)$/^$dnsrewrite=0.0.0.0,important
+
+! [L21-S3] CONNECTIVITY: Стабилизация связи ReVanced -> TV
+! [WHITELIST] Белый коридор для функции «Link with TV code» (DIAL/Cast)
 @@||youtube.com/api/lounge/*^$important,domain=youtube.com
 
 
-! --- [Omni-Protocol: Advanced Cosmetic Cleanup] ---
+! [L22] Omni-Protocol: Advanced Cosmetic [L22-S1] COSMETIC: Высшая эстетическая очистка (v46.0 — APEX-CLEAN)
+! [DYNAMISM] Удаление контейнеров по маске класса и ID (Sponsored/Ad-slots)
 ##.ads-container
 ##div[class*="Sponsored"]
 ##div[id*="ad-slot"]
-! Убираем пустые места после блокировки рекламы
+
+! [HEURISTIC] Эвристическое схлопывание пустоты (Parent-Killer)
+! Удаляем родительские блоки, если внутри них остался только мусорный iframe
 #?#div:has(> iframe[src*="ads"])
+#?#section:has(div[class*="ad-"])
+#?#aside:has(div[id*="google_ads"])
+
+! [AUTO-COLLAPSE] Принудительное скрытие пустых селекторов после фильтрации
+##.ad-banner:empty
+##.trc_related_container:empty
 
 
 #%#//scriptlet("execute-script", "
@@ -1060,16 +1074,21 @@ Object.defineProperty(navigator, 'plugins', {
 ! Очистка параметров "вечных кук" из памяти браузера
 #%#//scriptlet("prevent-set-interval", "fingerprint")
 
-
-! [L19] Network Hyper-Drive & OS-Stealth (Сетевой гиперпривод и маскировка ОС). 
-! [L19-S1] STEALTH: Маскировка сетевого фингерпринтинга (v36.0 — OS-GAUGE)
-! [NETWORK STACK] Эталонный TTL=64, MSS=1460 и TCP Window для имитации Linux/Android
+! [L23] Hyper-Drive Stealth (v47.0)
+! [L23-S1] STEALTH: Маскировка сетевого фингерпринтинга (v47.0 — OS-GAUGE)
+! [NETWORK STACK] Имитация эталонного узла (TTL=64, MSS=1460, TCP Window)
 $network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,important
+
+! [L23-S2] POLICY: Глобальная политика переходов (v47.0 — REFERRER-GATE)
+! [HEADERS] Защита от утечки полных URL через заголовки Referrer
 *^$set-header=Referrer-Policy: no-referrer-when-downgrade
 
-! [L19-S2] LEAK-PROOFER: Защита WebRTC и локального IP (v36.0 — IP-SHIELD)
-! [ANTI-STUN] Блокировка утечек IP через WebRTC и SSDP/mDNS сканирование
-||(stun:*|webrtc.org)^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com|~google.com|~yandex.ru|~openai.com
+! [L23-S3] LEAK-PROOFER: Защита WebRTC и локального IP (v47.0 — IP-SHIELD)
+! [ANTI-STUN] Блокировка STUN-запросов и утечек реального IP через WebRTC
+||(stun:*|webrtc.org)^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com|~google.*|~yandex.*|~openai.*|~bing.com|~yahoo.com
+
+! [L23-S4] SCAN-BLOCK: Защита от сканирования локальной сети (v47.0 — LAN-SILENCE)
+! [DISCOVERY] Блокировка SSDP, mDNS и ICMP-сканирования портов
 ||/^(ssdp|mdns|icmp-discovery)/^$important,network,third-party,reject
 
 
