@@ -1346,4 +1346,25 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 #%#//scriptlet("set-constant", "WebGLRenderingContext.prototype.getParameter", "function(p) { if (p == 37445 || p == 37446) return 'Intel Inc.'; return 0; }")
 
 
+! [L35: HUMAN-EMULATOR & GHOST-INTERACTION - V60.0]
+
+! --- 1. Permissions-Logic Masking (Эвристика "Обычного Юзера") ---
+! Вместо жесткого блока (denied) выдаем статус "ожидания решения" (default)
+#%#//scriptlet("set-constant", "Notification.permission", "default")
+#%#//scriptlet("set-constant", "navigator.permissions.query", "function() { return Promise.resolve({ state: 'prompt' }); }")
+
+! --- 2. Network-Information Fake (Маскировка качества связи для VPN) ---
+! Фиксируем идеальные показатели сети, чтобы скрыть задержки прокси/VPN
+#%#//scriptlet("set-constant", "navigator.connection", "{ effectiveType: '4g', rtt: 50, downlink: 10, saveData: false }")
+
+! --- 3. Interaction-Mimicry (Унификация типа устройства) ---
+! Делаем профиль гибридным (поддержка касаний 5 точек), путаем трекеры
+#%#//scriptlet("set-constant", "navigator.maxTouchPoints", "5")
+
+! --- 4. Web-Speech Integrity (Защита от сканирования языковых пакетов ОС) ---
+! Блокируем перечисление установленных в системе голосов (Speech Synthesis)
+#%#//scriptlet("set-constant", "window.speechSynthesis", "undefined")
+#%#//scriptlet("set-constant", "window.SpeechRecognition", "undefined")
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
