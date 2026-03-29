@@ -156,17 +156,23 @@ $badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
 
 
 
-! [L15-S4] EMERGENCY: Реанимация поисковых систем (v37.0 — SEARCH FIX)
-! [WHITELIST] Разрешаем критические типы запросов для основных поисковиков
-@@||yandex.ru^$important,document,generichide,css,xmlhttprequest
-@@||ya.ru^$important,document,generichide,css,xmlhttprequest
-@@||dzen.ru^$important,document,generichide,css,xmlhttprequest
-@@||mail.ru^$important,document,generichide,css,xmlhttprequest
-@@||duckduckgo.com^$important,document,generichide,css,xmlhttprequest
-@@||bing.com^$important,document,generichide,css,xmlhttprequest
-@@||ecosia.org^$important,document,generichide,css,xmlhttprequest
+! [L15-S4] SEARCH & DZEN RECOVERY: Стабильный Монолит (v42.0 — FINAL OK)
+! [WHITELIST] Прямой проброс для Поиска и Дзена (Все флаги разблокированы)
+@@||google.*^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||yandex.*^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||ya.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||dzen.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||mail.ru^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||fr.yahoo.com^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||bing.com^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
+@@||duckduckgo.com^$important,document,xmlhttprequest,css,script,referrer,subdocument,ping,other
 
-@@||fr.yahoo.com^$important,document,generichide,css,xmlhttprequest
+! [DNS-TUNING] Снятие ограничений на типы DNS для восстановления скорости поиска
+@@||google.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||yandex.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||ya.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||dzen.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||fr.yahoo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 
 
 
