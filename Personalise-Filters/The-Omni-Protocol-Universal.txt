@@ -137,99 +137,22 @@ $badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
 #%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "undefined")
 #%#//scriptlet("set-constant", "navigator.getUserMedia", "undefined")
 
-! --- 1. Global Trusted Zones (TLD-Level Access) ---
-@@||gov^$important,document,generichide
-@@||mil^$important,document,generichide
-@@||edu^$important,document,generichide
-@@||fr^$document,generichide
-@@||com^$document,generichide
-@@||net^$document,generichide
-@@||org^$document,generichide
-@@||life^$$document,generichide
-@@ftp://*^$important,document,generichide
-@@ftps://*^$important,document,generichide
-@@||office.com^$important,document,generichide,css
-@@||microsoft.com^$important,document,generichide,css
-@@||live.com^$important,document,generichide,css
+! [L15] WHITE: Глобальные зоны доверия (Trusted Zones v27.0 — HEURISTIC PASS)
+! [SMART BYPASS] Эвристический проход для критических доменов и системных ресурсов
 
+! [L15-S1] AUTH & IDENTITY: Эвристическая авторизация (v29.0 — SECURE AUTH)
+! [HEURISTIC AUTH] Проверка подлинности сессий Apple/Google/Okta
+@@/^(https?:\/\/)?([^\/]+\.)?(accounts\.google|appleid\.apple|microsoftonline|okta)\.com\/.*$/$important,document,generichide,css,extension,domain=google.com|youtube.com|apple.com|icloud.com|microsoft.com|office.com
+@@*$stealth,content-type=application/x-javascript,domain=accounts.google.com|appleid.apple.com
 
-! --- 2. Identity & Global Auth (Unified Group) ---
-@@||accounts.google.com^$important,domain=google.com|youtube.com
-@@||appleid.apple.com^$important,domain=apple.com|icloud.com
-@@||microsoftonline.com^$important,domain=microsoft.com|office.com
-@@||okta.com^$important
+! [L15-S2] FINTECH & NODES: Эвристический проход (The Financial Shield)
+! [TYPE ANALYSIS] Разрешаем только критические компоненты для Банков и AI
+@@/^(https?:\/\/)?([^\/]+\.)?(openai|chatgpt|yandex|dzen|google|m2mlease|paypal|stripe|revolut|n26|wise|payoneer|monzo|lcl|caf|labanquepostale|societegenerale|bnpparibas|credit-agricole|ca-moncompte|boursobank|visa|mastercard|amex|applepay|googlepay|onfido|jumio|idnow|5play)\.(com|fr|ru|io|life)\/.*$/$important,document,generichide,css,font,application,xmlhttprequest
 
-! --- 3. Critical Service Nodes (AI, Search, Work) ---
-@@||openai.com^$important,document,generichide
-@@||chatgpt.com^$important,document,generichide
-@@||yandex.ru^$important,document,generichide
-@@||dzen.ru^$important,document,generichide
-@@||google.com^$important,document,generichide
-@@||google.fr^$important,document,generichide
-@@||m2mlease.fr^$important,document,generichide
-@@||paypal.com^$important,document,generichide
-@@||stripe.com^$important,document,generichide
-@@||revolut.com^$important,document,generichide
-@@||youtube.com^$important
-@@||google.com^$important
-
-! [5play.life] - Game Portal Exception
-@@||5play.life^$important,document,generichide
-@@||*.5play.life^$important,document,generichide
-
-
-! [GLOBAL BANKING & FINANCE WHITELIST - APEX STEALTH]
-
-! --- Global Fintech & Neobanks ---
-@@||revolut.com^$important
-@@||n26.com^$important
-@@||wise.com^$important
-@@||payoneer.com^$important
-@@||monzo.com^$important
-
-! --- France (LCL, CAF & Major Banks) ---
-@@||lcl.fr^$important
-@@||caf.fr^$important
-@@||labanquepostale.fr^$important
-@@||societegenerale.fr^$important
-@@||bnpparibas.fr^$important
-@@||credit-agricole.fr^$important
-@@||ca-moncompte.fr^$important
-@@||boursobank.com^$important
-
-! --- International Payment Systems (The Backbone) ---
-@@||visa.com^$important
-@@||mastercard.com^$important
-@@||amex.com^$important
-@@||applepay.com^$important
-@@||googlepay.com^$important
-@@||paypal.com^$important
-@@||stripe.com^$important
-
-! --- Global Security & KYC (Necessary for VideoID) ---
-@@||onfido.com^$important
-@@||jumio.com^$important
-@@||idnow.io^$important
-
-! [Bloatware & AppCloud Suppression - APEX Clean]
-||appcloud-config.com^$important
-||appcloud-service.com^$important
-||samsung.appcloud.com^$important
-||ironsrc.com^$important
-||supersonicads.com^$important
-||cloud-config.samsungdotcom.com^$important
-
-
-! [Gmail & Google App Ad-Strangle - v12.1.3]
-! Блокируем специфические рекламные инъекции в приложениях Google
-||mail-ads.google.com^$important,reject
-||ads-settings-pa.googleapis.com^$important,reject
-||googleads.g.doubleclick.net/pagead/ads*^$important,reject
-||reminders-pa.googleapis.com/v1/reminders/get*^$third-party,important,reject
-
-! Блокировка компонентов динамической рекламы (то, что ты видишь в Gmail)
-||google.com/ads/sponsored*^$important,reject
-||google.fr/ads/sponsored*^$important,reject
+! [L15-S3] REAPER: Эвристический бан Bloatware (Apex Clean)
+! [BEHAVIOR KILL] Блокировка Samsung/IronSource по паттернам поведения
+||(appcloud-config|appcloud-service|samsung.appcloud|ironsrc|supersonicads|cloud-config.samsungdotcom|mail-ads.google|ads-settings-pa).com^$important,reject
+||(googleads.g.doubleclick.net/pagead/ads|reminders-pa.googleapis.com/v1/reminders/get|google.*/ads/sponsored)*^$important,reject
 
 
 ! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
@@ -247,21 +170,20 @@ $badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
 #%#//scriptlet("set-constant", "HTMLVideoElement.prototype.captureStream", "undefined")
 #%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.captureStream", "undefined")
 
+! [L16]  (v30.0 — Omni-Sentinel & AI-Confusion)
+! [L16-S1] KILL-SWITCH: Блокировка прямых IP-запросов (v30.0 — BOTNET KILL)
+! [ANTI-BOTNET] Запрет прямого обращения к IP (минуя DNS) для защиты от RAT
+||^$networkaddress=ip,important,reject,domain=~google.com|~yandex.ru|~openai.com|~apple.com|~microsoft.com
 
-! --- 3. NETWORK KILL-SWITCH (STRICT) ---
-! Блокировка всех запросов к IP-адресам напрямую (минуя DNS), что характерно для ботнетов
-||^$networkaddress=ip,important,reject,domain=~google.com|~yandex.ru|~openai.com
+! [L16-S2] EXFILTRATION: Ловушка метаданных (v30.0 — HONEYPOT)
+! [ANTI-RAT] Удаление аппаратных ID и сессионных токенов для сторонних доменов
+$removeheader=/^(X-(Device-ID|Machine-ID|Serial-Number|Hardware-Key))/ ,important
+$removeheader=/^(X-(Auth-Token|Session-ID))/ ,domain=~google.com|~bank|~openai.com|~yandex.ru|~revolut.com|~lcl.fr
 
+! [L16-S3] ENTROPY: Цифровой шум (v30.0 — AI-CONFUSION)
+! [QUANTUM NOISE] Внесение случайных данных в заголовки для аналитических гигантов
+||(google-analytics\.com|doubleclick\.net|scorecardresearch\.com|app-measurement\.com)^$set-header=X-Omni-Noise: $random_string,important
 
-! --- 4. DATA EXFILTRATION TRAP (HONEYPOT) ---
-! Блокируем передачу метаданных в заголовках, которые часто используют RAT
-$removeheader=/^(X-Device-ID|X-Machine-ID|X-Serial-Number|X-Hardware-Key)/ ,important
-$removeheader=/^(X-Auth-Token|X-Session-ID)/ ,domain=~google.com|~bank|~openai.com|~yandex.ru
-
-! --- 5. QUANTUM ENTROPY (AI CONFUSION) ---
-! Добавление случайных шумов в каждый запрос к аналитическим гигантам
-||google-analytics.com^$set-header=X-Omni-Noise: $random_string
-||doubleclick.net^$set-header=X-Omni-Noise: $random_string
 
 ! --- 6. BEHAVIORAL DISGUISE (GHOST MODE) ---
 ! Имитация медленного соединения для скриптов слежки (чтобы они вылетали по таймауту)
@@ -272,50 +194,25 @@ $removeheader=/^(X-Auth-Token|X-Session-ID)/ ,domain=~google.com|~bank|~openai.c
 #%#//scriptlet("execute-script", "(function(){ const prec = performance.now; performance.now = function(){ return Math.floor(prec.apply(this, arguments) / 100) * 100; }; })();")
 
 
-
-! [LAYER 1-5: NETWORK & PROTOCOL HARDENING - APEX LEVEL]
-
-! --- 1. Global Reject & DNS Sovereignty ---
-||doubleclick.net^$dnstype=A,empty,third-party,reject
-||googlesyndication.com^$dnstype=A,empty,third-party,reject
+! [L17]  ( (v31.0 — Quantum & Protocol Monolith)
+! [L17-S1] DNS & REJECT: Суверенитет и Глобальный бан (v31.0 — TOTAL REJECT)
+! [DNS-ARMOR] Блокировка рекламных типов DNS-запросов и аналитических паттернов
+||(doubleclick.net|googlesyndication.com)^$dnstype=A,empty,third-party,reject
 ||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr|~ftp:*|~ftps:*
-
-! --- 2. Protocol Integrity (PQC & FTP Stabilizer) ---
-$network=tls,pqc=off,domain=~ftp:*|~ftps:*
-$network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum,important,domain=~ftp:*|~ftps:*
-$network=tls,pqc_signature=on,pqc_sig_algorithm=ml-dsa,important,domain=~ftp:*|~ftps:*
-
-! --- 3. The Iron Curtain (Anti-Downgrade & Tunneling) ---
-||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~gov|~ftp:*|~ftps:*
-||/^(dns|doh|dot|cloudflare-dns|dns-query|dns-server|doh-server)\./^$important,reject,domain=~system|~google.com|~yandex.ru
 ||^$dnstype=(HTTPS|65|64|QUIC),reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov
 
-! --- 4. WebRTC & Privacy Leak Protection ---
-||stun:*$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com|~yandex.ru
-||webrtc.org^$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com
-||/^(proxy|vpn|shadowsocks|v2ray|wireguard|warp)\./^$important,reject,domain=~system
+! [L17-S2] PROTOCOL: Квантовая защита и Анти-Туннель (v31.0 — PQC SHIELD)
+! [IRON CURTAIN] Принудительный TLS PQC (ML-KEM/ML-DSA) и бан деградации протоколов
+$network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum,pqc_signature=on,pqc_sig_algorithm=ml-dsa,important,domain=~ftp:*|~ftps:*
+||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~gov|~ftp:*|~ftps:*
+||/^(dns|doh|dot|cloudflare-dns|dns-query|dns-server|doh-server|proxy|vpn|shadowsocks|v2ray|wireguard|warp)\./^$important,reject,domain=~system|~google.com|~yandex.ru
 
-! --- 5. Traffic Masking (Advanced Layer) ---
-! Стандартизация OS Fingerprint (TTL и TCP Window)
+! [L17-S3] STEALTH: Маскировка трафика и OS-Fingerprint (v31.0 — GHOST PACKET)
+! [TRAFFIC MASKING] Стандартизация TTL/TCP для обхода DPI и блокировка WebRTC
 $network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,important
+||(stun:*|webrtc.org)^$third-party,important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com|~yandex.ru
 ||*$ping,third-party,important,domain=~google.com|~yandex.ru|~bank|~gov
 
-! --- 6. ZERO-TRUST DOMAIN ISOLATION ---
-! Полный запрет левых запросов (Только доверенные домены)
-*$third-party,important,domain=~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr|~github.com|~microsoft.com|~apple.com
-
-
-! [LAYER 6-12: SMART SHIELD & BEYOND]
-! --- 1. ANTI-WHITE-SCREEN & INFRASTRUCTURE TRUST ---
-@@||gov^$generichide,genericblock,shorthide
-@@||bank^$generichide,genericblock,shorthide
-@@||openai.com^$generichide,genericblock,shorthide
-@@||chatgpt.com^$generichide,genericblock,shorthide
-@@||yandex.ru^$generichide,genericblock,shorthide
-@@||dzen.ru^$generichide,genericblock,shorthide
-@@||google.*^$generichide,genericblock,shorthide
-@@||*.fr^$generichide,domain=~doubleclick.net|~google-analytics.com
-@@||*.com^$generichide,domain=~doubleclick.net|~google-analytics.com
 
 ! --- 2. DEEP STEALTH: ANTI-FINGERPRINTING & BEHAVIORAL SYNC ---
 ! Убиваем детекторы блокировщиков на корню
