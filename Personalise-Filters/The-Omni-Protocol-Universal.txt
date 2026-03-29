@@ -1310,4 +1310,29 @@ $removeparam=/^(_|cb|cachebuster|v|sw|sh|bat|os|res)$/,domain=~system|~google.co
 $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=~google.com|~bank|~yandex.ru
 
 
+! [L33: SENSOR-CLOAKING & ADVANCED HARDWARE STEALTH - V58.0]
+
+! --- 1. Motion Isolation (Изоляция датчиков движения) ---
+! Блокируем доступ к гироскопу и акселерометру (защита от походки и вибраций)
+#%#//scriptlet("set-constant", "DeviceMotionEvent", "undefined")
+#%#//scriptlet("set-constant", "DeviceOrientationEvent", "undefined")
+#%#//scriptlet("set-constant", "AbsoluteOrientationEvent", "undefined")
+
+! --- 2. Advanced Battery Spoofing (Улучшенная маскировка батареи) ---
+! Переопределяем старый "undefined" на "Идеальный статус" (меньше подозрений)
+#%#//scriptlet("set-constant", "navigator.getBattery", "function() { return Promise.resolve({ charging: true, level: 1.0, chargingTime: 0, dischargingTime: Infinity }); }")
+
+! --- 3. Timing Attack Defense (Защита от временных атак) ---
+! Делаем таймеры менее точными, чтобы нельзя было вычислить архитектуру CPU
+#%#//scriptlet("set-constant", "performance.now", "function() { return Date.now(); }")
+
+! --- 4. Presence Stealth (Стелс присутствия) ---
+! Блокировка API определения бездействия (Idle Detection)
+#%#//scriptlet("set-constant", "IdleDetector", "undefined")
+
+! --- 5. Screen Integrity (Защита параметров экрана) ---
+! Подмена данных о частоте обновления экрана (блокировка 120Hz/144Hz фингерпринта)
+#%#//scriptlet("set-constant", "screen.updateInterval", "16.67")
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
