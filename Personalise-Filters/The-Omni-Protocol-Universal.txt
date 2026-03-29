@@ -1190,21 +1190,26 @@ $removeparam=/^(redirect|url|link|goto|continue|ref_url|return_to|uuid|device_id
 $removeparam=/^(_|cb|cachebuster|v|sw|sh|bat|os|res)$/,domain=~system|~google.com|~yandex.ru
 
 ! [LAYER 31: ANTI-COMPROMISE & EXFILTRATION CONTROL]
-! --- 1. Anti-RAT & Port Sovereignty (Блокировка нестандартных портов) ---
-! Разрешаем только критические порты: 80, 443 (Web), 53, 853 (DNS), 587, 993 (Mail), 21 (FTP)
+
+
+! [L28-S1] PORTS: Суверенитет портов и Anti-RAT (v52.0 — PORT-SOVEREIGNTY)
+! [HARDENING] Блокировка всех нестандартных портов (разрешены только Web, DNS, Mail, FTP, SSH)
 ||*^$important,port=~80|~443|~53|~853|~587|~993|~21|~22,reject,domain=~google.com|~yandex.*|~openai.com|~bank|~gov|~github.com
 
-! --- 2. Anti-Mirroring & Stream Hijacking (Запрет скрытых трансляций) ---
+! [L28-S2] MEDIA: Защита от перехвата потоков и Mirroring (v52.0 — STREAM-HIJACK)
+! [ANTI-HIJACK] Запрет скрытых трансляций и загрузки объектов для сторонних доменов
 ||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.*|~google.*|~yandex.*|~4pda.to
 ||*$object,third-party,important,domain=~system
 ||*$websocket,third-party,domain=~zoom.us|~teams.*|~google.*|~yandex.*|~openai.com|~slack.com
 
-
-! --- 3. Screen-Off Stealth & Background Exfiltration ---
-! Блокировка фоновых маяков и отложенной отправки данных
+! [L28-S3] STEALTH: Режим «Экран выключен» и фоновая тишина (v52.0 — SCREEN-OFF)
+! [BEACON] Блокировка отложенной отправки данных и фоновых пингов
 ||*$ping,third-party,important,domain=~system|~google.com|~yandex.ru
-! Запрет асинхронных обновлений для трекеров (Background Sync API)
+
+! [L28-S4] WORKER: Деактивация фоновых процессов (v52.0 — WORKER-KILL)
+! [SYNC] Принудительная отписка от Service Workers для предотвращения фонового трекинга
 #%#//scriptlet("execute-script", "if ('serviceWorker' in navigator) { navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister())); }")
+
 
 
 ! --- Программная блокировка доступа к камере и микрофону в браузере ---
