@@ -257,15 +257,13 @@ $client=/^com\.whatsapp/,$important
 
 
 ! --- [Omni-Protocol: IoT & Smart TV Deep Filter] ---
-||samsungotn.net^$dnsrewrite=0.0.0.0
-||samsungads.com^$dnsrewrite=0.0.0.0
-||log-config.samsungcloud.com^$dnsrewrite=0.0.0.0
-||config.samsungads.com^$dnsrewrite=0.0.0.0
-||events.samsungads.com^$dnsrewrite=0.0.0.0
-||acr0.samsungcloud.com^$dnsrewrite=0.0.0.0
-! Блокировка аналитики умных устройств на уровне доменов
-||metrics.icloud.com^$dnsrewrite=0.0.0.0
-||telemetry.microsoft.com^$dnsrewrite=0.0.0.0
+
+! [L18] OMNI-TV: Щит переходов и Cast-стабилизатор (v35.0 — TOTAL REJECT)
+! [NEXT-VIDEO SHIELD] Блокировка рекламных инъекций при автовоспроизведении на TV
+||(googleads.g.doubleclick|pagead2.googlesyndication|tpc.googlesyndication).net^$important,reject,domain=~google.com|~youtube.com
+||youtube.com/get_midroll_info*^$important,reject
+||/^(.*(samsung(otn|ads|cloud)|lg(smartad|common|musicid)|sony\.net|atsc\.tv|metrics\.icloud|telemetry\.microsoft)\.com|samsungotn\.net)$/^$dnsrewrite=0.0.0.0,important
+@@||youtube.com/api/lounge/*^$important,domain=youtube.com
 
 
 ! --- [Omni-Protocol: Advanced Cosmetic Cleanup] ---
@@ -1038,20 +1036,15 @@ Object.defineProperty(navigator, 'plugins', {
 #%#//scriptlet("prevent-set-interval", "fingerprint")
 
 
-! Запрещаем сайтам читать историю переходов через Referrer
+! [L19] Network Hyper-Drive & OS-Stealth (Сетевой гиперпривод и маскировка ОС). 
+! [L19-S1] STEALTH: Маскировка сетевого фингерпринтинга (v36.0 — OS-GAUGE)
+! [NETWORK STACK] Эталонный TTL=64, MSS=1460 и TCP Window для имитации Linux/Android
+$network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,important
 *^$set-header=Referrer-Policy: no-referrer-when-downgrade
 
-! --- 4. BEYOND THE BROWSER (NETWORK HYPER-DRIVE) ---
-
-! Маскировка сетевого фингерпринтинга (Стек: Android/Linux Standard)
-! Устанавливаем эталонные значения TTL, TCP Window и MSS
-$network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,important
-
-! Запрет на утечку локальных IP-адресов через WebRTC (Усиленный)
-||stun:*^$important,reject,domain=~zoom.us|~teams.microsoft.com|~google.com|~yandex.ru|~openai.com
-||webrtc.org^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com
-
-! Блокировка протоколов обнаружения устройств в локальной сети (Anti-SSD/mDNS)
+! [L19-S2] LEAK-PROOFER: Защита WebRTC и локального IP (v36.0 — IP-SHIELD)
+! [ANTI-STUN] Блокировка утечек IP через WebRTC и SSDP/mDNS сканирование
+||(stun:*|webrtc.org)^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com|~google.com|~yandex.ru|~openai.com
 ||/^(ssdp|mdns|icmp-discovery)/^$important,network,third-party,reject
 
 
