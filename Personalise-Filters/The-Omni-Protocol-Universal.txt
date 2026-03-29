@@ -57,139 +57,77 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 /^https?:\/\/([^\/]+\.)?(top|zip|mov|review|gdn|loan|bid|click|work|buzz|country|stream|party|date|faith|trade|win|kim|science|gq|tk|ml|cf|ga|men|uno|live|surf|icu|sbs|monster|quest|beauty|best|contact|rest|autos|forum|xyz|fit|shop|info|online|site|website|space|store|tech|host|press|pw|cx|cc|biz|mobi|asia|cm|ws|re|ee|me|link|help|gift|pics|photo|market|agency|email|world|today|money|gold|ltd|company|digital|network|center|systems|services|solutions|group|team|plus|vip|pro|pub|fun|game|cool|rocks|expert|coach|legal|bank|finance|loans|credit|casino|bet|poker|bingo|lotto|adult|sex|porn|xxx|cam|video|tube|download|free|cheap|discount|sale|promo|deal|coupon|buy|secure|check|verify|login|account|update|support|service|client|billing|invoice|payment|token|crypto|coin|wallet|exchange|trade|miner|pool|hash|cloud|data|storage|server|host|dns|proxy|vpn|tor|onion|ssh|api|dev|app|mobile|android|ios|web|blog|news|media|social|chat|mail|post|office|hr|career|business|corp|inc|llp|llc|holdings|invest|capital|fund|asset|safe|trust|shield|guard|protect|security|cyber|hack|exploit|malware|virus|spy|spam|junk|trash|garbage|null|zero|test|demo|example|temp|tmp|bin|file|docs|pdf|xls|doc|ppt|v1|v2|v3|v4|v5|v6|v7|v8|v9|v10)\//^$important,reject,third-party
 
 
-! [L8] TRAP: Ловушка на веб-сканеры (Honeypot — AUTO-REJECT)
-||*^$important,port=81|8000|8008|8081|8443|8888,reject,domain=~localhost,notify,tag=ATTACK_SCANNER_REJECTED
+! [L8] TRAP: Ловушка на веб-сканеры (Honeypot v16.6 — AUTO-REJECT)
+! [ULTIMATE PORT REAPER] Блокировка запросов по опасным портам в одну строку
+||*^$important,port=81|8000|8008|8080|8081|8443|8888|9000|9090,reject,third-party,domain=~localhost
 
-! [L9] SILENCE: Блокировка фоновой аналитики ОС (Anti-Telemetry — MONITOR)
-||*.telemetry.microsoft.com^$important,notify,tag=OS_SPY
-||*.data.microsoft.com^$important,notify,tag=OS_SPY
-||*.google-analytics.com^$important,notify,tag=OS_SPY
-||*.crashlytics.com^$important,notify,tag=OS_SPY
-
-! [L10] CRYPTO: Мгновенный блок эксплойтов кошельков (Anti-Drainer — REJECT)
-||*$websocket,third-party,important,domain=~binance.com|~revolut.com|~metamask.io|~bank,reject,notify,tag=CRYPTO_DRAIN_REJECTED
-
-! [L11] PHISH: Блок сторонних JS в банкинге (Anti-Phishing — REJECT)
-||*$websocket,third-party,important,domain=~revolut.com|~lcl.fr|~google.com|~apple.com,reject,notify,tag=PHISHING_REJECTED
-
-! [WebRTC & STUN Extreme Hardening - APEX Stealth]
-||stun*^$important,network
-||stun*.l.google.com^$important,network
-||stun*.services.mozilla.com^$important,network
-||stun*.vox-options.com^$important,network
-||turnserver.net^$important,network
-||*.stun.hosting^$important,network
-
-! [WebRTC Protocol Suppression]
-|https://$websocket,domain=~google.com,~youtube.com,~twitch.tv,~github.com
-||*^$network,udp,domain=~google.com,~youtube.com,~twitch.tv
-
-! [JavaScript WebRTC Killing - L12]
-#%#var RTCPeerConnection = undefined;
-#%#var webkitRTCPeerConnection = undefined;
+! [L9] SILENCE: Блокировка фоновой аналитики ОС (Anti-Telemetry v16.8 — AUTO-REJECT)
+! [ULTIMATE STEALTH] Тотальный бан системной телеметрии и сбора данных (One-Liner)
+/^https?:\/\/([^\/]+\.)?(telemetry|stats|metrics|analytics|data|crashlytics|report|diagnostics|log|events|track|survey|feedback|insight|usage|collect|monitor|sync|measure|debug|trace|ping|beacon)\.(microsoft|google|apple|amazon|samsung|huawei|xiaomi|adguard|crashlytics|fb|facebook|doubleclick|adjust|appsflyer|mixpanel|amplitude|segment|braze|app-measurement)\//^$important,reject,third-party
 
 
-! [Additional UDP Killer]
-||*^$network,udp,domain=~google.com,~youtube.com
+! [L10] CRYPTO: Мгновенный блок эксплойтов кошельков (Anti-Drainer v16.9 — AUTO-REJECT)
+! [ULTIMATE WEBSOCKET REAPER] Блокировка скрытых дрейнеров и эксплойтов в одну строку
+||*$websocket,third-party,important,domain=~binance.com|~revolut.com|~metamask.io|~ledger.com|~trezor.io|~trustwallet.com|~bank,reject
 
-||*$script,third-party,important,domain=~revolut.com|~lcl.fr|~bank,reject,notify,tag=BANK_SHIELD_REJECTED
+! [L11] PHISH & STEALTH: Стерильный Канал (Omni-Shield v17.6 — TOTAL REJECT)
+! [BANKING & PRIVACY] Полная изоляция от сторонних JS/WS/XHR/WebRTC
+||*$third-party,important,domain=~revolut.com|~lcl.fr|~ca-centreest.fr|~google.com|~apple.com|~github.com|~binance.com|~metamask.io|~bank,reject
+||*$script,third-party,important,domain=~revolut.com|~lcl.fr|~bank,reject
 
-! [L12] BEACON: Отслеживание скрытых маячков (Anti-Tracking — MONITOR)
-||*/pixel/*$important,notify,tag=BEACON_BLOCKED
-||*/track/*$important,notify,tag=BEACON_BLOCKED
-||*/telemetry/*$important,notify,tag=TELEMETRY_BLOCKED
-
-! [WebRTC Hardening - Global Script Block]
+! [WebRTC & STUN REAPER] Полная деактивация логики WebRTC в браузере
 #%#var RTCPeerConnection = undefined;
 #%#var webkitRTCPeerConnection = undefined;
 #%#var RTCDataChannel = undefined;
+/^https?:\/\/([^\/]+\.)?(stun.*|turnserver\.net|.*\.stun\.hosting)\//^$important,reject,network
 
-! [WebRTC Logic Killing]
-||*^$websocket,third-party,domain=~google.com,~youtube.com,~twitch.tv
-||*^$xmlhttprequest,third-party,domain=~google.com,~youtube.com
+! [PROTOCOL STRANGLE] Глобальный UDP-киллер и подавление WS/XHR
+||*^$network,udp,important,domain=~google.com|~youtube.com|~twitch.tv|~github.com|~binance.com,reject
+||*$websocket,third-party,important,domain=~google.com|~youtube.com|~twitch.tv|~github.com,reject
+||*$xmlhttprequest,third-party,important,domain=~google.com|~youtube.com,reject
 
+! [L12] BEACON: Отслеживание скрытых маячков (Anti-Tracking v18.5 — TOTAL REJECT)
+! [HEURISTIC REAPER] Перехват маячков по именам, параметрам и структуре (Apex Edition)
+/^https?:\/\/.*(\/(px|pixel|track|tr|telemetry|collect|beacon|event|stat|hit|logs?|u?id|sid|cid|aid|siteid|pt)\/).*(\?|&)(v|u?id|sid|event|t)=.*/$important,reject,third-party,notify,tag=BEACON_INTERCEPTED
+||*$image,third-party,important,width=1,height=1,reject
+||*$image,third-party,important,width=0,height=0,reject
 
-! [L13] AI: Блок AI-краулеров (Data Sovereignty — REJECT)
-||*.claudebot.com^$important,reject,notify,tag=AI_CRAWLER_REJECTED
-||*.gptbot.com^$important,reject,notify,tag=AI_CRAWLER_REJECTED
-||*.commoncrawl.org^$important,reject,notify,tag=AI_CRAWLER_REJECTED
+! [L13] AI: Блок AI-краулеров (Data Sovereignty v19.5 — TOTAL REJECT)
+! [AI-HEURISTIC] Перехват ботов обучения и краулеров (Apex Edition)
+/^https?:\/\/([^\/]+\.)?(gptbot|claudebot|anthropic|commoncrawl|ccbot|perplexitybot|coherebot|omni-bot|bytespider|diffbot|facebookexternalhit|google-extended|images\.google\.com|semrushbot|ahrefsbot|mj12bot|dotbot|rogerbot|exabot|petalbot)\//^$important,reject,third-party
 
-! [L14] Heuristic & Contextual Filtering
-! [STATUS: ANTI-INVASION & TOTAL PURGE v15.0]
-
-! --- 1. АВТОНОМНЫЙ ВАЙТЛИСТ (Smart Bypass & Fixes) ---
-! Критически важные исключения для работы системы и банков
-@@*$stealth,content-type=application/pkcs7-signature
-@@*$stealth,content-type=application/x-x509-ca-cert
-@@*$important,header=Strict-Transport-Security
-@@||gvt1.com^$important,app=com.android.vending
-@@||gvt1.com^$important,app=com.google.android.gms
-@@||loirehabitat.fr^$important
-
-! --- 2. GLOBAL THREAT PROTECTION (The 1000+ TLD Reaper v16.1) ---
-! Эвристика по заголовкам
-$badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield
-$badfilter,content-type=application/javascript,third-party,header=X-Fraud-Detect
+! [CRAWLER BEHAVIOR] Блокировка эвристических признаков ботов (One-Liner)
+||*/robots.txt$important,third-party,reject,domain=~google.com|~bing.com|~yandex.ru
+||*/ads.txt$important,third-party,reject
+||*/sitemap.xml$important,third-party,reject
 
 
-! --- 3. UNIVERSAL GOOGLE AD-STRANGLE (Deep GMS Purge) ---
-! Вырезаем "Annonce" и рекламные инъекции во всех Google-сервисах
-||mail-ads.google.com^$important,reject
-||ads-settings-pa.googleapis.com^$important,reject
-||googleads.g.doubleclick.net^$important,reject
-||static.doubleclick.net^$important,reject
-||adservice.google.*^$important,reject
-||google.*/ads/sponsored*^$important,reject
-||google.*/pagead/ads*^$important,reject
-||pagead2.googlesyndication.com^$important,reject
-||tpc.googlesyndication.com^$important,reject
-||google.android.gms/admob*^$important,reject
-||google.android.gms/ads*^$important,reject
-||www.google-analytics.com^$important,reject
-||safebrowsing.googleapis.com^$important,reject,app=com.google.android.gm
-||googleads.g.doubleclick.net/pagead/adview*^$important,reject
-||googleads.g.doubleclick.net/pagead/render*^$important,reject
-||tpc.googlesyndication.com/safeframe*^$important,reject
-||www.gstatic.com/generate_204^$important,reject,app=com.google.android.gm
+! [L14] OMNI-MONOLITH: Heuristic & Contextual Filtering
+! [STATUS: ABSOLUTE PURGE v20.0 — THE FINAL APEX]
 
-! --- 4. YOUTUBE, CAST & STEALTH (Instant Reject) ---
-||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important,reject
-||youtubei.googleapis.com/youtubei/v1/ads*^$important,reject
-||googlevideo.com/videoplayback?*&adformat=*^$important,reject
-||googlevideo.com/videoplayback?*&ptracking=*^$important,reject
-||s.youtube.com^$important,reject
-||youtube.com/api/stats/ads*^$important,reject
-||youtube.com/get_midroll_info*^$important,reject
-||optimizationguide-pa.googleapis.com^$important,reject
-||content-autofill.googleapis.com^$important,reject
+! [L14-S1] WHITE: Стерильный проход (Smart Whitelist v24.0 — TOTAL ALLOW)
+! [ULTIMATE BYPASS] Исключения для сертификатов, обновлений и банков в одну строку
+@@($stealth,content-type=application/(pkcs7-signature|x-x509-ca-cert)|$important,header=Strict-Transport-Security|||gvt1.com^$important,app=com.android.vending|com.google.android.gms|||loirehabitat.fr^$important|||github.com^$document)
 
-! --- 5. UNIVERSAL ANTI-TRACKING (No Logs, No Trace) ---
-||*analytics*^$important,third-party,xmlhttprequest,reject
-||*metrics*^$important,third-party,xmlhttprequest,reject
-||*telemetry*^$important,third-party,xmlhttprequest,reject
-||*log*^$important,third-party,xmlhttprequest,reject
-||*coin*^$important,third-party,script,reject
-||*-virus-alert*^$important,reject
-||*-system-update*^$important,reject
-||*-security-warning*^$important,reject
+! [L14-S2] GMS: Глушитель рекламы (GMS-Strangle v22.0 — TOTAL REJECT)
+! [ULTIMATE GMS PURGE] Тотальный бан рекламы в Gmail и системных сервисах (One-Liner)
+||(mail-ads|ads-settings-pa|adservice).google.*|(google.*/(ads/sponsored|pagead/ads)*)|(googleads.g.doubleclick|static.doubleclick|pagead2.googlesyndication|tpc.googlesyndication).net|google.android.gms/(admob|ads)*|(www.gstatic.com/generate_204|safebrowsing.googleapis.com)^$important,reject,app=~com.android.vending,domain=~google.com
 
-! --- 6. NETWORK HARDENING (DNS & WebRTC) ---
-||stun*.l.google.com^$important,reject
-||8.8.8.8^$important
-||8.8.4.4^$important
+! [L14-S3] YOUTUBE: Глушитель рекламы (YouTube-Warp v21.0 — TOTAL REJECT)
+! [ULTIMATE STRANGLE] Бан рекламных вставок, мидроллов и трекинга в одну строку
+||(youtubei.googleapis.com/youtubei/v1/(player/ad_break|ads)|googlevideo.com/videoplayback?*&(adformat|ptracking)=|(s.youtube|youtube.com/api/stats/ads|youtube.com/get_midroll_info)|(optimizationguide-pa|content-autofill).googleapis.com)^$important,reject
 
 
-! --- [GMS & GMAIL INTERFACE PURGE] ---
-! Блокируем саму отрисовку рекламных "писем" в интерфейсе
-||googleads.g.doubleclick.net/pagead/adview*^$important,reject
-||googleads.g.doubleclick.net/pagead/render*^$important,reject
-||tpc.googlesyndication.com/safeframe*^$important,reject
-||www.gstatic.com/generate_204^$important,reject,app=com.google.android.gm
+! --- 4. HEURISTIC THREAT KILLER (The Fraud Reaper) ---
+! Эвристика по заголовкам и паттернам вредоносных "системных" уведомлений
+$badfilter,content-type=application/javascript,third-party,header=X-Phish-Shield|X-Fraud-Detect
+||*-(virus-alert|system-update|security-warning)*^$important,reject
 
+! [L14-S5] HARDEN: Глобальный глушитель & Стелс (Hardening v25.0 — TOTAL PURGE)
+! [ULTIMATE TRACE & WebRTC KILLER] Глушение аналитики, майнеров и STUN-утечек (One-Liner)
+||*(analytics|metrics|telemetry|log|coin|mining|tracker)*^$important,third-party,xmlhttprequest,script,reject
+||(stun*|8.8.8.8|8.8.4.4)^$important,reject,app=~com.android.vending,app=~com.google.android.gms
 
-! [L15] WebRTC (Stealth Mode) 
-||stun.l.google.com^$important,reject
-||stun*.l.google.com^$important,reject
 
 ! ###########################################################
 
