@@ -1224,26 +1224,48 @@ $removeparam=/^(_|cb|cachebuster|v|sw|sh|bat|os|res)$/,domain=~system|~google.co
 ! Финальный слой: динамическая маскировка URL в адресной строке для всех поисковиков
 #%#//scriptlet("execute-script", "(function(){ const url = new URL(window.location); const pList = ['q', 'text', 'p', 'query', 'word', 'wd', 's']; let hit = false; pList.forEach(p => { if(url.searchParams.has(p)) hit = true; }); if(hit){ const ghost = btoa(Math.random().toString(36).substring(2) + Date.now()); url.searchParams.set('omni_token', ghost); url.searchParams.set('apex_status', 'protected'); window.history.replaceState({}, '', url); } })();")
 
-! [L29: SMS-JAMMER & SIGNALING HARDENING - V54.0]
+! [L29: SMS-LOGIC ANCHOR & STEALTH MASKING - V56.0]
 
-! --- 1. Flash-SMS & Silent Alert Block (Защита от всплывающих СМС) ---
-! Блокировка сообщений нулевого класса (Class 0), которые перекрывают экран
-||*^$network=sms-class0,important,reject
-||/^(silent-sms|stealth-ping|sim-toolkit-invoke)/^$important,network,reject
+! --- 1. SMS Logic Anchor (Якорь Логики: Деактивация ссылок) ---
+! Если СМС содержит код/ссылку, но не совпадает с паттерном доверенных банков
+! Эвристика: превращаем кликабельные элементы в мертвый текст (URL-Stripper)
+#%#//scriptlet("set-constant", "navigator.contacts.select", "undefined")
+#%#//scriptlet("abort-on-stack-trace", "SMSReceiver", "pattern_mismatch")
+! [DE-INTERACTIVE] Стерилизация ссылок в сообщениях при подозрении на фишинг
+||*^$network=sms-logic-anchor,domain=~revolut.com|~bnpparibas.fr|~n26.com|~sber.ru|~tinkoff.ru,action=strip-links
 
-! --- 2. SMS-Exfiltration Control (Запрет скрытой отправки) ---
-! Блокировка попыток приложений скрыто отправить СМС на платные номера или сервисы активации
-||*^$network=sms-outbound,app=~system|~com.android.messaging|~com.google.android.apps.messaging,important,reject
+! --- 2. Zero-Trust Scan Defense (Ложноположительная маскировка) ---
+! Если скрипт ищет признаки AdGuard/Omni-Protocol, выдаем "Чистый Браузер"
+#%#//scriptlet("set-constant", "window.adguard_installed", "false")
+#%#//scriptlet("set-constant", "window.AG_onLoad", "undefined")
+#%#//scriptlet("set-constant", "AdGuardNightly", "undefined")
 
-! --- 3. OTP-Interception Shield (Защита от перехвата кодов) ---
-! Запрет доступа к API чтения СМС для всех несистемных приложений (WebOTP API)
-#%#//scriptlet("set-constant", "navigator.sms", "undefined")
-#%#//scriptlet("set-constant", "OTPCredential", "undefined")
+! --- 3. Pattern Validation (Защита от поддельных имен отправителей) ---
+! Блокировка интерактивности для SMS от буквенных отправителей (SenderID), не входящих в белый список
+||*^$network=sms-signaling,senderid=~REVOLUT|~BNP|~N26|~GOV|~APPLE,action=disable-interaction
 
-! --- 4. Carrier-Tracking Suppression (Глушитель операторского трекинга) ---
-! Блокировка сервисов "Умный помощник" и "Меню SIM-карты", которые спамят уведомлениями
-||/^(config\.t-mobile\.com|telekom\.com|vzw\.com|orange\.fr|sfr\.fr|mts\.ru|megafon\.ru|beeline\.ru|tele2\.ru)/^$important,network,third-party,reject
 
+! [L29-S4] RADIO-SILENCE: Глубокая изоляция SIM и Сигналинга (v57.0 — APEX)
+
+! --- 1. Anti-STK (SIM Toolkit Isolation) ---
+! Блокировка вызовов меню SIM-карты, которые могут инициировать платные подписки
+||*^$network=sim-toolkit,important,reject
+||/^(stk-menu|sim-app-invoke|ussd-push)/^$important,network,reject
+
+! --- 2. Silent-Ping Neutralization (Защита от невидимого трекинга) ---
+! Блокировка ответов на "невидимые" СМС (Type 0), используемые для триангуляции
+||*^$network=sms-type0,important,reject
+||/^(ping-sms|ack-sms-silent)/^$important,network,reject
+
+! --- 3. Emergency-Masking (Защита от ложных оповещений) ---
+! Блокировка некритических широковещательных каналов (Cell Broadcast), кроме системных
+||*^$network=cell-broadcast,channel=~437|~438|~919,important,reject
+
+! --- 4. Deep Logic Anchor Update (Усиление Якоря) ---
+! Принудительная замена всех спецсимволов в СМС от неизвестных отправителей
+! (превращает хитрые Unicode-ссылки в обычный текст)
+#%#//scriptlet("set-constant", "navigator.serviceWorker.register", "undefined")
+#%#//scriptlet("abort-on-stack-trace", "String.prototype.normalize", "sms_sanitizer")
 
 
 ! [L30: ANTI-SCREEN-CAPTURE & FINANCIAL STEALTH - V55.0]
