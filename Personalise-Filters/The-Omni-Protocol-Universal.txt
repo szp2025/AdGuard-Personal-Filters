@@ -1404,5 +1404,24 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! --- 5. High-Precision Timing Jitter (Убийца микро-таймингов отрисовки) ---
 #%#//scriptlet("set-constant", "requestAnimationFrame", "function(cb) { return window.setTimeout(cb, 16); }")
 
+! [L38: MEDIA-HARDWARE SILENCE & ENUMERATION SHIELD - V63.0]
+
+! --- 1. Media-Device Enumeration (Защита от сканирования микрофонов и камер) ---
+! Мы не ломаем API (чтобы не вызвать подозрений), а возвращаем пустой список устройств.
+#%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "function() { return Promise.resolve([]); }")
+
+! --- 2. Media-Query Tracking (Защита от деанонимизации через видео-возможности) ---
+! Запрещаем сайтам узнавать, поддерживает ли твой экран HDR или специфические цветовые профили.
+#%#//scriptlet("set-constant", "window.matchMedia", "function() { return { matches: false, addListener: function() {}, removeListener: function() {} }; }")
+
+! --- 3. Screen-Orientation Lock (Защита от замера физического положения устройства) ---
+! Фиксируем ориентацию как "альбомную" (landscape-primary), чтобы скрыть наклоны телефона.
+#%#//scriptlet("set-constant", "screen.orientation.type", "landscape-primary")
+#%#//scriptlet("set-constant", "screen.orientation.angle", "0")
+
+! --- 4. User-Activation Hardening (Защита от имитации действий пользователя) ---
+! Запрещаем сайтам проверять, было ли взаимодействие "человеческим" через внутренние флаги.
+#%#//scriptlet("set-constant", "navigator.userActivation", "{ isActive: false, hasBeenActive: false }")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
