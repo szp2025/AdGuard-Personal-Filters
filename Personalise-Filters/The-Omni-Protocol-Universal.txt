@@ -1423,5 +1423,24 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! Запрещаем сайтам проверять, было ли взаимодействие "человеческим" через внутренние флаги.
 #%#//scriptlet("set-constant", "navigator.userActivation", "{ isActive: false, hasBeenActive: false }")
 
+! [L39: STORAGE-QUOTAS & SMART-BIO HYBRID - V64.0]
+
+! --- 1. Storage-Estimate Spoofing (Защита от замера объема SSD) ---
+#%#//scriptlet("set-constant", "navigator.storage.estimate", "function() { return Promise.resolve({ quota: 107374182400, usage: 104857600 }); }")
+
+! --- 2. Smart-WebAuthn (Защита биометрии без потери входа) ---
+! Мы НЕ блокируем PublicKeyCredential полностью, чтобы работал вход. 
+! Мы лишь ограничиваем автоматическое перечисление методов (Get-Method).
+#%#//scriptlet("set-constant", "navigator.credentials.preventSilentAccess", "function() { return Promise.resolve(); }")
+
+! --- 3. Gamepad-API Nullification (Защита от ID контроллеров) ---
+#%#//scriptlet("set-constant", "navigator.getGamepads", "function() { return [null, null, null, null]; }")
+
+! --- 4. Cache-Keys Protection (Чистка следов в кэше) ---
+#%#//scriptlet("set-constant", "CacheStorage.prototype.keys", "function() { return Promise.resolve([]); }")
+
+! --- 5. Clipboard-Logic Hide (Защита буфера обмена) ---
+#%#//scriptlet("set-constant", "navigator.clipboard.readText", "undefined")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
