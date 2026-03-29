@@ -41,15 +41,14 @@ $network=ip,set_mtu=1400,important,notify,tag=MTU_CLOAKING
 ! [L4] SPY: Блокировка скрытых трансляций (Anti-Mirroring)
 ||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,notify,tag=MEDIA_SPY_BLOCK
 
-! [L5] TRAP: Защита от внутреннего сканирования (Anti-Lateral Movement)
-||192.168.0.0/16^$important,domain=~localhost,notify,tag=LAN_INTRUSION
-||10.0.0.0/8^$important,domain=~localhost,notify,tag=LAN_INTRUSION
-||172.16.0.0/12^$important,domain=~localhost,notify,tag=LAN_INTRUSION
+! [L5] TRAP: Защита от внутреннего сканирования (Anti-Lateral Movement v16.3)
+! [ULTIMATE REGEX] Блокировка сторонних запросов к локальной сети и mDNS в одну строку
+/^https?:\/\/(10\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+|192\.168\.\d+|169\.254\.\d+|.*\.(local|lan))\//^$important,reject,third-party,domain=~localhost
 
-! [L6] CLOAK: Блокировка скрытых DNS-каналов (Anti-DoH/DoH Bypass)
-||dns.google^$important,notify,tag=DOH_BYPASS_ATTEMPT
-||dns.cloudflare.com^$important,notify,tag=DOH_BYPASS_ATTEMPT
-||doh.opendns.com^$important,notify,tag=DOH_BYPASS_ATTEMPT
+
+! [L6] CLOAK: Блокировка скрытых DNS-каналов (Anti-DoH Bypass v16.4)
+! [ULTIMATE REGEX] Запрет сторонним приложениям обходить системный DNS через HTTPS
+/^https?:\/\/([^\/]+\.)?(dns\.google|dns\.cloudflare\.com|doh\.opendns\.com|dns\.quad9\.net|dns\.adguard-dns\.com|doh\.cleanbrowsing\.org)\//^$important,reject,third-party
 
 ! [L7] GEO: Глобальная изоляция опасных TLD (High-Risk Zones v16.2)
 ! Интеллектуальная блокировка мусорных зон через Hyper-Regex (1000+ целей)
