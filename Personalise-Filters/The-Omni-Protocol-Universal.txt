@@ -1091,85 +1091,102 @@ $network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,impor
 ! [DISCOVERY] Блокировка SSDP, mDNS и ICMP-сканирования портов
 ||/^(ssdp|mdns|icmp-discovery)/^$important,network,third-party,reject
 
-
-! [LAYER 13-27: PERIMETER DEFENSE & PORT ISOLATION - HYPER-DRIVE]
-
-! --- 1. UI Purge (Удаление визуального мусора с защитой от "анти-блока") ---
+! [L24] Perimeter Hardening (v48.0)
+! [L24-S1] UI-PURGE: Стерилизация интерфейса и Ghost-обход (v48.0 — APEX)
+! [VISUAL] Удаление рекламы, куки-баннеров и премиум-промо
 ##[class*="ad"], .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup, #cookie-notice, .cmp-container
 ##.premium-promo, .upsell-banner, [id^="google_ads_iframe"]
-! Прячем элементы так, чтобы скрипты проверки думали, что они отрисованы (Ghost Display)
-#%#//scriptlet("set-constant", "adblock", "false")
 
-! --- 2. Localhost & Port Hardening (Тотальная изоляция стека) ---
-! Защита от сканирования локальной сети и IoT устройств
+! [ANTI-ADBLOCK] Имитация присутствия рекламы для обмана скриптов-детекторов
+#%#//scriptlet("set-constant", "adblock", "false")
+#%#//scriptlet("abort-current-inline-script", "isAdBlockActive", "detectAdBlock")
+
+! [L24-S2] LOCALHOST: Тотальная изоляция стека (v48.0 — IP-HARDENING)
+! [SCAN-SHIELD] Защита от сканирования локальной сети (127.0.0.1, 192.168.x.x, 10.x.x.x)
 ||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system|~localhost,notify,tag=LOCAL_SCAN_DETECTED
 
-! Блокировка критических портов с имитацией Stealth-режима (DROP вместо REJECT)
+! [L24-S3] PORTS: Изоляция критических портов (v48.0 — STEALTH-PORT)
+! [PORT-BLOCK] Блокировка уязвимых портов (FTP, SSH, SMB, RDP, VNC) с имитацией Stealth
 ||^$important,port=21|22|23|25|110|135|139|445|3389|5900|8080|9000,domain=~teamviewer.com|~anydesk.com|~localhost
+
+! [L24-S4] ACTION-DROP: Имитация отсутствия узла (v48.0 — GHOST-REJECT)
+! [DROP] Замена REJECT на DROP для полной невидимости (ICMP, Discovery, WebRTC)
 $network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important,notify,tag=PORT_ATTACK_ALERT
 
-! [LAYER 28-29: QUANTUM VISIBILITY & ENTROPY - INTERSTELLAR]
-! --- 1. Header Manipulation (Активная дезинформация) ---
-! Генерируем "шум" и подменяем Client-Hints (защита от фингерпринтинга браузера)
+
+![25] Quantum Entropy (v49.0)
+
+! [L25-S1] ENTROPY: Активная дезинформация Client-Hints (v49.0 — NOISE-GEN)
+! [HEADERS] Подмена отпечатков браузера и внедрение случайной энтропии
 ||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=DNT: 1,set-header=Sec-CH-UA: "Not/A)Brand";v="99"
 ||yandex.*^$set-header=X-Omni-Entropy: $random_string,set-header=Sec-CH-UA-Platform: "Omni-OS"
 
-! Глубокая подмена ID в URL: превращаем реальные токены в "квантовую пыль"
+! [L25-S2] QUANTUM-DUST: Аннигиляция ID и токенов в URL (v49.0 — TOKEN-SCRUB)
+! [REPLACE] Превращение реальных UID и SID в случайный шум "omni-qnt"
 ||google.*$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved)=[^&]*/$1=omni-qnt-$random_string/
 ||yandex.*$replace=/(uuid|device_id|yclid|pvid)=[^&]*/$1=omni-ghost-$random_string/
 
-! --- 2. Security Headers (Ультимативный стелс-протокол) ---
-! Принудительная стерилизация путей перехода
+! [L25-S3] STERILIZATION: Ультимативный стелс-протокол заголовков (v49.0 — HARD-SHIELD)
+! [SECURITY] Стерилизация путей перехода и запрет на исполнение опасных типов контента
 ||*^$set-header=Referrer-Policy: no-referrer-when-downgrade,set-header=X-Content-Type-Options: nosniff
 ||*^$set-header=X-Frame-Options: SAMEORIGIN,set-header=X-XSS-Protection: 1; mode=block
+
+! [L25-S4] PERMISSIONS: Полное ослепление датчиков (v49.0 — SENSOR-OFF)
+! [POLICY] Глобальный запрет на доступ к геолокации, камере и микрофону на уровне заголовков
 ||*^$set-header=Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
 
-! [LAYER 17-26: TRUSTED BRIDGE & API CLEANER]
-! --- 1. Unified Trusted Bridge (Оптимизированный список доверия) ---
+
+! [L26] Trusted Bridge  & API CLEANER 
+
+! [L26-S1] BRIDGE: Единый мост доверия (v50.0 — WHITELIST-CORE)
+! [TRUSTED] Разрешаем критические домены (Банки, Госуслуги, Тех-гиганты)
 @@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|adyen|klarna|mastercard|samsung|apple|microsoft|icloud|googleapis|gstatic|jsdelivr|yandex|passport|sso|zoom|teams\.microsoft|netflix|amazon|aliexpress|wildberries|ozon|caf|ameli|urssaf|oelie-eau|sncf-connect|enedis|edf)\.(com|fr|de|ru|org|net|eu|uk|it|es|apple)$/^$important,document
 
-! --- 2. Privacy Header Stripping (APEX v10.5) ---
+! [L26-S2] STRIPPING: Аппаратная зачистка заголовков (v50.0 — APEX v10.5)
+! [PRIVACY] Удаление заголовков, раскрывающих твой реальный IP и цепочку прокси
 $header=/^(X-Forwarded-For|Real-IP|Client-IP|Via|Forwarded)$/i,important,domain=~system
 $removeheader=/^x-goog-api-(client|key|client-mods)|x-client-data|sec-ch-ua/ ,domain=google.com|googleapis.com|yandex.*
 
-! Квантовый шум + Эмуляция корпоративного шлюза (High-Priority Traffic)
-||google.*$set-header=X-Omni-Key: $random_string,set-header=X-Omni-Entropy: $random_string,set-header=X-Priority-Secure: maximum
-||yandex.*$set-header=X-Omni-Key: $random_string,set-header=X-Omni-Entropy: $random_string,set-header=X-Yandex-Safe-Browsing: true
+! [L26-S3] ENTROPY: Эмуляция корпоративного шлюза (v50.0 — CORP-SHIELD)
+! [NOISE] Внедрение квантового шума и флагов максимального приоритета
+||google.*^$set-header=X-Omni-Key: $random_string,set-header=X-Omni-Entropy: $random_string,set-header=X-Priority-Secure: maximum
+||yandex.*^$set-header=X-Omni-Key: $random_string,set-header=X-Omni-Entropy: $random_string,set-header=X-Yandex-Safe-Browsing: true
 
-! Тотальная зачистка рекламных ID (добавлены специфические хвосты из твоих логов)
+! [L26-S4] CLEANER: Тотальная зачистка рекламных ID (v50.0 — PARAM-WIPE)
+! [URL-CLEAN] Удаление всех известных трекинг-параметров из URL «на лету»
 $removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid|mc_eid|_hsenc|gs_lcp|sclient|ei|psi|ved|gbraid|wbraid|_openstat)$/
 
-! [LAYER 30: PHISH-FENCE & PROTOCOL INTEGRITY - INTERSTELLAR]
-! --- 1. Anti-Phishing, Punycode & IDN Sovereignty ---
-! Блокировка кириллических и прочих IDN доменов-двойников (защита от банковского фишинга)
+
+
+! [LAYER 27: PHISH-FENCE & PROTOCOL INTEGRITY - INTERSTELLAR]
+
+! [L27-S1] ANTI-PHISH: Защита от Punycode и IDN-двойников (v51.0 — SOVEREIGNTY)
+! [PUNYCODE] Блокировка кириллических доменов-клонов (защита от фишинга банков)
 ||xn--*^$important,reject,domain=~system|~yandex.ru|~google.com|~4pda.to
 
-! --- 2. Stealth Protocol Hardening (Защита от скрытых уведомлений и пингов) ---
-! Блокировка скрытых сервисных сообщений и невидимых пингов аналитики
+! [L27-S2] STEALTH: Защита от скрытых протоколов и пингов (v51.0 — HARDENING)
+! [NETWORK] Блокировка Flash-SMS, Silent-Pings и телеметрии операторов
 ||/^(flash-sms|class0-message|silent-ping|carrier-popup|push-telemetry)/^$important,network,third-party,reject
 
-! --- 3. Anti-Beacon & Deep Ping Suppression ---
-! Уничтожение асинхронных маяков (Beacon API), которые шпионят даже после закрытия вкладки
+! [L27-S3] BEACON: Уничтожение фоновых маяков (v51.0 — DEEP-SUPPRESSION)
+! [ANTI-TRACK] Блокировка Beacon API и асинхронной аналитики
 ||*$ping,third-party,important,domain=~google.*|~yandex.*|~facebook.*|~vk.com
 ||/^(analytics|metrics|telemetry|beacon|pixel)\./^$ping,important
 
-! --- 4. WebSocket Sterilization (Защита от туннелирования данных) ---
-! Запрещаем скрытые каналы передачи данных (WebSocket) для рекламных доменов
+! [L27-S4] WEBSOCKET: Защита от туннелирования (v51.0 — WS-STERILIZE)
+! [WS-BLOCK] Запрет скрытых каналов WebSocket для рекламных и трекинговых узлов
 ||*$websocket,third-party,domain=ad.*|ads.*|metrics.*|track.*|telemetry.*
 
-
-! --- 2. URL Cleaner (DEEP STERILIZATION) ---
-! Чистка UUID, DeviceID и уникальных токенов сессий
+! [L27-S5] CLEANER: Глубокая стерилизация URL и редиректов (v51.0 — APEX-CLEAN)
+! [URL-STRIP] Чистка UUID, DeviceID и токенов сессий с белым списком исключений
 $removeparam=/^(redirect|url|link|goto|continue|ref_url|return_to|uuid|device_id|yandex_ad_id|from|banner_id|session_id|unique_id|pvid|yclid|zen_id)$/,domain=~google.com|~bank|~yandex.ru|~dzen.ru|~openai.com|~gov|~un.org|~europa.eu|~caf.fr|~oelie-eau.fr
-
-! Замена редиректов на пустые скрипты (мгновенная деактивация трекеров)
+! [REWRITE] Мгновенная деактивация сократителей ссылок (Blank-JS)
 ||bit.ly^$rewrite=abp-resource:blank-js
 ||t.co^$rewrite=abp-resource:blank-js
 ||tinyurl.com^$rewrite=abp-resource:blank-js
 
-
-! --- 3. Cache & State Protection (ANTI-FINGERPRINT) ---
-! Блокировка параметров состояния устройства в URL
+! [L27-S6] CACHE: Защита от отпечатков состояния (v51.0 — ANTI-FINGERPRINT)
+! [PARAMS] Блокировка параметров кэш-бастеров и характеристик устройства (OS, RES)
 $removeparam=/^(_|cb|cachebuster|v|sw|sh|bat|os|res)$/,domain=~system|~google.com|~yandex.ru
 
 ! [LAYER 31: ANTI-COMPROMISE & EXFILTRATION CONTROL]
