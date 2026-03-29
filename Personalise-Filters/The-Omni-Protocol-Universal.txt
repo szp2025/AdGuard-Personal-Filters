@@ -206,6 +206,12 @@ $badfilter,content-type=application/json,third-party,header=X-Fraud-Detect
 ||8.8.8.8^$important
 ||8.8.4.4^$important
 
+! --- [GMS & GMAIL INTERFACE PURGE] ---
+! Блокируем саму отрисовку рекламных "писем" в интерфейсе
+||googleads.g.doubleclick.net/pagead/adview*^$important,reject
+||googleads.g.doubleclick.net/pagead/render*^$important,reject
+||tpc.googlesyndication.com/safeframe*^$important,reject
+||www.gstatic.com/generate_204^$important,reject,app=com.google.android.gm
 
 
 ! [L15] WebRTC (Stealth Mode) 
