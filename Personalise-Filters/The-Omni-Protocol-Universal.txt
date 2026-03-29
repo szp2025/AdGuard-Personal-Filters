@@ -1245,6 +1245,29 @@ $removeparam=/^(_|cb|cachebuster|v|sw|sh|bat|os|res)$/,domain=~system|~google.co
 ||/^(config\.t-mobile\.com|telekom\.com|vzw\.com|orange\.fr|sfr\.fr|mts\.ru|megafon\.ru|beeline\.ru|tele2\.ru)/^$important,network,third-party,reject
 
 
+
+! [L30: ANTI-SCREEN-CAPTURE & FINANCIAL STEALTH - V55.0]
+
+! --- 1. Display Media Kill-Switch (Запрет захвата экрана браузером) ---
+! Отключаем API, которое позволяет сайтам запрашивать запись экрана
+#%#//scriptlet("set-constant", "navigator.mediaDevices.getDisplayMedia", "undefined")
+#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.toDataURL", "undefined")
+
+! --- 2. Input-Stealth (Защита от кейлоггеров на уровне полей ввода) ---
+! Отключаем автозаполнение и предсказание текста для полей с паролями и картами
+#%#//scriptlet("set-attribute", "input[type='password'], input[type='tel'], input[name*='card']", "autocomplete", "off")
+#%#//scriptlet("set-attribute", "input[type='password']", "disable_predictive_text", "true")
+
+! --- 3. Anti-Copy-Exfiltration (Защита буфера обмена) ---
+! Запрещаем сайтам скрыто читать твой буфер обмена (Clipboard API)
+#%#//scriptlet("set-constant", "navigator.clipboard.readText", "undefined")
+#%#//scriptlet("set-constant", "navigator.clipboard.read", "undefined")
+
+! --- 4. Payment-API Sterilization (Защита транзакций) ---
+! Блокировка скрытых запросов к Payment Request API для неавторизованных доменов
+||*^$network=payment-request,domain=~google.com|~apple.com|~stripe.com|~paypal.com|~revolut.com,important,reject
+
+
 ! [L32: ADAPTIVE AI-SHIELD & DOM INTEGRITY - THE SINGULARITY]
 
 ! --- 1. AI-Tracker Deception (Обман нейросетевых трекеров) ---
