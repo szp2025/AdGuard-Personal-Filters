@@ -544,56 +544,36 @@ if (!TRUSTED) {
 ")
 
 
-! [L22-S2: THE PURIFIER — V122.0 — ZERO-FOOTPRINT]
-! Стерилизация: Шрифты + Cookies + LocalStorage + SessionStorage.
-
-! --- 1. FONT & CANVAS STEALTH (Анти-фингерпринт) ---
-#%#//scriptlet("set-constant", "CanvasRenderingContext2D.prototype.measureText", "function(){return {width: Math.random() * 100, actualBoundingBoxLeft: 0, actualBoundingBoxRight: 0, fontBoundingBoxAscent: 0, fontBoundingBoxDescent: 0};}")
-#%#//scriptlet("prevent-set-interval", "font")
-#%#//scriptlet("prevent-set-timeout", "font")
-
-! --- 2. COOKIE & STORAGE HYGIENE (Эвристика очистки) ---
-! Удаление мусорных ключей из Cookies и всех видов хранилищ.
-#%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|_ym_|_yuid|yandexuid|i|yabs-sid|fuid|mda|uid|sess|_gat)/")
+! [L22-S2: THE PURIFIER — V122.1 — ATOMIC]
+! Стерилизация: Fonts + Storage + Cookies. Объединено в один поток.
+#%#//scriptlet("set-constant", "CanvasRenderingContext2D.prototype.measureText", "function(){return {width: Math.random() * 100};}")
+#%#//scriptlet("prevent-set-interval", "/font|fingerprint|track|sensor/i")
 
 #%#//scriptlet("execute-script", "(function(){ \
-    const junk = ['_ga', '_gid', '_fbp', 'ym_', 'yandex', 'fuid', 'uid', 'sess', 'telemetry', 'fingerprint']; \
-    const clear = (store) => { \
-        try { \
-            for(let i=store.length-1; i>=0; i--){ \
-                const k = store.key(i); \
-                if(k && junk.some(j => k.toLowerCase().includes(j))) store.removeItem(k); \
-            } \
-        } catch(e){} \
-    }; \
-    clear(localStorage); clear(sessionStorage); \
-    /* Защита от бесконечных циклов опроса памяти */ \
-    window.setInterval = (function(old){ return function(f, t){ if(t < 50 || (f && f.toString().match(/fingerprint|track|sensor/i))) return; return old.apply(this, arguments); }; })(window.setInterval); \
+    const junk = ['_ga', '_gid', '_fbp', 'ym_', 'yandex', 'fuid', 'uid', 'sess', 'telemetry', 'fingerprint', 'clickid']; \
+    const purge = (s) => { try { for(let i=s.length-1; i>=0; i--){ let k=s.key(i); if(k && junk.some(j=>k.toLowerCase().includes(j))) s.removeItem(k); } } catch(e){} }; \
+    purge(localStorage); purge(sessionStorage); \
+    /* Уничтожение кук через JS (дублирует сетевой remove-cookie для надежности) */ \
+    document.cookie.split(';').forEach(c => { let k=c.split('=')[0].trim(); if(junk.some(j=>k.includes(j))) document.cookie=k+'=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;'; }); \
 })();")
 
-! [L23: PERIMETER-MONOLITH — V122.0 — GHOST-NODE]
-! Защита: Сетевой стек + WebRTC + LAN + Порты + UI-Purge.
-
-! --- 1. NETWORK-STACK & REFERRER (Имитация узла) ---
+! [L23: PERIMETER-MONOLITH — V122.1 — GHOST-NODE]
+! Защита сетевого уровня и UI. Схлопнуто для максимальной скорости.
 $network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,important
 *^$set-header=Referrer-Policy: no-referrer-when-downgrade
 
-! --- 2. IP-SHIELD & LAN-HARDENING (Изоляция) ---
-! Блокируем WebRTC (кроме доверенных) и попытки сканирования локальной сети.
+! --- IP & LAN SHIELD ---
 ||(stun:*|webrtc.org)^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com|~google.*|~yandex.*|~openai.*
 ||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
 
-! --- 3. STEALTH-PORTS & DROP-POLICY ---
-! Скрываем критические порты и аннигилируем входящие попытки опроса.
+! --- PORT REAPER & GASLIGHTING ---
 ||^$important,port=21|22|23|25|135|139|445|3389|5900|8080|9000,domain=~teamviewer.com|~anydesk.com|~localhost,tag=PORT_ATTACK
 $network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important
 
-! --- 4. UI-PURGE & ADBLOCK-GASLIGHTING ---
-! Финальная косметическая очистка и обман детекторов блокировщиков.
-##[class*="ad"], .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup
+! --- UI-PURGE & ADBLOCK-DECEPTION ---
+##[class*="ad"], .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup, .social-share, .fb-root, .vk-widget
 #%#//scriptlet("set-constant", "adblock", "false")
 #%#//scriptlet("abort-current-inline-script", "isAdBlockActive", "detectAdBlock")
-
 
 
 ! [L25: THE PURGE — V118.0 — URL-CLEANER & TRACKER-GENOCIDE]
