@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        he Omni-Protocol: Nebula Apex (v13.0.0) Interstellar Void.
+// @name         The Omni-Protocol: Nebula Apex (v13.0.0) Interstellar Void.
 // @version      v13.0.0-APEX
 // @description  Apex Logic Layer v2026.V11. Deep Spoofing, Font-Masking, WebRTC Block & Neural Noise.
 // @author       szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
