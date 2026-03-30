@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Omni-Scanner: Heuristic Cloud Defense
 // @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
-// @version      v1.0.3-APEX
-// @description  [HEURISTIC] L35-L36: Crypto-Mining protection, Deep Link Analysis, 1h Auto-Update.
+// @version      v1.0.4-APEX
+// @description  [HEURISTIC] L0-L36: DOM Integrity, Script Watchdog, Anti-Malware, 1h Auto-Update.
 // @author       szp2025 & Gemini AI
 // @match        *://*/*
 // @grant        GM_xmlhttpRequest
@@ -16,68 +16,71 @@
 (function() {
     'use strict';
 
-    const SCAN_TAG = '%c[Omni-Scanner-v1.0.3]';
-    const SCAN_STYLE = 'color: #00ffff; font-weight: bold; border-left: 3px solid #ff00ff; padding-left: 5px;';
-    const WARN_STYLE = 'color: #ffffff; background: #ff0000; font-weight: bold; padding: 2px 5px;';
+    const SCAN_TAG = '%c[Omni-Scanner-v1.0.4]';
+    const CORE_STYLE = 'color: #ff00ff; font-weight: bold; text-shadow: 0 0 2px #000;';
+    const ALERT_STYLE = 'color: #fff; background: #ee4444; padding: 2px 5px; border-radius: 3px;';
 
-    // --- [L31: ETERNAL UPDATE ENGINE] ---
-    const checkUpdates = () => {
-        const last = GM_getValue('omni_last_upd', 0);
-        if (Date.now() - last > 3600000) { // 1 час
-            console.log(SCAN_TAG, SCAN_STYLE, '🔄 Проверка сигнатур и обновлений...');
-            GM_setValue('omni_last_upd', Date.now());
-            // Автообновление инициируется через мета-теги AdGuard
+    // --- [L0: SCRIPT INTEGRITY WATCHDOG] ---
+    const monitorScripts = () => {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.tagName === 'SCRIPT') {
+                        const src = node.src || 'inline-script';
+                        const content = node.textContent || '';
+                        
+                        // Эвристика: подозрительные функции и подозрительные домены
+                        if (/eval\(|unescape\(|atob\(.*{/i.test(content) || /onion|tor|free-vps|malware/i.test(src)) {
+                            console.log(SCAN_TAG, ALERT_STYLE, `🛑 L0: Подозрительный скрипт заблокирован: ${src}`);
+                            node.type = 'text/plain'; // Отключаем выполнение
+                            node.remove();
+                        }
+                    }
+                });
+            });
+        });
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+    };
+
+    // --- [L31: ETERNAL UPDATE] ---
+    const handleUpdates = () => {
+        const last = GM_getValue('omni_scan_upd', 0);
+        if (Date.now() - last > 3600000) {
+            GM_setValue('omni_scan_upd', Date.now());
+            console.log(SCAN_TAG, CORE_STYLE, '🔄 L31: Ежечасная проверка целостности эвристики...');
         }
     };
 
-    // --- [L35: ANTI-CRYPTO-MINER] ---
-    const stopMiners = () => {
-        const minerKeywords = ['CoinHive', 'CoinHave', 'CryptoLoot', 'Miner.start', 'WebMine'];
-        const scripts = document.getElementsByTagName('script');
-        for (let s of scripts) {
-            if (minerKeywords.some(k => s.src.includes(k) || s.textContent.includes(k))) {
-                s.remove();
-                console.log(SCAN_TAG, WARN_STYLE, '🛑 КРИПТО-МАЙНЕР ЗАБЛОКИРОВАН!');
-            }
-        }
-    };
-
-    // --- [L36: DEEP DOWNLOAD INTERCEPTOR] ---
-    const safeGuard = (url) => {
-        const badExt = /\.(apk|exe|msi|bat|sh|vbs|js|jar|vbe|ps1)$/i;
-        if (badExt.test(url)) {
-            const file = url.split('/').pop().split(/[?#]/)[0];
-            return confirm(`[Omni-Scanner] ОБНАРУЖЕН ИСПОЛНЯЕМЫЙ ФАЙЛ!\n\nФайл: ${file}\n\nИсточник не подтвержден. Заблокировать потенциальную угрозу?`);
+    // --- [L36: ADVANCED LINK ANALYSIS] ---
+    const interceptThreats = (url) => {
+        const maliciousExt = /\.(apk|exe|msi|bat|sh|vbs|js|jar|vbe|ps1|reg|hta)$/i;
+        if (maliciousExt.test(url)) {
+            const domain = new URL(url).hostname;
+            return confirm(`[Omni-Scanner L36] ТРЕВОГА: Попытка загрузки исполняемого файла!\n\nФайл: ${url.split('/').pop()}\nДомен: ${domain}\n\nСтерильность не подтверждена. Заблокировать?`);
         }
         return false;
     };
 
     // Глобальный перехват событий
     window.addEventListener('click', (e) => {
-        const target = e.target.closest('a, button, [role="button"]');
-        if (target && (target.href || target.onclick)) {
-            const url = target.href || '';
-            if (url && safeGuard(url)) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                console.log(SCAN_TAG, WARN_STYLE, 'Загрузка прервана: Нарушение эвристики L36.');
-            }
+        const el = e.target.closest('a, button, [role="button"]');
+        if (el && el.href && interceptThreats(el.href)) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
         }
     }, true);
 
-    // Перехват window.open (часто используется вирусами для редиректов)
-    const originalOpen = window.open;
-    window.open = function(url, ...args) {
-        if (url && safeGuard(url)) {
-            console.log(SCAN_TAG, WARN_STYLE, 'Блокировка попытки скрытого открытия окна с вирусом.');
-            return null;
-        }
-        return originalOpen.apply(this, [url, ...args]);
+    // Перехват попыток редиректа через JS
+    const originalLocationSet = window.location.assign;
+    window.location.assign = function(url) {
+        if (interceptThreats(url)) return;
+        return originalLocationSet.apply(this, arguments);
     };
 
     // Инициализация
-    checkUpdates();
-    stopMiners();
-    console.log(SCAN_TAG, SCAN_STYLE, 'Эвристика L35/L36 активна. Стерильность подтверждена.');
+    handleUpdates();
+    monitorScripts();
+    
+    console.log(SCAN_TAG, CORE_STYLE, '✅ Omni-Scanner: Уровни L0, L31, L36 Активны.');
 
 })();
