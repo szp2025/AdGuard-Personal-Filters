@@ -333,6 +333,40 @@
 
     // Запуск уровня Supernova
     supernovaStealth();
+
+    // --- [L15: EVENT HORIZON - COGNITIVE & RESOURCE STEALTH] ---
+    const eventHorizon = () => {
+        // Когнитивные задержки (Human-Thinking Mimicry)
+        const humanizeEvent = (e) => {
+            const delay = Math.random() * 2; // Микро-лаг 0-2мс
+            const orgTimeStamp = e.timeStamp;
+            Object.defineProperty(e, 'timeStamp', { get: () => orgTimeStamp + delay });
+        };
+        window.addEventListener('keydown', humanizeEvent, true);
+        window.addEventListener('mousedown', humanizeEvent, true);
+
+        // Акустическая стерилизация (Audio-Hash Neutralizer)
+        if (window.AudioAnalyserNode) {
+            const orgGetByte = AudioAnalyserNode.prototype.getByteFrequencyData;
+            AudioAnalyserNode.prototype.getByteFrequencyData = function(array) {
+                for (let i = 0; i < array.length; i++) array[i] = 128; // Отдаем нейтральный тон
+                return array;
+            };
+        }
+
+        // Блокировка ресурсного тайминга (Resource Privacy)
+        if (window.performance && performance.clearResourceTimings) {
+            setInterval(() => performance.clearResourceTimings(), 100);
+        }
+
+        // Скрытие признаков автоматизации (Runtime Integrity)
+        if (navigator.languages) {
+            Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
+        }
+    };
+
+    // Запуск уровня Event Horizon
+    eventHorizon();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
