@@ -501,6 +501,36 @@
     // Запуск Финальной Точки Сингулярности
     singularityPoint();
 
+    // --- [L21/L22: ABSOLUTE INFINITY - GAMEPAD & RESOURCES & INTL] ---
+    const absoluteInfinity = () => {
+        // Изоляция Gamepad API (Hardware ID Stealth)
+        if (navigator.getGamepads) {
+            navigator.getGamepads = () => [null, null, null, null];
+        }
+
+        // Блокировка детекции расширений (Extension Stealth)
+        const orgFetch = window.fetch;
+        window.fetch = function(input, init) {
+            if (typeof input === 'string' && (input.includes('chrome-extension://') || input.includes('moz-extension://'))) {
+                return Promise.reject(new TypeError('NetworkError when attempting to fetch resource.'));
+            }
+            return orgFetch.apply(this, arguments);
+        };
+
+        // Стандартизация относительного времени (Locale Anonymization)
+        if (window.Intl && Intl.RelativeTimeFormat) {
+            const orgRTF = Intl.RelativeTimeFormat;
+            Intl.RelativeTimeFormat = function(locale) {
+                return new orgRTF('en-US', { numeric: 'auto' });
+            };
+        }
+
+        console.log('%c [Omni-Protocol] Level 22: Absolute Infinity. System is Ghost. ', 'color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;');
+    };
+
+    // Запуск уровня Absolute Infinity
+    absoluteInfinity();
+    
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
