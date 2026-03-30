@@ -35,29 +35,58 @@
 
     const CURRENT_VERSION = "v13.0.1-APEX"; // Синхронизировано с метаданными
 
-    /**
-     * Автообновление скрипта (Твоя логика, интегрированная в Apex)
+ /**
+     * L31: ETERNAL-AUTO-UPDATE (Smart Polling System)
+     * Интеллектуальный контроль версий с циклом 1 час.
      */
+    const CURRENT_VERSION = "v13.0.1-APEX"; // Убедись, что это совпадает с @version в шапке
+    const UPDATE_INTERVAL = 3600000; // 1 час в миллисекундах
+
     async function checkUpdate() {
+        const now = Date.now();
+        const lastCheck = localStorage.getItem('omni_last_update_check');
+
+        // Проверяем, прошел ли час с последней проверки
+        if (lastCheck && (now - lastCheck < UPDATE_INTERVAL)) {
+            return; 
+        }
+
         try {
             const url = "https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js";
-            const res = await fetch(url, { cache: "no-store" });
+            
+            // Используем cache: "no-cache", чтобы гарантированно обойти кэш браузера
+            const res = await fetch(url, { cache: "no-cache" });
+            if (!res.ok) throw new Error();
+            
             const text = await res.text();
-
-            const remoteVersion = text.match(/@version\s+([0-9.a-zA-Z-]+)/)?.[1];
+            const remoteVersion = text.match(/@version\s+([v0-9.a-zA-Z-]+)/)?.[1];
 
             if (remoteVersion && remoteVersion !== CURRENT_VERSION) {
-                console.log("%c[Omni] Update available: " + remoteVersion, "color: #ffd700; font-weight: bold;");
-                // Обновление через reload только если версия действительно выше
-                // location.reload(); // Можно оставить, если уверен в кэшировании GitHub
+                console.log(`%c [Omni-Update] New Version Detected: ${remoteVersion} `, "background: #ffd700; color: #000; font-weight: bold;");
+                
+                // Сохраняем метку, чтобы не крутить цикл бесконечно при ошибке
+                localStorage.setItem('omni_last_update_check', now);
+
+                // Оповещаем пользователя (опционально) или просто перезагружаем через таймаут
+                if (confirm(`Доступна новая версия Omni-Protocol (${remoteVersion}). Обновить страницу сейчас?`)) {
+                    location.reload();
+                }
+            } else {
+                // Если версия актуальна, просто обновляем время проверки
+                localStorage.setItem('omni_last_update_check', now);
+                console.log("%c [Omni] System is up to date. ", "color: #00ff00;");
             }
         } catch (e) {
-            console.log("[Omni] Update check failed");
+            console.log("%c [Omni] Update server unreachable. Retrying in 1 hour. ", "color: #ff4500;");
         }
     }
 
+    // 1. Проверка при запуске
     checkUpdate();
 
+    // 2. Фоновая проверка каждый час (для тех, кто не закрывает вкладки)
+    setInterval(checkUpdate, UPDATE_INTERVAL);
+    
     // --- [ЦЕНТРАЛЬНАЯ ЛОГИКА NEBULA APEX GOLD] ---
 
     const CONFIG = {
