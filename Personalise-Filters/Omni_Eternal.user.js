@@ -234,6 +234,44 @@
 
     // Запуск финала
     ghostProtocol();
+
+    // --- [L12: PLATINUM STEALTH - FONT & AUDIO & SENSORS] ---
+    const platinumStealth = () => {
+        // Маскировка шрифтов (Font-Bounding-Box Noise)
+        const orgGetBoundingClientRect = Element.prototype.getBoundingClientRect;
+        Element.prototype.getBoundingClientRect = function() {
+            const rect = orgGetBoundingClientRect.apply(this, arguments);
+            if (this.tagName === 'SPAN' || this.tagName === 'FONT') {
+                return {
+                    x: rect.x, y: rect.y,
+                    width: rect.width + (Math.random() * 0.1),
+                    height: rect.height + (Math.random() * 0.1),
+                    top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left
+                };
+            }
+            return rect;
+        };
+
+        // Блокировка аудио-отпечатка (AudioContext Noise)
+        const orgCreateBufferSource = window.AudioContext ? AudioContext.prototype.createBufferSource : null;
+        if (orgCreateBufferSource) {
+            AudioContext.prototype.createBufferSource = function() {
+                const source = orgCreateBufferSource.apply(this, arguments);
+                const orgStart = source.start;
+                source.start = function() {
+                    return orgStart.apply(this, arguments);
+                };
+                return source;
+            };
+        }
+
+        // Обнуление датчиков движения (Гироскоп/Акселерометр)
+        window.addEventListener('deviceorientation', (e) => { e.stopImmediatePropagation(); }, true);
+        window.addEventListener('devicemotion', (e) => { e.stopImmediatePropagation(); }, true);
+    };
+
+    // Запуск Платины
+    platinumStealth();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
