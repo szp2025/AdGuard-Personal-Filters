@@ -81,7 +81,7 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 ! Исключения для стабильной работы критических сервисов.
 @@||accounts.google.com^$domain=google.com|youtube.com
 @@||passport.yandex.ru^$domain=yandex.ru
-
+@@||tf1.fr^$domain=tf1.fr
 
 ! [L4: PRIVACY-SHIELD — V120.0 — THE INVISIBLE]
 ! Объединенный слой: Media-Spy Protection (L4) + DNS-Cloak Ghost (L6).
@@ -452,6 +452,8 @@ $client=/^com\.whatsapp/,$important,domain=~google.com|~yandex.ru
     const TRUSTED = /(google|youtube|bank|gov|openai|github|paypal|stripe|caf\.fr|oelie)/.test(host);
     const rand = (a,b)=> a + Math.random()*(b-a);
     const safeDefine = (obj, prop, val) => { try{ Object.defineProperty(obj, prop, { get: ()=>val, configurable: true }); }catch(e){} };
+// TF1 Anti-Adblock Bypass
+if (host.includes('tf1.fr')) { safeDefine(window, '__TF1_CONFIG__', { adblock: { serverRequest: false } }); }
 
 // [CONSENT-GASLIGHTING] Авто-ответ на запросы о согласии
 safeDefine(window, '__tcfapi', function(cmd, ver, cb){ if(cb) cb({eventStatus:'useractioncomplete', gdprApplies:true}, true); });
