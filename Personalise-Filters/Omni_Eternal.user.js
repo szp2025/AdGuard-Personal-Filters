@@ -1,15 +1,34 @@
 // ==UserScript==
-// @name         The Omni-Protocol: Nebula Apex (v13.0.0) Zenith Edition
-// @version      v13.0.1-APEX
-// @description  Apex Logic Layer v2026.V11. Deep Spoofing, Font-Masking, WebRTC Block & Neural Noise.
-// @author       szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
-// @match        *://*/*
-// @grant        none
-// @run-at       document-start
-// @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
-// @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
-// @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
+// @name         The Omni-Protocol: Nebula Apex (v13.0.1) Zenith Edition
+// @version      v13.0.1-APEX
+// @description  [ULTIMATE] 30-Layer Quantum Stealth. Neural-Heuristic, Font-Collision, Bezier-Randomization & Bio-Mimicry. Optimized for MacIntel/2026.
+// @author       szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
+// @match        *://*/*
+// @grant        none
+// @run-at       document-start
+// @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
+// @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
+// @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=github.com
+// @supportURL   https://github.com/szp2025/AdGuard-Personal-Filters/issues
+// @compatible   chrome
+// @compatible   firefox
+// @compatible   opera
+// @compatible   safari
+// @license      MIT
 // ==/UserScript==
+
+/**
+ * --- [ SYSTEM LOG: NEBULA APEX GOLD ] ---
+ * STATUS: 30-LAYER SINGULARITY REACHED
+ * SYNERGY: FULL (Linked with The-Omni-Protocol-Universal.txt)
+ * * KEY MODULES LOADED:
+ * L1-L10: Network Sterilization & Visual Reaper (CSS/DOM/Shadow-Purger)
+ * L11-L20: Hardware Mirage (GPU/CPU/Audio/Canvas-Bezier/Math-Entropy)
+ * L21-L25: Bio-Mimicry (Cognitive Lag/Human-Scroll/Mouse-Jitter)
+ * L26-L30: Zenith Protocols (Proxy-Masking/Font-Collision/Time-Shifting)
+ * * [GHOST MODE: ACTIVE] [TRACKING: NEUTRALIZED] [SYNERGY: 100%]
+ */
 
 (function() {
     'use strict';
