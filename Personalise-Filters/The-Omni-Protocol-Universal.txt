@@ -54,6 +54,14 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 @@||googlevideo.com^$app=com.google.android.apps.youtube.music|com.google.android.youtube
 @@||youtubei.googleapis.com^$app=com.google.android.apps.youtube.music|com.google.android.youtube
 
+! --- [ULTRA-YOUTUBE-BYPASS] Разблокировка для ReVanced 5.29.0 ---
+@@||googlevideo.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
+@@||youtubei.googleapis.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
+@@||ytimg.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
+@@||ggpht.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
+@@||s.youtube.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
+
+
 ! [L2: NETWORK-VOID — V125.0 — THE PURGE]
 ! Склеенный слой: Сетевая тишина (L2) + Стерилизация URL (L25).
 ! Объединяет блокировку доменов, эвристику путей и удаление маркеров слежки.
