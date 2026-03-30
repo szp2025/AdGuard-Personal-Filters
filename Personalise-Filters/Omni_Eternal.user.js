@@ -140,6 +140,37 @@
     // Запуск новых модулей
     cloudStealth();
     sterilizeURL();
+
+    // --- [L7: SHADOW-DOM & IDLE DEFENSE] ---
+    const deepSanitizer = () => {
+        // Проникаем в Shadow DOM для зачистки
+        const orgAttachShadow = Element.prototype.attachShadow;
+        Element.prototype.attachShadow = function() {
+            const shadow = orgAttachShadow.apply(this, arguments);
+            startReaper(shadow); // Запускаем Рипера внутри тени
+            return shadow;
+        };
+
+        // Блокируем Idle Detection (Слежка за простоем)
+        if ('IdleDetector' in window) {
+            delete window.IdleDetector;
+        }
+    };
+
+    // --- [L8: CLIPBOARD INTEGRITY] ---
+    const protectClipboard = () => {
+        document.addEventListener('copy', (e) => {
+            const selection = window.getSelection().toString();
+            if (selection) {
+                e.clipboardData.setData('text/plain', selection);
+                e.preventDefault(); // Запрещаем сайту добавлять свой мусор
+            }
+        }, true);
+    };
+
+    // Запуск финальных модулей
+    deepSanitizer();
+    protectClipboard();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
