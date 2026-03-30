@@ -61,6 +61,11 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 @@||ggpht.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
 @@||s.youtube.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
 
+! --- [IOS-TV-H264-TUNNEL] Специально для твоего конфига ---
+@@||googlevideo.com^$app=com.google.android.youtube
+@@||youtubei.googleapis.com^$app=com.google.android.youtube
+@@||ytimg.com^$app=com.google.android.youtube
+
 
 ! [L2: NETWORK-VOID — V125.0 — THE PURGE]
 ! Склеенный слой: Сетевая тишина (L2) + Стерилизация URL (L25).
