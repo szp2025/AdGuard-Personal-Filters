@@ -91,5 +91,55 @@
     injectNoise();
     startReaper();
 
+
+    // --- [L5: CLOUD-TIME & BATTERY STEALTH] ---
+    const cloudStealth = () => {
+        // Подмена часового пояса (под твой американский IP)
+        const Intl = window.Intl;
+        if (Intl && Intl.DateTimeFormat) {
+            const originalResolvedOptions = Intl.DateTimeFormat.prototype.resolvedOptions;
+            Intl.DateTimeFormat.prototype.resolvedOptions = function() {
+                return Object.assign(originalResolvedOptions.apply(this, arguments), {
+                    timeZone: "America/New_York",
+                    locale: "en-US"
+                });
+            };
+        }
+
+        // Подмена статуса батареи (чтобы не вычислили модель через API)
+        if (navigator.getBattery) {
+            navigator.getBattery = () => Promise.resolve({
+                charging: true,
+                chargingTime: 0,
+                dischargingTime: Infinity,
+                level: 1,
+                onchargingchange: null,
+                onlevelchange: null
+            });
+        }
+    };
+
+    // --- [L6: URL STERILIZER (CLEAN NAVIGATION)] ---
+    const sterilizeURL = () => {
+        const cleanParams = ['utm_source', 'utm_medium', 'utm_campaign', 'fbclid', 'gclid', 'yclid'];
+        const url = new URL(window.location.href);
+        let changed = false;
+
+        cleanParams.forEach(param => {
+            if (url.searchParams.has(param)) {
+                url.searchParams.delete(param);
+                changed = true;
+            }
+        });
+
+        if (changed) {
+            window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+        }
+    };
+
+    // Запуск новых модулей
+    cloudStealth();
+    sterilizeURL();
+    
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
