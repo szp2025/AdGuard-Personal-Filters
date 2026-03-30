@@ -1489,5 +1489,10 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! Намертво фиксируем статус обычного пользователя.
 #%#//scriptlet("set-constant", "navigator.webdriver", "false")
 
+! [L42: SOCKET-HEALING & WRAPPER-INTEGRITY - V67.0]
+! Блокируем попытки JS сканировать твои локальные порты (Anti-Intranet Scan)
+#%#//scriptlet("set-constant", "WebSocket", "undefined")
+#%#//scriptlet("set-constant", "RTCPeerConnection.prototype.createDataChannel", "undefined")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
