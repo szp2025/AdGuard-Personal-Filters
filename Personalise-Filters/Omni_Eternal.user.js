@@ -272,6 +272,32 @@
 
     // Запуск Платины
     platinumStealth();
+
+    // --- [L13: QUANTUM STEALTH - MOUSE & GPU & RATIO] ---
+    const quantumStealth = () => {
+        // Биометрический шум (Mouse/Touch Move Entropy)
+        const addEntropy = (e) => {
+            Object.defineProperty(e, 'screenX', { get: () => e.screenX + (Math.random() * 0.5) });
+            Object.defineProperty(e, 'screenY', { get: () => e.screenY + (Math.random() * 0.5) });
+        };
+        window.addEventListener('mousemove', addEntropy, true);
+        window.addEventListener('touchmove', addEntropy, true);
+
+        // Маскировка видеокарты (WebGL Vendor Spoof)
+        const orgGetParameter = WebGLRenderingContext.prototype.getParameter;
+        WebGLRenderingContext.prototype.getParameter = function(p) {
+            // UNMASKED_VENDOR_WEBGL = 0x9245, UNMASKED_RENDERER_WEBGL = 0x9246
+            if (p === 0x9245) return "Intel Inc.";
+            if (p === 0x9246) return "Intel(R) Iris(TM) Pro Graphics 6200";
+            return orgGetParameter.apply(this, arguments);
+        };
+
+        // Подмена Retina-пикселей (Device Pixel Ratio)
+        Object.defineProperty(window, 'devicePixelRatio', { get: () => 2 });
+    };
+
+    // Запуск Квантового уровня
+    quantumStealth();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
