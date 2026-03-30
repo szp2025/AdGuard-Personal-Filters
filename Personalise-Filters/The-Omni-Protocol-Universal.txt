@@ -1495,4 +1495,6 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 #%#//scriptlet("set-constant", "RTCPeerConnection.prototype.createDataChannel", "undefined")
 
 
+#%#//scriptlet("set-constant", "navigator.sendBeacon", "function() { return true; }")
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
