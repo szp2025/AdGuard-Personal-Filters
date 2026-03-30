@@ -298,6 +298,41 @@
 
     // Запуск Квантового уровня
     quantumStealth();
+
+    // --- [L14: SUPERNOVA STEALTH - BIOMETRIC & CANVAS POISON] ---
+    const supernovaStealth = () => {
+        // Биологический шум скроллинга (Scroll Entropy)
+        const applyScrollNoise = (e) => {
+            if (e.deltaY) {
+                Object.defineProperty(e, 'deltaY', { get: () => e.deltaY + (Math.random() * 0.05) });
+            }
+        };
+        window.addEventListener('wheel', applyScrollNoise, { passive: true });
+
+        // Активное отравление Canvas (DataURL Poisoning)
+        const orgToDataURL = HTMLCanvasElement.prototype.toDataURL;
+        HTMLCanvasElement.prototype.toDataURL = function() {
+            const ctx = this.getContext('2d');
+            if (ctx) {
+                ctx.fillStyle = 'rgba(0,0,0,0.01)';
+                ctx.fillRect(0, 0, 1, 1); // Микро-инъекция в 1 пиксель
+            }
+            return orgToDataURL.apply(this, arguments);
+        };
+
+        // Теневые разрешения (Permissions Spoofing)
+        if (navigator.permissions && navigator.permissions.query) {
+            const orgQuery = navigator.permissions.query;
+            navigator.permissions.query = function(q) {
+                return q.name === 'notifications' || q.name === 'geolocation' ?
+                    Promise.resolve({ state: 'prompt', onchange: null }) :
+                    orgQuery.apply(this, arguments);
+            };
+        }
+    };
+
+    // Запуск уровня Supernova
+    supernovaStealth();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
