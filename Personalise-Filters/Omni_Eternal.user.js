@@ -33,59 +33,66 @@
 (function() {
     'use strict';
 
-    const CURRENT_VERSION = "v13.0.1-APEX"; // Синхронизировано с метаданными
-
- /**
+  /**
      * L31: ETERNAL-AUTO-UPDATE (Smart Polling System)
      * Интеллектуальный контроль версий с циклом 1 час.
      */
-    const CURRENT_VERSION = "v13.0.1-APEX"; // Убедись, что это совпадает с @version в шапке
-    const UPDATE_INTERVAL = 3600000; // 1 час в миллисекундах
+    const CURRENT_VERSION = "v13.0.1-APEX"; // СТРОГО совпадает с шапкой @version
+    const UPDATE_INTERVAL = 3600000; // 1 час (3600 сек * 1000 мс)
 
     async function checkUpdate() {
         const now = Date.now();
         const lastCheck = localStorage.getItem('omni_last_update_check');
 
-        // Проверяем, прошел ли час с последней проверки
+        // Если с момента последней проверки прошло меньше часа — выходим
         if (lastCheck && (now - lastCheck < UPDATE_INTERVAL)) {
+            console.log("%c [Omni] Next update check in " + Math.round((UPDATE_INTERVAL - (now - lastCheck)) / 60000) + " min. ", "color: #888;");
             return; 
         }
 
         try {
             const url = "https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js";
             
-            // Используем cache: "no-cache", чтобы гарантированно обойти кэш браузера
+            // Форсируем запрос в сеть, игнорируя кэш
             const res = await fetch(url, { cache: "no-cache" });
-            if (!res.ok) throw new Error();
+            if (!res.ok) throw new Error("Network response was not ok");
             
             const text = await res.text();
-            const remoteVersion = text.match(/@version\s+([v0-9.a-zA-Z-]+)/)?.[1];
+            // Улучшенный Regex: ищет версию в формате v13.0.1-APEX
+            const remoteVersionMatch = text.match(/@version\s+([vV0-9.a-zA-Z-]+)/);
+            const remoteVersion = remoteVersionMatch ? remoteVersionMatch[1] : null;
 
             if (remoteVersion && remoteVersion !== CURRENT_VERSION) {
                 console.log(`%c [Omni-Update] New Version Detected: ${remoteVersion} `, "background: #ffd700; color: #000; font-weight: bold;");
                 
-                // Сохраняем метку, чтобы не крутить цикл бесконечно при ошибке
+                // Обновляем метку времени, чтобы не спамить релоадами при ошибке
                 localStorage.setItem('omni_last_update_check', now);
 
-                // Оповещаем пользователя (опционально) или просто перезагружаем через таймаут
-                if (confirm(`Доступна новая версия Omni-Protocol (${remoteVersion}). Обновить страницу сейчас?`)) {
-                    location.reload();
-                }
+                // Вместо навязчивого confirm — мягкое уведомление в консоль и обновление
+                console.warn("[Omni] System out of date. Initiating auto-sync...");
+                
+                // Даем пользователю 5 секунд дочитать страницу, если он её только открыл
+                setTimeout(() => {
+                    location.reload(); 
+                }, 5000);
+                
             } else {
-                // Если версия актуальна, просто обновляем время проверки
+                // Если версия актуальна, запоминаем время проверки
                 localStorage.setItem('omni_last_update_check', now);
-                console.log("%c [Omni] System is up to date. ", "color: #00ff00;");
+                console.log("%c [Omni] Integrity Verified. Version " + CURRENT_VERSION + " is active. ", "color: #00ff00; font-weight: bold;");
             }
         } catch (e) {
-            console.log("%c [Omni] Update server unreachable. Retrying in 1 hour. ", "color: #ff4500;");
+            console.log("%c [Omni] Update link or GitHub is sleeping. Retrying in 1 hour. ", "color: #ff4500;");
+            // Даже при ошибке ставим метку, чтобы не долбить сервер каждую секунду
+            localStorage.setItem('omni_last_update_check', now);
         }
     }
 
-    // 1. Проверка при запуске
+    // Запуск при старте
     checkUpdate();
-
-    // 2. Фоновая проверка каждый час (для тех, кто не закрывает вкладки)
+    // Фоновый интервал для "вечно открытых" вкладок
     setInterval(checkUpdate, UPDATE_INTERVAL);
+    
     
     // --- [ЦЕНТРАЛЬНАЯ ЛОГИКА NEBULA APEX GOLD] ---
 
