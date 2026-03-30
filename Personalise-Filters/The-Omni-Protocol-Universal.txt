@@ -50,6 +50,9 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 ! Если скрипт на странице пытается проверить доступность ADB или базы данных,
 ! мы возвращаем "Success", но с пустым ответом, чтобы запутать логику скрипта.
 #%#//scriptlet("set-constant", "XMLHttpRequest.prototype.send", "function() { if (this._url && this._url.match(/:5555|:5037|:3306|:5432/)) return; return send.apply(this, arguments); }")
+! --- [SPOOF-FLOW-SYNC] Разрешение для подмененных потоков ---
+@@||googlevideo.com^$app=com.google.android.apps.youtube.music|com.google.android.youtube
+@@||youtubei.googleapis.com^$app=com.google.android.apps.youtube.music|com.google.android.youtube
 
 ! [L2: NETWORK-VOID — V125.0 — THE PURGE]
 ! Склеенный слой: Сетевая тишина (L2) + Стерилизация URL (L25).
