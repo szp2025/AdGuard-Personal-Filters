@@ -51,96 +51,78 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 ! мы возвращаем "Success", но с пустым ответом, чтобы запутать логику скрипта.
 #%#//scriptlet("set-constant", "XMLHttpRequest.prototype.send", "function() { if (this._url && this._url.match(/:5555|:5037|:3306|:5432/)) return; return send.apply(this, arguments); }")
 
-! [L2: RAT-GHOST-ISOLATION - V70.0]
-! Убираем reject, заменяем на "молчание". Все нестандартные порты (кроме веба, DNS и времени)
-! для неизвестных доменов превращаются в цифровую пустыню.
-||*^$important,port=~80|~443|~53|~853|~123,domain=~google.*|~yandex.*|~openai.com|~bank|~gov|~apple.com|~microsoft.com,notify,tag=RAT_SILENCE
+! [L2: NETWORK-SILENCE — V119.0 — THE VOID]
+! Схлопнутый слой: Метрики (L2) + Рекламные сети (L3) + Трекеры-невидимки (L5).
 
-! [L2.1] Эвристика TCP-SYN Flood Protection
-! Если RAT пытается слишком часто стучаться на закрытые порты, мы метим его как атаку.
-$network=tcp,flags=syn,important,port=~80|~443,notify,tag=RAT_RECON_DETECTED
+! --- 1. HEURISTIC AD & TRACKER TERMINATOR ---
+! Блокировка по ключевым паттернам в путях и именах файлов.
+||$xdn,domain=~google.com|~yandex.ru|~bank|~gov|~openai.com
+/(adsystem|adserver|adservices|adv|analytics|counter|pixel|metrics|track|telemetry|beacon|collect|log.*\.js)/^$important,third-party,reject
 
-! [L2.2: BROWSER-RAT-DECEPTION]
-! Эвристика: если скрипт на странице пытается отправить данные на порт, отличный от 80/443,
-! мы возвращаем "Success" (200 OK), но физически блокируем отправку пакета.
-! Троян думает, что данные ушли, и не меняет тактику.
-#%#//scriptlet("set-constant", "window.fetch", "function(u, c) { if (u && u.match && u.match(/:[0-9]{3,5}/) && !u.match(/:443|:80/)) return Promise.resolve(new Response('', {status: 200})); return fetch.apply(this, arguments); }")
+! --- 2. GLOBAL AD-DOMAINS (Свернутый список гигантов) ---
+! Мы объединяем топ-домены слежки в одну группу для мгновенного парсинга.
+||(doubleclick.net|adform.net|adnxs.com|criteo.com|taboola.com|outbrain.com|mgid.com|rubiconproject.com|pubmatic.com|openx.net|appnexus.com|smartadserver.com)^$important,third-party,reject
+
+! --- 3. BEHAVIORAL EXCLUSIONS (Умные исключения) ---
+! Позволяем работать только тем скриптам, которые критичны для авторизации на доверенных сайтах.
+@@||accounts.google.com^$domain=google.com|youtube.com
+@@||passport.yandex.ru^$domain=yandex.ru
 
 
-! [L3: LEAK-SILENCE-PROTOCOL - V71.0]
-! Мы оставляем сетевую блокировку как "последний рубеж", 
-! но убираем уведомления (notify), чтобы не спамить в логах, если эвристика сработала.
-||*$ping,third-party,important,domain=~system|~google.com|~yandex.ru,tag=BACKGROUND_LEAK
+! [L4: PRIVACY-SHIELD — V120.0 — THE INVISIBLE]
+! Объединенный слой: Media-Spy Protection (L4) + DNS-Cloak Ghost (L6).
 
-! [L3.1: BEACON-GASLIGHTING-EVOLUTION]
-! Эвристика: Полная подмена функций слежки. 
-! Сайт думает, что отправил отчет о твоих действиях, но отчет уходит в пустоту.
-#%#//scriptlet("set-constant", "navigator.sendBeacon", "function() { return true; }")
-#%#//scriptlet("set-constant", "HTMLAnchorElement.prototype.ping", "undefined")
-
-! [L4: SPY-SHIELD-PROTOCOL - V72.0]
-! Оставляем блокировку сторонних медиа-запросов, но делаем её "тихой".
+! --- 1. MEDIA-SPY-SILENCE (Защита от прослушки и захвата) ---
+! Блокируем сторонние медиа-запросы везде, кроме доверенных видео-сервисов.
 ||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,tag=MEDIA_SPY_SILENCE
-! [L4.1: ANTI-MIRRORING-EVOLUTION]
-! Эвристика: полное уничтожение возможности скрытого захвата экрана и WebRTC-утечек.
-! При этом YouTube и Zoom продолжат работать, так как они используют свои плееры.
+
+! --- 2. ANTI-MIRRORING & WEBRTC (Защита экрана) ---
+! Полное уничтожение возможности скрытого захвата экрана и WebRTC-утечек.
 #%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
 #%#//scriptlet("set-constant", "navigator.mediaDevices.getDisplayMedia", "undefined")
 #%#//scriptlet("set-constant", "ScreenCapture.prototype.getDisplayMedia", "undefined")
 
-
-! [L5: TRAP-GHOST-LOCAL - V73.0]
-! Мы оставляем твою гениальную регулярку, но убираем REJECT.
-! Пакет просто "тонет". Для сайта твой роутер или принтер просто "не в сети".
-/^https?:\/\/(10\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+|192\.168\.\d+|169\.254\.\d+|.*\.(local|lan))\//^$important,third-party,domain=~localhost,tag=LOCAL_GHOST
-
-! [L5.1: LOCAL-SCAN-GASLIGHTING]
-! Эвристика: блокируем попытки JS сканировать внутреннюю сеть.
-! Подменяем конструкторы соединений, чтобы они не видели локальные адреса.
-#%#//scriptlet("set-constant", "WebSocket", "undefined")
-#%#//scriptlet("set-constant", "XMLHttpRequest.prototype.open", "function(m, u) { if (u && u.match(/(127\.|192\.168\.|10\.|172\.|localhost)/)) throw new Error('Network Error'); return open.apply(this, arguments); }")
-
-! [L6: DNS-CLOAK-GHOST - V74.0]
-! Мы расширяем список и убираем REJECT. Используем "тихую" блокировку.
-! Приложение не видит отказа, оно видит "Timeout", что заставляет его вернуться к системному DNS.
+! --- 3. DNS-CLOAK-GHOST (Принудительный системный DNS) ---
+! Блокируем DoH-запросы (DNS over HTTPS), заставляя приложения использовать твой локальный DNS.
 /^https?:\/\/([^\/]+\.)?(dns\.google|dns\.cloudflare\.com|doh\.opendns\.com|dns\.quad9\.net|dns\.adguard-dns\.com|doh\.cleanbrowsing\.org|1\.1\.1\.1|8\.8\.8\.8|9\.9\.9\.9)\/dns-query/^$important,third-party,tag=DNS_FORCE_FALLBACK
-! [L6.1: DOH-DECEPTION-EVOLUTION]
-! Эвристика: имитируем "отключение" функций DoH на уровне браузера.
-! Скрипты будут думать, что DoH-сервер просто не отвечает, и перестанут спамить.
-#%#//scriptlet("set-constant", "window.fetch", "function(u) { if (u && u.match && u.match(/dns-query|dns-json|v1\/query/)) return Promise.reject(new TypeError('DNS Service Unavailable')); return fetch.apply(this, arguments); }")
+
+! --- 4. DOH-DECEPTION (Эвристика имитации сбоя DNS) ---
+! Имитируем "таймаут" для DoH-запросов на уровне скриптов.
+#%#//scriptlet("execute-script", "(function(){ \
+    const origFetch = window.fetch; \
+    window.fetch = function(u, ...a) { \
+        if (u && typeof u === 'string' && u.match(/dns-query|dns-json|v1\/query/)) { \
+            return Promise.reject(new TypeError('DNS Service Unavailable')); \
+        } \
+        return origFetch.apply(this, [u, ...a]); \
+    }; \
+})();")
 
 
-! [L7: GEO-ZONE-GHOSTING - V75.0]
-! Мы оставляем твою мега-регулярку. 
-! Но используем тихую блокировку (без reject), чтобы сторонние скрипты "зависали".
-! Исключаем $doc, чтобы ты мог зайти на сайт в этих зонах сам, если нужно.
+! [L7: DECEPTION-ZONE — V121.0 — THE GASLIGHTER]
+! Схлопнутый слой: Geo-Zones (L7) + Port-Reaper (L8) + Analytics-Deception (L9).
+
+! --- 1. GEO-ZONE GHOSTING (TLD-Фильтр) ---
+! Тихая изоляция подозрительных и опасных доменных зон.
 /^https?:\/\/([^\/]+\.)?(top|zip|mov|review|gdn|loan|bid|click|work|buzz|country|stream|party|date|faith|trade|win|kim|science|gq|tk|ml|cf|ga|men|uno|live|surf|icu|sbs|monster|quest|beauty|best|contact|rest|autos|forum|xyz|fit|shop|info|online|site|website|space|store|tech|host|press|pw|cx|cc|biz|mobi|asia|cm|ws|re|ee|me|link|help|gift|pics|photo|market|agency|email|world|today|money|gold|ltd|company|digital|network|center|systems|services|solutions|group|team|plus|vip|pro|pub|fun|game|cool|rocks|expert|coach|legal|bank|finance|loans|credit|casino|bet|poker|bingo|lotto|adult|sex|porn|xxx|cam|video|tube|download|free|cheap|discount|sale|promo|deal|coupon|buy|secure|check|verify|login|account|update|support|service|client|billing|invoice|payment|token|crypto|coin|wallet|exchange|trade|miner|pool|hash|cloud|data|storage|server|host|dns|proxy|vpn|tor|onion|ssh|api|dev|app|mobile|android|ios|web|blog|news|media|social|chat|mail|post|office|hr|career|business|corp|inc|llp|llc|holdings|invest|capital|fund|asset|safe|trust|shield|guard|protect|security|cyber|hack|exploit|malware|virus|spy|spam|junk|trash|garbage|null|zero|test|demo|example|temp|tmp|bin|file|docs|pdf|xls|doc|ppt|v1|v2|v3|v4|v5|v6|v7|v8|v9|v10)\//^$important,third-party,~document,tag=ZONE_GHOSTING
-! [L7.1: STEALTH-REDIRECT-PROTECTION]
-! Эвристика: предотвращаем автоматический переход на опасные TLD.
-#%#//scriptlet("set-constant", "window.onbeforeunload", "null")
-#%#//scriptlet("set-constant", "window.location.replace", "function() { return; }")
 
-! [L8: PORT-REAPER-GHOST - V76.0]
-! Убираем REJECT. Используем тихую блокировку.
-! Сканеры портов и рекламные скрипты будут тратить время на ожидание ответа (Timeout),
-! что делает их работу неэффективной и "вешает" их логику.
+! --- 2. PORT-REAPER & NETWORK GASLIGHTING ---
+! Блокируем сканирование портов, имитируя таймаут (408).
 ||*^$important,port=81|8000|8008|8080|8081|8443|8888|9000|9090,third-party,domain=~localhost,tag=PORT_REAPER
-! [L8.1: WEB-SCAN-GASLIGHTING]
-! Эвристика: подменяем ответы для запросов на "странные" порты.
-! Вместо ошибки блокировки выдаем стандартный сетевой тайм-аут браузера.
 #%#//scriptlet("set-constant", "XMLHttpRequest.prototype.open", "function(m, u) { if (u && u.match(/:8080|:8443|:9000|:8888/)) { Object.defineProperty(this, 'status', {value: 408}); return; } return open.apply(this, arguments); }")
 
-! [L9: SILENCE-ULTRA-STEALTH - V77.0]
-! Мы сохраняем твою мега-регулярку, но убираем REJECT. 
-! Используем "тихую" блокировку. Телеметрия будет "висеть" в очереди, не нагружая процессор частыми повторами.
+! --- 3. ANALYTICS DECEPTION (SDK-Имитация) ---
+! Заставляем системы телеметрии "висеть", а скрипты SDK - считать, что данные отправлены успешно.
 /^https?:\/\/([^\/]+\.)?(telemetry|stats|metrics|analytics|data|crashlytics|report|diagnostics|log|events|track|survey|feedback|insight|usage|collect|monitor|sync|measure|debug|trace|ping|beacon)\.(microsoft|google|apple|amazon|samsung|huawei|xiaomi|adguard|crashlytics|fb|facebook|doubleclick|adjust|appsflyer|mixpanel|amplitude|segment|braze|app-measurement)\//^$important,third-party,tag=SILENCE_ZONE
-! [L9.1: ANALYTICS-DECEPTION-EVOLUTION]
-! Эвристика: имитируем успешную работу аналитических SDK.
-! Сайт думает, что ты "идеальный пользователь", который всё отправил.
+
 #%#//scriptlet("set-constant", "ga", "function() { return; }")
-#%#//scriptlet("set-constant", "__gaTracker", "function() { return; }")
 #%#//scriptlet("set-constant", "Mixpanel.prototype.track", "function() { return; }")
 #%#//scriptlet("set-constant", "Amplitude.prototype.logEvent", "function() { return; }")
+
+! --- 4. STEALTH-REDIRECT PROTECTION ---
+! Предотвращаем автоматические редиректы на опасные TLD.
+#%#//scriptlet("set-constant", "window.onbeforeunload", "null")
+#%#//scriptlet("set-constant", "window.location.replace", "function() { return; }")
 
 
 ! [L10: CRYPTO-DRAINER-GHOST - V78.0]
@@ -556,65 +538,57 @@ if (!TRUSTED) {
 ")
 
 
-! [L22-S2: THE PURIFIER — V96.0 — ZERO-FOOTPRINT]
-! Стерилизация шрифтов, кук и LocalStorage.
+! [L22-S2: THE PURIFIER — V122.0 — ZERO-FOOTPRINT]
+! Стерилизация: Шрифты + Cookies + LocalStorage + SessionStorage.
 
-! --- 1. FONT & CANVAS STEALTH ---
+! --- 1. FONT & CANVAS STEALTH (Анти-фингерпринт) ---
 #%#//scriptlet("set-constant", "CanvasRenderingContext2D.prototype.measureText", "function(){return {width: Math.random() * 100, actualBoundingBoxLeft: 0, actualBoundingBoxRight: 0, fontBoundingBoxAscent: 0, fontBoundingBoxDescent: 0};}")
-#%#//scriptlet("set-constant", "screen.availWidth", "1920")
-#%#//scriptlet("set-constant", "screen.availHeight", "1080")
 #%#//scriptlet("prevent-set-interval", "font")
 #%#//scriptlet("prevent-set-timeout", "font")
 
-! --- 2. COOKIE HYGIENE (v11.0) ---
-#%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|_ym_|_yuid|yandexuid|i|yabs-sid|fuid|mda)$/")
-||google-analytics.com^$cookie,important
-||mc.yandex.ru^$cookie,important
-||facebook.com^$cookie,third-party
+! --- 2. COOKIE & STORAGE HYGIENE (Эвристика очистки) ---
+! Удаление мусорных ключей из Cookies и всех видов хранилищ.
+#%#//scriptlet("remove-cookie", "/^(_ga|_gid|_fbp|_ym_|_yuid|yandexuid|i|yabs-sid|fuid|mda|uid|sess|_gat)/")
 
-! --- 3. STORAGE STERILIZATION ---
-! Мы не блокируем хранилище (чтобы не сломать сайт), но делаем его "эфемерным"
-#%#//scriptlet("prevent-set-interval", "fingerprint")
-#%#//scriptlet("prevent-set-timeout", "fingerprint")
-
-! [L22-S3] Эвристическое удаление "мусорных" ключей из памяти при загрузке
 #%#//scriptlet("execute-script", "(function(){ \
-    const junk = ['_ga', '_gid', '_fbp', 'ym_raw', 'yandexuid', 'fuid']; \
-    junk.forEach(k => { \
-        for(let i=0; i<localStorage.length; i++){ \
-            const key = localStorage.key(i); \
-            if(key && key.includes(k)) localStorage.removeItem(key); \
-        } \
-    }); \
+    const junk = ['_ga', '_gid', '_fbp', 'ym_', 'yandex', 'fuid', 'uid', 'sess', 'telemetry', 'fingerprint']; \
+    const clear = (store) => { \
+        try { \
+            for(let i=store.length-1; i>=0; i--){ \
+                const k = store.key(i); \
+                if(k && junk.some(j => k.toLowerCase().includes(j))) store.removeItem(k); \
+            } \
+        } catch(e){} \
+    }; \
+    clear(localStorage); clear(sessionStorage); \
+    /* Защита от бесконечных циклов опроса памяти */ \
+    window.setInterval = (function(old){ return function(f, t){ if(t < 50 || (f && f.toString().match(/fingerprint|track|sensor/i))) return; return old.apply(this, arguments); }; })(window.setInterval); \
 })();")
 
-! [L23-L24: PERIMETER-MONOLITH — V97.0 — GHOST-NODE]
-! Защита сетевого стека, локальной сети и портов.
+! [L23: PERIMETER-MONOLITH — V122.0 — GHOST-NODE]
+! Защита: Сетевой стек + WebRTC + LAN + Порты + UI-Purge.
 
-! --- S1: NETWORK-STACK (Имитация узла) ---
+! --- 1. NETWORK-STACK & REFERRER (Имитация узла) ---
 $network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,important
-
-! --- S2: REFERRER-POLICY ---
 *^$set-header=Referrer-Policy: no-referrer-when-downgrade
 
-! --- S3: IP-SHIELD (WebRTC & STUN) ---
-||(stun:*|webrtc.org)^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com|~google.*|~yandex.*|~openai.*|~bing.com
+! --- 2. IP-SHIELD & LAN-HARDENING (Изоляция) ---
+! Блокируем WebRTC (кроме доверенных) и попытки сканирования локальной сети.
+||(stun:*|webrtc.org)^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com|~google.*|~yandex.*|~openai.*
+||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
 
-! --- S4: LAN-HARDENING (Изоляция Localhost) ---
-! Блокируем попытки сайтов "прощупать" твою домашнюю сеть.
-||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system|~localhost,notify,tag=LAN_SCAN_DETECTED
-||/^(ssdp|mdns|icmp-discovery)/^$important,network,third-party,reject
-
-! --- S5: STEALTH-PORTS (Имитация отсутствия) ---
-! Скрываем критические порты и переводим их в режим DROP.
-||^$important,port=21|22|23|25|135|139|445|3389|5900|8080|9000,domain=~teamviewer.com|~anydesk.com|~localhost,notify,tag=PORT_ATTACK
+! --- 3. STEALTH-PORTS & DROP-POLICY ---
+! Скрываем критические порты и аннигилируем входящие попытки опроса.
+||^$important,port=21|22|23|25|135|139|445|3389|5900|8080|9000,domain=~teamviewer.com|~anydesk.com|~localhost,tag=PORT_ATTACK
 $network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important
 
-! --- S6: UI-PURGE (Косметическая очистка) ---
+! --- 4. UI-PURGE & ADBLOCK-GASLIGHTING ---
+! Финальная косметическая очистка и обман детекторов блокировщиков.
 ##[class*="ad"], .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup
-##.premium-promo, .upsell-banner, [id^="google_ads_iframe"]
 #%#//scriptlet("set-constant", "adblock", "false")
 #%#//scriptlet("abort-current-inline-script", "isAdBlockActive", "detectAdBlock")
+
+
 
 ! [L25: THE PURGE — V118.0 — URL-CLEANER & TRACKER-GENOCIDE]
 ! Единый слой стерилизации URL и блокировки глобальных метрик.
