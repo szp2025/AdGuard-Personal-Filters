@@ -113,8 +113,8 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 })();")
 
 
-! [L7: DECEPTION-ZONE — V121.0 — THE GASLIGHTER]
-! Схлопнутый слой: Geo-Zones (L7) + Port-Reaper (L8) + Analytics-Deception (L9).
+! [L5: DECEPTION-ZONE — V121.0 — THE GASLIGHTER]
+! Схлопнутый слой: Geo-Zones + Port-Reaper  + Analytics-Deception.
 
 ! --- 1. GEO-ZONE GHOSTING (TLD-Фильтр) ---
 ! Тихая изоляция подозрительных и опасных доменных зон.
@@ -139,7 +139,7 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 #%#//scriptlet("set-constant", "window.location.replace", "function() { return; }")
 
 
-! [L10: CRYPTO-DRAINER-GHOST - V78.0]
+! [L6: CRYPTO-DRAINER-GHOST - V78.0]
 ! Убираем REJECT. Используем тихую блокировку для всех WebSocket-запросов третьих лиц.
 ! Вредоносный скрипт будет ждать ответа, пока ты не закроешь вкладку.
 ||*$websocket,third-party,important,domain=~binance.com|~revolut.com|~metamask.io|~ledger.com|~trezor.io|~trustwallet.com|~bank,tag=DRAINER_GHOST
@@ -151,13 +151,13 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 #%#//scriptlet("set-constant", "window.bitcoin", "undefined")
 
 
-! [L11: STERILE-CHANNEL-GHOST - V79.0]
+! [L7: STERILE-CHANNEL-GHOST - V79.0]
 ||*$third-party,important,domain=~revolut.com|~lcl.fr|~ca-centreest.fr|~google.com|~apple.com|~github.com|~binance.com|~metamask.io|~bank,tag=STERILE_ZONE
 ||*$script,third-party,important,domain=~revolut.com|~lcl.fr|~bank,tag=SCRIPT_PURGE
 
 ! [UDP-CLOAKING] Блокируем UDP тише, чтобы QUIC плавно откатывался на TCP.
 ||*^$network,udp,important,domain=~google.com|~youtube.com|~twitch.tv|~github.com|~binance.com,tag=UDP_SILENCE
-! [L11.1: WEBRTC-SPOOFING-EVOLUTION]
+! [L7.1: WEBRTC-SPOOFING-EVOLUTION]
 ! Создаем "кукольный театр" для WebRTC. Объекты есть, но они ничего не делают.
 #%#//scriptlet("set-constant", "RTCPeerConnection", "function(){}")
 #%#//scriptlet("set-constant", "RTCPeerConnection.prototype.createOffer", "function(){return Promise.reject();}")
@@ -165,7 +165,7 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 ! [L11.2: STUN-GHOSTING]
 /^https?:\/\/([^\/]+\.)?(stun.*|turnserver\.net|.*\.stun\.hosting)\//^$important,tag=STUN_REAPER
 
-! [L12: BEACON-GHOST-REAPER - V80.0]
+! [L8: BEACON-GHOST-REAPER - V80.0]
 ! Твоя регулярка, доведенная до бесшумного режима.
 /^https?:\/\/.*(\/(px|pixel|track|tr|telemetry|collect|beacon|event|stat|hit|logs?|u?id|sid|cid|aid|siteid|pt)\/).*(\?|&)(v|u?id|sid|event|t)=.*/$important,third-party,tag=BEACON_GHOST
 
@@ -180,7 +180,7 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 #%#//scriptlet("remove-param", "utm_source")
 #%#//scriptlet("remove-param", "utm_campaign")
 
-! [L13: AI-GHOST-ISOLATION - V81.0]
+! [L9: AI-GHOST-ISOLATION - V81.0]
 ! Твоя регулярка в режиме "тишины". 
 /^https?:\/\/([^\/]+\.)?(gptbot|claudebot|anthropic|commoncrawl|ccbot|perplexitybot|coherebot|omni-bot|bytespider|diffbot|facebookexternalhit|google-extended|images\.google\.com|semrushbot|ahrefsbot|mj12bot|dotbot|rogerbot|exabot|petalbot)\//^$important,third-party,tag=AI_SCAVENGER_GHOST
 
@@ -188,16 +188,16 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 ||*/robots.txt$important,third-party,tag=ROBOTS_GHOST
 ||*/sitemap.xml$important,third-party,tag=SITEMAP_GHOST
 
-! [L13.1: DATA-POISONING-EVOLUTION]
+! [L9.1: DATA-POISONING-EVOLUTION]
 ! Эвристика: запрещаем программный доступ к тексту для сторонних скриптов.
 ! Твой глаз видит текст, а бот видит "undefined" или "Access Denied".
 #%#//scriptlet("set-constant", "document.getSelection", "function(){return null;}")
 #%#//scriptlet("set-constant", "navigator.webdriver", "true") 
 ! Мы прикидываемся ботом сами, чтобы другие боты считали нас "своими" и не трогали.
-! [L13.2: NO-AI-SIGNAL]
+! [L9.2: NO-AI-SIGNAL]
 $header=X-Robots-Tag: noai, noimageai, important
 
-! [L14: OMNI-MONOLITH - FINAL APEX v82.0]
+! [L10: OMNI-MONOLITH - FINAL APEX v82.0]
 
 ! --- S1: SMART-WHITE (Стерильность) ---
 ! Добавляем приоритет для GitHub и банковских доменов.
@@ -221,7 +221,7 @@ $header=X-Robots-Tag: noai, noimageai, important
 
 ! ###########################################################
 
-! [L15: SOVEREIGN-SHIELD - FINAL v83.0]
+! [L11: SOVEREIGN-SHIELD - FINAL v83.0]
 
 ! --- S1: AUTH-EVOLUTION (Авторизация) ---
 @@/^(https?:\/\/)?([^\/]+\.)?(accounts\.google|appleid\.apple|microsoftonline|okta)\.com\/.*$/$important,document,generichide,css,extension,domain=google.com|youtube.com|apple.com|icloud.com|microsoft.com|office.com
@@ -236,14 +236,14 @@ $header=X-Robots-Tag: noai, noimageai, important
 ||(appcloud-config|appcloud-service|samsung.appcloud|ironsrc|supersonicads|cloud-config.samsungdotcom|mail-ads.google|ads-settings-pa).com^$important,tag=BLOAT_PURGE
 ||(googleads.g.doubleclick.net/pagead/ads|reminders-pa.googleapis.com/v1/reminders/get|google.*/ads/sponsored)*^$important,tag=ADS_PURGE
 
-! [L15-S4: SENSOR-GHOSTING v83.0 — THE APEX]
+! [L11-S4.0: SENSOR-GHOSTING v83.0 — THE APEX]
 ! Ослепление шпионских сайтов через эвристическую подмену ответов API.
 ! Имитирует естественный отказ пользователя и отсутствие устройств.
 #%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "function(){return Promise.resolve([]);}")
 #%#//scriptlet("set-constant", "navigator.mediaDevices.getUserMedia", "function(){return Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));}")
 #%#//scriptlet("set-constant", "navigator.getUserMedia", "function(c,s,e){e(new DOMException('Permission denied', 'NotAllowedError'));}")
 
-! [L15-S4: SEARCH-GLOBAL-RESURRECTION — V85.0]
+! [L11-S4.1: SEARCH-GLOBAL-RESURRECTION — V85.0]
 ! Эвристический проход для ВСЕХ значимых поисковых систем мира.
 ! Разрешаем структуру (document), стили (css) и живой поиск (xhr).
 
@@ -272,7 +272,7 @@ $header=X-Robots-Tag: noai, noimageai, important
 @@||sogou.com^$important,document,generichide,css,xmlhttprequest
 @@||so.com^$important,document,generichide,css,xmlhttprequest
 
-! [L15-S4.1: DNS-ACCELERATION-GLOBAL]
+! [L11-S4.2: DNS-ACCELERATION-GLOBAL]
 ! Снятие DNS-барьеров для мгновенного резолвинга поисковиков.
 @@||google.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 @@||yandex.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
@@ -285,7 +285,7 @@ $header=X-Robots-Tag: noai, noimageai, important
 @@||qwant.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 
 
-! [L15-S5: HARDWARE-GHOSTING — APEX EDITION]
+! [115-S5: HARDWARE-GHOSTING — APEX EDITION]
 ! Батарея: всегда 100%, статус "заряжается". Идеальный камуфляж.
 #%#//scriptlet("set-constant", "navigator.getBattery", "function(){return Promise.resolve({charging:true,chargingTime:0,dischargingTime:Infinity,level:1,onchargingchange:null,onchargingtimechange:null,ondischargingtimechange:null,onlevelchange:null});}")
 
@@ -297,27 +297,27 @@ $header=X-Robots-Tag: noai, noimageai, important
 ! Уведомления: статус "запрещено пользователем" (естественное поведение).
 #%#//scriptlet("set-constant", "Notification.permission", "denied")
 
-! [L15-S6: SCREEN-DEFENSE — V84.0]
+! [L11-S6: SCREEN-DEFENSE — V84.0]
 ! Имитируем ошибку доступа к захвату экрана (NotAllowedError).
 #%#//scriptlet("set-constant", "navigator.getDisplayMedia", "function(){return Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));}")
 #%#//scriptlet("set-constant", "HTMLVideoElement.prototype.captureStream", "function(){return null;}")
 #%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.captureStream", "function(){return null;}")
 
-! [L16: OMNI-SENTINEL — THE PURIFIED APEX v90.0]
+! [L12: OMNI-SENTINEL — THE PURIFIED APEX v90.0]
 
-! [L16-S1: IP-KILL-SWITCH] Защита от ботнетов
+! [L12-S1: IP-KILL-SWITCH] Защита от ботнетов
 ||^$networkaddress=ip,important,reject,domain=~google.com|~yandex.ru|~openai.com|~apple.com|~microsoft.com|~revolut.com|~binance.com|~lcl.fr
 
-! [L16-S2: HEADER-PURGE] Стерилизация аппаратных ID
+! [L12-S2: HEADER-PURGE] Стерилизация аппаратных ID
 $removeheader=/^(X-(Device-ID|Machine-ID|Serial-Number|Hardware-Key))/ ,important
 $removeheader=/^(X-(Auth-Token|Session-ID))/ ,domain=~google.com|~bank|~openai.com|~yandex.ru|~revolut.com|~lcl.fr|~github.com
 
-! [L16-S3.2: QUANTUM-ENTROPY] Внесение хаоса в аналитику
+! [L12-S3.2: QUANTUM-ENTROPY] Внесение хаоса в аналитику
 ||(google-analytics\.com|doubleclick\.net|scorecardresearch\.com|app-measurement\.com|^analytics\.)^$set-header=X-Omni-Noise: $random_string,important
 ||(facebook\.com/tr/|connect\.facebook\.net|^graph\.)^$set-header=X-FB-Entropy: $random_string,important
 ||(bing\.com/shared/ajax/|clarity\.ms|^t\.aria\.)^$set-header=X-MS-Chaos: $random_string,important
 
-! [L16-S3.1, S4 & S5: GHOST-LOGIC, CHRONOS & BEACON-SPOOF]
+! [L12-S3.1, S4 & S5: GHOST-LOGIC, CHRONOS & BEACON-SPOOF]
 ! Объединенная эвристика: Fetch/XHR delay + Beacon spoof + Chronos Shield
 #%#//scriptlet("execute-script", "(function(){ \
     const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|telemetry|pixel|doubleclick/); \
@@ -345,7 +345,7 @@ $removeheader=/^(X-(Auth-Token|Session-ID))/ ,domain=~google.com|~bank|~openai.c
     }; \
 })();")
 
-! [L17: QUANTUM-MONOLITH — V91.0 — THE FINAL PROTOCOL]
+! [L13: QUANTUM-MONOLITH — V91.0 — THE FINAL PROTOCOL]
 
 ! --- S1: DNS-ARMOR (Реактивная фильтрация) ---
 ||(doubleclick.net|googlesyndication.com)^$dnstype=A,empty,third-party,reject
@@ -388,7 +388,7 @@ $network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,impor
     window.navigator.webdriver = false; \
 })();")
 
-! [L20: SOCIAL-BEHAVIORAL-MONOLITH — V92.0 — APEX GHOST]
+! [L14: SOCIAL-BEHAVIORAL-MONOLITH — V92.0 — APEX GHOST]
 
 ! --- S1: SOCIAL-SHIELD (Выжигание маячков) ---
 ||connect.facebook.net^$important,third-party
@@ -434,7 +434,7 @@ $client=/^com\.whatsapp/,$important,domain=~google.com|~yandex.ru
 @@||youtube.com/api/lounge/*^$important,domain=youtube.com
 
 
-! [L22: THE SINGULARITY — V125.0 — OMNI-CORE]
+! [L15: THE SINGULARITY — V125.0 — OMNI-CORE]
 ! Объединенный слой: AI-Интеллект + Аппаратный Спуфинг + Стерилизация Памяти.
 ! Включает: Косметику, Спуфинг железа (L39-41), Сетевой джиттер (L42) и The Purifier.
 
@@ -525,7 +525,7 @@ safeDefine(window, '__uspapi', function(cmd, ver, cb){ if(cb) cb({uspString:'1--
 })();
 ")
 
-! [L23: PERIMETER-MONOLITH — V122.1 — GHOST-NODE]
+! [L16: PERIMETER-MONOLITH — V122.1 — GHOST-NODE]
 ! Защита сетевого уровня и UI. Схлопнуто для максимальной скорости.
 $network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,important
 *^$set-header=Referrer-Policy: no-referrer-when-downgrade
@@ -545,7 +545,7 @@ $network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important
 
 
 
-! [L28: OMNI-SOVEREIGNTY — V100.0 — THE ABSOLUTE]
+! [L17: OMNI-SOVEREIGNTY — V100.0 — THE ABSOLUTE]
 
 ! --- S1: PORT-SECURITY (Anti-RAT) ---
 ||*^$important,port=~80|~443|~53|~853|~587|~993|~21|~22,reject,domain=~google.com|~yandex.*|~openai.com|~bank|~gov|~github.com
@@ -571,7 +571,7 @@ $network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important
     } \
 })();")
 
-! [L29: SIGNAL-MONOLITH — V101.0 — RADIO-SILENCE]
+! [L18: SIGNAL-MONOLITH — V101.0 — RADIO-SILENCE]
 ! Защита SIM-карты, GSM-сигналинга и логики входящих сообщений.
 
 ! --- S1: SMS-LOGIC ANCHOR (Стерилизация фишинга) ---
@@ -594,7 +594,7 @@ $network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important
 #%#//scriptlet("abort-on-stack-trace", "String.prototype.normalize", "sms_sanitizer")
 
 
-! [L30-L33: OMNI-SINGULARITY — V105.0 — THE PHANTOM]
+! [L19: OMNI-SINGULARITY — V105.0 — THE PHANTOM]
 ! Защита экрана, датчиков, транзакций и обман AI-аналитики.
 
 ! --- S1: MEDIA-OFF (Запрет захвата и записи) ---
@@ -623,7 +623,7 @@ $network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important
 ! --- S6: URL-ENTROPY (Заметание следов кликов) ---
 $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=~google.com|~bank|~yandex.ru
 
-! [L34-L38: MECHANICAL-MONOLITH — V110.0 — THE APEX]
+! [L20: MECHANICAL-MONOLITH — V110.0 — THE APEX]
 ! Маскировка GPU, таймингов, сенсоров и сетевого качества.
 
 ! --- S1: ENGINE-STEALTH (Железо и Время) ---
