@@ -83,7 +83,7 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 @@||passport.yandex.ru^$domain=yandex.ru
 @@||tf1.fr^$domain=tf1.fr
 
-! [L4: PRIVACY-SHIELD — V120.0 — THE INVISIBLE]
+! [L3: PRIVACY-SHIELD — V120.0 — THE INVISIBLE]
 ! Объединенный слой: Media-Spy Protection (L4) + DNS-Cloak Ghost (L6).
 
 ! --- 1. MEDIA-SPY-SILENCE (Защита от прослушки и захвата) ---
@@ -113,7 +113,7 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 })();")
 
 
-! [L5: DECEPTION-ZONE — V121.0 — THE GASLIGHTER]
+! [L4: DECEPTION-ZONE — V121.0 — THE GASLIGHTER]
 ! Схлопнутый слой: Geo-Zones + Port-Reaper  + Analytics-Deception.
 
 ! --- 1. GEO-ZONE GHOSTING (TLD-Фильтр) ---
@@ -139,11 +139,12 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 #%#//scriptlet("set-constant", "window.location.replace", "function() { return; }")
 
 
-! [L6: CRYPTO-DRAINER-GHOST - V78.0]
+! [L5: CRYPTO-DRAINER-GHOST - V78.0]
 ! Убираем REJECT. Используем тихую блокировку для всех WebSocket-запросов третьих лиц.
 ! Вредоносный скрипт будет ждать ответа, пока ты не закроешь вкладку.
 ||*$websocket,third-party,important,domain=~binance.com|~revolut.com|~metamask.io|~ledger.com|~trezor.io|~trustwallet.com|~bank,tag=DRAINER_GHOST
-! [L10.1: CRYPTO-WALLET-GASLIGHTING]
+
+! [L6 : CRYPTO-WALLET-GASLIGHTING]
 ! Эвристика: скрываем наличие крипто-кошельков от сайтов.
 ! Если сайт ищет MetaMask или TrustWallet, мы возвращаем "undefined" (пустоту).
 #%#//scriptlet("set-constant", "window.ethereum", "undefined")
