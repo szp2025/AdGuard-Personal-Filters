@@ -438,25 +438,106 @@ $client=/^com\.whatsapp/,$important,domain=~google.com|~yandex.ru
 @@||youtube.com/api/lounge/*^$important,domain=youtube.com
 
 
-! [L22: COSMETIC-APEX — V94.0 — PARENT-KILLER & AUTO-COLLAPSE]
-! Эвристическое удаление и принудительное схлопывание пустоты.
+! [L22: THE SINGULARITY — V116.0 — OMNI-CORE]
+! Объединенный слой: Косметика + Железо + Сеть + Поведение + L42 Integrity.
 
+! --- COSMETIC BLOCK ---
 ##.ads-container
 ##div[class*="Sponsored"]
 ##div[id*="ad-slot"]
-
-! [HEURISTIC-CLEANUP] Удаляем секции, которые содержат рекламные элементы.
 #?#div:has(> iframe[src*="ads"])
 #?#section:has(div[class*="ad-"])
-#?#aside:has(div[id*="google_ads"])
-#?#div[class*="container"]:has(div[class*="ad-"])
 
-! [AUTO-COLLAPSE] Схлопывание пустых контейнеров после фильтрации.
-##.ad-banner:empty
-##.trc_related_container:empty
-##div[id*="google_ads"]:empty
-##div[class*="ad-box"]:empty
-##.promoted-item:empty
+! --- THE NUCLEAR SCRIPTLET ---
+#%#//scriptlet("execute-script", "
+(function(){
+
+const host = location.hostname;
+const TRUSTED = /(google|youtube|bank|gov|openai|github|paypal|stripe|caf\.fr|oelie)/.test(host);
+
+function safeDefine(obj, prop, value){
+  try{ Object.defineProperty(obj, prop, { get: ()=>value, configurable: true }); }catch(e){}
+}
+
+/**
+ * 1. HARDWARE & STORAGE SPOOF (L39-L41 Integrated)
+ */
+if (!TRUSTED) {
+    // SSD & RAM Spoof
+    if (navigator.storage) {
+        navigator.storage.estimate = () => Promise.resolve({ quota: 107374182400, usage: 104857600 });
+    }
+    if (performance && performance.memory) {
+        safeDefine(performance, 'memory', { usedJSHeapSize: 104857600, totalJSHeapSize: 209715200, jsHeapSizeLimit: 2147483648 });
+    }
+
+    // Sensors & Battery
+    navigator.vibrate = () => true;
+    if (navigator.getBattery) {
+        navigator.getBattery = () => Promise.resolve({ charging: true, level: 1.0, chargingTime: 0, dischargingTime: Infinity });
+    }
+
+    // Geometry Rounding (Anti-Nano-Pixel)
+    const origGetRect = Element.prototype.getBoundingClientRect;
+    Element.prototype.getBoundingClientRect = function() {
+        const r = origGetRect.apply(this, arguments);
+        return { top: r.top, left: r.left, bottom: r.bottom, right: r.right, width: Math.round(r.width), height: Math.round(r.height) };
+    };
+    Element.prototype.getClientRects = () => [];
+}
+
+/**
+ * 2. NETWORK DECEPTION (L42 Integrated)
+ */
+if (!TRUSTED) {
+    // Anti-Port-Scan & Localhost Shield
+    const isForbidden = (u) => u && (u.includes('127.0.0.1') || u.includes('localhost') || (u.match && u.match(/:[0-9]{3,5}/) && !u.match(/:443|:80/)));
+
+    const origFetch = window.fetch;
+    window.fetch = function(u, ...args) {
+        if (isForbidden(u)) return Promise.reject(new TypeError('Network Error'));
+        return origFetch.apply(this, [u, ...args]);
+    };
+
+    const origOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function(m, u) {
+        if (isForbidden(u)) throw new Error('Network Error');
+        return origOpen.apply(this, arguments);
+    };
+
+    // WebRTC & Beacon
+    safeDefine(window, 'RTCPeerConnection', undefined);
+    navigator.sendBeacon = () => true;
+}
+
+/**
+ * 3. ENGINE HARDENING (UserAgent, Screen, CPU)
+ */
+if (!TRUSTED) {
+    safeDefine(navigator, 'webdriver', false);
+    safeDefine(navigator, 'hardwareConcurrency', 8);
+    safeDefine(navigator, 'deviceMemory', 8);
+    
+    // Screen Integrity
+    const screenProps = { width: 1920, height: 1080, availWidth: 1920, availHeight: 1080, availTop: 0, availLeft: 0 };
+    Object.keys(screenProps).forEach(p => safeDefine(screen, p, screenProps[p]));
+    safeDefine(screen.orientation, 'type', 'landscape-primary');
+}
+
+/**
+ * 4. AI-HUMANIZER (Behavior)
+ */
+if (!TRUSTED) {
+    // Кастрируем IntersectionObserver (обман видимости)
+    window.IntersectionObserver = function() { return { observe:()=>{}, unobserve:()=>{}, disconnect:()=>{} }; };
+    
+    // Джиттер для requestAnimationFrame
+    const origRAF = window.requestAnimationFrame;
+    window.requestAnimationFrame = (cb) => origRAF((t) => cb(t + Math.random() * 5));
+}
+
+})();
+")
 
 ! [L22-S1: AI-Humanizer & Hardware Spoofer]
 #%#//scriptlet("execute-script", "
@@ -1408,31 +1489,5 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 #%#//scriptlet("set-constant", "screen.orientation.type", "landscape-primary")
 #%#//scriptlet("set-constant", "navigator.userActivation", "{ isActive: false, hasBeenActive: false }")
 
-! [L39-L42: OMNI-HORIZON — V115.0 — THE EVENT HORIZON]
-! Фальсификация SSD, RAM, геометрии и блокировка сканирования сети.
-
-! --- S1: STORAGE-SPOOF (Имитация диска и кэша) ---
-#%#//scriptlet("set-constant", "navigator.storage.estimate", "function() { return Promise.resolve({ quota: 107374182400, usage: 104857600 }); }")
-#%#//scriptlet("set-constant", "CacheStorage.prototype.keys", "function() { return Promise.resolve([]); }")
-
-! --- S2: RESOURCE-SHIELD (Защита от кэш-атак и замера RAM) ---
-#%#//scriptlet("set-constant", "PerformanceResourceTiming.prototype.duration", "0")
-#%#//scriptlet("set-constant", "performance.memory", "{ usedJSHeapSize: 104857600, totalJSHeapSize: 209715200, jsHeapSizeLimit: 2147483648 }")
-#%#//scriptlet("set-constant", "navigator.vibrate", "function() { return true; }")
-
-! --- S3: GEOMETRY-MASK (Округление нанопикселей) ---
-#%#//scriptlet("set-constant", "Element.prototype.getClientRects", "function() { return []; }")
-#%#//scriptlet("set-constant", "Element.prototype.getBoundingClientRect", "function() { var rect = this.getBoundingClientRect(); return { top: rect.top, left: rect.left, bottom: rect.bottom, right: rect.right, width: Math.round(rect.width), height: Math.round(rect.height) }; }")
-#%#//scriptlet("set-constant", "window.screen.availTop", "0")
-#%#//scriptlet("set-constant", "window.screen.availLeft", "0")
-
-! --- S4: NETWORK-DECEPTION (Обман сканеров портов и WebRTC) ---
-#%#//scriptlet("set-constant", "navigator.sendBeacon", "function() { return true; }")
-#%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
-#%#//scriptlet("set-constant", "XMLHttpRequest.prototype.open", "function(m, u) { if (u && (u.includes('127.0.0.1') || u.includes('localhost') || (u.match && u.match(/:[0-9]{3,5}/) && !u.match(/:443|:80/)))) throw new Error('Network Error'); return open.apply(this, arguments); }")
-
-! --- S5: PREFERENCE-PRIVACY (Унификация настроек ОС) ---
-#%#//scriptlet("set-constant", "window.matchMedia('(prefers-reduced-motion: reduce)').matches", "false")
-#%#//scriptlet("set-constant", "navigator.webdriver", "false")
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
