@@ -400,6 +400,42 @@
 
     // Запуск уровня Void Singularity
     voidSingularity();
+
+    // --- [L17: ABSOLUTE ZERO - STACK & TIMER & SCREEN] ---
+    const absoluteZero = () => {
+        // Очистка стека ошибок (Error Stack Sanitizer)
+        const orgError = window.Error;
+        window.Error = function() {
+            const err = new orgError(...arguments);
+            Object.defineProperty(err, 'stack', {
+                get: () => "Error\n    at <anonymous>:1:1",
+                configurable: true
+            });
+            return err;
+        };
+
+        // Джиттер таймера (Advanced Performance Jitter)
+        const orgNow = performance.now;
+        performance.now = function() {
+            const jitter = (Math.random() - 0.5) * 0.005; // +/- 5 микросекунд
+            return orgNow.apply(this, arguments) + jitter;
+        };
+
+        // Блокировка параметров рабочей области (Screen Privacy)
+        Object.defineProperties(screen, {
+            availWidth: { get: () => 1920 },
+            availHeight: { get: () => 1040 }, // Имитируем Dock в macOS
+            colorDepth: { get: () => 24 },
+            pixelDepth: { get: () => 24 }
+        });
+
+        // Запрет на чтение установленных плагинов (Plugin Ghosting)
+        Object.defineProperty(navigator, 'plugins', { get: () => [] });
+        Object.defineProperty(navigator, 'mimeTypes', { get: () => [] });
+    };
+
+    // Запуск уровня Absolute Zero
+    absoluteZero();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
