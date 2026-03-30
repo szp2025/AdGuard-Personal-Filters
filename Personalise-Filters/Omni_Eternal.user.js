@@ -1,15 +1,15 @@
 // ==UserScript==
-// @name         The Omni-Protocol: Nebula Apex (v13.0.1) Zenith Edition
-// @version      v13.0.1-APEX
-// @description  [ULTIMATE] 30-Layer Quantum Stealth. Neural-Heuristic, Font-Collision, Bezier-Randomization & Bio-Mimicry. Optimized for MacIntel/2026.
-// @author       szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
-// @match        *://*/*
-// @grant        none
-// @run-at       document-start
-// @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
-// @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
-// @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
+// @name         The Omni-Protocol: Nebula Apex (v13.0.1) Zenith Edition
+// @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
+// @version      v13.0.1-APEX
+// @description  [ULTIMATE] 30-Layer Quantum Stealth. Neural-Heuristic, Font-Collision, Bezier-Randomization & Bio-Mimicry. Optimized for MacIntel/2026.
+// @author       szp2025 & Gemini AI
+// @match        *://*/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=github.com
+// @grant        none
+// @run-at       document-start
+// @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
+// @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
 // @supportURL   https://github.com/szp2025/AdGuard-Personal-Filters/issues
 // @compatible   chrome
 // @compatible   firefox
@@ -17,6 +17,7 @@
 // @compatible   safari
 // @license      MIT
 // ==/UserScript==
+
 
 /**
  * --- [ SYSTEM LOG: NEBULA APEX GOLD ] ---
