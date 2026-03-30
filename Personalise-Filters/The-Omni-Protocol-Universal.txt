@@ -68,6 +68,12 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 @@||accounts.google.com^$domain=google.com|youtube.com
 @@||passport.yandex.ru^$domain=yandex.ru
 
+! [L2-EXTRA: IN-APP TELEMETRY KILLER]
+! Усиление защиты для приложений с HTTPS-фильтрацией.
+||graph.facebook.com^$app=com.facebook.katana|com.facebook.orca,important
+||*.fbcdn.net^$app=com.facebook.katana,third-party,important
+||advertising.apple.com^$important,app=~system
+||app-measurement.com^$important,third-party,reject
 
 ! [L4: PRIVACY-SHIELD — V120.0 — THE INVISIBLE]
 ! Объединенный слой: Media-Spy Protection (L4) + DNS-Cloak Ghost (L6).
