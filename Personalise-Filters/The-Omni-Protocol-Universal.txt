@@ -434,136 +434,90 @@ $client=/^com\.whatsapp/,$important,domain=~google.com|~yandex.ru
 @@||youtube.com/api/lounge/*^$important,domain=youtube.com
 
 
-! [L22: THE SINGULARITY — V116.0 — OMNI-CORE]
-! Объединенный слой: Косметика + Железо + Сеть + Поведение + L42 Integrity.
+! [L22: THE SINGULARITY — V125.0 — OMNI-CORE]
+! Объединенный слой: AI-Интеллект + Аппаратный Спуфинг + Стерилизация Памяти.
+! Включает: Косметику, Спуфинг железа (L39-41), Сетевой джиттер (L42) и The Purifier.
 
-! --- COSMETIC BLOCK ---
-##.ads-container
-##div[class*="Sponsored"]
-##div[id*="ad-slot"]
+! --- 1. COSMETIC STERILIZATION ---
+##.ads-container, .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup
+##div[class*="Sponsored"], div[id*="ad-slot"]
 #?#div:has(> iframe[src*="ads"])
 #?#section:has(div[class*="ad-"])
 
-! [L22-S1: OMNI-CORE — V116.5 — THE ARCHITECT]
-! Полная интеграция: AI-Поведение + Аппаратный Спуфинг + Сетевой Щит.
+! --- 2. OMNI-CORE ATOMIC ENGINE ---
+#%#//scriptlet("prevent-set-interval", "/font|fingerprint|track|sensor/i")
 #%#//scriptlet("execute-script", "
 (function(){
+    const host = location.hostname;
+    const TRUSTED = /(google|youtube|bank|gov|openai|github|paypal|stripe|caf\.fr|oelie)/.test(host);
+    const rand = (a,b)=> a + Math.random()*(b-a);
+    const safeDefine = (obj, prop, val) => { try{ Object.defineProperty(obj, prop, { get: ()=>val, configurable: true }); }catch(e){} };
 
-/** 0. CORE SETUP & TRUSTED LIST */
-const host = location.hostname;
-const TRUSTED = /(google|youtube|bank|gov|openai|github|paypal|stripe|caf\.fr|oelie)/.test(host);
-const rand = (a,b)=> a + Math.random()*(b-a);
-function safeDefine(obj, prop, value){
-  try{ Object.defineProperty(obj, prop, { get: ()=>value, configurable: true }); }catch(e){}
-}
+    /** [CORE: IDENTITY & PURIFIER] */
+    const JUNK_KEYS = ['_ga', '_gid', '_fbp', 'ym_', 'yandex', 'fuid', 'uid', 'sess', 'telemetry', 'fingerprint', 'clickid'];
+    const purge = (s) => { try { for(let i=s.length-1; i>=0; i--){ let k=s.key(i); if(k && JUNK_KEYS.some(j=>k.toLowerCase().includes(j))) s.removeItem(k); } } catch(e){} };
+    
+    const ID = localStorage.getItem('omni_id') || Math.random().toString(36).substring(2);
+    localStorage.setItem('omni_id', ID);
+    let mem = JSON.parse(localStorage.getItem('omni_mem_' + ID) || '{\"v\":1,\"s\":0,\"c\":0}');
+    mem.v++; 
+    
+    // Мгновенная очистка при загрузке
+    purge(localStorage); purge(sessionStorage);
+    localStorage.setItem('omni_mem_' + ID, JSON.stringify(mem));
+    document.cookie.split(';').forEach(c => { let k=c.split('=')[0].trim(); if(JUNK_KEYS.some(j=>k.includes(j))) document.cookie=k+'=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;'; });
 
-/** 1. IDENTITY & MEMORY ENGINE (Твоя сессионная логика) */
-const ID = localStorage.getItem('omni_id') || Math.random().toString(36).substring(2);
-localStorage.setItem('omni_id', ID);
-let mem = JSON.parse(localStorage.getItem('omni_mem_' + ID) || '{\"v\":1,\"s\":0,\"c\":0}');
-mem.v++;
-localStorage.setItem('omni_mem_' + ID, JSON.stringify(mem));
+    if (!TRUSTED) {
+        /** [HARDWARE: 8-CORE / 16GB / 1080p] */
+        safeDefine(navigator, 'hardwareConcurrency', 8);
+        safeDefine(navigator, 'deviceMemory', 8);
+        safeDefine(navigator, 'webdriver', false);
+        if (navigator.storage) navigator.storage.estimate = () => Promise.resolve({ quota: 107374182400, usage: 104857600 });
+        
+        const sc = { width: 1920, height: 1080, availWidth: 1920, availHeight: 1080 };
+        Object.keys(sc).forEach(p => safeDefine(screen, p, sc[p]));
 
-/** 2. HARDWARE & STORAGE SPOOF (L39-L41 + Твои профили) */
-if (!TRUSTED) {
-    // Аппаратный стандарт: Intel 8 Cores / 16GB RAM / 100GB SSD
-    safeDefine(navigator, 'hardwareConcurrency', 8);
-    safeDefine(navigator, 'deviceMemory', 8);
-    safeDefine(navigator, 'webdriver', false);
-    if (navigator.storage) {
-        navigator.storage.estimate = () => Promise.resolve({ quota: 107374182400, usage: 104857600 });
+        // WebGL & Canvas (Anti-Fingerprint)
+        const getParam = WebGLRenderingContext.prototype.getParameter;
+        WebGLRenderingContext.prototype.getParameter = function(p){
+            return (p === 37445) ? 'Intel Inc.' : (p === 37446) ? 'Intel Iris OpenGL Engine' : getParam.apply(this, arguments);
+        };
+        HTMLCanvasElement.prototype.toDataURL = (function(orig){
+            return function(){ 
+                const ctx = this.getContext('2d');
+                if (ctx) { ctx.fillStyle = 'rgba(0,0,0,0.001)'; ctx.fillRect(0,0,1,1); }
+                return orig.apply(this, arguments);
+            };
+        })(HTMLCanvasElement.prototype.toDataURL);
+        CanvasRenderingContext2D.prototype.measureText = () => ({ width: rand(10, 100), actualBoundingBoxLeft: 0, actualBoundingBoxRight: 0 });
+
+        /** [NETWORK: JITTER & ANTI-SCAN] */
+        const isForbidden = (u) => u && (typeof u === 'string') && (u.includes('127.0.0.1') || u.includes('localhost') || (u.match && u.match(/:[0-9]{3,5}/) && !u.match(/:443|:80/)));
+        const oFetch = window.fetch;
+        window.fetch = async function(u, ...a) {
+            if (isForbidden(u)) return Promise.reject(new TypeError('Network Error'));
+            await new Promise(r => setTimeout(r, rand(30, 150)));
+            return oFetch.apply(this, [u, ...a]);
+        };
+        safeDefine(window, 'RTCPeerConnection', undefined);
+
+        /** [AI-HUMANIZER: BEHAVIORAL SHIELD] */
+        window.addEventListener('scroll', () => { mem.s = window.scrollY; localStorage.setItem('omni_mem_'+ID, JSON.stringify(mem)); }, {passive:true});
+        (function humanFlow(){
+            setTimeout(() => {
+                if (Math.random() > 0.7) window.scrollBy({ top: rand(30,100), behavior: 'smooth' });
+                humanFlow();
+            }, rand(5000, 12000));
+        })();
+
+        // Timing Obfuscation
+        const oNow = performance.now.bind(performance);
+        performance.now = () => oNow() + rand(0, 4);
+        safeDefine(document, 'visibilityState', 'visible');
+        window.IntersectionObserver = function() { return { observe:()=>{}, unobserve:()=>{}, disconnect:()=>{} }; };
     }
-    
-    // Screen & Display (1080p Standard)
-    const sc = { width: 1920, height: 1080, availWidth: 1920, availHeight: 1080, availTop: 0, availLeft: 0 };
-    Object.keys(sc).forEach(p => safeDefine(screen, p, sc[p]));
-    if (screen.orientation) safeDefine(screen.orientation, 'type', 'landscape-primary');
-
-    // WebGL & Canvas Protection
-    const getParam = WebGLRenderingContext.prototype.getParameter;
-    WebGLRenderingContext.prototype.getParameter = function(p){
-        if (p === 37445) return 'Intel Inc.';
-        if (p === 37446) return 'Intel Iris OpenGL Engine';
-        return getParam.apply(this, arguments);
-    };
-    const origToDataURL = HTMLCanvasElement.prototype.toDataURL;
-    HTMLCanvasElement.prototype.toDataURL = function(){
-        const ctx = this.getContext('2d');
-        if (ctx) { ctx.fillStyle = 'rgba(0,0,0,0.001)'; ctx.fillRect(0,0,1,1); }
-        return origToDataURL.apply(this, arguments);
-    };
-
-    // Battery & Vibration
-    navigator.vibrate = () => true;
-    if (navigator.getBattery) navigator.getBattery = () => Promise.resolve({ charging:true, level:1, chargingTime:0, dischargingTime:Infinity });
-}
-
-/** 3. NETWORK & PORT SCAN DEFENSE (L42 Integration) */
-if (!TRUSTED) {
-    const isForbidden = (u) => u && (typeof u === 'string') && (u.includes('127.0.0.1') || u.includes('localhost') || (u.match && u.match(/:[0-9]{3,5}/) && !u.match(/:443|:80/)));
-    
-    const oFetch = window.fetch;
-    window.fetch = async function(u, ...a) {
-        if (isForbidden(u)) return Promise.reject(new TypeError('Network Error'));
-        await new Promise(r => setTimeout(r, rand(30, 150))); // Твой сетевой джиттер
-        return oFetch.apply(this, [u, ...a]);
-    };
-
-    const oOpen = XMLHttpRequest.prototype.open;
-    const oSend = XMLHttpRequest.prototype.send;
-    XMLHttpRequest.prototype.open = function(m, u){
-        if (isForbidden(u)) throw new Error('Network Error');
-        this._d = rand(20, 100);
-        return oOpen.apply(this, arguments);
-    };
-    XMLHttpRequest.prototype.send = function(){
-        setTimeout(() => oSend.apply(this, arguments), this._d || 0);
-    };
-
-    safeDefine(window, 'RTCPeerConnection', undefined);
-    navigator.sendBeacon = () => true;
-}
-
-/** 4. AI HUMANIZER (Твоя логика поведения и микро-движений) */
-if (!TRUSTED) {
-    // Обман тепловых карт (Mouse & Scroll)
-    window.addEventListener('scroll', () => { mem.s = window.scrollY; localStorage.setItem('omni_mem_'+ID, JSON.stringify(mem)); }, {passive:true});
-    window.addEventListener('click', () => { mem.c++; localStorage.setItem('omni_mem_'+ID, JSON.stringify(mem)); }, {passive:true});
-
-    // Эмуляция чтения (Случайные скроллы)
-    (function humanFlow(){
-        setTimeout(() => {
-            if (Math.random() > 0.6) window.scrollBy({ top: rand(50,150), behavior: 'smooth' });
-            humanFlow();
-        }, rand(3000, 8000));
-    })();
-
-    // Защита Visibility & Timing
-    safeDefine(document, 'visibilityState', 'visible');
-    safeDefine(document, 'hidden', false);
-    const oNow = performance.now.bind(performance);
-    performance.now = () => oNow() + rand(0, 5);
-    const oRAF = window.requestAnimationFrame;
-    window.requestAnimationFrame = (cb) => oRAF((t) => cb(t + rand(0, 5)));
-    window.IntersectionObserver = function() { return { observe:()=>{}, unobserve:()=>{}, disconnect:()=>{} }; };
-}
-
 })();
 ")
-
-
-! [L22-S2: THE PURIFIER — V122.1 — ATOMIC]
-! Стерилизация: Fonts + Storage + Cookies. Объединено в один поток.
-#%#//scriptlet("set-constant", "CanvasRenderingContext2D.prototype.measureText", "function(){return {width: Math.random() * 100};}")
-#%#//scriptlet("prevent-set-interval", "/font|fingerprint|track|sensor/i")
-
-#%#//scriptlet("execute-script", "(function(){ \
-    const junk = ['_ga', '_gid', '_fbp', 'ym_', 'yandex', 'fuid', 'uid', 'sess', 'telemetry', 'fingerprint', 'clickid']; \
-    const purge = (s) => { try { for(let i=s.length-1; i>=0; i--){ let k=s.key(i); if(k && junk.some(j=>k.toLowerCase().includes(j))) s.removeItem(k); } } catch(e){} }; \
-    purge(localStorage); purge(sessionStorage); \
-    /* Уничтожение кук через JS (дублирует сетевой remove-cookie для надежности) */ \
-    document.cookie.split(';').forEach(c => { let k=c.split('=')[0].trim(); if(junk.some(j=>k.includes(j))) document.cookie=k+'=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;'; }); \
-})();")
 
 ! [L23: PERIMETER-MONOLITH — V122.1 — GHOST-NODE]
 ! Защита сетевого уровня и UI. Схлопнуто для максимальной скорости.
