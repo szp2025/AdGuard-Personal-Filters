@@ -453,6 +453,10 @@ $client=/^com\.whatsapp/,$important,domain=~google.com|~yandex.ru
     const rand = (a,b)=> a + Math.random()*(b-a);
     const safeDefine = (obj, prop, val) => { try{ Object.defineProperty(obj, prop, { get: ()=>val, configurable: true }); }catch(e){} };
 
+// [CONSENT-GASLIGHTING] Авто-ответ на запросы о согласии
+safeDefine(window, '__tcfapi', function(cmd, ver, cb){ if(cb) cb({eventStatus:'useractioncomplete', gdprApplies:true}, true); });
+safeDefine(window, '__uspapi', function(cmd, ver, cb){ if(cb) cb({uspString:'1---', optOut:false}, true); });
+
     /** [CORE: IDENTITY & PURIFIER] */
     const JUNK_KEYS = ['_ga', '_gid', '_fbp', 'ym_', 'yandex', 'fuid', 'uid', 'sess', 'telemetry', 'fingerprint', 'clickid'];
     const purge = (s) => { try { for(let i=s.length-1; i>=0; i--){ let k=s.key(i); if(k && JUNK_KEYS.some(j=>k.toLowerCase().includes(j))) s.removeItem(k); } } catch(e){} };
