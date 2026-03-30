@@ -225,66 +225,60 @@ $header=X-Robots-Tag: noai, noimageai, important
 
 ! ###########################################################
 
+! [L15: SOVEREIGN-SHIELD - FINAL v83.0]
 
-! Запрет доступа к сенсорам через Web-API (Ослепление шпионских сайтов)
-#%#//scriptlet("set-constant", "navigator.mediaDevices.getUserMedia", "undefined")
-#%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "undefined")
-#%#//scriptlet("set-constant", "navigator.getUserMedia", "undefined")
-
-! [L15] WHITE: Глобальные зоны доверия (Trusted Zones v27.0 — HEURISTIC PASS)
-! [SMART BYPASS] Эвристический проход для критических доменов и системных ресурсов
-
-! [L15-S1] AUTH & IDENTITY: Эвристическая авторизация (v29.0 — SECURE AUTH)
-! [HEURISTIC AUTH] Проверка подлинности сессий Apple/Google/Okta
+! --- S1: AUTH-EVOLUTION (Авторизация) ---
 @@/^(https?:\/\/)?([^\/]+\.)?(accounts\.google|appleid\.apple|microsoftonline|okta)\.com\/.*$/$important,document,generichide,css,extension,domain=google.com|youtube.com|apple.com|icloud.com|microsoft.com|office.com
 @@*$stealth,content-type=application/x-javascript,domain=accounts.google.com|appleid.apple.com
 
-! [L15-S2] FINTECH & NODES: Эвристический проход (The Financial Shield)
-! [TYPE ANALYSIS] Разрешаем только критические компоненты для Банков и AI
+! --- S2: FINTECH-SHIELD (Банковский коридор) ---
+! Разрешаем критические запросы для KYC и оплаты.
 @@/^(https?:\/\/)?([^\/]+\.)?(openai|chatgpt|yandex|dzen|google|m2mlease|paypal|stripe|revolut|n26|wise|payoneer|monzo|lcl|caf|labanquepostale|societegenerale|bnpparibas|credit-agricole|ca-moncompte|boursobank|visa|mastercard|amex|applepay|googlepay|onfido|jumio|idnow|5play)\.(com|fr|ru|io|life)\/.*$/$important,document,generichide,css,font,application,xmlhttprequest
 
-! [L15-S3] REAPER: Эвристический бан Bloatware (Apex Clean)
-! [BEHAVIOR KILL] Блокировка Samsung/IronSource по паттернам поведения
-||(appcloud-config|appcloud-service|samsung.appcloud|ironsrc|supersonicads|cloud-config.samsungdotcom|mail-ads.google|ads-settings-pa).com^$important,reject
-||(googleads.g.doubleclick.net/pagead/ads|reminders-pa.googleapis.com/v1/reminders/get|google.*/ads/sponsored)*^$important,reject
+! --- S3: BLOAT-REAPER (Чистка системного мусора) ---
+! Убираем Samsung Cloud и рекламные движки Ironsource.
+||(appcloud-config|appcloud-service|samsung.appcloud|ironsrc|supersonicads|cloud-config.samsungdotcom|mail-ads.google|ads-settings-pa).com^$important,tag=BLOAT_PURGE
+||(googleads.g.doubleclick.net/pagead/ads|reminders-pa.googleapis.com/v1/reminders/get|google.*/ads/sponsored)*^$important,tag=ADS_PURGE
 
+! [L15-S4: SENSOR-GHOSTING v83.0 — THE APEX]
+! Ослепление шпионских сайтов через эвристическую подмену ответов API.
+! Имитирует естественный отказ пользователя и отсутствие устройств.
+#%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "function(){return Promise.resolve([]);}")
+#%#//scriptlet("set-constant", "navigator.mediaDevices.getUserMedia", "function(){return Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));}")
+#%#//scriptlet("set-constant", "navigator.getUserMedia", "function(c,s,e){e(new DOMException('Permission denied', 'NotAllowedError'));}")
 
-! [L15-S4] EMERGENCY: Реанимация поисковых систем (v37.0 — SEARCH FIX)
-! [WHITELIST] Разрешаем критические типы запросов для основных поисковиков
+! [L15-S4: SEARCH-RESURRECTION — V84.0]
+! Стерильный коридор для поисковых систем, сохраняющий скорость и DNS-приоритет.
 @@||yandex.ru^$important,document,generichide,css,xmlhttprequest
 @@||ya.ru^$important,document,generichide,css,xmlhttprequest
 @@||dzen.ru^$important,document,generichide,css,xmlhttprequest
-@@||mail.ru^$important,document,generichide,css,xmlhttprequest
+@@||google.*^$important,document,generichide,css,xmlhttprequest
 @@||duckduckgo.com^$important,document,generichide,css,xmlhttprequest
 @@||bing.com^$important,document,generichide,css,xmlhttprequest
-@@||ecosia.org^$important,document,generichide,css,xmlhttprequest
 
-@@||fr.yahoo.com^$important,document,generichide,css,xmlhttprequest
-
-
-! [DNS-TUNING] Снятие ограничений на типы DNS для восстановления скорости поиска
+! [DNS-ACCELERATION] Ускоряем резолвинг для доверенных зон.
 @@||google.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 @@||yandex.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 @@||ya.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||dzen.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||fr.yahoo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 
 
+! [L15-S5: HARDWARE-GHOSTING — APEX EDITION]
+! Батарея: всегда 100%, статус "заряжается". Идеальный камуфляж.
+#%#//scriptlet("set-constant", "navigator.getBattery", "function(){return Promise.resolve({charging:true,chargingTime:0,dischargingTime:Infinity,level:1,onchargingchange:null,onchargingtimechange:null,ondischargingtimechange:null,onlevelchange:null});}")
 
-! --- 1. SENSOR & HARDWARE BLINDING (EXTREME) ---
-! Полное уничтожение API для снятия отпечатков (Fingerprinting)
-#%#//scriptlet("set-constant", "navigator.getBattery", "undefined")
-#%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
-#%#//scriptlet("set-constant", "navigator.clipboard.readText", "undefined")
-#%#//scriptlet("set-constant", "navigator.usb.getDevices", "undefined")
-#%#//scriptlet("set-constant", "navigator.bluetooth.getAvailability", "undefined")
+! Буфер обмена и USB: возвращаем пустые данные вместо ошибки.
+#%#//scriptlet("set-constant", "navigator.clipboard.readText", "function(){return Promise.resolve('');}")
+#%#//scriptlet("set-constant", "navigator.usb.getDevices", "function(){return Promise.resolve([]);}")
+#%#//scriptlet("set-constant", "navigator.bluetooth.getAvailability", "function(){return Promise.resolve(false);}")
+
+! Уведомления: статус "запрещено пользователем" (естественное поведение).
 #%#//scriptlet("set-constant", "Notification.permission", "denied")
 
-! --- 2. ANTI-MIRRORING & SCREEN CAPTURE DEFENSE ---
-! Защита от записи экрана через браузерные API
-#%#//scriptlet("set-constant", "navigator.getDisplayMedia", "undefined")
-#%#//scriptlet("set-constant", "HTMLVideoElement.prototype.captureStream", "undefined")
-#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.captureStream", "undefined")
+! [L15-S6: SCREEN-DEFENSE — V84.0]
+! Имитируем ошибку доступа к захвату экрана (NotAllowedError).
+#%#//scriptlet("set-constant", "navigator.getDisplayMedia", "function(){return Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));}")
+#%#//scriptlet("set-constant", "HTMLVideoElement.prototype.captureStream", "function(){return null;}")
+#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.captureStream", "function(){return null;}")
 
 ! [L16]  (v30.0 — Omni-Sentinel & AI-Confusion)
 ! [L16-S1] KILL-SWITCH: Блокировка прямых IP-запросов (v30.0 — BOTNET KILL)
