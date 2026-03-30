@@ -436,6 +436,39 @@
 
     // Запуск уровня Absolute Zero
     absoluteZero();
+
+    // --- [L18: MIRROR PROTOCOL - TOTAL SYNERGY] ---
+    const mirrorProtocol = () => {
+        // Имитация успешной загрузки заблокированных ресурсов
+        const orgCreateElement = document.createElement;
+        document.createElement = function(tagName) {
+            const el = orgCreateElement.apply(this, arguments);
+            if (tagName.toLowerCase() === 'script') {
+                setTimeout(() => {
+                    if (el.onerror) {
+                        console.log('%c [Omni-Synergy] Neutralized Script Error ', 'color: #ffd700');
+                        el.dispatchEvent(new Event('load')); // Притворяемся, что всё Ок
+                    }
+                }, 1);
+            }
+            return el;
+        };
+
+        // Блокировка детекции состояния сети
+        Object.defineProperty(navigator, 'onLine', { get: () => true });
+
+        // Очистка следов AdGuard в DOM-дереве
+        const cleanAdGuardArtifacts = () => {
+            const artifacts = document.querySelectorAll('iframe[src="about:blank"], div[style*="visibility: hidden"]');
+            artifacts.forEach(a => {
+                if (a.offsetHeight === 0) a.remove();
+            });
+        };
+        setInterval(cleanAdGuardArtifacts, 3000);
+    };
+
+    // Запуск Финальной Синергии
+    mirrorProtocol();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
