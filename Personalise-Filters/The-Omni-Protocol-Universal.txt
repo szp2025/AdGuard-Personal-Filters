@@ -247,19 +247,46 @@ $header=X-Robots-Tag: noai, noimageai, important
 #%#//scriptlet("set-constant", "navigator.mediaDevices.getUserMedia", "function(){return Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));}")
 #%#//scriptlet("set-constant", "navigator.getUserMedia", "function(c,s,e){e(new DOMException('Permission denied', 'NotAllowedError'));}")
 
-! [L15-S4: SEARCH-RESURRECTION — V84.0]
-! Стерильный коридор для поисковых систем, сохраняющий скорость и DNS-приоритет.
-@@||yandex.ru^$important,document,generichide,css,xmlhttprequest
+! [L15-S4: SEARCH-GLOBAL-RESURRECTION — V85.0]
+! Эвристический проход для ВСЕХ значимых поисковых систем мира.
+! Разрешаем структуру (document), стили (css) и живой поиск (xhr).
+
+! --- US & Global ---
+@@||google.*^$important,document,generichide,css,xmlhttprequest
+@@||bing.com^$important,document,generichide,css,xmlhttprequest
+@@||duckduckgo.com^$important,document,generichide,css,xmlhttprequest
+@@||yahoo.com^$important,document,generichide,css,xmlhttprequest
+@@||search.brave.com^$important,document,generichide,css,xmlhttprequest
+
+! --- CIS (СНГ) ---
+@@||yandex.*^$important,document,generichide,css,xmlhttprequest
 @@||ya.ru^$important,document,generichide,css,xmlhttprequest
 @@||dzen.ru^$important,document,generichide,css,xmlhttprequest
-@@||google.*^$important,document,generichide,css,xmlhttprequest
-@@||duckduckgo.com^$important,document,generichide,css,xmlhttprequest
-@@||bing.com^$important,document,generichide,css,xmlhttprequest
+@@||mail.ru^$important,document,generichide,css,xmlhttprequest
 
-! [DNS-ACCELERATION] Ускоряем резолвинг для доверенных зон.
+! --- Europe & Privacy ---
+@@||qwant.com^$important,document,generichide,css,xmlhttprequest
+@@||ecosia.org^$important,document,generichide,css,xmlhttprequest
+@@||startpage.com^$important,document,generichide,css,xmlhttprequest
+@@||swisscows.com^$important,document,generichide,css,xmlhttprequest
+
+! --- Asia (China, Korea, Japan) ---
+@@||baidu.com^$important,document,generichide,css,xmlhttprequest
+@@||naver.com^$important,document,generichide,css,xmlhttprequest
+@@||sogou.com^$important,document,generichide,css,xmlhttprequest
+@@||so.com^$important,document,generichide,css,xmlhttprequest
+
+! [L15-S4.1: DNS-ACCELERATION-GLOBAL]
+! Снятие DNS-барьеров для мгновенного резолвинга поисковиков.
 @@||google.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 @@||yandex.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 @@||ya.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||bing.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||duckduckgo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||baidu.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||naver.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||yahoo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||qwant.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 
 
 ! [L15-S5: HARDWARE-GHOSTING — APEX EDITION]
