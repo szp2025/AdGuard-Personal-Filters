@@ -210,6 +210,30 @@
     // Запуск элитных модулей
     neuralHeuristic();
     protectHistory();
+
+    // --- [L11: THE GHOST PROTOCOL - FINAL FRONTIER] ---
+    const ghostProtocol = () => {
+        // Подмена количества ядер процессора (Стандарт MacIntel)
+        if (navigator.hardwareConcurrency) {
+            Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 });
+        }
+
+        // Блокировка API вибрации (Защита от аппаратного трекинга)
+        if (navigator.vibrate) {
+            navigator.vibrate = () => false;
+        }
+
+        // Защита от Timing Attacks (Микро-шум в производительность)
+        const orgNow = performance.now;
+        performance.now = function() {
+            return orgNow.apply(this, arguments) + (Math.random() * 0.001);
+        };
+        
+        console.log('%c [Omni-Protocol] Level 11: Singularity Reached. ', 'color: #00ff00; font-weight: bold;');
+    };
+
+    // Запуск финала
+    ghostProtocol();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
