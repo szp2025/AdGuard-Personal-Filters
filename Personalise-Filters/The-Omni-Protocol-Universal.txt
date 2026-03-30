@@ -51,29 +51,37 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 ! мы возвращаем "Success", но с пустым ответом, чтобы запутать логику скрипта.
 #%#//scriptlet("set-constant", "XMLHttpRequest.prototype.send", "function() { if (this._url && this._url.match(/:5555|:5037|:3306|:5432/)) return; return send.apply(this, arguments); }")
 
-! [L2: NETWORK-SILENCE — V119.0 — THE VOID]
-! Схлопнутый слой: Метрики (L2) + Рекламные сети (L3) + Трекеры-невидимки (L5).
+! [L2: NETWORK-VOID — V125.0 — THE PURGE]
+! Склеенный слой: Сетевая тишина (L2) + Стерилизация URL (L25).
+! Объединяет блокировку доменов, эвристику путей и удаление маркеров слежки.
 
-! --- 1. HEURISTIC AD & TRACKER TERMINATOR ---
-! Блокировка по ключевым паттернам в путях и именах файлов.
-||$xdn,domain=~google.com|~yandex.ru|~bank|~gov|~openai.com
-/(adsystem|adserver|adservices|adv|analytics|counter|pixel|metrics|track|telemetry|beacon|collect|log.*\.js)/^$important,third-party,reject
+! --- 1. GLOBAL PARAMETER STRIPPER (Убийца UTM и ID) ---
+! Автоматически вырезает маркеры слежки из ссылок при переходе.
+$removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_clickid|s_kwid|dclid|itid|session_id|uuid|device_id|pvid|cachebuster|forward_url|ref_.*)$/,domain=~google.*|~yandex.*|~caf.fr|~bank|~gov|~openai.com
 
-! --- 2. GLOBAL AD-DOMAINS (Свернутый список гигантов) ---
-! Мы объединяем топ-домены слежки в одну группу для мгновенного парсинга.
-||(doubleclick.net|adform.net|adnxs.com|criteo.com|taboola.com|outbrain.com|mgid.com|rubiconproject.com|pubmatic.com|openx.net|appnexus.com|smartadserver.com)^$important,third-party,reject
+! --- 2. HEURISTIC & DOMAIN TERMINATOR ---
+! Блокировка рекламных гигантов и аналитических платформ в один проход.
+||(doubleclick.net|adform.net|adnxs.com|criteo.com|taboola.com|outbrain.com|mgid.com|rubiconproject.com|pubmatic.com|openx.net|appnexus.com|smartadserver.com|hotjar.com|smartlook.com|mixpanel.com|amplitude.com|clarity.ms)^$important,third-party,reject
 
-! --- 3. BEHAVIORAL EXCLUSIONS (Умные исключения) ---
-! Позволяем работать только тем скриптам, которые критичны для авторизации на доверенных сайтах.
-@@||accounts.google.com^$domain=google.com|youtube.com
-@@||passport.yandex.ru^$domain=yandex.ru
+! Эвристика путей: ловим аналитику, пиксели и телеметрию по ключевым паттернам.
+/(adsystem|adserver|adservices|adv|analytics|counter|pixel|metrics|track|telemetry|beacon|collect|google-analytics|metrika\.js|log.*\.js)/^$important,third-party,reject,domain=~google.com|~yandex.ru|~bank|~gov|~openai.com
 
-! [L2-EXTRA: IN-APP TELEMETRY KILLER]
-! Усиление защиты для приложений с HTTPS-фильтрацией.
+! --- 3. CNAME-CLOAKING & XDN SHIELD ---
+! Защита от скрытого трекинга через поддомены и междоменную слежку.
+||$xdn,third-party,tracking,domain=~google.com|~yandex.ru|~bank|~gov|~openai.com
+
+! --- 4. IN-APP TELEMETRY KILLER (Nightly Extra) ---
+! Специфическая защита для приложений FB, Apple и Google при HTTPS-фильтрации.
 ||graph.facebook.com^$app=com.facebook.katana|com.facebook.orca,important
 ||*.fbcdn.net^$app=com.facebook.katana,third-party,important
 ||advertising.apple.com^$important,app=~system
 ||app-measurement.com^$important,third-party,reject
+
+! --- 5. TRUSTED EXCEPTIONS (Авторизация) ---
+! Исключения для стабильной работы критических сервисов.
+@@||accounts.google.com^$domain=google.com|youtube.com
+@@||passport.yandex.ru^$domain=yandex.ru
+
 
 ! [L4: PRIVACY-SHIELD — V120.0 — THE INVISIBLE]
 ! Объединенный слой: Media-Spy Protection (L4) + DNS-Cloak Ghost (L6).
@@ -575,22 +583,6 @@ $network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important
 #%#//scriptlet("set-constant", "adblock", "false")
 #%#//scriptlet("abort-current-inline-script", "isAdBlockActive", "detectAdBlock")
 
-
-! [L25: THE PURGE — V118.0 — URL-CLEANER & TRACKER-GENOCIDE]
-! Единый слой стерилизации URL и блокировки глобальных метрик.
-
-! --- 1. GLOBAL PARAMETER STRIPPER (Убийца хвостов в ссылках) ---
-! Удаляет UTM, Click-ID, Session-ID и другие маркеры слежки.
-$removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_clickid|s_kwid|dclid|itid|session_id|uuid|device_id|pvid|cachebuster|forward_url|ref_.*)$/,domain=~google.*|~yandex.*|~caf.fr|~bank|~gov|~openai.com
-
-! --- 2. METRICS & ANALYTICS BLACKHOLE ---
-! Аннигиляция запросов к серверам аналитики (Google, Yandex, FB, Hotjar).
-||$xdn,domain=~google.com|~yandex.ru|~bank|~gov
-/(google-analytics|analytics\.js|metrika\.js|hotjar|pixel\.facebook|clarity\.ms|smartlook|amplitude|mixpanel|doubleclick|taboola|outbrain)/^$important,third-party,reject
-
-! --- 3. CLOAKING & CNAME DECEPTION SHIELD ---
-! Защита от скрытого трекинга через поддомены (CNAME Cloaking).
-||$third-party,tracking,domain=~google.com|~yandex.ru|~bank|~gov
 
 
 ! [L28: OMNI-SOVEREIGNTY — V100.0 — THE ABSOLUTE]
