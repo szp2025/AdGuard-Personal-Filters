@@ -77,6 +77,36 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 ||advertising.apple.com^$important,app=~system
 ||app-measurement.com^$important,third-party,reject
 
+||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,tag=MEDIA_SPY_SILENCE
+#%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
+#%#//scriptlet("set-constant", "navigator.mediaDevices.getDisplayMedia", "undefined")
+#%#//scriptlet("set-constant", "ScreenCapture.prototype.getDisplayMedia", "undefined")
+
+/^https?:\/\/([^\/]+\.)?(dns\.google|dns\.cloudflare\.com|doh\.opendns\.com|dns\.quad9\.net|dns\.adguard-dns\.com|doh\.cleanbrowsing\.org|1\.1\.1\.1|8\.8\.8\.8|9\.9\.9\.9)\/dns-query/^$important,third-party,tag=DNS_FORCE_FALLBACK
+
+#%#//scriptlet("execute-script", "(function(){ \
+    const rand = (a,b)=> a + Math.random()*(b-a); \
+    const safeDefine = (obj, prop, val) => { try{ Object.defineProperty(obj, prop, { get: ()=>val, configurable: true }); }catch(e){} }; \
+    const origFetch = window.fetch; \
+    window.fetch = function(u, ...a) { \
+        if (u && typeof u === 'string' && u.match(/dns-query|dns-json|v1\/query/)) return Promise.reject(new TypeError('DNS Service Unavailable')); \
+        return origFetch.apply(this, [u, ...a]); \
+    }; \
+    if (navigator.userAgentData) { \
+        safeDefine(navigator.userAgentData, 'brands', [{brand: 'Chromium', version: '124'}, {brand: 'Google Chrome', version: '124'}]); \
+        safeDefine(navigator.userAgentData, 'mobile', false); \
+        safeDefine(navigator.userAgentData, 'platform', 'Windows'); \
+    } \
+    (function smartRead(){ \
+        setTimeout(() => { \
+            let i = Math.random(); \
+            if (i > 0.8) window.scrollBy({ top: rand(200, 500), behavior: 'smooth' }); \
+            else if (i > 0.3) window.scrollBy({ top: rand(30, 80), behavior: 'smooth' }); \
+            smartRead(); \
+        }, rand(4000, 15000)); \
+    })(); \
+})();")
+
 ! --- 5. TRUSTED EXCEPTIONS (Авторизация) ---
 ! Исключения для стабильной работы критических сервисов.
 @@||accounts.google.com^$domain=google.com|youtube.com
@@ -112,6 +142,26 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
     }; \
 })();")
 
+#%#//scriptlet("execute-script", "(function(){ \
+    const host = location.hostname; \
+    const rand = (a,b)=> a + Math.random()*(b-a); \
+    const safeDefine = (obj, prop, val) => { try{ Object.defineProperty(obj, prop, { get: ()=>val, configurable: true }); }catch(e){} }; \
+    \
+    if (host.includes('tf1.fr')) { safeDefine(window, '__TF1_CONFIG__', { adblock: { serverRequest: false } }); } \
+    safeDefine(window, '__tcfapi', function(c, v, cb){ if(cb) cb({eventStatus:'useractioncomplete', gdprApplies:true}, true); }); \
+    safeDefine(window, '__uspapi', function(c, v, cb){ if(cb) cb({uspString:'1---', optOut:false}, true); }); \
+    \
+    /** [QUANTUM ENTROPY] **/ \
+    const oST = window.setTimeout; \
+    window.setTimeout = (fn, d, ...a) => oST(fn, d + rand(0, 3), ...a); \
+    const oNow = performance.now.bind(performance); \
+    performance.now = () => oNow() + rand(0, 4); \
+    \
+    /** [GRAPHICS SPOOF] **/ \
+    safeDefine(navigator, 'hardwareConcurrency', 8); \
+    safeDefine(navigator, 'deviceMemory', 8); \
+    CanvasRenderingContext2D.prototype.measureText = () => ({ width: rand(10, 95), actualBoundingBoxLeft: 0, actualBoundingBoxRight: 0 }); \
+})();")
 
 ! [L4: DECEPTION-ZONE — V121.0 — THE GASLIGHTER]
 ! Схлопнутый слой: Geo-Zones + Port-Reaper  + Analytics-Deception.
@@ -137,7 +187,7 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 ! Предотвращаем автоматические редиректы на опасные TLD.
 #%#//scriptlet("set-constant", "window.onbeforeunload", "null")
 #%#//scriptlet("set-constant", "window.location.replace", "function() { return; }")
-
+##img[width="1"][height="1"], img[style*="width: 1px"], img[style*="height: 1px"]
 
 ! [L5: CRYPTO-DRAINER-GHOST - V78.0]
 ! Убираем REJECT. Используем тихую блокировку для всех WebSocket-запросов третьих лиц.
