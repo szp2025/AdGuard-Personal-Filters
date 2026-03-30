@@ -367,6 +367,39 @@
 
     // Запуск уровня Event Horizon
     eventHorizon();
+
+    // --- [L16: VOID SINGULARITY - PROXY & INTL & ORIENTATION] ---
+    const voidSingularity = () => {
+        // Идеальная маскировка подмены (Native Code Mimicry)
+        const hideRedefinition = (obj, prop) => {
+            const proto = Object.getPrototypeOf(obj);
+            const original = proto[prop].toString;
+            Object.defineProperty(obj[prop], 'toString', {
+                value: function() { return "function " + prop + "() { [native code] }"; },
+                configurable: true
+            });
+        };
+        hideRedefinition(navigator, 'platform');
+        hideRedefinition(navigator, 'userAgent');
+
+        // Языковой шум (Intl Collator Entropy)
+        const orgCollator = Intl.Collator;
+        Intl.Collator = function() {
+            const instance = new orgCollator(...arguments);
+            const orgCompare = instance.compare;
+            instance.compare = (a, b) => (Math.random() > 0.99 ? b.localeCompare(a) : orgCompare(a, b));
+            return instance;
+        };
+
+        // Фиксация ориентации (Orientation Anchor)
+        if (screen.orientation) {
+            Object.defineProperty(screen.orientation, 'type', { get: () => 'landscape-primary' });
+            Object.defineProperty(screen.orientation, 'angle', { get: () => 0 });
+        }
+    };
+
+    // Запуск уровня Void Singularity
+    voidSingularity();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
