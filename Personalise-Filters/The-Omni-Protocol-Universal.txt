@@ -25,6 +25,23 @@
 ! # THE OMNI-PROTOCOL: ULTRA-APEX CORE (v10.0)              #
 ! ###########################################################
 
+! --- [MALWARE & PHISHING PROTECTION LAYER] ---
+||*cryptobrowser.site^
+||*get-monero.org^
+||*freebitco.in^
+||*minerstat.com^
+||*coinhive.com^
+||*bitly.com/bad-link-example^
+! Блокировка известных зон для фишинга
+.top^$important
+.xyz^$important,third-party
+.click^$important
+.gdn^$important
+! Блокировка скриптов, крадущих куки
+||track.uc.cn^
+||umid.amap.com^
+
+
 ! [L0: DPI-EVASION & ORGANIC-PACKETS - V68.0]
 
 ! --- 1. TCP MSS Clamping (Эвристика для L0) ---
