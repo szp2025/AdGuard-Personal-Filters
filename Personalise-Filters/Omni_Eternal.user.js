@@ -1,6 +1,6 @@
 // ==UserScript==
-// @name         The Omni-Protocol: Nebula Apex (v11.0) Gold Edition
-// @version      11.0.5-APEX
+// @name         The Omni-Protocol: Nebula Apex (v11.9.0) God-Seed Edition
+// @version      v11.9.0-APEX
 // @description  Apex Logic Layer v2026.V11. Deep Spoofing, Font-Masking, WebRTC Block & Neural Noise.
 // @author       szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 // @match        *://*/*
@@ -14,7 +14,7 @@
 (function() {
     'use strict';
 
-    const CURRENT_VERSION = "11.0.5-APEX"; // Синхронизировано с метаданными
+    const CURRENT_VERSION = "v11.9.0-APEX"; // Синхронизировано с метаданными
 
     /**
      * Автообновление скрипта (Твоя логика, интегрированная в Apex)
