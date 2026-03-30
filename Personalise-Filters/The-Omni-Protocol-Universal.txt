@@ -616,51 +616,22 @@ $network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important
 #%#//scriptlet("set-constant", "adblock", "false")
 #%#//scriptlet("abort-current-inline-script", "isAdBlockActive", "detectAdBlock")
 
-! [L25-L26: QUANTUM-BRIDGE — V98.0 — OMNI-REACTION]
+! [L25: THE PURGE — V118.0 — URL-CLEANER & TRACKER-GENOCIDE]
+! Единый слой стерилизации URL и блокировки глобальных метрик.
 
-! --- S1: ENTROPY-NOISE (Дезинформация гигантов) ---
-||google.*^$set-header=X-Omni-Entropy: $random_string,set-header=DNT: 1,set-header=Sec-CH-UA: "Not/A)Brand";v="99"
-||yandex.*^$set-header=X-Omni-Entropy: $random_string,set-header=Sec-CH-UA-Platform: "Omni-OS"
+! --- 1. GLOBAL PARAMETER STRIPPER (Убийца хвостов в ссылках) ---
+! Удаляет UTM, Click-ID, Session-ID и другие маркеры слежки.
+$removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_clickid|s_kwid|dclid|itid|session_id|uuid|device_id|pvid|cachebuster|forward_url|ref_.*)$/,domain=~google.*|~yandex.*|~caf.fr|~bank|~gov|~openai.com
 
-! --- S2: TOKEN-SCRUB (Аннигиляция ID в URL) ---
-||google.*$replace=/(client|uid|sid|user_id|device_id|sca_esv|sxsrf|ei|ved)=[^&]*/$1=omni-qnt-$random_string/
-||yandex.*$replace=/(uuid|device_id|yclid|pvid)=[^&]*/$1=omni-ghost-$random_string/
+! --- 2. METRICS & ANALYTICS BLACKHOLE ---
+! Аннигиляция запросов к серверам аналитики (Google, Yandex, FB, Hotjar).
+||$xdn,domain=~google.com|~yandex.ru|~bank|~gov
+/(google-analytics|analytics\.js|metrika\.js|hotjar|pixel\.facebook|clarity\.ms|smartlook|amplitude|mixpanel|doubleclick|taboola|outbrain)/^$important,third-party,reject
 
-! --- S3: HEADER-STERILIZATION (Безопасность контента) ---
-||*^$set-header=Referrer-Policy: no-referrer-when-downgrade,set-header=X-Content-Type-Options: nosniff
-||*^$set-header=X-Frame-Options: SAMEORIGIN,set-header=Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
+! --- 3. CLOAKING & CNAME DECEPTION SHIELD ---
+! Защита от скрытого трекинга через поддомены (CNAME Cloaking).
+||$third-party,tracking,domain=~google.com|~yandex.ru|~bank|~gov
 
-! --- S4: BRIDGE-CORE (Белый коридор доверия) ---
-@@||/^([^.]+\.)*(github|revolut|n26|stripe|bnpparibas|paylib|mastercard|samsung|apple|microsoft|icloud|googleapis|gstatic|yandex|passport|sso|zoom|netflix|amazon|aliexpress|caf|ameli|sncf-connect|enedis|edf)\.(com|fr|de|ru|org|net|eu|apple)$/^$important,document
-
-! --- S5: STRIPPING (Аппаратная очистка IP-следов) ---
-$header=/^(X-Forwarded-For|Real-IP|Client-IP|Via|Forwarded)$/i,important,domain=~system
-$removeheader=/^x-goog-api-(client|key|client-mods)|x-client-data|sec-ch-ua/ ,domain=google.com|googleapis.com|yandex.*
-
-! --- S6: PARAM-WIPE (Удаление трекеров из ссылок) ---
-$removeparam=/^(utm_source|utm_medium|fbclid|gclid|clickid|msclkid|mc_eid|_hsenc|gs_lcp|sclient|ei|psi|ved|gbraid|wbraid|_openstat)$/
-
-
-! [L27: INTERSTELLAR-MONOLITH — V99.0 — APEX-FINAL]
-
-! --- S1: ANTI-PHISH (Punycode-клоны) ---
-||xn--*^$important,reject,domain=~system|~yandex.ru|~google.com|~4pda.to|~wikipedia.org
-
-! --- S2: NETWORK-HARDENING (Скрытые пинги и SMS) ---
-||/^(flash-sms|class0-message|silent-ping|carrier-popup|push-telemetry)/^$important,network,third-party,reject
-
-! --- S3: BEACON-WS (Фоновые маяки и туннели) ---
-||*$ping,third-party,important,domain=~google.*|~yandex.*|~facebook.*|~vk.com
-||/^(analytics|metrics|telemetry|beacon|pixel)\./^$ping,important
-||*$websocket,third-party,domain=ad.*|ads.*|metrics.*|track.*|telemetry.*
-
-! --- S4: URL-STERILIZATION (Чистка редиректов и ID) ---
-$removeparam=/^(redirect|url|link|goto|continue|ref_url|uuid|device_id|yandex_ad_id|session_id|unique_id|pvid|yclid)$/,domain=~google.com|~bank|~yandex.ru|~openai.com|~gov|~caf.fr|~oelie-eau.fr
-||bit.ly^$rewrite=abp-resource:blank-js
-||t.co^$rewrite=abp-resource:blank-js
-
-! --- S5: CACHE-BASTER (Защита от кэш-фингерпринта) ---
-$removeparam=/^(_|cb|cachebuster|v|sw|sh|bat|os|res)$/,domain=~system|~google.com|~yandex.ru
 
 ! [L28: OMNI-SOVEREIGNTY — V100.0 — THE ABSOLUTE]
 
