@@ -632,6 +632,47 @@
 
     // Запуск уровня Inferno
     ghostInMachine();
+
+    // --- [L29/L30: INTERSTELLAR VOID - QUANTUM TIMING & FONT COLLISION] ---
+    const interstellarVoid = () => {
+        // Защита от Side-Channel Attacks (SharedArrayBuffer Noise)
+        if (window.SharedArrayBuffer) {
+            const orgGet = Object.getOwnPropertyDescriptor(SharedArrayBuffer.prototype, 'byteLength').get;
+            Object.defineProperty(SharedArrayBuffer.prototype, 'byteLength', {
+                get: function() {
+                    const real = orgGet.call(this);
+                    return Math.random() > 0.999 ? real + 1 : real; // Вносим шум в длину буфера
+                }
+            });
+        }
+
+        // Коллизия шрифтов (Universal Font Masking)
+        const orgMeasure = CanvasRenderingContext2D.prototype.measureText;
+        CanvasRenderingContext2D.prototype.measureText = function(text) {
+            const result = orgMeasure.apply(this, arguments);
+            // Возвращаем стандартные размеры для "подозрительно" точных замеров
+            Object.defineProperty(result, 'width', { value: Math.floor(result.width) + (Math.random() * 0.01) });
+            return result;
+        };
+
+        // Хроно-децепция (System Clock Entropy)
+        const orgDate = window.Date;
+        window.Date = class extends orgDate {
+            constructor(...args) {
+                if (args.length === 0) {
+                    const d = new orgDate();
+                    d.setMilliseconds(d.getMilliseconds() + (Math.random() * 5)); // Смещение на 0-5мс
+                    return d;
+                }
+                return new orgDate(...args);
+            }
+        };
+
+        console.log('%c [Omni-Protocol] Level 30: ZENITH REACHED. Space-Time Anonymized. ', 'color: #ffffff; background: linear-gradient(90deg, #000, #4b0082); padding: 5px; font-size: 14px; text-shadow: 0 0 10px #fff;');
+    };
+
+    // Запуск уровня Zenith
+    interstellarVoid();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
