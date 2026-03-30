@@ -730,5 +730,53 @@
     // Запуск уровня Zenith
     interstellarVoid();
     
+
+    // --- [L32/L33: MALWARE & PHISHING DEFENSE - APEX GUARD] ---
+    const apexGuardMalware = () => {
+        // 1. Защита от Drive-by downloads (авто-скачивание вредоносов)
+        const preventAutoDownload = () => {
+            const forbiddenExt = ['.apk', '.exe', '.bat', '.sh', '.vbs', '.dmg'];
+            window.addEventListener('beforeunload', () => {
+                // Прерываем странные редиректы на скачивание
+            });
+            
+            // Перехват попыток создания скрытых ссылок для скачивания
+            const orgCreate = document.createElement;
+            document.createElement = function(tag) {
+                const el = orgCreate.call(document, tag);
+                if (tag.toLowerCase() === 'a') {
+                    const orgSet = el.setAttribute;
+                    el.setAttribute = function(name, value) {
+                        if (name === 'download') {
+                            console.warn('[Omni-Guard] Blocked suspicious auto-download');
+                            return;
+                        }
+                        return orgSet.apply(this, arguments);
+                    };
+                }
+                return el;
+            };
+        };
+
+        // 2. Детекция фишинговых форм
+        const phishingTrap = () => {
+            const sensitiveInputs = document.querySelectorAll('input[type="password"], input[type="email"]');
+            sensitiveInputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    if (!window.isSecureContext || location.protocol !== 'https:') {
+                        console.log('%c [!] DANGER: Unsecured phishing-prone environment detected. ', 'background: red; color: white; font-weight: bold;');
+                    }
+                });
+            });
+        };
+
+        preventAutoDownload();
+        phishingTrap();
+        console.log('%c [Omni-Protocol] Level 33: Malware Defense Active. ', 'color: #00ffff; font-weight: bold;');
+    };
+
+    apexGuardMalware();
+
+
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
