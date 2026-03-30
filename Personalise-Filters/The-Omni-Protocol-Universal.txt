@@ -1489,12 +1489,23 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! Намертво фиксируем статус обычного пользователя.
 #%#//scriptlet("set-constant", "navigator.webdriver", "false")
 
-! [L42: SOCKET-HEALING & WRAPPER-INTEGRITY - V67.0]
-! Блокируем попытки JS сканировать твои локальные порты (Anti-Intranet Scan)
+! [L42: NETWORK-ECHO & SOCKET-DECEPTION - V67.1]
+
+! --- 1. Intranet & Port-Scan Silence (Зеркало для L1 и L2) ---
+! Блокируем сканирование локальных портов (ADB, SSH) через все возможные API.
 #%#//scriptlet("set-constant", "WebSocket", "undefined")
-#%#//scriptlet("set-constant", "RTCPeerConnection.prototype.createDataChannel", "undefined")
+#%#//scriptlet("set-constant", "XMLHttpRequest.prototype.open", "function(m, u) { if (u && (u.includes('127.0.0.1') || u.includes('localhost') || (u.match && u.match(/:[0-9]{3,5}/) && !u.match(/:443|:80/)))) throw new Error('Network Error'); return open.apply(this, arguments); }")
+#%#//scriptlet("set-constant", "window.fetch", "function(u) { if (u && u.match && u.match(/:[0-9]{3,5}/) && !u.match(/:443|:80/)) return Promise.reject(new TypeError('Failed to fetch')); return fetch.apply(this, arguments); }")
 
-
+! --- 2. Smart-Beacon (Зеркало для L3) ---
+! Имитируем успешную отправку пингов (слежки), чтобы сайты не выдавали ошибок.
 #%#//scriptlet("set-constant", "navigator.sendBeacon", "function() { return true; }")
+
+! --- 3. WebRTC & Data-Channel Kill (Зеркало для L4) ---
+! Полная аннигиляция туннелей WebRTC для защиты от скрытых трансляций (Anti-Mirroring).
+#%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
+#%#//scriptlet("set-constant", "RTCPeerConnection.prototype.createDataChannel", "undefined")
+#%#//scriptlet("set-constant", "RTCSessionDescription", "undefined")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
