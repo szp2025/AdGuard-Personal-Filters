@@ -595,6 +595,43 @@
 
     // Запуск уровня God-Seed
     godSeed();
+
+    // --- [L26/L27/L28: GHOST IN THE MACHINE - PROPERTIES & ERRORS] ---
+    const ghostInMachine = () => {
+        // Имитация порядка свойств (Navigator Property Order)
+        const proxyNavigator = {};
+        const keys = ['vendor', 'platform', 'userAgent', 'language', 'languages', 'deviceMemory', 'hardwareConcurrency', 'maxTouchPoints'];
+        keys.forEach(key => {
+            Object.defineProperty(proxyNavigator, key, {
+                get: () => navigator[key],
+                enumerable: true,
+                configurable: true
+            });
+        });
+
+        // Маскировка сообщений об ошибках (Error Message Mimicry)
+        const orgToString = Error.prototype.toString;
+        Error.prototype.toString = function() {
+            let msg = orgToString.apply(this, arguments);
+            if (msg.includes('is not a function')) return msg.replace('is not a function', 'is not a function. (In \'eval\', \'eval\' is an instance of Object)');
+            return msg;
+        };
+
+        // Тотальная зачистка признаков автоматизации (Deep WebDriver Clean)
+        const cleanAutomation = () => {
+            const vars = ['webdriver', '__driver_evaluate', '__webdriver_evaluate', '__selenium_evaluate', '__fxdriver_evaluate', '__driver_unwrapped', '__webdriver_unwrapped', '__selenium_unwrapped', '__fxdriver_unwrapped', '_phantom', '__nightmare', '_selenium', 'callPhantom', 'callSelenium', '_Selenium_IDE_Recorder'];
+            vars.forEach(v => {
+                if (v in window) delete window[v];
+                if (v in navigator) delete navigator[v];
+            });
+        };
+        cleanAutomation();
+
+        console.log('%c [Omni-Protocol] Level 28: Inferno Shield Engaged. ', 'color: #ff4500; font-weight: bold; background: #222; padding: 3px;');
+    };
+
+    // Запуск уровня Inferno
+    ghostInMachine();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
