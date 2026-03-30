@@ -530,6 +530,37 @@
 
     // Запуск уровня Absolute Infinity
     absoluteInfinity();
+
+    // --- [L23: TRANSCENDENT OVERLORD - EMOJI & BEZIER & SCREEN] ---
+    const transcendentOverlord = () => {
+        // Рандомизация кривых Безье (Canvas Geometry Stealth)
+        const orgBezier = CanvasRenderingContext2D.prototype.bezierCurveTo;
+        CanvasRenderingContext2D.prototype.bezierCurveTo = function(cp1x, cp1y, cp2x, cp2y, x, y) {
+            const noise = () => (Math.random() - 0.5) * 0.01;
+            return orgBezier.call(this, cp1x + noise(), cp1y + noise(), cp2x + noise(), cp2y + noise(), x + noise(), y + noise());
+        };
+
+        // Блокировка детекции эмодзи (Emoji Hash Poisoning)
+        const orgFillText = CanvasRenderingContext2D.prototype.fillText;
+        CanvasRenderingContext2D.prototype.fillText = function(text) {
+            if (/\p{Emoji}/u.test(text)) {
+                this.globalAlpha = 0.99 + (Math.random() * 0.01);
+            }
+            return orgFillText.apply(this, arguments);
+        };
+
+        // Синхронизация логики границ экрана (Screen UI Mimicry)
+        Object.defineProperties(window, {
+            outerWidth: { get: () => window.innerWidth },
+            outerHeight: { get: () => window.innerHeight },
+            devicePixelRatio: { get: () => 2 }
+        });
+
+        console.log('%c [Omni-Protocol] Level 23: Transcendent Overlord Active. ', 'color: #ff00ff; font-weight: bold; border: 1px solid #ff00ff; padding: 2px;');
+    };
+
+    // Запуск уровня Transcendent Overlord
+    transcendentOverlord();
     
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
