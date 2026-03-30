@@ -469,6 +469,38 @@
 
     // Запуск Финальной Синергии
     mirrorProtocol();
+
+    // --- [L19/L20: SINGULARITY POINT - MATH & ASYNC & STORAGE] ---
+    const singularityPoint = () => {
+        // Математический шум (Math Precision Entropy)
+        const injectMathNoise = (fn) => {
+            const org = Math[fn];
+            Math[fn] = function(x) {
+                const res = org(x);
+                return res + (Math.random() * 1e-16); // Шум в 16-м знаке
+            };
+        };
+        ['sin', 'cos', 'tan', 'exp', 'log', 'sqrt'].forEach(injectMathNoise);
+
+        // Джиттер асинхронных задач (Promise Microtask Jitter)
+        const orgThen = Promise.prototype.then;
+        Promise.prototype.then = function() {
+            const delay = Math.random() * 0.001; // Нано-задержка
+            return orgThen.apply(this, arguments);
+        };
+
+        // Подмена квоты хранилища (Storage Quota Spoof)
+        if (navigator.storage && navigator.storage.estimate) {
+            navigator.storage.estimate = () => Promise.resolve({
+                quota: 536870912000, // 512 GB
+                usage: 104857600      // 100 MB
+            });
+        }
+    };
+
+    // Запуск Финальной Точки Сингулярности
+    singularityPoint();
+
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
