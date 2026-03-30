@@ -171,6 +171,45 @@
     // Запуск финальных модулей
     deepSanitizer();
     protectClipboard();
+    // --- [L9: NEURAL-HEURISTIC & SELF-HEALING] ---
+    const neuralHeuristic = () => {
+        // Убиваем скрытые 1x1 фреймы и трекеры-невидимки
+        const killInvisible = () => {
+            const frames = document.querySelectorAll('iframe, img, div');
+            frames.forEach(el => {
+                const style = window.getComputedStyle(el);
+                if (style.width === '1px' || style.height === '1px' || style.opacity === '0') {
+                    el.remove();
+                }
+            });
+        };
+
+        // Защита от "воскрешения" элементов (Anti-Tamper)
+        const target = document.documentElement;
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach(mutation => {
+                if (mutation.removedNodes.length > 0) {
+                    // Если сайт пытается восстановить рекламу - блокируем
+                    killInvisible();
+                }
+            });
+        });
+        observer.observe(target, { childList: true, subtree: true });
+    };
+
+    // --- [L10: HISTORY INTEGRITY & ANTI-TRACK] ---
+    const protectHistory = () => {
+        const orgPushState = history.pushState;
+        history.pushState = function() {
+            // Очищаем URL перед тем, как сайт запишет его в историю
+            arguments[2] = arguments[2].replace(/[?&](utm_|fbclid|gclid|yclid)[^&]+/g, '');
+            return orgPushState.apply(this, arguments);
+        };
+    };
+
+    // Запуск элитных модулей
+    neuralHeuristic();
+    protectHistory();
     
     console.log('%c Nebula Apex Gold ' + CURRENT_VERSION + ': Engaged ', 'background: #000; color: #ffd700; font-weight: bold;');
 })();
