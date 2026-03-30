@@ -448,831 +448,113 @@ $client=/^com\.whatsapp/,$important,domain=~google.com|~yandex.ru
 #?#div:has(> iframe[src*="ads"])
 #?#section:has(div[class*="ad-"])
 
-! --- THE NUCLEAR SCRIPTLET ---
+! [L22-S1: OMNI-CORE — V116.5 — THE ARCHITECT]
+! Полная интеграция: AI-Поведение + Аппаратный Спуфинг + Сетевой Щит.
 #%#//scriptlet("execute-script", "
 (function(){
 
+/** 0. CORE SETUP & TRUSTED LIST */
 const host = location.hostname;
 const TRUSTED = /(google|youtube|bank|gov|openai|github|paypal|stripe|caf\.fr|oelie)/.test(host);
-
+const rand = (a,b)=> a + Math.random()*(b-a);
 function safeDefine(obj, prop, value){
   try{ Object.defineProperty(obj, prop, { get: ()=>value, configurable: true }); }catch(e){}
 }
 
-/**
- * 1. HARDWARE & STORAGE SPOOF (L39-L41 Integrated)
- */
+/** 1. IDENTITY & MEMORY ENGINE (Твоя сессионная логика) */
+const ID = localStorage.getItem('omni_id') || Math.random().toString(36).substring(2);
+localStorage.setItem('omni_id', ID);
+let mem = JSON.parse(localStorage.getItem('omni_mem_' + ID) || '{\"v\":1,\"s\":0,\"c\":0}');
+mem.v++;
+localStorage.setItem('omni_mem_' + ID, JSON.stringify(mem));
+
+/** 2. HARDWARE & STORAGE SPOOF (L39-L41 + Твои профили) */
 if (!TRUSTED) {
-    // SSD & RAM Spoof
+    // Аппаратный стандарт: Intel 8 Cores / 16GB RAM / 100GB SSD
+    safeDefine(navigator, 'hardwareConcurrency', 8);
+    safeDefine(navigator, 'deviceMemory', 8);
+    safeDefine(navigator, 'webdriver', false);
     if (navigator.storage) {
         navigator.storage.estimate = () => Promise.resolve({ quota: 107374182400, usage: 104857600 });
     }
-    if (performance && performance.memory) {
-        safeDefine(performance, 'memory', { usedJSHeapSize: 104857600, totalJSHeapSize: 209715200, jsHeapSizeLimit: 2147483648 });
-    }
+    
+    // Screen & Display (1080p Standard)
+    const sc = { width: 1920, height: 1080, availWidth: 1920, availHeight: 1080, availTop: 0, availLeft: 0 };
+    Object.keys(sc).forEach(p => safeDefine(screen, p, sc[p]));
+    if (screen.orientation) safeDefine(screen.orientation, 'type', 'landscape-primary');
 
-    // Sensors & Battery
-    navigator.vibrate = () => true;
-    if (navigator.getBattery) {
-        navigator.getBattery = () => Promise.resolve({ charging: true, level: 1.0, chargingTime: 0, dischargingTime: Infinity });
-    }
-
-    // Geometry Rounding (Anti-Nano-Pixel)
-    const origGetRect = Element.prototype.getBoundingClientRect;
-    Element.prototype.getBoundingClientRect = function() {
-        const r = origGetRect.apply(this, arguments);
-        return { top: r.top, left: r.left, bottom: r.bottom, right: r.right, width: Math.round(r.width), height: Math.round(r.height) };
+    // WebGL & Canvas Protection
+    const getParam = WebGLRenderingContext.prototype.getParameter;
+    WebGLRenderingContext.prototype.getParameter = function(p){
+        if (p === 37445) return 'Intel Inc.';
+        if (p === 37446) return 'Intel Iris OpenGL Engine';
+        return getParam.apply(this, arguments);
     };
-    Element.prototype.getClientRects = () => [];
+    const origToDataURL = HTMLCanvasElement.prototype.toDataURL;
+    HTMLCanvasElement.prototype.toDataURL = function(){
+        const ctx = this.getContext('2d');
+        if (ctx) { ctx.fillStyle = 'rgba(0,0,0,0.001)'; ctx.fillRect(0,0,1,1); }
+        return origToDataURL.apply(this, arguments);
+    };
+
+    // Battery & Vibration
+    navigator.vibrate = () => true;
+    if (navigator.getBattery) navigator.getBattery = () => Promise.resolve({ charging:true, level:1, chargingTime:0, dischargingTime:Infinity });
 }
 
-/**
- * 2. NETWORK DECEPTION (L42 Integrated)
- */
+/** 3. NETWORK & PORT SCAN DEFENSE (L42 Integration) */
 if (!TRUSTED) {
-    // Anti-Port-Scan & Localhost Shield
-    const isForbidden = (u) => u && (u.includes('127.0.0.1') || u.includes('localhost') || (u.match && u.match(/:[0-9]{3,5}/) && !u.match(/:443|:80/)));
-
-    const origFetch = window.fetch;
-    window.fetch = function(u, ...args) {
+    const isForbidden = (u) => u && (typeof u === 'string') && (u.includes('127.0.0.1') || u.includes('localhost') || (u.match && u.match(/:[0-9]{3,5}/) && !u.match(/:443|:80/)));
+    
+    const oFetch = window.fetch;
+    window.fetch = async function(u, ...a) {
         if (isForbidden(u)) return Promise.reject(new TypeError('Network Error'));
-        return origFetch.apply(this, [u, ...args]);
+        await new Promise(r => setTimeout(r, rand(30, 150))); // Твой сетевой джиттер
+        return oFetch.apply(this, [u, ...a]);
     };
 
-    const origOpen = XMLHttpRequest.prototype.open;
-    XMLHttpRequest.prototype.open = function(m, u) {
+    const oOpen = XMLHttpRequest.prototype.open;
+    const oSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.open = function(m, u){
         if (isForbidden(u)) throw new Error('Network Error');
-        return origOpen.apply(this, arguments);
+        this._d = rand(20, 100);
+        return oOpen.apply(this, arguments);
+    };
+    XMLHttpRequest.prototype.send = function(){
+        setTimeout(() => oSend.apply(this, arguments), this._d || 0);
     };
 
-    // WebRTC & Beacon
     safeDefine(window, 'RTCPeerConnection', undefined);
     navigator.sendBeacon = () => true;
 }
 
-/**
- * 3. ENGINE HARDENING (UserAgent, Screen, CPU)
- */
+/** 4. AI HUMANIZER (Твоя логика поведения и микро-движений) */
 if (!TRUSTED) {
-    safeDefine(navigator, 'webdriver', false);
-    safeDefine(navigator, 'hardwareConcurrency', 8);
-    safeDefine(navigator, 'deviceMemory', 8);
-    
-    // Screen Integrity
-    const screenProps = { width: 1920, height: 1080, availWidth: 1920, availHeight: 1080, availTop: 0, availLeft: 0 };
-    Object.keys(screenProps).forEach(p => safeDefine(screen, p, screenProps[p]));
-    safeDefine(screen.orientation, 'type', 'landscape-primary');
-}
+    // Обман тепловых карт (Mouse & Scroll)
+    window.addEventListener('scroll', () => { mem.s = window.scrollY; localStorage.setItem('omni_mem_'+ID, JSON.stringify(mem)); }, {passive:true});
+    window.addEventListener('click', () => { mem.c++; localStorage.setItem('omni_mem_'+ID, JSON.stringify(mem)); }, {passive:true});
 
-/**
- * 4. AI-HUMANIZER (Behavior)
- */
-if (!TRUSTED) {
-    // Кастрируем IntersectionObserver (обман видимости)
+    // Эмуляция чтения (Случайные скроллы)
+    (function humanFlow(){
+        setTimeout(() => {
+            if (Math.random() > 0.6) window.scrollBy({ top: rand(50,150), behavior: 'smooth' });
+            humanFlow();
+        }, rand(3000, 8000));
+    })();
+
+    // Защита Visibility & Timing
+    safeDefine(document, 'visibilityState', 'visible');
+    safeDefine(document, 'hidden', false);
+    const oNow = performance.now.bind(performance);
+    performance.now = () => oNow() + rand(0, 5);
+    const oRAF = window.requestAnimationFrame;
+    window.requestAnimationFrame = (cb) => oRAF((t) => cb(t + rand(0, 5)));
     window.IntersectionObserver = function() { return { observe:()=>{}, unobserve:()=>{}, disconnect:()=>{} }; };
-    
-    // Джиттер для requestAnimationFrame
-    const origRAF = window.requestAnimationFrame;
-    window.requestAnimationFrame = (cb) => origRAF((t) => cb(t + Math.random() * 5));
 }
 
 })();
 ")
 
-! [L22-S1: AI-Humanizer & Hardware Spoofer]
-#%#//scriptlet("execute-script", "
-(function(){
-
-/**
- * ================================
- * 0. CORE INIT + MODE
- * ================================
- */
-const host = location.hostname;
-
-const TRUSTED = /(google|youtube|bank|gov|openai|github|paypal|stripe)/.test(host);
-
-/**
- * Режим анти-adblock
- */
-function getMode(host){
-  if(/bank|paypal|stripe|secure/.test(host)) return 'trusted';
-  if(/youtube|google|facebook|instagram/.test(host)) return 'social';
-  if(/news|media|blog|magazine/.test(host)) return 'aggressive';
-  return 'default';
-}
-
-const MODE = getMode(host);
-
-/**
- * ================================
- * 1. SAFE DEFINE
- * ================================
- */
-function safeDefine(obj, prop, value){
-  try{
-    Object.defineProperty(obj, prop, {
-      get: ()=>value,
-      configurable: true
-    });
-  }catch(e){}
-}
-
-/**
- * ================================
- * 2. MULTI ID
- * ================================
- */
-const ID_POOL = ['alpha','beta','gamma','delta'];
-
-let ID = localStorage.getItem('identity_name');
-
-if (!ID) {
-  ID = ID_POOL[Math.floor(Math.random()*ID_POOL.length)];
-  localStorage.setItem('identity_name', ID);
-}
-
-/**
- * ================================
- * 3. ENV SPLIT
- * ================================
- */
-const ENV = (function(){
-  if (/bank|paypal|stripe|wise/.test(host)) return 'secure';
-  if (/facebook|instagram|tiktok|twitter|x\.com/.test(host)) return 'social';
-  if (/amazon|ebay|aliexpress/.test(host)) return 'commerce';
-  if (/github|stackoverflow/.test(host)) return 'work';
-  return 'default';
-})();
-
-/**
- * ================================
- * 4. SESSION MEMORY
- * ================================
- */
-const MEM_KEY = 'fp_memory_' + ID;
-
-let memory;
-try { memory = JSON.parse(localStorage.getItem(MEM_KEY)); } catch(e){}
-
-if (!memory) {
-  memory = { visits:1, scroll:0, clicks:0 };
-} else {
-  memory.visits++;
-}
-
-localStorage.setItem(MEM_KEY, JSON.stringify(memory));
-
-/**
- * ================================
- * 5. INTENT ENGINE
- * ================================
- */
-const INTENT = (function(){
-  if (ENV==='commerce') return 'buy';
-  if (ENV==='social') return 'scroll';
-  if (ENV==='work') return 'read';
-  if (ENV==='secure') return 'focused';
-  if (memory.scroll > 2000) return 'scroll';
-  if (memory.clicks > 10) return 'interact';
-  return 'idle';
-})();
-
-/**
- * ================================
- * 6. CONSISTENT FP
- * ================================
- */
-const FP_KEY = 'fp_lock_' + ID;
-
-let FP;
-try { FP = JSON.parse(sessionStorage.getItem(FP_KEY)); } catch(e){}
-
-if (!FP) {
-  FP = {
-    cpu: 4 + Math.floor(Math.random()*4),
-    mem: [4,8,16][Math.floor(Math.random()*3)],
-    lang: 'en-US',
-    tz: 'Europe/Paris',
-    screen: {w:1920,h:1080},
-    ua: navigator.userAgent
-  };
-  sessionStorage.setItem(FP_KEY, JSON.stringify(FP));
-}
-
-/**
- * APPLY FP
- */
-if (!TRUSTED) {
-
-  safeDefine(navigator,'hardwareConcurrency',FP.cpu);
-  safeDefine(navigator,'deviceMemory',FP.mem);
-  safeDefine(navigator,'language',FP.lang);
-
-  safeDefine(screen,'width',FP.screen.w);
-  safeDefine(screen,'height',FP.screen.h);
-
-  // ⚠️ userAgent оставляем (по твоему желанию)
-  safeDefine(navigator,'userAgent',FP.ua);
-
-  const origRes = Intl.DateTimeFormat.prototype.resolvedOptions;
-  Intl.DateTimeFormat.prototype.resolvedOptions = function(){
-    const o = origRes.apply(this, arguments);
-    o.timeZone = FP.tz;
-    o.locale = FP.lang;
-    return o;
-  };
-}
-
-/**
- * ================================
- * 7. ADAPTIVE ADBLOCK PROFILE
- * ================================
- */
-function applyProfile(){
-
-  switch(MODE){
-
-    case 'trusted':
-      safeDefine(window,'google_ad_status','1');
-      break;
-
-    case 'social':
-      safeDefine(window,'google_ad_status','1');
-      safeDefine(navigator,'webdriver',false);
-      break;
-
-    case 'aggressive':
-      safeDefine(window,'google_ad_status','1');
-      safeDefine(navigator,'webdriver',false);
-      safeDefine(window,'isAdBlockActive',false);
-      safeDefine(window,'adblocker',false);
-
-      window.gtag = function(){};
-      window.ga = function(){};
-      window.fbq = function(){};
-      break;
-
-    default:
-      safeDefine(navigator,'webdriver',false);
-      safeDefine(window,'google_ad_status','1');
-      break;
-  }
-
-}
-
-applyProfile();
-
-/**
- * ================================
- * 8. ADVANCED FP DEFENSE
- * ================================
- */
-if (!TRUSTED) {
-
-  if (!HTMLCanvasElement.prototype.toDataURL.__spoofed) {
-
-    const orig = HTMLCanvasElement.prototype.toDataURL;
-
-    HTMLCanvasElement.prototype.toDataURL = function(){
-      try{
-        const ctx = this.getContext('2d');
-        if (ctx) {
-          ctx.fillStyle = 'rgba(0,0,0,0.01)';
-          ctx.fillRect(0,0,1,1);
-        }
-      }catch(e){}
-      return orig.apply(this, arguments);
-    };
-
-    HTMLCanvasElement.prototype.toDataURL.__spoofed = true;
-  }
-
-  if (window.AudioContext && !AudioContext.prototype.__spoofed) {
-    const orig = AudioContext.prototype.createAnalyser;
-    AudioContext.prototype.createAnalyser = function(){
-      return orig.apply(this, arguments);
-    };
-    AudioContext.prototype.__spoofed = true;
-  }
-
-  document.fonts && (document.fonts.check = ()=>true);
-}
-
-/**
- * ================================
- * 9. ANALYTICS CONTROL
- * ================================
- */
-if (!TRUSTED) {
-
-  window.ga = window.ga || function(){};
-  window.gtag = window.gtag || function(){};
-  window.fbq = window.fbq || function(){};
-
-  try {
-    navigator.browsingTopics = undefined;
-  } catch(e){}
-}
-
-/**
- * ================================
- * 10. SELF-HEAL
- * ================================
- */
-setInterval(()=>{
-  try{
-    if (navigator.webdriver !== false) {
-      safeDefine(navigator,'webdriver',false);
-    }
-  }catch(e){}
-},7000);
-
-/**
- * ================================
- * 11. HUMAN BEHAVIOR
- * ================================
- */
-if (!TRUSTED) {
-
-  const rand = (a,b)=> a + Math.random()*(b-a);
-
-  window.addEventListener('scroll', ()=>{
-    memory.scroll = window.scrollY;
-    localStorage.setItem(MEM_KEY, JSON.stringify(memory));
-  }, {passive:true});
-
-  window.addEventListener('click', ()=>{
-    memory.clicks++;
-    localStorage.setItem(MEM_KEY, JSON.stringify(memory));
-  }, {passive:true});
-
-}
-
-/**
- * ================================
- * 12. VISIBILITY
- * ================================
- */
-let vis='visible';
-
-setInterval(()=>{
-  vis = Math.random()>0.98 ? 'hidden':'visible';
-},20000);
-
-safeDefine(document,'visibilityState',vis);
-safeDefine(document,'hidden',vis==='hidden');
-
-
-/**
- * ================================
- * 13. NETWORK STEALTH (FETCH/XHR)
- * ================================
- */
-if (!TRUSTED) {
-
-  const rand = (a,b)=> a + Math.random()*(b-a);
-
-  /**
-   * Обертка fetch с jitter задержкой
-   */
-  if (!window.fetch.__stealth) {
-
-    const origFetch = window.fetch;
-
-    window.fetch = async function(...args){
-
-      const delay = rand(30, 180);
-
-      await new Promise(r => setTimeout(r, delay));
-
-      return origFetch.apply(this, args);
-    };
-
-    window.fetch.__stealth = true;
-  }
-
-  /**
-   * Обертка XMLHttpRequest
-   */
-  if (!XMLHttpRequest.prototype.__stealth) {
-
-    const origOpen = XMLHttpRequest.prototype.open;
-    const origSend = XMLHttpRequest.prototype.send;
-
-    XMLHttpRequest.prototype.open = function(){
-      this.__delay = rand(20,150);
-      return origOpen.apply(this, arguments);
-    };
-
-    XMLHttpRequest.prototype.send = function(){
-      setTimeout(()=>{
-        origSend.apply(this, arguments);
-      }, this.__delay || 0);
-    };
-
-    XMLHttpRequest.prototype.__stealth = true;
-  }
-
-}
-
-/**
- * ================================
- * 14. AI HUMAN BEHAVIOR ENGINE
- * ================================
- */
-if (!TRUSTED) {
-
-  const rand = (a,b)=> a + Math.random()*(b-a);
-
-  /**
-   * Имитация чтения страницы
-   */
-  function simulateReading(){
-
-    const scrollStep = rand(50,150);
-
-    window.scrollBy({
-      top: scrollStep,
-      behavior: 'smooth'
-    });
-
-    memory.scroll += scrollStep;
-    localStorage.setItem(MEM_KEY, JSON.stringify(memory));
-  }
-
-  /**
-   * Случайные паузы (как человек)
-   */
-  function humanIdle(){
-
-    const delay = rand(2000, 7000);
-
-    setTimeout(()=>{
-
-      if (Math.random() > 0.4) {
-        simulateReading();
-      }
-
-      humanIdle();
-
-    }, delay);
-  }
-
-  /**
-   * Микро движения мыши (очень легкие)
-   */
-  function microMovement(){
-
-    const evt = new MouseEvent('mousemove', {
-      clientX: rand(0, window.innerWidth),
-      clientY: rand(0, window.innerHeight)
-    });
-
-    document.dispatchEvent(evt);
-  }
-
-  setInterval(()=>{
-    if (Math.random() > 0.7) {
-      microMovement();
-    }
-  }, rand(2000,5000));
-
-  humanIdle();
-
-}
-
-/**
- * ================================
- * 15. NETWORK TIMING SPOOF
- * ================================
- */
-if (!TRUSTED && performance && performance.now) {
-
-  const origNow = performance.now.bind(performance);
-
-  performance.now = function(){
-    return origNow() + (Math.random() * 5);
-  };
-
-}
-
-/**
- * ================================
- * 16. CPU / FPS VARIATION
- * ================================
- */
-if (!TRUSTED) {
-
-  const origRAF = window.requestAnimationFrame;
-
-  window.requestAnimationFrame = function(cb){
-    const jitter = Math.random() * 10;
-    return origRAF(function(t){
-      cb(t + jitter);
-    });
-  };
-
-}
-
-/**
- * ================================
- * 17. WEBRTC PROTECTION
- * ================================
- */
-if (!TRUSTED && window.RTCPeerConnection) {
-
-  const OrigRTC = window.RTCPeerConnection;
-
-  window.RTCPeerConnection = function(...args){
-    const pc = new OrigRTC(...args);
-
-    pc.addEventListener('icecandidate', function(e){
-      if (e && e.candidate && e.candidate.candidate) {
-        // блокируем локальные IP
-        e.candidate.candidate = e.candidate.candidate.replace(
-          /([0-9]{1,3}\.){3}[0-9]{1,3}/g,
-          '0.0.0.0'
-        );
-      }
-    });
-
-    return pc;
-  };
-}
-
-/**
- * ================================
- * 18. NAVIGATOR CONNECTION SPOOF
- * ================================
- */
-if (!TRUSTED && navigator.connection) {
-
-  const conn = {
-    downlink: 10 + Math.random()*40,
-    effectiveType: ['4g','3g'][Math.floor(Math.random()*2)],
-    rtt: 50 + Math.random()*100,
-    saveData: false
-  };
-
-  Object.defineProperty(navigator, 'connection', {
-    get: ()=> conn
-  });
-}
-
-/**
- * ================================
- * 19. PERMISSIONS SPOOF
- * ================================
- */
-if (!TRUSTED && navigator.permissions) {
-
-  const origQuery = navigator.permissions.query;
-
-  navigator.permissions.query = function(params){
-
-    if (params && params.name) {
-      return Promise.resolve({
-        state: ['granted','prompt','denied'][Math.floor(Math.random()*3)]
-      });
-    }
-
-    return origQuery.apply(this, arguments);
-  };
-}
-
-/**
- * ================================
- * 20. BATTERY SPOOF
- * ================================
- */
-if (!TRUSTED && navigator.getBattery) {
-
-  navigator.getBattery = function(){
-    return Promise.resolve({
-      charging: true,
-      level: 0.76 + Math.random()*0.2,
-      chargingTime: 0,
-      dischargingTime: Infinity
-    });
-  };
-}
-
-/**
- * ================================
- * 21. VISIBILITY HUMANIZER (УЛУЧШЕННЫЙ)
- * ================================
- */
-if (!TRUSTED) {
-
-  let vis = 'visible';
-
-  setInterval(()=>{
-    const rnd = Math.random();
-
-    if (rnd > 0.995) vis = 'hidden';
-    else if (rnd > 0.98) vis = 'visible';
-
-  }, 15000 + Math.random()*10000);
-
-  Object.defineProperty(document,'visibilityState',{get:()=>vis});
-  Object.defineProperty(document,'hidden',{get:()=>vis==='hidden'});
-
-}
-
-
-
-
-/**
- * ==========================================
- * 22. UNIFIED FP ENGINE (HARD + ULTRA + DYNAMIC)
- * ==========================================
- */
-(function(){
-
-if (TRUSTED) return;
-
-/**
- * ==========================================
- * 24.1 SESSION SEED (СТАБИЛЬНОСТЬ)
- * ==========================================
- */
-const seed = (sessionStorage.getItem('fp_seed') || (function(){
-  const s = Math.random().toString(36).substring(2);
-  sessionStorage.setItem('fp_seed', s);
-  return s;
-})());
-
-/**
- * Генератор псевдо-рандома (стабильный)
- */
-function rand(seedStr){
-  let h = 0;
-  for (let i = 0; i < seedStr.length; i++) {
-    h = Math.imul(31, h) + seedStr.charCodeAt(i) | 0;
-  }
-  return function(){
-    h = Math.imul(1664525, h) + 1013904223;
-    return (h >>> 0) / 4294967296;
-  }
-}
-
-const random = rand(seed);
-
-/**
- * ==========================================
- * 24.2 DEVICE PROFILES (РЕАЛЬНЫЕ)
- * ==========================================
- */
-const profiles = [
-  { name: "win_chrome_intel", mem: 8, cores: 8, gpu: "Intel Inc.", renderer: "Intel Iris OpenGL Engine", w:1920, h:1080, dpr:1 },
-  { name: "win_chrome_amd", mem: 16, cores: 12, gpu: "ATI Technologies Inc.", renderer: "AMD Radeon RX 580", w:1920, h:1080, dpr:1 },
-  { name: "laptop_low", mem: 4, cores: 4, gpu: "Intel Inc.", renderer: "Intel HD Graphics 620", w:1366, h:768, dpr:1 }
-];
-
-const profile = profiles[Math.floor(random() * profiles.length)];
-
-/**
- * ==========================================
- * 24.3 DEVICE CONSISTENCY
- * ==========================================
- */
-Object.defineProperty(navigator, 'deviceMemory', { get: () => profile.mem });
-Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => profile.cores });
-
-Object.defineProperty(window, 'devicePixelRatio', { get: () => profile.dpr });
-
-Object.defineProperty(screen, 'width', { get: () => profile.w });
-Object.defineProperty(screen, 'height', { get: () => profile.h });
-
-Object.defineProperty(window, 'innerWidth', { get: () => profile.w });
-Object.defineProperty(window, 'innerHeight', { get: () => profile.h - 40 });
-/**
- * PLATFORM CONSISTENCY FIX
- */
-Object.defineProperty(navigator, 'platform', {
-  get: () => 'Win32'
-});
-
-Object.defineProperty(navigator, 'userAgentData', {
-  get: () => undefined
-});
-
-
-/**
- * ==========================================
- * 24.4 WEBGL (FULL SPOOF)
- * ==========================================
- */
-(function(){
-
-  const getParameter = WebGLRenderingContext.prototype.getParameter;
-
-  WebGLRenderingContext.prototype.getParameter = function(param){
-    if (param === 37445) return profile.gpu;
-    if (param === 37446) return profile.renderer;
-    return getParameter.apply(this, arguments);
-  };
-
-  const EXT = [
-    "OES_texture_float",
-    "OES_standard_derivatives",
-    "WEBGL_debug_renderer_info",
-    "WEBGL_lose_context"
-  ];
-
-  WebGLRenderingContext.prototype.getSupportedExtensions = () => EXT;
-
-  WebGLRenderingContext.prototype.getShaderPrecisionFormat = () => ({
-    rangeMin: 127,
-    rangeMax: 127,
-    precision: 23
-  });
-
-})();
-
-/**
- * ==========================================
- * 24.5 CANVAS (SESSION NOISE)
- * ==========================================
- */
-(function(){
-
-  const noise = random() * 0.00001;
-  const toDataURL = HTMLCanvasElement.prototype.toDataURL;
-
-  HTMLCanvasElement.prototype.toDataURL = function(){
-    const ctx = this.getContext('2d');
-    if (ctx) {
-      ctx.fillStyle = "rgba(0,0,0," + noise + ")";
-      ctx.fillRect(0,0,1,1);
-    }
-    return toDataURL.apply(this, arguments);
-  };
-
-})();
-
-/**
- * ==========================================
- * 24.6 AUDIO FP (STABLE NOISE)
- * ==========================================
- */
-(function(){
-
-  const getChannelData = AudioBuffer.prototype.getChannelData;
-
-  AudioBuffer.prototype.getChannelData = function(){
-    const data = getChannelData.apply(this, arguments);
-    for (let i = 0; i < data.length; i += 100) {
-      data[i] += (random() * 0.0000001);
-    }
-    return data;
-  };
-
-  const origOsc = AudioContext.prototype.createOscillator;
-
-  AudioContext.prototype.createOscillator = function(){
-    const osc = origOsc.apply(this, arguments);
-    osc.frequency.value += (random() * 0.01);
-    return osc;
-  };
-
-})();
-
-/**
- * ==========================================
- * 24.7 FONTS DEFENSE
- * ==========================================
- */
-(function(){
-
-  const orig = document.fonts.check;
-
-  document.fonts.check = function(){
-    if (random() > 0.9) return false;
-    return orig.apply(this, arguments);
-  };
-
-})();
-
-/**
- * ==========================================
- * 24.8 PLUGINS (REALISTIC)
- * ==========================================
- */
-Object.defineProperty(navigator, 'plugins', {
-  get: () => [
-    { name: "Chrome PDF Plugin" },
-    { name: "Chrome PDF Viewer" },
-    { name: "Native Client" }
-  ]
-});
-
-})();
-
-
-})();
-")
 
 ! [L22-S2: THE PURIFIER — V96.0 — ZERO-FOOTPRINT]
 ! Стерилизация шрифтов, кук и LocalStorage.
