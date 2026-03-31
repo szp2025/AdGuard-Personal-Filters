@@ -587,11 +587,69 @@
 
 
 
+    /**
+     * L35/L40: LEGACY & FRAGILE REPAIR
+     * Починка старых сайтов и jQuery компонентов.
+     */
+    const applyL40LegacyRepair = () => {
+        const fragile = isLegacyFramework();
+        if (fragile) {
+            console.log(OMNI_TAG, STYLE_CORE, '🚀 L35: Fragile environment detected. Auto-Repair Active.');
+            setTimeout(repairLegacyJS, 600);
+        }
+    };
 
+    /**
+     * L150: HEAVY EVAL BLOCKER
+     * Блокирует огромные зашифрованные скрипты (защита от майнеров и обфускации).
+     */
+    const applyL150EvalBlocker = (target = document.documentElement) => {
+        const obs = new MutationObserver(mutations => {
+            mutations.forEach(m => m.addedNodes.forEach(node => {
+                if (node.tagName === 'SCRIPT' && node.textContent.includes('eval(') && node.textContent.length > 100000) {
+                    node.remove();
+                    sendOmniPush('Security Alert', 'Blocked heavy eval() injection.');
+                    console.warn(OMNI_TAG, STYLE_DANGER, '🛑 L150: Heavy eval neutralized.');
+                }
+            }));
+        });
+        obs.observe(target, { childList: true, subtree: true });
+    };
 
+    /**
+     * L1001: HONEYPOT (Data Privacy)
+     * Подменяет токены/пароли в localStorage на пустой JSON при попытке кражи.
+     */
+    const applyL1001HoneyPot = () => {
+        const orgGet = localStorage.getItem;
+        localStorage.getItem = function(k) {
+            if (!isWhiteListed && /token|auth|pass|wallet|secret/i.test(k) && !window.event?.isTrusted) {
+                console.log(OMNI_TAG, STYLE_CORE, `🛡️ L1001: HoneyPot active for: ${k}`);
+                return "{}"; 
+            }
+            return orgGet.apply(localStorage, arguments);
+        };
+    };
 
-
-
+    /**
+     * L1200: APEX VIRUS MAP (Anti-Malware)
+     * Перехват прямых ссылок на вирусы и опасные файлы.
+     */
+    const applyL1200VirusMap = () => {
+        const fullVirusMap = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|js|jar|apk|app|dmg|iso|bin|docm|xlsm|lnk|wsf|com)$/i;
+        window.addEventListener('click', e => {
+            const a = e.target.closest('a');
+            if (a && a.href && !window.location.hostname.includes('github.com')) {
+                const url = a.href.split(/[?#]/)[0];
+                if (fullVirusMap.test(url)) {
+                    e.preventDefault();
+                    window.stop();
+                    sendOmniPush('Threat Blocked', 'Malicious file intercepted.');
+                    alert('🛑 [OMNI-CHRONOS L1200] Critical Threat Blocked.');
+                }
+            }
+        }, true);
+    };
 
 
 
@@ -661,79 +719,43 @@
                !!document.querySelector('frameset, table[bgcolor], center');
     };
 
-    const OmniChronos = {
-        /**
-         * L0-L500: HIGH-SPEED RAM & DOM
-         */
+
+
+
+        const OmniChronos = {
         initBaseFoundation: () => {
-            const fragile = isLegacyFramework();
-            if (fragile) {
-                console.log(OMNI_TAG, STYLE_CORE, '🚀 L35: Fragile environment detected. Auto-Repair Active.');
-                setTimeout(repairLegacyJS, 600);
-                return; 
-            }
-
-            const obs = new MutationObserver(mutations => {
-                for (let i = 0; i < mutations.length; i++) {
-                    const nodes = mutations[i].addedNodes;
-                    for (let j = 0; j < nodes.length; j++) {
-                        const node = nodes[j];
-                        if (node.tagName === 'SCRIPT' && node.textContent.includes('eval(') && node.textContent.length > 100000) {
-                            node.remove();
-                            sendOmniPush('Security Alert', 'Blocked heavy eval() script injection.');
-                            console.warn(OMNI_TAG, STYLE_DANGER, '🛑 L150: Blocked heavy eval.');
-                        }
-                    }
-                }
-            });
-            obs.observe(document.documentElement, { childList: true, subtree: true });
+            applyL40LegacyRepair();    // Починка старых сайтов (v3.3.9)
+            applyL3Reaper();           // Рипер рекламы (L3)
+            applyL7DeepSanitizer();    // Теневой DOM (L7)
+            applyL9NeuralHeuristic();  // Невидимки (L9)
+            applyL150EvalBlocker();    // Блокировка тяжелых eval (v3.3.9)
+            applyL18MirrorProtocol();  // Очистка следов (L18)
         },
 
-        /**
-         * L501-L1000: CLIPBOARD & SIDE-CHANNEL
-         */
         initAdvancedShield: () => {
-            document.addEventListener('copy', e => {
-                if (!e.isTrusted) sendOmniPush('Privacy Guard', 'Non-user clipboard access prevented.');
-            }, true);
-
-            // Skip SharedArrayBuffer isolation on Whitelisted infra to prevent lag
-            if (window.SharedArrayBuffer && !isWhiteListed) {
-                const orgSAB = window.SharedArrayBuffer;
-                window.SharedArrayBuffer = function() {
-                    return new Proxy(new orgSAB(...arguments), {});
-                };
-            }
+            applyL1Identity();         // Личность (L1)
+            applyL2Noise();            // Шум холста (L2)
+            applyL5Environment();      // Батарея/Время (L5)
+            applyL10HistoryGuard();    // История (L10)
+            applyL11Ghost();           // Железо (L11)
+            applyL12Platinum();        // Звук/Шрифты (L12)
+            applyL15EventHorizon();    // Когнитив (L15)
+            applyL17AbsoluteZero();    // Стек/Экран (L17)
+            applyL33ApexGuard();       // Малварь (L33)
+            applyL1200VirusMap();      // Вирус-карта (v3.3.9)
         },
 
-        /**
-         * L1001-L1200: DISINFORMATION & VIRUS MAP
-         */
         initQuantumModules: () => {
-            // L1001: HoneyPot (FIXED: Returns empty JSON instead of raw string to prevent SyntaxError)
-            const orgGet = localStorage.getItem;
-            localStorage.getItem = function(k) {
-                if (!isWhiteListed && /token|auth|pass|wallet|secret/i.test(k) && !window.event?.isTrusted) {
-                    console.log(OMNI_TAG, STYLE_CORE, `🛡️ L1001: HoneyPot active for: ${k}`);
-                    return "{}"; // Safe JSON-compatible return
-                }
-                return orgGet.apply(localStorage, arguments);
-            };
-
-            // L1200: Apex Virus Map
-            const fullVirusMap = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|js|jar|apk|app|dmg|iso|bin|docm|xlsm|lnk|wsf|com)$/i;
-            window.addEventListener('click', e => {
-                const a = e.target.closest('a');
-                if (a && a.href && !window.location.hostname.includes('github.com')) {
-                    const url = a.href.split(/[?#]/)[0];
-                    if (fullVirusMap.test(url)) {
-                        e.preventDefault();
-                        window.stop();
-                        sendOmniPush('Threat Blocked', 'Malicious file download intercepted.');
-                        alert('🛑 [OMNI-CHRONOS L1200] Critical Threat Blocked.');
-                    }
-                }
-            }, true);
+            applyL13Quantum();         // GPU/Биометрия (L13)
+            applyL14Supernova();       // Скролл (L14)
+            applyL16VoidSingularity(); // Native Masking (L16)
+            applyL20Singularity();     // Математика (L20)
+            applyL22Infinity();        // Геймпады (L22)
+            applyL23Overlord();        // Эмодзи (L23)
+            applyL25GodSeed();         // Память (L25)
+            applyL28Inferno();         // WebDriver Clean (L28)
+            applyL30Zenith();          // Хроно-децепция (L30)
+            applyL1001HoneyPot();      // Ханипот для данных (v3.3.9)
         }
     };
 
