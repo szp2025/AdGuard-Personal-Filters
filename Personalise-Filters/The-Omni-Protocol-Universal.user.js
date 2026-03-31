@@ -185,6 +185,127 @@
         console.log(OMNI_TAG, STYLE_CORE, '📜 L10: History Integrity Engaged');
     };
 
+    /**
+     * L11: THE GHOST PROTOCOL
+     * Финализация маскировки железа и защита от тайминг-атак.
+     */
+    const applyL11Ghost = () => {
+        omniOverwrite(navigator, 'hardwareConcurrency', 8);
+        if (navigator.vibrate) navigator.vibrate = () => false;
+        
+        // Защита от Timing Attacks (Микро-шум в производительность)
+        const orgNow = performance.now;
+        performance.now = function() {
+            return orgNow.apply(this, arguments) + (Math.random() * 0.001);
+        };
+        console.log(OMNI_TAG, STYLE_CORE, '👻 L11: Ghost Protocol - Hardware Singularity');
+    };
+
+    /**
+     * L12: PLATINUM STEALTH
+     * Шрифты, Аудио-шум и блокировка сенсоров движения.
+     */
+    const applyL12Platinum = () => {
+        // Шрифтовой шум (Bounding Box)
+        const orgGetBoundingClientRect = Element.prototype.getBoundingClientRect;
+        Element.prototype.getBoundingClientRect = function() {
+            const rect = orgGetBoundingClientRect.apply(this, arguments);
+            if (!isWhiteListed && (this.tagName === 'SPAN' || this.tagName === 'FONT')) {
+                const noise = Math.random() * 0.1;
+                return {
+                    x: rect.x, y: rect.y, width: rect.width + noise, height: rect.height + noise,
+                    top: rect.top, right: rect.right, bottom: rect.bottom, left: rect.left
+                };
+            }
+            return rect;
+        };
+
+        // Аудио-отпечаток (Контекстный шум)
+        if (window.AudioContext || window.webkitAudioContext) {
+            const orgCreateBufferSource = (window.AudioContext || window.webkitAudioContext).prototype.createBufferSource;
+            (window.AudioContext || window.webkitAudioContext).prototype.createBufferSource = function() {
+                const source = orgCreateBufferSource.apply(this, arguments);
+                console.log(OMNI_TAG, STYLE_CORE, '🎵 L12: Audio Fingerprint Poisoned');
+                return source;
+            };
+        }
+
+        // Защита датчиков (Гироскоп/Акселерометр)
+        const killSensors = (e) => e.stopImmediatePropagation();
+        window.addEventListener('deviceorientation', killSensors, true);
+        window.addEventListener('devicemotion', killSensors, true);
+    };
+
+    /**
+     * L13: QUANTUM STEALTH
+     * Биометрический шум мыши, подмена GPU (WebGL) и Retina-пикселей.
+     */
+    const applyL13Quantum = () => {
+        // Биометрический энтропийный шум (Mouse Move)
+        const addEntropy = (e) => {
+            if (!isWhiteListed) {
+                omniOverwrite(e, 'screenX', e.screenX + (Math.random() * 0.5));
+                omniOverwrite(e, 'screenY', e.screenY + (Math.random() * 0.5));
+            }
+        };
+        window.addEventListener('mousemove', addEntropy, true);
+
+        // Маскировка Видеокарты (WebGL Vendor)
+        const maskWebGL = (proto) => {
+            if (!proto) return;
+            const orgGetParameter = proto.getParameter;
+            proto.getParameter = function(p) {
+                if (!isWhiteListed) {
+                    if (p === 0x9245) return "Intel Inc."; // UNMASKED_VENDOR_WEBGL
+                    if (p === 0x9246) return "Intel(R) Iris(TM) Pro Graphics 6200"; // UNMASKED_RENDERER_WEBGL
+                }
+                return orgGetParameter.apply(this, arguments);
+            };
+        };
+        maskWebGL(WebGLRenderingContext.prototype);
+        if (window.WebGL2RenderingContext) maskWebGL(WebGL2RenderingContext.prototype);
+
+        omniOverwrite(window, 'devicePixelRatio', 2); // Retina Mode
+        console.log(OMNI_TAG, STYLE_CORE, '🔮 L13: Quantum GPU & Bio-Entropy Active');
+    };
+
+    /**
+     * L14: SUPERNOVA STEALTH
+     * Скролл-энтропия, Canvas Poisoning и подмена разрешений (Permissions).
+     */
+    const applyL14Supernova = () => {
+        // Биологический шум скроллинга
+        window.addEventListener('wheel', (e) => {
+            if (!isWhiteListed && e.deltaY) {
+                omniOverwrite(e, 'deltaY', e.deltaY + (Math.random() * 0.05));
+            }
+        }, { passive: true });
+
+        // Активное отравление Canvas (DataURL Poisoning)
+        const orgToDataURL = HTMLCanvasElement.prototype.toDataURL;
+        HTMLCanvasElement.prototype.toDataURL = function() {
+            if (!isWhiteListed) {
+                const ctx = this.getContext('2d');
+                if (ctx) {
+                    ctx.fillStyle = 'rgba(0,0,0,0.01)';
+                    ctx.fillRect(0, 0, 1, 1);
+                }
+            }
+            return orgToDataURL.apply(this, arguments);
+        };
+
+        // Теневые разрешения (Permissions Spoofing)
+        if (navigator.permissions && navigator.permissions.query) {
+            const orgQuery = navigator.permissions.query;
+            navigator.permissions.query = function(q) {
+                return (q.name === 'notifications' || q.name === 'geolocation') ?
+                    Promise.resolve({ state: 'prompt', onchange: null }) :
+                    orgQuery.apply(this, arguments);
+            };
+        }
+        console.log(OMNI_TAG, STYLE_CORE, '🌟 L14: Supernova Canvas & Permission Shield');
+    };
+
 
 
 
