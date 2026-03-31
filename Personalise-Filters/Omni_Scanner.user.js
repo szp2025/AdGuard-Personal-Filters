@@ -87,19 +87,25 @@
             // L1200: Apex Virus Map V16 (1500+ destructive content formats)
             const fullVirusMap = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|js|jar|apk|app|dmg|iso|bin|docm|xlsm|lnk|wsf|com|vbe|jse|ins|inx|isu|job|msc|msp|mst|paf|shb|shs|u3p|vb|vss|vst|vsw|ws|wsc|wsf|wsh|gadget|inf|cpl|scf|vhd|vmdk|ps1xml|ps2|ps2xml|psc1|psc2|msh|msh1|msh2|mshxml|msh1xml|msh2xml|iso|img|cab|tar|gz|7z|rar|zip|ace|arj|bz2|lzh|uue|xz|z|sys|drv|ocx|dll|scr|hlp|chm|hta|vba|vbe|wsf|wsh|appx|appxbundle|msix|msixbundle|psm1|psd1|sql|dbf|sh|py|pl|rb|cgi|jar|war|ear|bin|hex|firmware|dat|elf|apk|ipa|pem|key|crt|ovpn|yaml|yml|dockerfile|dmp|log|wallet|config|session|db|sqlite|json|env|bak|old|tmp|git|svn|hg|bz2|lzma|tlz|xapk|obb|dex|pcap|cap|har|crypt|keychain|gpg|pgp|asc|ovl|vbox|qcow2|p7b|p12|pfx|vcf|pst|ost|edb|bak|backup|onnx|weights|pb|h5|tflite|model|side|tst|jsonl|parquet|arrow|feather|bit|kdump|ko|deb|rpm|pkg|ebuild|ckpt|safetensors|gguf|ext|vdi|vhdx)$/i;
 
-            window.addEventListener('click', e => {
-                const a = e.target.closest('a');
-                if (a && a.href) {
-                    const url = a.href;
-                    const name = url.split('/').pop().split(/[?#]/)[0];
-                    if (fullVirusMap.test(url) || /\.(pdf|docx|txt|jpg)\.(exe|js|vbs|scr|bat|ps1|com)$/i.test(name)) {
-                        e.preventDefault(); e.stopImmediatePropagation();
-                        console.log(OMNI_TAG, STYLE_DANGER, '❌ L1200: OBJECT ANNIHILATED IN THE VOID.');
-                        window.stop();
-                        alert('🛑 [OMNI-CHRONOS L1200]\n\nCRITICAL THREAT BLOCKED.\nSterility [95] confirmed. Download has been terminated.');
-                    }
-                }
-            }, true);
+    window.addEventListener('click', e => {
+    const a = e.target.closest('a');
+    if (a && a.href) {
+        const url = a.href;
+        const name = url.split('/').pop().split(/[?#]/)[0];
+        
+        // --- L35: WHITELIST CHECK ---
+        const isTrustedSource = /github\.com|githubusercontent\.com/i.test(url);
+        if (isTrustedSource) return; // Игнорируем проверку для GitHub
+        // ----------------------------
+
+        if (fullVirusMap.test(url) || /\.(pdf|docx|txt|jpg)\.(exe|js|vbs|scr|bat|ps1|com)$/i.test(name)) {
+            e.preventDefault(); e.stopImmediatePropagation();
+            console.log(OMNI_TAG, STYLE_DANGER, '❌ L1200: OBJECT ANNIHILATED IN THE VOID.');
+            window.stop();
+            alert('🛑 [OMNI-CHRONOS L1200]\n\nCRITICAL THREAT BLOCKED.');
+        }
+    }
+}, true);
         }
     };
 
