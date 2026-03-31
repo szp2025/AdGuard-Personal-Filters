@@ -392,6 +392,7 @@
     // Запуск уровня Supernova
     supernovaStealth();
 
+
     // --- [L15: EVENT HORIZON - COGNITIVE & RESOURCE STEALTH] ---
     const eventHorizon = () => {
         // Когнитивные задержки (Human-Thinking Mimicry)
