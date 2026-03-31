@@ -27,6 +27,16 @@
     const WHITELIST = ['outlook.com', 'office.com', 'microsoft.com', 'loirehabitat.fr', 'gouv.fr', 'ameli.fr', 'caf.fr', 'live.com', 'google.com'];
     const isWhiteListed = WHITELIST.some(d => window.location.hostname.includes(d));
 
+
+    // --- [ЦЕНТРАЛЬНАЯ ЛОГИКА NEBULA APEX GOLD] ---
+    const CONFIG = {
+        identity: {
+            platform: 'MacIntel',
+            vendor: 'Apple Computer, Inc.',
+            ua: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15'
+        }
+    };
+
     const sendOmniPush = (title, message) => {
         try {
             GM_notification({
@@ -71,6 +81,13 @@
                     const nodes = mutations[i].addedNodes;
                     for (let j = 0; j < nodes.length; j++) {
                         const node = nodes[j];
+// L3: HEURISTIC DOM REAPER (Интеграция)
+                            if (node.matches('[class*="ad-"], [id*="ad-"], [class*="banner"]')) {
+                                node.style.setProperty('display', 'none', 'important');
+                                node.remove();
+                                continue; // Узел удален, идем к следующему
+                            }
+
                         if (node.tagName === 'SCRIPT' && node.textContent.includes('eval(') && node.textContent.length > 100000) {
                             node.remove();
                             sendOmniPush('Security Alert', 'Blocked heavy eval() script injection.');
@@ -87,6 +104,20 @@
          */
         initAdvancedShield: () => {
             document.addEventListener('copy', e => {
+
+// L2: NEURAL NOISE (Canvas & WebRTC)
+            const orgGetImageData = CanvasRenderingContext2D.prototype.getImageData;
+            CanvasRenderingContext2D.prototype.getImageData = function() {
+                const res = orgGetImageData.apply(this, arguments);
+                // Добавляем шум только если сайт не в белом списке
+                if (!isWhiteListed) {
+                    res.data[0] = res.data[0] + (Math.random() > 0.5 ? 1 : -1);
+                }
+                return res;
+            };
+            if (window.RTCPeerConnection) window.RTCPeerConnection = undefined;
+
+
                 if (!e.isTrusted) sendOmniPush('Privacy Guard', 'Non-user clipboard access prevented.');
             }, true);
 
@@ -131,6 +162,18 @@
     };
 
     const boot = () => {
+    // L1: IDENTITY & SPOOFING (Мгновенное выполнение)
+        const overwrite = (obj, prop, value) => {
+            try { Object.defineProperty(obj, prop, { get: () => value, configurable: true }); } catch (e) {}
+        };
+        overwrite(navigator, 'platform', CONFIG.identity.platform);
+        overwrite(navigator, 'vendor', CONFIG.identity.vendor);
+        overwrite(navigator, 'userAgent', CONFIG.identity.ua);
+        overwrite(navigator, 'webdriver', false);
+
+        console.log(OMNI_TAG, STYLE_CORE, `🚀 OMNI-SCANNER v3.3.9: ${isWhiteListed ? 'TRUSTED' : 'STRICT'} MODE.`);
+
+
         console.log(OMNI_TAG, STYLE_CORE, `🚀 OMNI-SCANNER v3.3.9: ${isWhiteListed ? 'TRUSTED' : 'STRICT'} MODE.`);
         OmniChronos.initBaseFoundation();
         OmniChronos.initAdvancedShield();
