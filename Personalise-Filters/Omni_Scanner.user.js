@@ -2,7 +2,11 @@
 // @name         Omni-Scanner: Heuristic Cloud Defense
 // @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
 // @version      v3.3.0-CHRONOS
-// @description  [FULL-SPECTRUM] L0-L1200: RAM-Only. Detailed Architecture.
+// @description  [FULL-SPECTRUM ARCHITECTURE]
+// @description:ru  L0-L500: Базовая стерильность, мониторинг DOM и блокировка eval.
+// @description:ru  L501-L1000: Изоляция API, защита буфера обмена и Side-Channel Shield.
+// @description:ru  L1001-L1200: HoneyPot (ложные данные), Квантовый джиттер и Apex Map v16 (1500+ угроз).
+// @description:ru  Система работает исключительно в RAM. Стерильность [95] подтверждена.
 // @author       szp2025 & Gemini AI
 // @match        *://*/*
 // @grant        GM_xmlhttpRequest
