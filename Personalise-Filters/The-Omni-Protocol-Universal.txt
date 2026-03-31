@@ -41,6 +41,15 @@
 ||track.uc.cn^
 ||umid.amap.com^
 
+! --- UNIVERSAL SMART BYPASS ---
+! Если сайт использует старые методы (inline scripts + eval), AdGuard не будет их рубить жестко
+! Это предотвращает "белый экран" на старых PHP-платформах
+$scriptlet(abort-current-inline-script, eval),badfilter
+$scriptlet(prevent-addEventListener, deviceorientation),badfilter
+
+! Разрешаем базовую отрисовку, если скриптлеты мешают DOM-структуре
+@@*$document,jsinject,extension,content,~third-party
+
 
 ! [L0: DPI-EVASION & ORGANIC-PACKETS - V68.0]
 
