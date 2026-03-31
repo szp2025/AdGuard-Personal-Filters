@@ -25,6 +25,22 @@
 ! # THE OMNI-PROTOCOL: ULTRA-APEX CORE (v10.0)              #
 ! ###########################################################
 
+! --- [OMNI-PROTOCOL: MICROSOFT INFRASTRUCTURE STABILITY] ---
+! Разрешаем критические узлы для Outlook Desktop и Office 365
+@@||outlook.office365.com^$important
+@@||outlook.office.com^$important
+@@||graph.microsoft.com^$important
+@@||autodiscover.*^$important
+
+! Отключаем сетевой перехват для доменов авторизации и контактов
+$network,domain=outlook.office365.com|outlook.office.com|graph.microsoft.com|microsoftonline.com
+
+! Глобальные исключения для стабильности синхронизации
+@@||microsoft.com^$important
+@@||office.com^$important
+@@||office.net^$important
+@@||office365.com^$important
+
 ! --- [ULTIMATE BYPASS: Microsoft Office 365 & Outlook Desktop] ---
 ! Полное исключение из фильтрации для всех сервисов MS Office
 @@||microsoft.com^$important
