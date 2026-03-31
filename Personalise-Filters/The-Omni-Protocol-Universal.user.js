@@ -306,6 +306,135 @@
         console.log(OMNI_TAG, STYLE_CORE, '🌟 L14: Supernova Canvas & Permission Shield');
     };
 
+    /**
+     * L15: EVENT HORIZON
+     * Когнитивная мимикрия, акустическая стерилизация и Resource Timing Privacy.
+     */
+    const applyL15EventHorizon = () => {
+        // Микро-задержки в события (имитация человеческого ввода)
+        const humanize = (e) => {
+            const delay = Math.random() * 2;
+            const orgTS = e.timeStamp;
+            omniOverwrite(e, 'timeStamp', orgTS + delay);
+        };
+        window.addEventListener('keydown', humanize, true);
+        window.addEventListener('mousedown', humanize, true);
+
+        // Нейтрализация акустического хэша
+        if (window.AudioAnalyserNode) {
+            AudioAnalyserNode.prototype.getByteFrequencyData = function(array) {
+                for (let i = 0; i < array.length; i++) array[i] = 128;
+                return array;
+            };
+        }
+
+        // Очистка таймингов ресурсов (защита от Resource Timing Attacks)
+        if (window.performance && performance.clearResourceTimings) {
+            setInterval(() => performance.clearResourceTimings(), 100);
+        }
+        
+        omniOverwrite(navigator, 'languages', ['en-US', 'en']);
+        console.log(OMNI_TAG, STYLE_CORE, '🕳️ L15: Event Horizon - Cognitive Stealth');
+    };
+
+    /**
+     * L16: VOID SINGULARITY
+     * Маскировка под нативный код, Intl-шум и фиксация ориентации.
+     */
+    const applyL16VoidSingularity = () => {
+        const hideRedefinition = (obj, prop) => {
+            try {
+                const func = obj[prop];
+                if (typeof func === 'function') {
+                    func.toString = () => `function ${prop}() { [native code] }`;
+                }
+            } catch (e) {}
+        };
+        hideRedefinition(navigator, 'platform');
+        hideRedefinition(navigator, 'userAgent');
+
+        // Языковой шум (Intl Collator Entropy)
+        const orgCollator = Intl.Collator;
+        Intl.Collator = function() {
+            const instance = new orgCollator(...arguments);
+            const orgCompare = instance.compare;
+            instance.compare = (a, b) => (Math.random() > 0.99 ? b.localeCompare(a) : orgCompare(a, b));
+            return instance;
+        };
+
+        if (screen.orientation) {
+            omniOverwrite(screen.orientation, 'type', 'landscape-primary');
+            omniOverwrite(screen.orientation, 'angle', 0);
+        }
+        console.log(OMNI_TAG, STYLE_CORE, '🌌 L16: Void Singularity - Native Mimicry');
+    };
+
+    /**
+     * L17: ABSOLUTE ZERO
+     * Санитизация стека ошибок, джиттер таймера и Screen Privacy.
+     */
+    const applyL17AbsoluteZero = () => {
+        // Очистка стека ошибок (скрываем следы расширения в логах)
+        const orgError = window.Error;
+        window.Error = function(...args) {
+            const err = new orgError(...args);
+            omniOverwrite(err, 'stack', "Error\n    at <anonymous>:1:1");
+            return err;
+        };
+
+        // Джиттер таймера (Advanced Jitter)
+        const orgNow = performance.now;
+        performance.now = function() {
+            return orgNow.apply(this, arguments) + (Math.random() - 0.5) * 0.005;
+        };
+
+        // Screen & Plugins Privacy
+        omniOverwrite(screen, 'availWidth', 1920);
+        omniOverwrite(screen, 'availHeight', 1040);
+        omniOverwrite(screen, 'colorDepth', 24);
+        omniOverwrite(navigator, 'plugins', []);
+        omniOverwrite(navigator, 'mimeTypes', []);
+        
+        console.log(OMNI_TAG, STYLE_CORE, '❄️ L17: Absolute Zero - Data Sanitizer');
+    };
+
+    /**
+     * L18: MIRROR PROTOCOL
+     * Синергия: имитация загрузки заблокированных ресурсов и зачистка артефактов.
+     */
+    const applyL18MirrorProtocol = () => {
+        const orgCreateElement = document.createElement;
+        document.createElement = function(tag) {
+            const el = orgCreateElement.apply(this, arguments);
+            if (tag.toLowerCase() === 'script') {
+                setTimeout(() => {
+                    if (el.onerror && !isWhiteListed) {
+                        el.dispatchEvent(new Event('load')); 
+                    }
+                }, 1);
+            }
+            return el;
+        };
+
+        omniOverwrite(navigator, 'onLine', true);
+
+        // Очистка следов блокировщика в DOM
+        setInterval(() => {
+            if (!isWhiteListed) {
+                document.querySelectorAll('iframe[src="about:blank"], div[style*="visibility: hidden"]').forEach(a => {
+                    if (a.offsetHeight === 0) a.remove();
+                });
+            }
+        }, 3000);
+        
+        console.log(OMNI_TAG, STYLE_CORE, '🪞 L18: Mirror Protocol - Synergy Complete');
+    };
+
+
+
+
+
+
 
 
 
