@@ -668,39 +668,50 @@
     };
 
 
-    /**
-     * L2000: KINETIC MEDIA CORE (YouTube & Video Control)
-     * Управление плеерами, авто-пропуск и разблокировка функций.
+        /**
+     * L2000: KINETIC MEDIA CORE (Turbo Edition)
+     * Мгновенный пропуск рекламы через перемотку + нажатие кнопок.
      */
     const applyL2000MediaControl = () => {
         if (!window.location.hostname.includes('youtube.com') && !document.querySelector('video')) return;
 
-        const mediaCleaner = () => {
-            // 1. Авто-пропуск рекламы (если она появилась)
-            const skipBtn = document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern');
-            if (skipBtn) {
-                skipBtn.click();
-                sendOmniPush('Media Control', 'Ad skipped automatically.');
+        const turboSkip = () => {
+            const video = document.querySelector('video');
+            const adContainer = document.querySelector('.ad-interrupting, .ad-showing');
+
+            // 1. Если обнаружена активная реклама (даже без кнопки)
+            if (adContainer && video && isFinite(video.duration)) {
+                // Ускоряем видео в 16 раз и выключаем звук на время рекламы
+                video.playbackRate = 16;
+                video.muted = true;
+                // Перематываем в самый конец рекламного ролика
+                video.currentTime = video.duration - 0.1;
+                console.log(OMNI_TAG, STYLE_CORE, '⚡ L2000: Ad Fast-Forwarded.');
             }
 
-            // 2. Удаление назойливых оверлеев в конце видео
-            const overlays = document.querySelectorAll('.ytp-ce-element, .ytp-paid-content-overlay');
-            overlays.forEach(el => el.style.display = 'none');
+            // 2. Нажатие на появившуюся кнопку (финальный штрих)
+            const skipBtn = document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-ad-skip-button-slot');
+            if (skipBtn) {
+                skipBtn.click();
+                sendOmniPush('Media Control', 'Ad skipped permanently.');
+            }
+
+            // 3. Удаление баннеров поверх видео
+            const overlayAd = document.querySelector('.ytp-ad-overlay-container');
+            if (overlayAd) overlayAd.remove();
         };
 
-        // Слушатель колесика мыши для громкости (над видео)
+        // Запуск мониторинга каждые 300мс (реактивность выше)
+        setInterval(turboSkip, 300);
+        
+        // Управление громкостью колесиком (оставляем старое)
         document.addEventListener('wheel', e => {
             const video = document.querySelector('video');
             if (video && video.contains(e.target)) {
                 e.preventDefault();
-                const delta = e.deltaY > 0 ? -0.05 : 0.05;
-                video.volume = Math.max(0, Math.min(1, video.volume + delta));
+                video.volume = Math.max(0, Math.min(1, video.volume + (e.deltaY > 0 ? -0.05 : 0.05)));
             }
         }, { passive: false });
-
-        // Запуск мониторинга рекламы
-        setInterval(mediaCleaner, 500);
-        console.log(OMNI_TAG, STYLE_CORE, '📺 L2000: Media Controller Active.');
     };
 
 
