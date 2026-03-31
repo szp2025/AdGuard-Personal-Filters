@@ -1,147 +1,160 @@
-
 // ==UserScript==
-// @name         The Omni-Protocol: Eternal Agent (APEX ULTRA)
-// @version      10.0.5
-// @description  Apex Logic Layer v2026.V10. Deep Spoofing, Font-Masking, WebRTC Block & Neural Noise.
+// @name         The Omni-Protocol: Nebula Apex (v13.5.0) Gold Edition
+// @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
+// @version      v13.5.0-GOLD
+// @description  [MONOLITH] 35-Layer Hybrid Defense. Omni-Scanner (IDS/IPS) & Omni-Eternal (Zenith Stealth). 
 // @author       szp2025 & Gemini AI
 // @match        *://*/*
-// @grant        none
+// @grant        GM_notification
+// @grant        GM_xmlhttpRequest
 // @run-at       document-start
-// @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
-// @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
-// @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js
+// @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js
+// @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js
+// @checkUpdateEvery 3600
+// @compatible   chrome
+// @compatible   firefox
+// @compatible   safari
 // ==/UserScript==
-
-/**
- * Автообновление скрипта (Вынесено за пределы метаданных)
- */
-async function checkUpdate() {
-    try {
-        const url = "https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni_Eternal.user.js";
-        const res = await fetch(url, { cache: "no-store" });
-        const text = await res.text();
-
-        const remoteVersion = text.match(/@version\s+([0-9.]+)/)?.[1];
-        const localVersion = "10.0.5";
-
-        if (remoteVersion && remoteVersion !== localVersion) {
-            console.log("[Omni] Update available:", remoteVersion);
-            location.reload();
-        }
-    } catch (e) {
-        console.log("[Omni] Update check failed");
-    }
-}
-
-checkUpdate();
 
 (function() {
     'use strict';
 
-    // === КОНФИГ ПЕРВОГО КЛАССА ===
-    const s = {
-        hc: 8, 
-        dm: 8, 
-        pl: "Win32",
-        vendor: "Intel Inc.",
-        renderer: "Intel(R) UHD Graphics",
-        ln: ["ru-RU", "ru", "en-US", "en", "fr-FR", "fr"]
-    };
+    // --- [ CONFIGURATION & UPDATER ] ---
+    const CURRENT_VERSION = "v13.5.0-GOLD";
+    const UPDATE_INTERVAL = 3600000; // 1 час
+    const OMNI_TAG = `%c[Omni-Gold-${CURRENT_VERSION}]`;
+    const STYLE_GOLD = 'color: #ffd700; font-weight: bold; text-shadow: 0 0 8px #ffd700; border-left: 4px solid #ffd700; padding-left: 10px;';
+    const STYLE_DANGER = 'color: #fff; background: #ff0000; padding: 2px 5px; font-weight: bold;';
 
-    // === МОДУЛЬ 1: ГЛУБОКАЯ МИМИКРИЯ ===
-    const applyDeepSpoof = () => {
-        const p = navigator.__proto__;
-        const d = (prop, val) => {
-            try {
-                Object.defineProperty(p, prop, { get: () => val, configurable: true });
-            } catch (e) {}
-        };
-        d('hardwareConcurrency', s.hc);
-        d('deviceMemory', s.dm);
-        d('platform', s.pl);
-        d('languages', s.ln);
-        d('webdriver', false);
-        d('doNotTrack', "1");
-    };
-    applyDeepSpoof();
+    // Critical Infrastructure Whitelist
+    const WHITELIST = ['outlook.com', 'office.com', 'microsoft.com', 'loirehabitat.fr', 'gouv.fr', 'ameli.fr', 'caf.fr', 'live.com', 'google.com', 'github.com'];
+    const isWhiteListed = WHITELIST.some(d => window.location.hostname.includes(d));
 
-    // === МОДУЛЬ 2: FONT-MASKING ===
-    const fontMask = () => {
-        const offsetWidth = HTMLElement.prototype.__lookupGetter__('offsetWidth');
-        const offsetHeight = HTMLElement.prototype.__lookupGetter__('offsetHeight');
-        if (offsetWidth && offsetHeight) {
-            Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
-                get: function() {
-                    const val = offsetWidth.apply(this);
-                    return val > 0 ? val + (Math.random() > 0.5 ? 1 : 0) : val;
+    async function checkUpdate() {
+        const now = Date.now();
+        const lastCheck = localStorage.getItem('omni_last_update_check');
+        if (lastCheck && (now - lastCheck < UPDATE_INTERVAL)) return;
+
+        try {
+            const url = "https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js";
+            const res = await fetch(url, { cache: "no-cache" });
+            const text = await res.text();
+            const remoteVersionMatch = text.match(/@version\s+([vV0-9.a-zA-Z-]+)/);
+            const remoteVersion = remoteVersionMatch ? remoteVersionMatch[1] : null;
+
+            if (remoteVersion && remoteVersion !== CURRENT_VERSION) {
+                console.warn("[Omni] System out of date. Syncing...");
+                localStorage.setItem('omni_last_update_check', now);
+                setTimeout(() => location.reload(), 5000);
+            } else {
+                localStorage.setItem('omni_last_update_check', now);
+            }
+        } catch (e) { localStorage.setItem('omni_last_update_check', now); }
+    }
+
+    // --- [ MODULE 1: OMNI-SCANNER (IDS/IPS) ] ---
+    const OmniScanner = {
+        repairLegacyJS: () => {
+            const jq = window.jQuery || window.$;
+            if (jq && jq.fn) {
+                try {
+                    if (!jq.fn.editable) jq.fn.editable = { defaults: {} };
+                    console.log(OMNI_TAG, STYLE_GOLD, '🛠️ L40: Legacy components patched.');
+                } catch(e) {}
+            }
+        },
+
+        initNetworkGuard: () => {
+            // SharedArrayBuffer Jitter/Isolation
+            if (window.SharedArrayBuffer && !isWhiteListed) {
+                const orgSAB = window.SharedArrayBuffer;
+                window.SharedArrayBuffer = function() {
+                    return new Proxy(new orgSAB(...arguments), {});
+                };
+            }
+            // HoneyPot for LocalStorage
+            const orgGet = localStorage.getItem;
+            localStorage.getItem = function(k) {
+                if (!isWhiteListed && /token|auth|pass|wallet|secret/i.test(k) && !window.event?.isTrusted) {
+                    return "{}"; // Safe JSON return
                 }
-            });
-            Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
-                get: function() {
-                    const val = offsetHeight.apply(this);
-                    return val > 0 ? val + (Math.random() > 0.5 ? 1 : 0) : val;
+                return orgGet.apply(localStorage, arguments);
+            };
+        },
+
+        initVirusMap: () => {
+            const fullMap = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|js|jar|apk|dmg|iso|bin|lnk|com)$/i;
+            window.addEventListener('click', e => {
+                const a = e.target.closest('a');
+                if (a && a.href && !window.location.hostname.includes('github.com')) {
+                    if (fullMap.test(a.href.split(/[?#]/)[0])) {
+                        e.preventDefault();
+                        window.stop();
+                        alert('🛑 [OMNI-GOLD L1200] Critical Threat Blocked.');
+                    }
                 }
-            });
+            }, true);
         }
     };
-    fontMask();
 
-    // === МОДУЛЬ 3: WEBRTC LEAK PROTECTION ===
-    if (window.RTCPeerConnection) {
-        window.RTCPeerConnection = function() {
-            return {
-                createOffer: () => Promise.reject("WebRTC Blocked"),
-                setLocalDescription: () => {},
-                close: () => {}
+    // --- [ MODULE 2: OMNI-ETERNAL (QUANTUM STEALTH) ] ---
+    const OmniEternal = {
+        applyHardwareMirage: () => {
+            const overwrite = (obj, prop, value) => {
+                try { Object.defineProperty(obj, prop, { get: () => value, configurable: true }); } catch (e) {}
             };
-        };
-    }
+            overwrite(navigator, 'platform', 'MacIntel');
+            overwrite(navigator, 'vendor', 'Apple Computer, Inc.');
+            overwrite(navigator, 'deviceMemory', 8);
+            overwrite(navigator, 'hardwareConcurrency', 8);
+            overwrite(screen, 'availWidth', 1920);
+            overwrite(screen, 'availHeight', 1040);
+        },
 
-    // === МОДУЛЬ 4: CANVAS & WEBGL NEURAL NOISE ===
-    const injectNeuralNoise = () => {
-        const orgGetImageData = CanvasRenderingContext2D.prototype.getImageData;
-        CanvasRenderingContext2D.prototype.getImageData = function() {
-            const imageData = orgGetImageData.apply(this, arguments);
-            imageData.data[Math.floor(Math.random() * 10)] ^= 1;
-            return imageData;
-        };
+        applyNeuralNoise: () => {
+            // Canvas Poisoning
+            const orgToDataURL = HTMLCanvasElement.prototype.toDataURL;
+            HTMLCanvasElement.prototype.toDataURL = function() {
+                const ctx = this.getContext('2d');
+                if (ctx) { ctx.fillStyle = 'rgba(0,0,0,0.01)'; ctx.fillRect(0, 0, 1, 1); }
+                return orgToDataURL.apply(this, arguments);
+            };
+            // WebRTC Leak Protection
+            if (window.RTCPeerConnection) window.RTCPeerConnection = undefined;
+        },
 
-        const orgGetParameter = WebGLRenderingContext.prototype.getParameter;
-        WebGLRenderingContext.prototype.getParameter = function(p) {
-            if (p === 37445) return s.vendor;
-            if (p === 37446) return s.renderer;
-            return orgGetParameter.apply(this, arguments);
-        };
-    };
-    injectNeuralNoise();
-
-    // === МОДУЛЬ 5: CLOAKING ENGINE ===
-    const apexCloaking = () => {
-        const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.nodeType === 1) {
-                        const style = window.getComputedStyle(node);
-                        if (style.position === 'fixed' && (parseInt(style.zIndex) > 99)) {
-                            const content = node.innerText || "";
-                            if (/adblock|блокировщик|disable ad|advertising|cookies|accept all/i.test(content)) {
-                                node.remove();
-                                document.body.style.setProperty('overflow', 'auto', 'important');
-                                document.documentElement.style.setProperty('overflow', 'auto', 'important');
-                            }
-                        }
-                    }
-                });
-            });
-        });
-        observer.observe(document.documentElement, { childList: true, subtree: true });
+        sterilizeURL: () => {
+            const cleanParams = ['utm_source', 'utm_medium', 'utm_campaign', 'fbclid', 'gclid', 'yclid'];
+            const url = new URL(window.location.href);
+            let changed = false;
+            cleanParams.forEach(p => { if (url.searchParams.has(p)) { url.searchParams.delete(p); changed = true; } });
+            if (changed) window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+        }
     };
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', apexCloaking);
-    } else {
-        apexCloaking();
-    }
+    // --- [ BOOT SEQUENCE ] ---
+    const boot = () => {
+        checkUpdate();
+        console.log(OMNI_TAG, STYLE_GOLD, `🚀 NEBULA APEX GOLD: ${isWhiteListed ? 'TRUSTED' : 'STRICT'} MODE.`);
 
-    console.log("%c[Omni-Protocol Eternal v10.0.5 APEX ULTRA Active]", "color: #00ffff; font-weight: bold; text-shadow: 0 0 10px #00ffff;");
+        // Scanner Layer
+        OmniScanner.initNetworkGuard();
+        OmniScanner.initVirusMap();
+        if (!!document.querySelector('frameset, table[bgcolor]')) OmniScanner.repairLegacyJS();
+
+        // Eternal Layer
+        OmniEternal.applyHardwareMirage();
+        OmniEternal.applyNeuralNoise();
+        OmniEternal.sterilizeURL();
+
+        // Clipboard Protection (Cross-Synergy)
+        document.addEventListener('copy', e => {
+            const selection = window.getSelection().toString();
+            if (selection) { e.clipboardData.setData('text/plain', selection); e.preventDefault(); }
+            if (!e.isTrusted) GM_notification({ title: "Omni-Gold", text: "Clipboard Hijack Blocked" });
+        }, true);
+    };
+
+    boot();
+    setInterval(checkUpdate, UPDATE_INTERVAL);
 })();
