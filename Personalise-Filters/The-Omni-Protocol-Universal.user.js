@@ -55,6 +55,139 @@
         console.log(OMNI_TAG, STYLE_CORE, '👤 L1: Identity Spoofing Active (MacIntel Mode)');
     };
 
+    /**
+     * L2: NEURAL NOISE (Canvas & WebRTC)
+     * Вносит шум в отпечаток холста и блокирует утечку IP.
+     */
+    const applyL2Noise = () => {
+        const orgGetImageData = CanvasRenderingContext2D.prototype.getImageData;
+        CanvasRenderingContext2D.prototype.getImageData = function() {
+            const res = orgGetImageData.apply(this, arguments);
+            if (!isWhiteListed) {
+                res.data[0] = res.data[0] + (Math.random() > 0.5 ? 1 : -1);
+            }
+            return res;
+        };
+        if (window.RTCPeerConnection) window.RTCPeerConnection = undefined;
+        console.log(OMNI_TAG, STYLE_CORE, '🎨 L2: Neural Noise & WebRTC Shield Active');
+    };
+
+    /**
+     * L3: HEURISTIC DOM REAPER
+     * Удаляет рекламные узлы по маскам классов и ID.
+     * @param {Node} target - цель для наблюдения (document или shadowRoot).
+     */
+    const applyL3Reaper = (target = document.documentElement) => {
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach(m => m.addedNodes.forEach(node => {
+                if (node.nodeType === 1 && node.matches('[class*="ad-"], [id*="ad-"], [class*="banner"]')) {
+                    node.style.setProperty('display', 'none', 'important');
+                    node.remove();
+                }
+            }));
+        });
+        observer.observe(target, { childList: true, subtree: true });
+    };
+
+    /**
+     * L5: CLOUD-TIME & BATTERY STEALTH
+     * Маскирует часовой пояс под Нью-Йорк и фиксирует заряд батареи на 100%.
+     */
+    const applyL5Environment = () => {
+        // Подмена TimeZone
+        if (window.Intl && Intl.DateTimeFormat) {
+            const orgOptions = Intl.DateTimeFormat.prototype.resolvedOptions;
+            Intl.DateTimeFormat.prototype.resolvedOptions = function() {
+                return Object.assign(orgOptions.apply(this, arguments), {
+                    timeZone: "America/New_York",
+                    locale: "en-US"
+                });
+            };
+        }
+        // Подмена Батареи
+        if (navigator.getBattery) {
+            navigator.getBattery = () => Promise.resolve({
+                charging: true, chargingTime: 0, dischargingTime: Infinity, level: 1,
+                onchargingchange: null, onlevelchange: null
+            });
+        }
+        console.log(OMNI_TAG, STYLE_CORE, '🔋 L5: Cloud-Time & Battery Stealth Active');
+    };
+
+    /**
+     * L6: URL STERILIZER
+     * Очищает текущий URL от UTM-меток и трекеров.
+     */
+    const applyL6UrlSterilizer = () => {
+        const cleanParams = ['utm_source', 'utm_medium', 'utm_campaign', 'fbclid', 'gclid', 'yclid'];
+        const url = new URL(window.location.href);
+        let changed = false;
+        cleanParams.forEach(p => { if (url.searchParams.has(p)) { url.searchParams.delete(p); changed = true; } });
+        if (changed) window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+    };
+
+    /**
+     * L7: SHADOW-DOM & IDLE DEFENSE
+     * Проникает в закрытые Shadow DOM и блокирует IdleDetector.
+     */
+    const applyL7DeepSanitizer = () => {
+        const orgAttachShadow = Element.prototype.attachShadow;
+        Element.prototype.attachShadow = function() {
+            const shadow = orgAttachShadow.apply(this, arguments);
+            applyL3Reaper(shadow); // Рекурсивный вызов L3 для тени
+            return shadow;
+        };
+        if ('IdleDetector' in window) delete window.IdleDetector;
+        console.log(OMNI_TAG, STYLE_CORE, '🌑 L7: Shadow-DOM & Idle Defense Active');
+    };
+
+    /**
+     * L8: CLIPBOARD INTEGRITY
+     * Предотвращает инъекции мусора в копируемый текст.
+     */
+    const applyL8ClipboardGuard = () => {
+        document.addEventListener('copy', (e) => {
+            const selection = window.getSelection().toString();
+            if (selection) {
+                e.clipboardData.setData('text/plain', selection);
+                e.preventDefault();
+            }
+        }, true);
+    };
+
+    /**
+     * L9: NEURAL-HEURISTIC & SELF-HEALING
+     * Уничтожает невидимые пиксели-трекеры и защищает от восстановления рекламы.
+     */
+    const applyL9NeuralHeuristic = () => {
+        const killInvisible = () => {
+            document.querySelectorAll('iframe, img, div').forEach(el => {
+                const s = window.getComputedStyle(el);
+                if (s.width === '1px' || s.height === '1px' || s.opacity === '0') el.remove();
+            });
+        };
+        const obs = new MutationObserver(m => { m.forEach(inv => { if (inv.removedNodes.length > 0) killInvisible(); }); });
+        obs.observe(document.documentElement, { childList: true, subtree: true });
+    };
+
+    /**
+     * L10: HISTORY INTEGRITY
+     * Очищает записи в истории браузера от мусорных параметров.
+     */
+    const applyL10HistoryGuard = () => {
+        const orgPushState = history.pushState;
+        history.pushState = function() {
+            if (arguments[2] && typeof arguments[2] === 'string') {
+                arguments[2] = arguments[2].replace(/[?&](utm_|fbclid|gclid|yclid)[^&]+/g, '');
+            }
+            return orgPushState.apply(this, arguments);
+        };
+        console.log(OMNI_TAG, STYLE_CORE, '📜 L10: History Integrity Engaged');
+    };
+
+
+
+
 
 
 
