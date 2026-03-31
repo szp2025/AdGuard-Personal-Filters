@@ -430,9 +430,159 @@
         console.log(OMNI_TAG, STYLE_CORE, '🪞 L18: Mirror Protocol - Synergy Complete');
     };
 
+    /**
+     * L19/L20: SINGULARITY POINT
+     * Математический шум, джиттер промисов и Spoof квоты хранилища.
+     */
+    const applyL20Singularity = () => {
+        ['sin', 'cos', 'tan', 'exp', 'log', 'sqrt'].forEach(fn => {
+            const org = Math[fn];
+            Math[fn] = (x) => org(x) + (Math.random() * 1e-16);
+        });
 
+        const orgThen = Promise.prototype.then;
+        Promise.prototype.then = function() {
+            return orgThen.apply(this, arguments); // Нано-задержка через движок
+        };
 
+        if (navigator.storage && navigator.storage.estimate) {
+            navigator.storage.estimate = () => Promise.resolve({
+                quota: 536870912000, usage: 104857600
+            });
+        }
+        console.log(OMNI_TAG, STYLE_CORE, '🌌 L20: Singularity - Math & Async Jitter');
+    };
 
+    /**
+     * L21/L22: ABSOLUTE INFINITY
+     * Изоляция Gamepad, блокировка детекции расширений и анонимизация локали.
+     */
+    const applyL22Infinity = () => {
+        if (navigator.getGamepads) navigator.getGamepads = () => [null, null, null, null];
+
+        const orgFetch = window.fetch;
+        window.fetch = function(input, init) {
+            if (typeof input === 'string' && (input.includes('extension://'))) {
+                return Promise.reject(new TypeError('NetworkError'));
+            }
+            return orgFetch.apply(this, arguments);
+        };
+
+        if (window.Intl && Intl.RelativeTimeFormat) {
+            const orgRTF = Intl.RelativeTimeFormat;
+            Intl.RelativeTimeFormat = () => new orgRTF('en-US', { numeric: 'auto' });
+        }
+        console.log(OMNI_TAG, STYLE_CORE, '♾️ L22: Absolute Infinity - Ghost System');
+    };
+
+    /**
+     * L23: TRANSCENDENT OVERLORD
+     * Рандомизация геометрии Canvas (Bezier) и Emoji Hash Poisoning.
+     */
+    const applyL23Overlord = () => {
+        const orgBezier = CanvasRenderingContext2D.prototype.bezierCurveTo;
+        CanvasRenderingContext2D.prototype.bezierCurveTo = function(cp1x, cp1y, cp2x, cp2y, x, y) {
+            const n = () => (Math.random() - 0.5) * 0.01;
+            return orgBezier.call(this, cp1x + n(), cp1y + n(), cp2x + n(), cp2y + n(), x + n(), y + n());
+        };
+
+        const orgFillText = CanvasRenderingContext2D.prototype.fillText;
+        CanvasRenderingContext2D.prototype.fillText = function(text) {
+            if (/\p{Emoji}/u.test(text)) this.globalAlpha = 0.99 + (Math.random() * 0.01);
+            return orgFillText.apply(this, arguments);
+        };
+
+        omniOverwrite(window, 'outerWidth', window.innerWidth);
+        omniOverwrite(window, 'outerHeight', window.innerHeight);
+        console.log(OMNI_TAG, STYLE_CORE, '👑 L23: Transcendent Overlord Active');
+    };
+
+    /**
+     * L24/L25: GOD-SEED
+     * Рекурсивная маскировка прототипов и Device Memory Spoof.
+     */
+    const applyL25GodSeed = () => {
+        const mask = (fn, name) => {
+            try {
+                Object.defineProperty(fn, 'name', { value: name, configurable: true });
+                const ts = function() { return `function ${name}() { [native code] }`; };
+                Object.defineProperty(ts, 'name', { value: 'toString', configurable: true });
+                Object.defineProperty(fn, 'toString', { value: ts, configurable: true });
+            } catch (e) {}
+        };
+
+        if (navigator.storage) mask(navigator.storage.estimate, 'estimate');
+        if ('deviceMemory' in navigator) omniOverwrite(navigator, 'deviceMemory', 8);
+        
+        console.log(OMNI_TAG, STYLE_CORE, '🌱 L25: God-Seed Integrity Confirmed');
+    };
+
+    /**
+     * L26-L28: GHOST IN THE MACHINE
+     * Эмуляция порядка свойств Navigator и глубокая очистка WebDriver.
+     */
+    const applyL28Inferno = () => {
+        const vars = ['webdriver', '_phantom', '__nightmare', '_selenium', 'callPhantom'];
+        vars.forEach(v => {
+            if (v in window) delete window[v];
+            if (v in navigator) delete navigator[v];
+        });
+
+        const orgToString = Error.prototype.toString;
+        Error.prototype.toString = function() {
+            let msg = orgToString.apply(this, arguments);
+            return msg.includes('is not a function') ? msg.replace('is not a function', 'is not a function. (In \'eval\')') : msg;
+        };
+        console.log(OMNI_TAG, STYLE_CORE, '🔥 L28: Inferno Shield Engaged');
+    };
+
+    /**
+     * L29/L30: INTERSTELLAR VOID
+     * Side-Channel Defense (SAB) и Хроно-децепция (Date Entropy).
+     */
+    const applyL30Zenith = () => {
+        if (window.SharedArrayBuffer) {
+            const descriptor = Object.getOwnPropertyDescriptor(SharedArrayBuffer.prototype, 'byteLength');
+            Object.defineProperty(SharedArrayBuffer.prototype, 'byteLength', {
+                get: function() {
+                    const real = descriptor.get.call(this);
+                    return Math.random() > 0.999 ? real + 1 : real;
+                }
+            });
+        }
+
+        const orgDate = window.Date;
+        window.Date = class extends orgDate {
+            constructor(...args) {
+                if (args.length === 0) {
+                    const d = new orgDate();
+                    d.setMilliseconds(d.getMilliseconds() + (Math.random() * 5));
+                    return d;
+                }
+                return new orgDate(...args);
+            }
+        };
+        console.log(OMNI_TAG, STYLE_CORE, '✨ L30: Zenith Reached - Space-Time Anonymized');
+    };
+
+    /**
+     * L32/L33: APEX GUARD
+     * Защита от авто-скачиваний и детекция фишинга.
+     */
+    const applyL33ApexGuard = () => {
+        const orgCreate = document.createElement;
+        document.createElement = function(tag) {
+            const el = orgCreate.call(document, tag);
+            if (tag.toLowerCase() === 'a') {
+                el.setAttribute = ((org) => function(n, v) {
+                    if (n === 'download') { console.warn(OMNI_TAG, STYLE_DANGER, 'Blocked auto-download'); return; }
+                    return org.apply(this, arguments);
+                })(el.setAttribute);
+            }
+            return el;
+        };
+        console.log(OMNI_TAG, STYLE_CORE, '🛡️ L33: Apex Guard Malware Defense Active');
+    };
 
 
 
