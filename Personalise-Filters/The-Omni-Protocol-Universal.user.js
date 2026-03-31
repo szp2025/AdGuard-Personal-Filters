@@ -65,33 +65,36 @@
     };
 
     const OmniChronos = {
-        /**
-         * L0-L500: HIGH-SPEED RAM & DOM
+          /**
+         * L0-L500: HIGH-SPEED RAM & DOM (Интеграция L7 и L9)
          */
         initBaseFoundation: () => {
-            const fragile = isLegacyFramework();
-            if (fragile) {
-                console.log(OMNI_TAG, STYLE_CORE, '🚀 L35: Fragile environment detected. Auto-Repair Active.');
-                setTimeout(repairLegacyJS, 600);
-                return; 
-            }
+            // L7: SHADOW-DOM PENETRATION
+            const orgAttachShadow = Element.prototype.attachShadow;
+            Element.prototype.attachShadow = function() {
+                const shadow = orgAttachShadow.apply(this, arguments);
+                // Привязываем наш эвристический сканер к каждой новой тени
+                OmniChronos.attachReaper(shadow); 
+                return shadow;
+            };
 
             const obs = new MutationObserver(mutations => {
                 for (let i = 0; i < mutations.length; i++) {
                     const nodes = mutations[i].addedNodes;
                     for (let j = 0; j < nodes.length; j++) {
                         const node = nodes[j];
-// L3: HEURISTIC DOM REAPER (Интеграция)
-                            if (node.matches('[class*="ad-"], [id*="ad-"], [class*="banner"]')) {
-                                node.style.setProperty('display', 'none', 'important');
+                        if (node.nodeType === 1) {
+                            // L9: NEURAL-HEURISTIC (1x1 Tracker Kill)
+                            const style = window.getComputedStyle(node);
+                            if (style.width === '1px' || style.height === '1px' || style.opacity === '0') {
                                 node.remove();
-                                continue; // Узел удален, идем к следующему
+                                continue;
                             }
-
-                        if (node.tagName === 'SCRIPT' && node.textContent.includes('eval(') && node.textContent.length > 100000) {
-                            node.remove();
-                            sendOmniPush('Security Alert', 'Blocked heavy eval() script injection.');
-                            console.warn(OMNI_TAG, STYLE_DANGER, '🛑 L150: Blocked heavy eval.');
+                            
+                            // L3: HEURISTIC REAPER (из предыдущих этапов)
+                            if (node.matches('[class*="ad-"], [id*="ad-"], [class*="banner"]')) {
+                                node.remove();
+                            }
                         }
                     }
                 }
@@ -100,35 +103,30 @@
         },
 
         /**
-         * L501-L1000: CLIPBOARD & SIDE-CHANNEL
+         * L501-L1000: ADVANCED SHIELD (Интеграция L5, L6, L8)
          */
         initAdvancedShield: () => {
+            // L8: CLIPBOARD INTEGRITY (Слияние функций)
             document.addEventListener('copy', e => {
-
-// L2: NEURAL NOISE (Canvas & WebRTC)
-            const orgGetImageData = CanvasRenderingContext2D.prototype.getImageData;
-            CanvasRenderingContext2D.prototype.getImageData = function() {
-                const res = orgGetImageData.apply(this, arguments);
-                // Добавляем шум только если сайт не в белом списке
-                if (!isWhiteListed) {
-                    res.data[0] = res.data[0] + (Math.random() > 0.5 ? 1 : -1);
+                const selection = window.getSelection().toString();
+                if (selection) {
+                    e.clipboardData.setData('text/plain', selection);
+                    e.preventDefault(); 
                 }
-                return res;
-            };
-            if (window.RTCPeerConnection) window.RTCPeerConnection = undefined;
-
-
-                if (!e.isTrusted) sendOmniPush('Privacy Guard', 'Non-user clipboard access prevented.');
+                if (!e.isTrusted) sendOmniPush('Privacy Guard', 'L8: Hijack prevented.');
             }, true);
 
-            // Skip SharedArrayBuffer isolation on Whitelisted infra to prevent lag
-            if (window.SharedArrayBuffer && !isWhiteListed) {
-                const orgSAB = window.SharedArrayBuffer;
-                window.SharedArrayBuffer = function() {
-                    return new Proxy(new orgSAB(...arguments), {});
-                };
+            // L5: BATTERY STEALTH
+            if (navigator.getBattery) {
+                navigator.getBattery = () => Promise.resolve({
+                    charging: true, level: 1, chargingTime: 0, dischargingTime: Infinity
+                });
             }
+            
+            // L7: IDLE DEFENSE
+            if ('IdleDetector' in window) delete window.IdleDetector;
         },
+
 
         /**
          * L1001-L1200: DISINFORMATION & VIRUS MAP
