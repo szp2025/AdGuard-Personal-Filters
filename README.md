@@ -49,21 +49,21 @@
 ##  🌌 NEBULA APEX ENGINE: SPECIFICATION & DEPLOYMENT (v11.0) 🚀
 
 | Layer / Platform | Security | 🇬🇧 Logic, Tech & Sources (EN) | 🇷🇺 Логика, Техно и Ссылки (RU) | App Coverage | Full Compatibility (Analogs) | Efficiency |
-| :--- | :---: | :--- | :--- | :--- | :--- | :---: |
+| :--- | :--- | :--- | :--- | :--- | :--- | :---: |
 | **1. The Check** | 🛡️ | **Logic:** Purge tastes for 3rd parties. | **Логика:** Чистка вкусов для 3-х лиц. | AI Agents, Search | Native AI, GPT-4/5 | **100%** |
 | **2. Sensitivity**| ☣️ | **Logic:** Block Debt, Health, Religion. | **Логика:** Блок тем: Долги, Здоровье. | All Data Inputs | Privacy Shield, GDPR | **100%** |
 | **3. Domains** | 🌐 | **Logic:** Work != Personal life. | **Логика:** Работа != Личная жизнь. | CRM, Slack, Mail | Workspace, Office365 | **100%** |
 | **4. Fingerprint**| 💀 | **Tech:** Sensor Blindness (Cam/Mic). | **Техно:** Ослепление (Кам/Мик). | **Browsers, Zoom** | AdGuard, uBO, Brave | **100%** |
 | **5. Exfiltration**| 🛡️ | **Tech:** Anti-RAT Port Cage (Strict). | **Техно:** Портовая клетка (Блок RAT). | **Banking, Crypto** | AdGuard WFP, AdLock | **100%** |
 | **6. Network** | 🌐 | **Tech:** Post-Quantum (ML-KEM-1024).| **Техно:** Пост-квантум шифрование. | **All Web Traffic** | DoH, DoT, Control D | **100%** |
-| **7. IPS / IDS** | 🛰️ | **Tech:** Real-time Port Cage & Push Notify. | **Техно:** Мгновенный PUSH при атаке на порты. | **System Wide** | **IDS/IPS Engine** | **100%** |
+| **7. IPS / IDS** | 🛰️ | **Tech:** Omni-Scanner Radar (v1200). | **Техно:** Мгновенный PUSH при атаке. | **System Wide** | **IDS/IPS Engine** | **100%** |
 | **8. Lateral Def.**| ☣️ | **Tech:** LAN Anti-Scan (L5 Isolation). | **Техно:** Защита от сканирования в Wi-Fi. | **Local Network** | **AdGuard L5 Filter** | **100%** |
 | **9. DNS Cloak** | 🔒 | **Tech:** Anti-DoH Bypass (L6 Protection). | **Техно:** Блок скрытых DNS-каналов. | **All Web Traffic** | **NextDNS, AdGuard** | **100%** |
-| **10. Geo-Shield**| 🌍 | **Tech:** GEO-Shame & TLD Block (L7). | **Техно:** Блок опасных зон (.zip, .top). | **IoT, Browsers** | **L7 GEO Filter** | **100%** |
 | **10. Geo-Shield**| 🌍 | **Tech:** GEO-Shame & TLD Block (L7). | **Техно:** Блок опасных зон (.zip, .top). | **IoT, Browsers** | **L7 GEO Filter** | **100%** |
 | **11. Phish Block**| 🎣 | **Tech:** Anti-Keylog & Script Sandbox. | **Техно:** Блок перехвата ввода и фишинга. | **Banking, Login** | **Secure Input L11** | **100%** |
 | **12. Stealth** | 🕯️ | **Tech:** Anti-Beacon & Tracker Purge. | **Техно:** Удаление маячков и трекеров. | **System Apps** | **Beacon Shield L12** | **100%** |
 | **13. AI-Shield** | 🤖 | **Tech:** Scraper & AI-Crawler Block. | **Техно:** Блок парсинга данных для AI. | **Web Content** | **Data Sovereignty** | **100%** |
+| **14. MS Fix** | ☁️ | **Tech:** Outlook & Teams Stabilization. | **Техно:** Стабильность Outlook и Teams. | **Office Suite** | **Microsoft Cloud** | **100%** |
 | **Omni Eternal** | 💎 | **Logic:** Pure UI & No Paywall Engine. | **Логика:** Чистый UI и обход Paywall. | **Browsers** | **UserJS Script** | **100%** |
 | **Android (Premium)**| 💀💀💀 | **AdGuard Premium**<br>[Official](https://adguard.com/) / [GitHub](https://github.com/AdguardTeam/AdguardForAndroid/releases) | **Premium:** Полный фильтр Apps + Web. | **TG, WA, Banks** | AdGuard, NextDNS | **100%** |
 | **Android (Free)** | 💀 | **AdGuard Content Blocker**<br>[Official Site](https://adguard.com/) | **Free:** Только выбранные браузеры. | **Samsung/Yandex** | Ghostery, Adblock | **40%** |
