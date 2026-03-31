@@ -19,6 +19,50 @@
 (function() {
     'use strict';
 
+    // --- [L-LIBRARY: DEFINITIONS] ---
+
+    /**
+     * Универсальный инструмент для подмены свойств объектов.
+     * Используется во многих уровнях L (L1, L5, L15).
+     */
+    const omniOverwrite = (obj, prop, value) => {
+        try { 
+            Object.defineProperty(obj, prop, { 
+                get: () => value, 
+                configurable: true,
+                enumerable: true 
+            }); 
+        } catch (e) {
+            // Тихий пропуск, если объект защищен (например, в некоторых фреймах)
+        }
+    };
+
+    /**
+     * L1: IDENTITY & SPOOFING
+     * Маскирует устройство под эталонный MacIntel из CONFIG.
+     */
+    const applyL1Identity = () => {
+        if (typeof CONFIG === 'undefined') return;
+        
+        omniOverwrite(navigator, 'platform', CONFIG.identity.platform);
+        omniOverwrite(navigator, 'vendor', CONFIG.identity.vendor);
+        omniOverwrite(navigator, 'userAgent', CONFIG.identity.ua);
+        omniOverwrite(navigator, 'webdriver', false);
+        
+        // Дополнительная защита: скрываем специфические плагины
+        if (navigator.plugins) omniOverwrite(navigator, 'plugins', []);
+        
+        console.log(OMNI_TAG, STYLE_CORE, '👤 L1: Identity Spoofing Active (MacIntel Mode)');
+    };
+
+
+
+
+
+
+
+
+
     const OMNI_TAG = '%c[Omni-Chronos-v3.3.9]';
     const STYLE_CORE = 'color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff; border-left: 3px solid #00ffff; padding-left: 10px;';
     const STYLE_DANGER = 'color: #fff; background: #ff0000; padding: 2px 5px; font-weight: bold;';
