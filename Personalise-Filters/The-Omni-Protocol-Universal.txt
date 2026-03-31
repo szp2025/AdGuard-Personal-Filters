@@ -25,6 +25,20 @@
 ! # THE OMNI-PROTOCOL: ULTRA-APEX CORE (v10.0)              #
 ! ###########################################################
 
+! --- [HOTFIX: Outlook.exe Recipients & Contacts] ---
+! Разрешаем приложению Outlook работать без ограничений
+$app=outlook.exe
+@@||outlook.office365.com^$app=outlook.exe
+@@||outlook.office.com^$app=outlook.exe
+@@||outlook.live.com^$app=outlook.exe
+@@||autodiscover.*.microsoft.com^$app=outlook.exe
+@@||res.cdn.office.net^$app=outlook.exe
+@@||attachments.office.net^$app=outlook.exe
+
+! Разрешаем домены глобальной адресной книги и метаданных
+@@||*.microsoft.com^$important,domain=outlook.office.com|outlook.live.com
+@@||*.office.net^$important,domain=outlook.office.com|outlook.live.com
+
 ! --- [MALWARE & PHISHING PROTECTION LAYER] ---
 ||*cryptobrowser.site^
 ||*get-monero.org^
