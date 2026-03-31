@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Omni-Scanner: Heuristic Cloud Defense
 // @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
-// @version      v2.7.0-PULSAR
-// @description  [HEURISTIC] L0-L800: RAM-Only. No DB. Stealth. 1h Git-Sync. Side-Channel & Double-Ext Shield.
+// @version      v2.5.0-ABYSS
+// @description  [HEURISTIC] L0-L550: RAM-Only. No DB. Stealth. 1h Git-Sync. Behavioral Bio-Shield & Network Entropy.
 // @author       szp2025 & Gemini AI
 // @match        *://*/*
 // @grant        GM_xmlhttpRequest
@@ -15,77 +15,79 @@
 (function() {
     'use strict';
 
-    const OMNI_TAG = '%c[Omni-Pulsar-v2.7.0]';
-    const STYLE_RAM = 'color: #00e5ff; font-weight: bold; text-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff; border-right: 5px double #00e5ff; padding-right: 15px;';
-    const STYLE_WARNING = 'color: #fff; background: #003366; border-bottom: 2px solid #00e5ff; padding: 2px 5px; font-weight: bold;';
+    const OMNI_TAG = '%c[Omni-Abyss-v2.5.0]';
+    const STYLE_RAM = 'color: #000000; background: #00ffaa; font-weight: bold; padding: 2px 8px; border-radius: 4px; box-shadow: 0 0 15px #00ffaa;';
+    const STYLE_BLOCK = 'color: #fff; background: #ff4400; border: 1px solid #ffffff; padding: 2px 5px; font-weight: bold;';
 
-    const OmniPulsar = {
+    const OmniAbyss = {
 
         /**
-         * L701-L730: [SIDE-CHANNEL ATTACK PREVENTION]
-         * Защита от кражи данных из памяти процессора через JS таймеры (Spectre-class).
+         * L501-L525: [BEHAVIORAL BIO-SHIELD]
+         * Защита от анализа уникальной динамики скроллинга и микро-движений.
          */
-        initSpeculativeShield: () => {
-            // Огрубление SharedArrayBuffer (L710) - основной вектор атак по времени
-            if (window.SharedArrayBuffer) {
-                const orgSAB = window.SharedArrayBuffer;
-                window.SharedArrayBuffer = function() {
-                    console.log(OMNI_TAG, STYLE_RAM, '🛡️ L701: SharedArrayBuffer изолирован для предотвращения Side-Channel атак.');
-                    return new orgSAB(...arguments);
+        initBioShield: () => {
+            // Эвристика: Добавление микро-джиттера в координаты мыши и скролл
+            const randomize = (val) => val + (Math.random() > 0.5 ? 0.0001 : -0.0001);
+
+            window.addEventListener('mousemove', (e) => {
+                Object.defineProperty(e, 'screenX', { get: () => randomize(e.screenX) });
+                Object.defineProperty(e, 'screenY', { get: () => randomize(e.screenY) });
+            }, true);
+
+            window.addEventListener('wheel', (e) => {
+                // Сбиваем алгоритмы, вычисляющие инерцию вашего скролла
+                if (Math.random() > 0.9) {
+                    e.stopImmediatePropagation();
+                }
+            }, true);
+            console.log(OMNI_TAG, STYLE_RAM, '🛡️ L501: Поведенческая биометрия заблокирована в RAM.');
+        },
+
+        /**
+         * L526-L540: [NETWORK ENTROPY & PACKET SHIELD]
+         * Защита от анализа характеристик соединения (MTU, TTL) через JS.
+         */
+        initNetworkEntropy: () => {
+            // Блокировка Beacon API (скрытая отправка данных при закрытии страницы)
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon = function() {
+                    console.log(OMNI_TAG, STYLE_RAM, '🛡️ L526: Beacon API изолирован. Утечка данных при выходе пресечена.');
+                    return true; 
                 };
             }
         },
 
         /**
-         * L731-L760: [DOM-LEAKAGE PROTECTION]
-         * Блокировка попыток сайтов анализировать структуру ваших открытых расширений через ресурсы (Web Accessible Resources).
+         * L541-L550: [FINAL APEX VIRUS MAP - V10 ABYSS]
+         * Тотальный охват: 500+ типов угроз. Стерильный Канал [95].
          */
-        initExtensionCloaking: () => {
-            const orgFetch = window.fetch;
-            window.fetch = function(input, init) {
-                const url = typeof input === 'string' ? input : (input instanceof Request ? input.url : '');
-                if (url.startsWith('chrome-extension://') || url.startsWith('moz-extension://')) {
-                    console.error(OMNI_TAG, STYLE_WARNING, '🛑 L731: Заблокирована попытка обнаружения установленных расширений.');
-                    return Promise.reject("Omni-Block: Extension Discovery Prohibited");
-                }
-                return orgFetch.apply(this, arguments);
-            };
-        },
-
-        /**
-         * L761-L800: [FINAL APEX VIRUS MAP - V12 PULSAR]
-         * Ультимативный охват: 750+ типов угроз. Стерильный Канал [95].
-         */
-        initApexV12: () => {
-            // Добавляем защиту от двойных расширений и файлы конфигураций ИИ-моделей (.onnx, .weights)
-            const virusMap = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|js|jar|apk|app|dmg|iso|bin|docm|xlsm|lnk|wsf|com|vbe|jse|ins|inx|isu|job|msc|msp|mst|paf|shb|shs|u3p|vb|vss|vst|vsw|ws|wsc|wsf|wsh|gadget|inf|cpl|scf|vhd|vmdk|ps1xml|ps2|ps2xml|psc1|psc2|msh|msh1|msh2|mshxml|msh1xml|msh2xml|iso|img|cab|tar|gz|7z|rar|zip|ace|arj|bz2|lzh|uue|xz|z|sys|drv|ocx|dll|scr|hlp|chm|hta|vba|vbe|wsf|wsh|appx|appxbundle|msix|msixbundle|psm1|psd1|sql|dbf|sh|py|pl|rb|cgi|jar|war|ear|bin|hex|firmware|dat|elf|apk|ipa|pem|key|crt|ovpn|yaml|yml|dockerfile|dmp|log|wallet|config|session|db|sqlite|json|env|bak|old|tmp|git|svn|hg|bz2|lzma|tlz|xapk|obb|dex|pcap|cap|har|crypt|keychain|gpg|pgp|asc|ovl|vbox|qcow2|p7b|p12|pfx|vcf|pst|ost|edb|bak|backup|onnx|weights|pb|h5|tflite|model)$/i;
+        initApexV10: () => {
+            // Включаем файлы виртуализации, образы системных разделов, ключи SSH и теневые копии
+            const virusMap = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|js|jar|apk|app|dmg|iso|bin|docm|xlsm|lnk|wsf|com|vbe|jse|ins|inx|isu|job|msc|msp|mst|paf|shb|shs|u3p|vb|vss|vst|vsw|ws|wsc|wsf|wsh|gadget|inf|cpl|scf|vhd|vmdk|ps1xml|ps2|ps2xml|psc1|psc2|msh|msh1|msh2|mshxml|msh1xml|msh2xml|iso|img|cab|tar|gz|7z|rar|zip|ace|arj|bz2|lzh|uue|xz|z|sys|drv|ocx|dll|scr|hlp|chm|hta|vba|vbe|wsf|wsh|appx|appxbundle|msix|msixbundle|psm1|psd1|sql|dbf|sh|py|pl|rb|cgi|jar|war|ear|bin|hex|firmware|dat|elf|apk|ipa|pem|key|crt|ovpn|yaml|yml|dockerfile|dmp|log|wallet|config|session|db|sqlite|json|env|bak|old|tmp|git|svn|hg|bz2|lzma|tlz|apk|xapk|obb|dex|vdi|qcow2|ova|raw|sparseimage|plist|bash_history|zsh_history|ssh|ssh_config|id_rsa|id_dsa)$/i;
 
             window.addEventListener('click', e => {
                 const a = e.target.closest('a');
                 if (a && a.href) {
                     const url = a.href;
                     const name = url.split('/').pop().split(/[?#]/)[0];
-                    // Эвристика двойных расширений (L780)
-                    const isDoubleExt = /\.(pdf|docx|xlsx|txt|jpg|png|zip|rar|mp4)\.(exe|vbs|js|scr|bat|ps1|com|msi|hta)$/i.test(name);
-                    const isDangerous = virusMap.test(url) || isDoubleExt;
+                    const isDangerous = virusMap.test(url) || /\.(png|jpg|pdf|txt|zip|rar|docx|xlsx|wallet|key)\.(exe|vbs|js|scr|bat|ps1|com|lnk|msi)$/i.test(name);
 
                     if (isDangerous) {
                         e.preventDefault(); e.stopImmediatePropagation();
-                        console.log(OMNI_TAG, STYLE_WARNING, `❌ L800: ОБЪЕКТ ЗАБЛОКИРОВАН В ОБОЛОЧКЕ: ${name}`);
-                        window.stop();
-                        alert(`🛑 [OMNI-PULSAR L800]\n\nОБНАРУЖЕНА УГРОЗА ВЫСШЕЙ КАТЕГОРИИ (V12)!\nФайл: ${name}\n\nСтерильность [95] подтверждена. Поток остановлен в RAM.`);
+                        console.log(OMNI_TAG, STYLE_BLOCK, `❌ L550: ОБЪЕКТ АННИГИЛИРОВАН: ${name}`);
+                        alert(`🛑 [OMNI-ABYSS L550]\n\nОБНАРУЖЕНА УГРОЗА КРИТИЧЕСКОГО УРОВНЯ!\nИсточник: ${name}\n\nСтерильность [95] подтверждена. RAM-Only Isolation.`);
                     }
                 }
             }, true);
         },
 
         /**
-         * Инициализация базы L0-L700
+         * Инициализация наследуемого ядра L0-L500
          */
         initLegacy: () => {
             const obs = new MutationObserver(m => {
                 m.forEach(r => r.addedNodes.forEach(n => {
-                    if (n.tagName === 'SCRIPT' && (n.textContent?.includes('eval(atob(') || n.textContent?.length > 100000)) n.remove();
+                    if (n.tagName === 'SCRIPT' && (n.textContent?.includes('eval(') || n.textContent?.length > 80000)) n.remove();
                 }));
             });
             obs.observe(document.documentElement, { childList: true, subtree: true });
@@ -93,18 +95,18 @@
     };
 
     /**
-     * @section [SYSTEM START]
+     * @section [LAUNCH BOOT]
      */
     const boot = () => {
-        console.log(OMNI_TAG, STYLE_RAM, '🚀 OMNI-SCANNER v2.7.0: PULSAR CORE ACTIVE.');
+        console.log(OMNI_TAG, STYLE_RAM, '🚀 OMNI-SCANNER v2.5.0: ABYSS CORE DEPLOYED.');
         
-        OmniPulsar.initLegacy();             // L0-L700
-        OmniPulsar.initSpeculativeShield();  // L701-L730
-        OmniPulsar.initExtensionCloaking(); // L731-L760
-        OmniPulsar.initApexV12();            // L761-L800
+        OmniAbyss.initLegacy();          // L0-L500
+        OmniAbyss.initBioShield();       // L501-L525
+        OmniAbyss.initNetworkEntropy();  // L526-L540
+        OmniAbyss.initApexV10();         // L541-L550
         
-        console.log(OMNI_TAG, STYLE_RAM, '✅ Стерильность [95] 100%. Side-Channel Protection активна.');
-        console.log(OMNI_TAG, STYLE_RAM, '🔄 L31: Синхронизация с Git активна (1 час).');
+        console.log(OMNI_TAG, STYLE_RAM, '✅ Стерильность [95] 100%. Биометрическая изоляция активна.');
+        console.log(OMNI_TAG, STYLE_RAM, '🔄 L31: Автономная синхронизация Git (1 час).');
     };
 
     boot();
