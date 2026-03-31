@@ -668,6 +668,40 @@
     };
 
 
+    /**
+     * L2000: KINETIC MEDIA CORE (YouTube & Video Control)
+     * Управление плеерами, авто-пропуск и разблокировка функций.
+     */
+    const applyL2000MediaControl = () => {
+        if (!window.location.hostname.includes('youtube.com') && !document.querySelector('video')) return;
+
+        const mediaCleaner = () => {
+            // 1. Авто-пропуск рекламы (если она появилась)
+            const skipBtn = document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern');
+            if (skipBtn) {
+                skipBtn.click();
+                sendOmniPush('Media Control', 'Ad skipped automatically.');
+            }
+
+            // 2. Удаление назойливых оверлеев в конце видео
+            const overlays = document.querySelectorAll('.ytp-ce-element, .ytp-paid-content-overlay');
+            overlays.forEach(el => el.style.display = 'none');
+        };
+
+        // Слушатель колесика мыши для громкости (над видео)
+        document.addEventListener('wheel', e => {
+            const video = document.querySelector('video');
+            if (video && video.contains(e.target)) {
+                e.preventDefault();
+                const delta = e.deltaY > 0 ? -0.05 : 0.05;
+                video.volume = Math.max(0, Math.min(1, video.volume + delta));
+            }
+        }, { passive: false });
+
+        // Запуск мониторинга рекламы
+        setInterval(mediaCleaner, 500);
+        console.log(OMNI_TAG, STYLE_CORE, '📺 L2000: Media Controller Active.');
+    };
 
 
     const OMNI_TAG = '%c[Omni-Chronos-v3.3.9]';
@@ -704,9 +738,6 @@
         return scripts.some(s => /jquery[-.](([1-2]\.)|(3\.[0-3]\.))/i.test(s.src)) || 
                !!document.querySelector('frameset, table[bgcolor], center');
     };
-
-
-
 
         const sendOmniPush = (title, message) => {
         try {
@@ -772,6 +803,8 @@
             applyL28Inferno();         // WebDriver Clean (L28)
             applyL30Zenith();          // Хроно-децепция (L30)
             applyL1001HoneyPot();      // Ханипот для данных (v3.3.9)
+
+applyL2000MediaControl(); // Добавляем управление медиа
         }
     };
 
