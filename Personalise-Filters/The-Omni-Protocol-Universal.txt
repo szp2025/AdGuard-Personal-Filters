@@ -25,19 +25,25 @@
 ! # THE OMNI-PROTOCOL: ULTRA-APEX CORE (v10.0)              #
 ! ###########################################################
 
-! --- [HOTFIX: Outlook.exe Recipients & Contacts] ---
-! Разрешаем приложению Outlook работать без ограничений
-$app=outlook.exe
-@@||outlook.office365.com^$app=outlook.exe
-@@||outlook.office.com^$app=outlook.exe
-@@||outlook.live.com^$app=outlook.exe
-@@||autodiscover.*.microsoft.com^$app=outlook.exe
-@@||res.cdn.office.net^$app=outlook.exe
-@@||attachments.office.net^$app=outlook.exe
+! --- [ULTIMATE BYPASS: Microsoft Office 365 & Outlook Desktop] ---
+! Полное исключение из фильтрации для всех сервисов MS Office
+@@||microsoft.com^$important
+@@||office.com^$important
+@@||office.net^$important
+@@||office365.com^$important
+@@||live.com^$important
+@@||outlook.com^$important
+@@||msauth.net^$important
+@@||msftauth.net^$important
+@@||microsoftonline.com^$important
 
-! Разрешаем домены глобальной адресной книги и метаданных
-@@||*.microsoft.com^$important,domain=outlook.office.com|outlook.live.com
-@@||*.office.net^$important,domain=outlook.office.com|outlook.live.com
+! Исключение для CDN и статики, где лежат аватары и списки контактов
+@@||res.cdn.office.net^$important
+@@||static.sharepointonline.com^$important
+
+! Специфические эндпоинты для адресной книги и Graph API
+@@||graph.microsoft.com^$important
+@@||outlook.office365.com^$important
 
 ! --- [MALWARE & PHISHING PROTECTION LAYER] ---
 ||*cryptobrowser.site^
