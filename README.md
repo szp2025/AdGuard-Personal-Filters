@@ -27,7 +27,7 @@
 
 | Layer | Technology | Description (EN) | Description (FR) | Описание (RU) | Status |
 | :--- | :--- | :--- | :--- | :--- | :---: |
-| **🌐 L0-L13** | **Active IDS/IPS** | Intrusion detection (RAT/Port scan). | Détection d'intrusion (RAT/Scan). | Блокировка RAT и сканеров портов. | **Active** |
+| **🌐 L0-L15** | **Active IDS/IPS** | Intrusion detection (RAT/Port scan). | Détection d'intrusion (RAT/Scan). | Блокировка RAT и сканеров портов. | **Active** |
 | **🛰️ Network** | **Nebula Hardening** | TCP/TTL Masking (MTU 1400/TTL 64). | Masquage TCP/TTL (Android/Linux). | Маскировка сетевого стека (TTL 64). | **Active** |
 | **🧪 Search** | **Universal Ghosting** | Quantum entropy for Google/Yandex. | Entropie quantique (Anonymisation). | Квантовая энтропия для Google/Yandex. | **Active** |
 | **🧹 Cleanup** | **Zero-Footprint** | Cookie Shredder (Yandex/GA/FB). | Destructeur de cookies (v11.0). | Ультимативный шредер кук и ID. | **Active** |
@@ -83,7 +83,7 @@
 | **Messengers** | 🟢 100% | **Anti-Leak:** DoH & Metadata Purge. | **Anti-Leak:** DoH & Purge métadonnées. | **Anti-Leak:** Блок DoH и чистка данных. | **System Firewall & L6** |
 | **Browsers** | 🟢 100% | **Apex:** Canvas Noise & Lang Cloak. | **Apex:** Bruit Canvas & Masquage Lang. | **Apex:** Шум Canvas и маскировка Lang. | **JS Omni Eternal** |
 | **Home / IoT / TV** | 🟢 100% | **Stealth:** GEO-Shame & DNS-Rewrite. | **Stealth:** GEO-Shame & DNS-Rewrite. | **Stealth:** Блок GEO-зон и DNS-Rewrite. | **L7 & DNS-Filtering** |
-| **Privacy / AI** | 🟢 100% | **BEYOND:** Anti-Phish & AI-Shield. | **BEYOND:** Anti-Phish & AI-Shield. | **BEYOND:** Анти-фишинг и AI-защита. | **L11, L12 & L13** |
+| **Privacy / AI** | 🟢 100% | **BEYOND:** Anti-Phish & AI-Shield. | **BEYOND:** Anti-Phish & AI-Shield. | **BEYOND:** Анти-фишинг и AI-защита. | **L11-L15** |
 
 ---
 
@@ -98,7 +98,7 @@
 | **Social Media** | 🟢 100% | Fingerprint masking & JS Sanitizer. | Masquage d'empreintes & Sanitisation JS. | Маскировка отпечатка и очистка JS. | **Cosmetic Shield + Stealth** |
 | **Smart TV / IoT** | 🟢 100% | Forced DNS Intercept & IoT Profiling. | Intercept. DNS forcé & Profilage IoT. | Принудительный перехват DNS и профиль. | **DNS over TLS/HTTPS** |
 | **AI Security** | 🟢 100% | Anti-Scraping & Crawler Block. | Anti-Scraping & Blocage Crawler. | Блок парсинга данных и AI-ботов. | **L13 AI-Shield** |
-| **Identity Guard** | 🟢 100% | Anti-Phishing & Beacon Stealth. | Anti-Phishing & Mode Furtif. | Анти-фишинг и защита от маячков. | **L11-L12 Protection** |
+| **Identity Guard** | 🟢 100% | Anti-Phishing & Beacon Stealth. | Anti-Phishing & Mode Furtif. | Анти-фишинг и защита от маячков. | **L11-L15 Protection** |
 
 ---
 
@@ -130,8 +130,8 @@
 | Category | Protection | 🇬🇧 Features (EN) | 🇫🇷 Fonctions (FR) | 🇷🇺 Особенности (RU) | Active Tech |
 | :--- | :---: | :--- | :--- | :--- | :--- |
 | **UserJS Script** | 🟢 100% | DOM Sanitizer & Ad-Block. | Sanitisation DOM & Ad-Block. | Очистка DOM и Блок рекламы. | **JS Omni Eternal** |
+| **Scanner Module**| 🟢 100% | IDS/IPS Radar Monitoring. | Monitoring Radar IDS/IPS. | Модуль 2: IDS/IPS Радар. | **Omni_Scanner JS** |
 | **Integration** | 🟢 100% | Native AdGuard Support. | Support Natif AdGuard. | Нативная поддержка AdGuard. | **Scriptlet Engine** |
-
 ---
 
 ## 📥 INSTALLATION & DEPLOYMENT: NEBULA APEX SOVEREIGN (v11.0) 🌌
@@ -139,8 +139,9 @@
 | Component | 🚀 Auto-Setup | 🇬🇧 Steps (EN) | 🇫🇷 Étapes (FR) | 🇷🇺 Шаги (RU) | Platform |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **📡 Network Filter** | **[ADD TO ADGUARD](https://subscribe.adguard.com/?url=https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)** | Click to import main TXT filter. | Cliquez pour importer le filtre TXT. | Нажми для импорта TXT фильтра. | **Win/Android/iOS** |
-| **🧩 UserJS Script** | **[INSTALL SCRIPT](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js)** | Open **Extensions** -> **Add Extension** -> Paste URL. | **Extensions** -> **Ajouter** -> Coller l'URL. | **Расширения** -> **Добавить** -> Вставь URL. | **Browser/AdGuard** |
-| **🧪 Raw Source** | **[VIEW RAW](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt)** | Manual copy for uBlock Origin. | Copie manuelle pour uBlock. | Ручной импорт в uBlock Origin. | **Any Blocker** |
+| **🧩 Omni-Scanner** | **[INSTALL SCANNER](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/Omni_Scanner.user.js)** | IDS/IPS Radar Protection. | Protection Radar IDS/IPS. | Модуль 2: IDS/IPS Радар. | **Browser/AdGuard** |
+| **💎 UserJS Script** | **[INSTALL SCRIPT](https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js)** | Open **Extensions** -> **Add Extension**. | **Extensions** -> **Ajouter**. | **Расширения** -> **Добавить**. | **Browser/AdGuard** |
+
 ---
 
 
@@ -149,8 +150,9 @@
 | Level | 🇬🇧 Logic & Benefit (EN) | 🇫🇷 Logique & Avantage (FR) | 🇷🇺 Логика и Выгода (RU) | Active Tech |
 | :--- | :--- | :--- | :--- | :--- |
 | **Network** | Blocks ads before they load. | Bloque les pubs avant le rendu. | Блокирует рекламу до загрузки. | **📡 Filter (TXT)** |
-| **DOM Tree** | Removes empty blocks & placeholders. | Supprime les blocs vides. | Удаляет пустые блоки и заглушки. | **🧩 Script (JS)** |
-| **Synergy** | **Ensures "clean" page rendering.** | **Assure un rendu de page propre.** | **Обеспечивает чистый рендеринг.** | **💎 Full Protection** |
+| **IDS/IPS** | Detects port-scans & RATs. | Détecte les scans de ports & RAT. | Обнаруживает сканеры и RAT. | **🧩 Omni-Scanner** |
+| **DOM Tree** | Removes empty blocks & placeholders. | Supprime les blocs vides. | Удаляет пустые блоки и заглушки. | **💎 Script (JS)** |
+| **Synergy** | **Ensures "clean" page rendering.** | **Assure un rendu de page propre.** | **Обеспечивает чистый рендеринг.** | **🚀 Full Protection** ||
 
 ---
 
@@ -160,9 +162,11 @@
 | :--- | :--- | :---: | :--- | :--- | :--- |
 | **📡 Filter (TXT)** | **Standalone** | **85%** | Works independently (Network). | Fonctionne indépendamment. | Работает автономно (Сеть). |
 | **🧩 Script (JS)** | **Standalone** | **65%** | Pure DOM/JS Sanitization. | Assainissement DOM/JS pur. | Чистая DOM/JS очистка. |
+| **🧩 Omni-Scanner**| **Monitor** | **99%** | IDS/IPS Active Radar Defense. | Défense Radar Active IDS/IPS. | Активная IDS/IPS защита. |
 | **🚀 Chronos & Zero-Trust** | **Mars Hardening** | **99.9%** | Anti-Timing & Domain Isolation. | Isolation & Anti-Timing. | Анти-тайминг и Изоляция. |
 | **🔐 Search Encryption** | **Ghost Search** | **99.9%** | Query Noise & Referer Masking. | Masquage de recherche. | Шифрование и обфускация поиска. |
 | **💎 Full Synergy** | **Combined** | **100%** | **Full Stealth & Clean Render.** | **Furtivité & Rendu Propre.** | **Полный стелс и чистый рендеринг.** |
+
 ---
 
 > [!NOTE]
