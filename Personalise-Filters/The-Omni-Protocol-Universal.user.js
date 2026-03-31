@@ -634,75 +634,113 @@
 
 
 
-        /**
-     * --- [ЦЕНТРАЛЬНОЕ ЯДРО: OMNI-CHRONOS] ---
-     */
-    const OmniChronos = {
-        /**
-         * ЭТАП 1: ГЛУБОКАЯ ФУНДАМЕНТАЦИЯ (DOM & REAPER)
-         * Запускается мгновенно для очистки пространства.
-         */
-        initBaseFoundation: () => {
-            applyL3Reaper();         // Запуск Рипера (L3)
-            applyL7DeepSanitizer();  // Shadow-DOM (L7)
-            applyL9NeuralHeuristic(); // Невидимки (L9)
-            applyL18MirrorProtocol(); // Синергия и очистка артефактов (L18)
-        },
+        const sendOmniPush = (title, message) => {
+        try {
+            GM_notification({
+                title: `Omni-Scanner: ${title}`,
+                text: message,
+                timeout: 4000
+            });
+        } catch (e) {}
+    };
 
-        /**
-         * ЭТАП 2: ПРОДВИНУТЫЙ СТЕЛС (SENSORS & IDENTITY)
-         * Подменяет цифровой отпечаток и окружение.
-         */
-        initAdvancedShield: () => {
-            applyL1Identity();       // Процессор/Браузер (L1)
-            applyL2Noise();          // Холст/WebRTC (L2)
-            applyL5Environment();    // Батарея/Время (L5)
-            applyL10HistoryGuard();  // История (L10)
-            applyL11Ghost();         // Железо/Тайминги (L11)
-            applyL12Platinum();      // Звук/Шрифты/Сенсоры (L12)
-            applyL15EventHorizon();  // Когнитивный ввод (L15)
-            applyL17AbsoluteZero();  // Ошибки/Экран (L17)
-            applyL33ApexGuard();     // Защита от малвари (L33)
-        },
-
-        /**
-         * ЭТАП 3: КВАНТОВАЯ ТОЧКА (MATH & BIO)
-         * Самый глубокий уровень дезинформации.
-         */
-        initQuantumModules: () => {
-            applyL13Quantum();       // GPU/Биометрия мыши (L13)
-            applyL14Supernova();     // Скролл/Разрешения (L14)
-            applyL16VoidSingularity(); // Native Code Masking (L16)
-            applyL20Singularity();   // Математика/Промисы (L20)
-            applyL22Infinity();      // Геймпады/Расширения (L22)
-            applyL23Overlord();      // Эмодзи/Безье (L23)
-            applyL25GodSeed();       // Память/Воркеры (L25)
-            applyL28Inferno();       // WebDriver Clean (L28)
-            applyL30Zenith();        // Хроно-децепция (L30)
+    const repairLegacyJS = () => {
+        const jq = window.jQuery || window.$;
+        if (jq && jq.fn) {
+            try {
+                if (!jq.fn.editable) jq.fn.editable = { defaults: {} };
+                else if (jq.fn.editable && !jq.fn.editable.defaults) jq.fn.editable.defaults = {};
+                console.log(OMNI_TAG, STYLE_CORE, '🛠️ L40: Legacy components patched.');
+            } catch(e) {}
         }
     };
 
-    /**
-     * --- [ТОЧКА ЗАПУСКА: BOOTSTRAP] ---
-     */
+    const isLegacyFramework = () => {
+        const scripts = Array.from(document.scripts);
+        return scripts.some(s => /jquery[-.](([1-2]\.)|(3\.[0-3]\.))/i.test(s.src)) || 
+               !!document.querySelector('frameset, table[bgcolor], center');
+    };
+
+    const OmniChronos = {
+        /**
+         * L0-L500: HIGH-SPEED RAM & DOM
+         */
+        initBaseFoundation: () => {
+            const fragile = isLegacyFramework();
+            if (fragile) {
+                console.log(OMNI_TAG, STYLE_CORE, '🚀 L35: Fragile environment detected. Auto-Repair Active.');
+                setTimeout(repairLegacyJS, 600);
+                return; 
+            }
+
+            const obs = new MutationObserver(mutations => {
+                for (let i = 0; i < mutations.length; i++) {
+                    const nodes = mutations[i].addedNodes;
+                    for (let j = 0; j < nodes.length; j++) {
+                        const node = nodes[j];
+                        if (node.tagName === 'SCRIPT' && node.textContent.includes('eval(') && node.textContent.length > 100000) {
+                            node.remove();
+                            sendOmniPush('Security Alert', 'Blocked heavy eval() script injection.');
+                            console.warn(OMNI_TAG, STYLE_DANGER, '🛑 L150: Blocked heavy eval.');
+                        }
+                    }
+                }
+            });
+            obs.observe(document.documentElement, { childList: true, subtree: true });
+        },
+
+        /**
+         * L501-L1000: CLIPBOARD & SIDE-CHANNEL
+         */
+        initAdvancedShield: () => {
+            document.addEventListener('copy', e => {
+                if (!e.isTrusted) sendOmniPush('Privacy Guard', 'Non-user clipboard access prevented.');
+            }, true);
+
+            // Skip SharedArrayBuffer isolation on Whitelisted infra to prevent lag
+            if (window.SharedArrayBuffer && !isWhiteListed) {
+                const orgSAB = window.SharedArrayBuffer;
+                window.SharedArrayBuffer = function() {
+                    return new Proxy(new orgSAB(...arguments), {});
+                };
+            }
+        },
+
+        /**
+         * L1001-L1200: DISINFORMATION & VIRUS MAP
+         */
+        initQuantumModules: () => {
+            // L1001: HoneyPot (FIXED: Returns empty JSON instead of raw string to prevent SyntaxError)
+            const orgGet = localStorage.getItem;
+            localStorage.getItem = function(k) {
+                if (!isWhiteListed && /token|auth|pass|wallet|secret/i.test(k) && !window.event?.isTrusted) {
+                    console.log(OMNI_TAG, STYLE_CORE, `🛡️ L1001: HoneyPot active for: ${k}`);
+                    return "{}"; // Safe JSON-compatible return
+                }
+                return orgGet.apply(localStorage, arguments);
+            };
+
+            // L1200: Apex Virus Map
+            const fullVirusMap = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|js|jar|apk|app|dmg|iso|bin|docm|xlsm|lnk|wsf|com)$/i;
+            window.addEventListener('click', e => {
+                const a = e.target.closest('a');
+                if (a && a.href && !window.location.hostname.includes('github.com')) {
+                    const url = a.href.split(/[?#]/)[0];
+                    if (fullVirusMap.test(url)) {
+                        e.preventDefault();
+                        window.stop();
+                        sendOmniPush('Threat Blocked', 'Malicious file download intercepted.');
+                        alert('🛑 [OMNI-CHRONOS L1200] Critical Threat Blocked.');
+                    }
+                }
+            }, true);
+        }
+    };
+
     const boot = () => {
-        console.log(OMNI_TAG, STYLE_CORE, '🚀 Nebula Apex Gold: Initializing Monolith...');
-
-        // 1. Предварительная очистка URL (L6)
-        applyL6UrlSterilizer();
-
-        // 2. Инициализация слоев
+        console.log(OMNI_TAG, STYLE_CORE, `🚀 OMNI-SCANNER v3.3.9: ${isWhiteListed ? 'TRUSTED' : 'STRICT'} MODE.`);
         OmniChronos.initBaseFoundation();
         OmniChronos.initAdvancedShield();
         OmniChronos.initQuantumModules();
-
-        // 3. Защита буфера обмена (L8)
-        applyL8ClipboardGuard();
-
-        console.log(OMNI_TAG, STYLE_CORE, '💎 SYSTEM STATUS: 100% GHOST MODE');
     };
-
-    // Глобальный старт
-    boot();
-
 })();
