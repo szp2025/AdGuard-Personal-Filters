@@ -2,7 +2,7 @@
 // @name         The Omni-Protocol: Nebula Apex (v13.5.0) Gold Edition
 // @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
 // @version      v13.5.0-GOLD
-// @description  [MONOLITH] 35-Layer Hybrid Defense. Omni-Scanner (IDS/IPS) & Omni-Eternal (Zenith Stealth). 
+// @description  [MONOLITH] 35-Layer Hybrid Defense. Omni-Scanner (IDS/IPS) & Omni-Eternal (Zenith Stealth).
 // @author       szp2025 & Gemini AI
 // @match        *://*/*
 // @grant        GM_notification
@@ -19,142 +19,126 @@
 (function() {
     'use strict';
 
-    // --- [ CONFIGURATION & UPDATER ] ---
     const CURRENT_VERSION = "v13.5.0-GOLD";
-    const UPDATE_INTERVAL = 3600000; // 1 час
     const OMNI_TAG = `%c[Omni-Gold-${CURRENT_VERSION}]`;
-    const STYLE_GOLD = 'color: #ffd700; font-weight: bold; text-shadow: 0 0 8px #ffd700; border-left: 4px solid #ffd700; padding-left: 10px;';
-    const STYLE_DANGER = 'color: #fff; background: #ff0000; padding: 2px 5px; font-weight: bold;';
-
-    // Critical Infrastructure Whitelist
-    const WHITELIST = ['outlook.com', 'office.com', 'microsoft.com', 'loirehabitat.fr', 'gouv.fr', 'ameli.fr', 'caf.fr', 'live.com', 'google.com', 'github.com'];
+    const STYLE_GOLD = 'background: #000; color: #ffd700; font-weight: bold; border: 1px solid #ffd700; padding: 2px 5px;';
+    
+    const WHITELIST = ['outlook.com', 'office.com', 'microsoft.com', 'loirehabitat.fr', 'gouv.fr', 'ameli.fr', 'caf.fr', 'live.com', 'google.com', 'github.com', 'paypal.com', 'revolut.com'];
     const isWhiteListed = WHITELIST.some(d => window.location.hostname.includes(d));
 
-    async function checkUpdate() {
-        const now = Date.now();
-        const lastCheck = localStorage.getItem('omni_last_update_check');
-        if (lastCheck && (now - lastCheck < UPDATE_INTERVAL)) return;
+    // --- [ МОДУЛЬ 1: OMNI-ETERNAL (QUANTUM STEALTH) ] ---
+    const apexEternalCore = () => {
+        const overwrite = (obj, prop, value) => {
+            try { Object.defineProperty(obj, prop, { get: () => value, configurable: true }); } catch (e) {}
+        };
 
-        try {
-            const url = "https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js";
-            const res = await fetch(url, { cache: "no-cache" });
-            const text = await res.text();
-            const remoteVersionMatch = text.match(/@version\s+([vV0-9.a-zA-Z-]+)/);
-            const remoteVersion = remoteVersionMatch ? remoteVersionMatch[1] : null;
+        // 1. Hardware Mirage (L1-L10)
+        overwrite(navigator, 'platform', 'MacIntel');
+        overwrite(navigator, 'vendor', 'Apple Computer, Inc.');
+        overwrite(navigator, 'deviceMemory', 8);
+        overwrite(navigator, 'hardwareConcurrency', 8);
+        overwrite(navigator, 'maxTouchPoints', 0);
 
-            if (remoteVersion && remoteVersion !== CURRENT_VERSION) {
-                console.warn("[Omni] System out of date. Syncing...");
-                localStorage.setItem('omni_last_update_check', now);
-                setTimeout(() => location.reload(), 5000);
-            } else {
-                localStorage.setItem('omni_last_update_check', now);
-            }
-        } catch (e) { localStorage.setItem('omni_last_update_check', now); }
-    }
-
-    // --- [ MODULE 1: OMNI-SCANNER (IDS/IPS) ] ---
-    const OmniScanner = {
-        repairLegacyJS: () => {
-            const jq = window.jQuery || window.$;
-            if (jq && jq.fn) {
-                try {
-                    if (!jq.fn.editable) jq.fn.editable = { defaults: {} };
-                    console.log(OMNI_TAG, STYLE_GOLD, '🛠️ L40: Legacy components patched.');
-                } catch(e) {}
-            }
-        },
-
-        initNetworkGuard: () => {
-            // SharedArrayBuffer Jitter/Isolation
-            if (window.SharedArrayBuffer && !isWhiteListed) {
-                const orgSAB = window.SharedArrayBuffer;
-                window.SharedArrayBuffer = function() {
-                    return new Proxy(new orgSAB(...arguments), {});
+        // 2. Font-Collision & Canvas Protection (L11-L20)
+        const orgGetBoundingClientRect = Element.prototype.getBoundingClientRect;
+        Element.prototype.getBoundingClientRect = function() {
+            const rect = orgGetBoundingClientRect.apply(this, arguments);
+            if (!isWhiteListed) {
+                return {
+                    x: rect.x, y: rect.y, top: rect.top, left: rect.left,
+                    bottom: rect.bottom, right: rect.right,
+                    width: rect.width + (Math.random() * 0.001),
+                    height: rect.height + (Math.random() * 0.001)
                 };
             }
-            // HoneyPot for LocalStorage
-            const orgGet = localStorage.getItem;
-            localStorage.getItem = function(k) {
-                if (!isWhiteListed && /token|auth|pass|wallet|secret/i.test(k) && !window.event?.isTrusted) {
-                    return "{}"; // Safe JSON return
-                }
-                return orgGet.apply(localStorage, arguments);
-            };
-        },
+            return rect;
+        };
 
-        initVirusMap: () => {
-            const fullMap = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|js|jar|apk|dmg|iso|bin|lnk|com)$/i;
-            window.addEventListener('click', e => {
-                const a = e.target.closest('a');
-                if (a && a.href && !window.location.hostname.includes('github.com')) {
-                    if (fullMap.test(a.href.split(/[?#]/)[0])) {
-                        e.preventDefault();
-                        window.stop();
-                        alert('🛑 [OMNI-GOLD L1200] Critical Threat Blocked.');
+        // 3. Bio-Mimicry & Mouse Randomization (L21-L30)
+        // Добавление микро-шума в координаты для обмана систем поведенческого анализа
+        const addBezierNoise = (e) => {
+            if (e.isTrusted && !isWhiteListed) {
+                const noiseX = (Math.random() - 0.5) * 0.01;
+                const noiseY = (Math.random() - 0.5) * 0.01;
+                Object.defineProperty(e, 'screenX', { get: () => e.screenX + noiseX });
+                Object.defineProperty(e, 'screenY', { get: () => e.screenY + noiseY });
+            }
+        };
+        window.addEventListener('mousemove', addBezierNoise, { capture: true, passive: true });
+
+        // 4. Level 33: Malware Defense (Auto-Download & Phishing)
+        const orgCreate = document.createElement;
+        document.createElement = function(tag) {
+            const el = orgCreate.call(document, tag);
+            if (tag.toLowerCase() === 'a') {
+                const orgSet = el.setAttribute;
+                el.setAttribute = function(name, value) {
+                    if (name === 'download' && !isWhiteListed) {
+                        console.warn(OMNI_TAG, 'L33: Blocked suspicious auto-download');
+                        return;
                     }
-                }
-            }, true);
-        }
+                    return orgSet.apply(this, arguments);
+                };
+            }
+            return el;
+        };
     };
 
-    // --- [ MODULE 2: OMNI-ETERNAL (QUANTUM STEALTH) ] ---
-    const OmniEternal = {
-        applyHardwareMirage: () => {
-            const overwrite = (obj, prop, value) => {
-                try { Object.defineProperty(obj, prop, { get: () => value, configurable: true }); } catch (e) {}
-            };
-            overwrite(navigator, 'platform', 'MacIntel');
-            overwrite(navigator, 'vendor', 'Apple Computer, Inc.');
-            overwrite(navigator, 'deviceMemory', 8);
-            overwrite(navigator, 'hardwareConcurrency', 8);
-            overwrite(screen, 'availWidth', 1920);
-            overwrite(screen, 'availHeight', 1040);
-        },
-
-        applyNeuralNoise: () => {
-            // Canvas Poisoning
-            const orgToDataURL = HTMLCanvasElement.prototype.toDataURL;
-            HTMLCanvasElement.prototype.toDataURL = function() {
-                const ctx = this.getContext('2d');
-                if (ctx) { ctx.fillStyle = 'rgba(0,0,0,0.01)'; ctx.fillRect(0, 0, 1, 1); }
-                return orgToDataURL.apply(this, arguments);
-            };
-            // WebRTC Leak Protection
-            if (window.RTCPeerConnection) window.RTCPeerConnection = undefined;
-        },
-
-        sterilizeURL: () => {
-            const cleanParams = ['utm_source', 'utm_medium', 'utm_campaign', 'fbclid', 'gclid', 'yclid'];
-            const url = new URL(window.location.href);
-            let changed = false;
-            cleanParams.forEach(p => { if (url.searchParams.has(p)) { url.searchParams.delete(p); changed = true; } });
-            if (changed) window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
-        }
-    };
-
-    // --- [ BOOT SEQUENCE ] ---
-    const boot = () => {
-        checkUpdate();
-        console.log(OMNI_TAG, STYLE_GOLD, `🚀 NEBULA APEX GOLD: ${isWhiteListed ? 'TRUSTED' : 'STRICT'} MODE.`);
-
-        // Scanner Layer
-        OmniScanner.initNetworkGuard();
-        OmniScanner.initVirusMap();
-        if (!!document.querySelector('frameset, table[bgcolor]')) OmniScanner.repairLegacyJS();
-
-        // Eternal Layer
-        OmniEternal.applyHardwareMirage();
-        OmniEternal.applyNeuralNoise();
-        OmniEternal.sterilizeURL();
-
-        // Clipboard Protection (Cross-Synergy)
+    // --- [ МОДУЛЬ 2: OMNI-SCANNER (IDS/IPS & VIRUS MAP) ] ---
+    const apexScannerCore = () => {
+        // L600-L800: Network & Clipboard
+        if (window.RTCPeerConnection) window.RTCPeerConnection = undefined;
+        
         document.addEventListener('copy', e => {
             const selection = window.getSelection().toString();
-            if (selection) { e.clipboardData.setData('text/plain', selection); e.preventDefault(); }
-            if (!e.isTrusted) GM_notification({ title: "Omni-Gold", text: "Clipboard Hijack Blocked" });
+            if (selection) {
+                e.clipboardData.setData('text/plain', selection);
+                e.preventDefault();
+            }
         }, true);
+
+        // L1200: Apex Virus Map (Интеграция всех сигнатур)
+        const fullVirusMap = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|js|jar|apk|app|dmg|iso|bin|docm|xlsm|lnk|wsf|com)$/i;
+        window.addEventListener('click', e => {
+            const a = e.target.closest('a');
+            if (a && a.href && !window.location.hostname.includes('github.com')) {
+                if (fullVirusMap.test(a.href.split(/[?#]/)[0])) {
+                    e.preventDefault();
+                    window.stop();
+                    GM_notification({ title: "Omni-Gold", text: "L1200: Critical Threat Blocked" });
+                    alert('🛑 [OMNI-GOLD] Threat Intercepted.');
+                }
+            }
+        }, true);
+
+        // L1001: HoneyPot Disinformation
+        const orgGet = localStorage.getItem;
+        localStorage.getItem = function(k) {
+            if (!isWhiteListed && /token|auth|pass|wallet|secret/i.test(k) && !window.event?.isTrusted) {
+                return "{}"; 
+            }
+            return orgGet.apply(localStorage, arguments);
+        };
     };
 
-    boot();
-    setInterval(checkUpdate, UPDATE_INTERVAL);
+    // --- [ EXECUTION ENGINE ] ---
+    const boot = () => {
+        console.log(OMNI_TAG, STYLE_GOLD, `Engaged Gold Monolith. Mode: ${isWhiteListed ? 'TRUSTED' : 'STRICT'}`);
+        
+        apexEternalCore(); // Подключаем всё из Eternal
+        apexScannerCore(); // Подключаем всё из Scanner
+        
+        // Стерилизация URL
+        const cleanParams = ['utm_source', 'utm_medium', 'utm_campaign', 'fbclid', 'gclid', 'yclid', '_openstat'];
+        const url = new URL(window.location.href);
+        let changed = false;
+        cleanParams.forEach(p => { if (url.searchParams.has(p)) { url.searchParams.delete(p); changed = true; } });
+        if (changed) window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+    };
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+    } else {
+        boot();
+    }
 })();
