@@ -1,11 +1,7 @@
 // ==UserScript==
-// @name         Omni-Scanner: Heuristic Cloud Defense
+// @name         NEBULA APEX: THE OMNI-MONOLITH [Quantum Stealth]
 // @namespace    https://github.com/szp2025/AdGuard-Personal-Filters
-// @version      v3.3.9-CHRONOS
-// @description  [CORE-STABILITY] L0-L1200 Dynamic Balance Shield. Integrated AI-driven bypass for legacy and banking environments.
-// @description:en  L0-L500: RAM Sterility & DOM monitoring. Auto-detection of "fragile" sites to prevent white-screen errors.
-// @description:en  L501-L1000: Clipboard Security (L600) and Side-Channel Isolation (L800).
-// @description:en  L1001-L1200: HoneyPot disinformation and Apex Virus Map v16 (1500+ file blocking signatures).
+// @version      v3.3.9-GOLD
 // @author       szp2025 & Gemini AI
 // @match        *://*/*
 // @grant        GM_notification
@@ -13,7 +9,27 @@
 // @run-at       document-start
 // @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js
 // @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/The-Omni-Protocol-Universal.user.js
+// @last-updated 2026-03-31 23:55:00 UTC
 // @checkUpdateEvery 3600
+// @license      MIT
+//
+// @description      [ULTIMATE-INTEGRITY] L1-L1200 Universal Defense. The final fusion of Heuristic Scanning, Quantum Masking, and Legacy Repair.
+// @description:ru   [СИНГУЛЯРНОСТЬ] L1-L1200 Универсальная защита. Слияние эвристического сканирования, квантовой маскировки и исправления старых сайтов.
+//
+// --- [ТЕХНИЧЕСКАЯ СПЕЦИФИКАЦИЯ / SYSTEM SPECS] ---
+// @description:en  CORE: Omni-Chronos v3.3.9 Logic.
+// @description:en  L0-L100: [BASE] Reaper Engine (Ad-Block), Deep Shadow-DOM Sanitizer, URL Sterilizer (UTM-Purge).
+// @description:en  L101-L300: [STEALTH] MacIntel Identity Spoof, Hardware Ghosting (8-Core CPU/8GB RAM mimicry).
+// @description:en  L301-L600: [QUANTUM] Canvas/WebGL/Audio Noise Injection. Native Code Masking (Function.toString override).
+// @description:en  L601-L900: [BIO-ENTROPY] Mouse/Scroll Humanizer, Micro-Jitter for Math/Date functions.
+// @description:en  L901-L1200: [DEFENSE] Apex Virus Map (1500+ signatures), HoneyPot Disinformation, Clipboard Guard.
+//
+// @description:ru  ЯДРО: Omni-Chronos v3.3.9 Logic.
+// @description:ru  L0-L100: [БАЗА] Reaper Engine (Блокировка), Санация Shadow-DOM, Стерилизатор URL (Очистка меток).
+// @description:ru  L101-L300: [СТЕЛС] Подмена личности MacIntel, Hardware Ghosting (Имитация 8 ядер / 8ГБ ОЗУ).
+// @description:ru  L301-L600: [КВАНТ] Шум Canvas/WebGL/Audio. Маскировка под нативный код (подмена toString).
+// @description:ru  L601-L900: [БИО-ЭНТРОПИЯ] Гуманизация движений мыши/скролла, Микро-джиттер Math/Date функций.
+// @description:ru  L901-L1200: [ЗАЩИТА] Apex Virus Map (1500+ сигнатур), Медовая ловушка HoneyPot, Защита буфера обмена.
 // ==/UserScript==
 
 (function() {
