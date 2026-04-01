@@ -42,7 +42,31 @@ const clearTraces = () => {
         setTimeout(() => console.clear(), 100);
     }
 };
+
+    /**
+ * OMNI-INFOBASE: Эвристическая база данных и стили
+ */
+const OMNI_Infobase = () => ({
+    // Стили консоли
+    TAG: '%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9 %c',
+    STYLE_GOLD: 'color: #FFD700; background: #000; font-weight: bold; padding: 4px; border-left: 4px solid #FFD700;',
+    STYLE_BLUE: 'color: #00BFFF; background: #111; font-weight: bold; padding: 4px;',
     
+    // Анализ окружения
+    isUnsafeHTTP: window.location.protocol === 'http:',
+    isAdminPanel: /admin|phpmyadmin|sql|controlpanel/i.test(window.location.href),
+    hasOldTech:   !!document.querySelector('frameset, table[bgcolor], center'),
+    isTechHost:   /localhost|127\.0\.0\.1|celeo\.net/i.test(window.location.hostname),
+    
+    // Предикт режима
+    getMode: function() {
+        return (this.isTechHost || (this.isUnsafeHTTP && (this.isAdminPanel || this.hasOldTech))) 
+               ? 'COMPATIBILITY' 
+               : 'ULTIMATE';
+    }
+});
+
+   
     // --- [L-LIBRARY: DEFINITIONS] ---
 
     /**
@@ -2182,31 +2206,7 @@ const clearTraces = () => {
         return false;
     };
     
-
-/**
- * OMNI-INFOBASE: Эвристическая база данных и стили
- */
-const OMNI_Infobase = () => ({
-    // Стили консоли
-    TAG: '%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9 %c',
-    STYLE_GOLD: 'color: #FFD700; background: #000; font-weight: bold; padding: 4px; border-left: 4px solid #FFD700;',
-    STYLE_BLUE: 'color: #00BFFF; background: #111; font-weight: bold; padding: 4px;',
-    
-    // Анализ окружения
-    isUnsafeHTTP: window.location.protocol === 'http:',
-    isAdminPanel: /admin|phpmyadmin|sql|controlpanel/i.test(window.location.href),
-    hasOldTech:   !!document.querySelector('frameset, table[bgcolor], center'),
-    isTechHost:   /localhost|127\.0\.0\.1|celeo\.net/i.test(window.location.hostname),
-    
-    // Предикт режима
-    getMode: function() {
-        return (this.isTechHost || (this.isUnsafeHTTP && (this.isAdminPanel || this.hasOldTech))) 
-               ? 'COMPATIBILITY' 
-               : 'ULTIMATE';
-    }
-});
-
-    /**
+     /**
  * OMNI_Registry: Список активных эшелонов защиты.
  * Добавление нового уровня теперь происходит только здесь.
  */
@@ -2220,6 +2220,9 @@ const OMNI_Registry = [
     typeof applyL1001HoneyPot       === 'function' && applyL1001HoneyPot,
     typeof applyL1200VirusMap       === 'function' && applyL1200VirusMap
 ].filter(Boolean); // Автоматически удаляет false, если функция не определена
+
+
+    
 
  // Вспомогательный рендерер статуса
 const renderOmniStatus = (info, mode) => {
