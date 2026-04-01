@@ -2092,21 +2092,31 @@ const applyL1200VirusMap = () => {
         return false;
     };
 
-// 2. ПЕРЕХВАТ СОБЫТИЙ ВЗАИМОДЕЙСТВИЯ (UI Guard)
-window.addEventListener('click', e => {
-    const a = e.target.closest('a');
-    if (a && a.href) {
-        // --- ДОБАВЛЯЕМ ПРОВЕРКУ ТУТ ---
-        const isGitHubEdit = a.closest('[aria-label="Edit this file"], .js-blob-edit-button');
-        if (isGitHubEdit) return; // Пропускаем клик, если это кнопка редактора
-        // ------------------------------
+  // 2. ПЕРЕХВАТ СОБЫТИЙ ВЗАИМОДЕЙСТВИЯ (UI Guard - GitHub Optimized)
+    window.addEventListener('click', e => {
+        // Ищем ближайшую ссылку от точки клика
+        const a = e.target.closest('a');
+        
+        if (a && a.href) {
+            const url = a.href;
 
-        if (interceptThreat(a.href, 'Link Click')) {
-            e.preventDefault();
-            e.stopPropagation();
+            // 🛡️ БЕЛЫЙ СПИСОК GITHUB (Абсолютный приоритет)
+            // 1. Проверка по атрибутам кнопки (карандаш, raw, и т.д.)
+            const isGuiTool = a.closest('[aria-label*="Edit"], [aria-label*="Delete"], .js-blob-edit-button, .btn-octicon');
+            // 2. Проверка по структуре URL (если в ссылке есть /edit/ - это редактор)
+            const isEditUrl = url.includes('/edit/') || url.includes('/delete/');
+
+            if (isGuiTool || isEditUrl) {
+                return; // Пропускаем легитимные действия GitHub
+            }
+
+            // 🔍 ПРОВЕРКА НА УГРОЗЫ (Для всех остальных ссылок)
+            if (interceptThreat(url, 'Link Click')) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
         }
-    }
-}, true);
+    }, true);
     
 
     // 3. ПЕРЕХВАТ ПРОГРАММНЫХ ОКОН (Window Hijack Protection)
