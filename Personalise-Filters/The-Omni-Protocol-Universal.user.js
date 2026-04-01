@@ -16,7 +16,7 @@
 // @description      [ULTIMATE-INTEGRITY] L1-L1200 Universal Defense. The final fusion of Heuristic Scanning, Quantum Masking, and Legacy Repair.
 // @description:ru   [СИНГУЛЯРНОСТЬ] L1-L1200 Универсальная защита. Слияние эвристического сканирования, квантовой маскировки и исправления старых сайтов.
 //
-// --- [ТЕХНИЧЕСКАЯ СПЕЦИФИКАЦИЯ / SYSTEM SPECS] ---
+// [ТЕХНИЧЕСКАЯ СПЕЦИФИКАЦИЯ / SYSTEM SPECS]
 // @description:en  CORE: Omni-Chronos v3.3.9 Logic.
 // @description:en  L0-L100: [BASE] Reaper Engine (Ad-Block), Deep Shadow-DOM Sanitizer, URL Sterilizer (UTM-Purge).
 // @description:en  L101-L300: [STEALTH] MacIntel Identity Spoof, Hardware Ghosting (8-Core CPU/8GB RAM mimicry).
