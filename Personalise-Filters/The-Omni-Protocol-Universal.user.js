@@ -2221,49 +2221,61 @@ const OMNI_Registry = [
     typeof applyL1200VirusMap       === 'function' && applyL1200VirusMap
 ].filter(Boolean); // Автоматически удаляет false, если функция не определена
 
+ // Вспомогательный рендерер статуса
+const renderOmniStatus = (info, mode) => {
+    const isCompat = mode === 'COMPATIBILITY';
+    const statusStyle = `color: ${isCompat ? '#ffa500' : '#0f0'}; background: #000; font-weight: bold; padding: 4px;`;
+    console.log(`${info.TAG} ⚖️ ${mode} ACTIVE `, info.STYLE_GOLD, info.STYLE_BLUE, statusStyle);
+};
+
+// Вспомогательный диспетчер модулей
+const deployOmniStack = (mode) => {
+    // Если COMPATIBILITY — берем только первый защитный слой, иначе — всё
+    const stack = mode === 'COMPATIBILITY' ? OMNI_Registry.slice(0, 1) : OMNI_Registry;
+    stack.forEach(deploy => {
+        try { deploy(); } catch (e) { console.error(`[BOOT-ERR] ${deploy.name}:`, e); }
+    });
+};
     
     
 /**
  * OMNI-CHRONOS: Центральный процессор протокола
  */
 const OmniChronos = {
-    initBaseFoundation: () => {
-        // Извлекаем все необходимые данные одной строкой (деструктуризация)
+   initBaseFoundation: () => {
         const info = OMNI_Infobase();
         const mode = info.getMode();
 
-        // 1. Визуализация статуса
-        const statusStyle = mode === 'COMPATIBILITY' ? 'color: #ffa500;' : 'color: #0f0;';
-        console.log(`${info.TAG} ⚖️ ${mode} ACTIVE `, info.STYLE_GOLD, info.STYLE_BLUE, `${statusStyle} background: #000; font-weight: bold; padding: 4px;`);
+        // 1. Отрисовка лога
+        renderOmniStatus(info, mode);
 
         // 2. Логика развертывания
         if (mode === 'COMPATIBILITY') {
-            if (typeof applyL11HardwareGhosting === 'function') applyL11HardwareGhosting();
-            return; 
+            // В режиме совместимости берем только L11 (первый в реестре)
+            const baseLayer = OMNI_Registry[0];
+            if (baseLayer) try { baseLayer(); } catch(e) {}
+            return;
         }
 
-        if (OmniChronos.initQuantumModules) {
-            OmniChronos.initQuantumModules();
-        }
+        // 3. В режиме ULTIMATE запускаем полный цикл развертывания
+        OmniChronos.initQuantumModules();
     },
 
     initQuantumModules: () => {
-        console.log('%c[SYSTEM]%c Deploying Defense Layers...', 'color: #888;', 'color: #fff;');
+        console.groupCollapsed('%c[SYSTEM]%c Deploying Defense Layers...', 'color: #888; font-weight: bold;', 'color: #fff;');
         
-     // Двигатель просто перебирает реестр
-        OMNI_Registry.forEach(deploy => {
+        OMNI_Registry.forEach((deploy, index) => {
             try {
                 deploy();
-                // Опционально: логируем успех каждого модуля
-                // console.log(`%c[OK]%c ${deploy.name} active.`, 'color: #0f0;', 'color: #555;');
+                console.log(`%c[L${index + 1}]%c ${deploy.name || 'Module'} active.`, 'color: #00BFFF;', 'color: #888;');
             } catch (e) {
-                console.error(`%c[FAULT]%c Error in module:`, 'color: #f00;', 'color: #888;', e);
+                console.error(`%c[FAULT]%c Layer ${index + 1}:`, 'color: #f00;', 'color: #888;', e);
             }
         });
         
+        console.groupEnd();
         console.log('%c[SUCCESS]%c All Shields Online. Stealth Mode: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
     }
-};
 
     // ТОЧКА ВХОДА: Принудительный запуск
     try {
