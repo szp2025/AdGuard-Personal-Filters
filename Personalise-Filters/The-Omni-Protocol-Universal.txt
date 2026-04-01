@@ -106,6 +106,12 @@ $network=ip,set_mtu=1452,important,notify,tag=MTU_LTE_CLOAKING
 $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 
 
+! Отключаем стелс только там, где есть признаки старых систем или специфических путей
+@@/myadmin/^$stealth,domain=~google.com|~youtube.com|~facebook.com
+@@/sql/^$stealth
+@@||celeo.net^$stealth
+
+
 ! [L1: IDS-GHOST-PORTING - V69.0]
 ! Мы убираем reject. Теперь пакеты просто "исчезают". 
 ! Сканеры будут бесконечно ждать ответа (Time Out), что замедляет атаку в 100 раз.
