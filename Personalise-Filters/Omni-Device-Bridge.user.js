@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Omni-Device-Bridge
 // @namespace    OmniProtocol
-// @version      1.0.8
-// @description  Системный мост [Stealth Mode]
+// @version      1.0.9
+// @description  Системный мост [PUSH-Notification Mode]
 // @author       Командор
 // @match        *://*/*
 // @grant        none
@@ -26,19 +26,44 @@
         }
     };
 
-    // Делаем доступным для ручного вызова
-    window.OmniBridge = OmniBridge;
+    // Функция вызова меню
+    function showOmniMenu() {
+        const cmd = prompt("OMNI-SYSTEM v1.0.9\n1: Settings | 2: ReVanced | 3: WiFi | 4: Bio");
+        if (cmd) OmniBridge.launch(cmd);
+    }
 
-    // ГЛОБАЛЬНЫЙ ТРИГГЕР: ДЛИННОЕ НАЖАТИЕ (3 секунды в любом месте)
+    // ЗАПРОС ПРАВ НА УВЕДОМЛЕНИЯ
+    if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+    }
+
+    // СОЗДАНИЕ ПУША ПРИ ЗАГРУЗКЕ
+    function sendOmniPush() {
+        if (Notification.permission === "granted") {
+            const notification = new Notification("OMNI-BRIDGE АКТИВЕН", {
+                body: "Нажмите здесь, чтобы открыть панель управления",
+                icon: "https://www.gstatic.com/images/branding/product/2x/googleg_48dp.png", // Или любой ваш лого
+                tag: "omni-link",
+                renotify: false,
+                requireInteraction: true // Пуш не исчезнет сам!
+            });
+
+            notification.onclick = function(event) {
+                event.preventDefault(); // Запрещаем переход по ссылке
+                window.focus();
+                showOmniMenu();
+            };
+        }
+    }
+
+    // Запускаем через 3 секунды после открытия сайта
+    setTimeout(sendOmniPush, 3000);
+
+    // Оставляем "План Б" - Длинное нажатие 3 сек
     let pressTimer;
     document.addEventListener('touchstart', () => {
-        pressTimer = window.setTimeout(() => {
-            const cmd = prompt("OMNI-SYSTEM v1.0.8\n1: Settings | 2: ReVanced | 3: WiFi | 4: Bio");
-            if (cmd) OmniBridge.launch(cmd);
-        }, 3000); 
+        pressTimer = window.setTimeout(showOmniMenu, 3000); 
     });
-
     document.addEventListener('touchend', () => clearTimeout(pressTimer));
 
-    console.log("Omni-Stealth: Active. Hold screen for 3s to trigger.");
 })();
