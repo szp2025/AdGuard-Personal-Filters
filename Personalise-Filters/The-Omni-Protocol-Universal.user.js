@@ -2438,44 +2438,49 @@ initBaseFoundation: () => {
         const info = OMNI_Infobase();
         const mode = info.getMode();
 
-        // 1. Очистка jQuery спама (чтобы логи были чистыми)
-        if (window.jQuery) window.jQuery.migrateMute = true;
+        // 1. Управление jQuery (пока оставляем видимым, но гасим лишний шум если нужно)
+        if (window.jQuery) {
+            // window.jQuery.migrateMute = true; // Раскомментировать, если спам станет невыносимым
+        }
 
-        // 2. Главный баннер
+        // 2. Главный баннер (Исправлено: 3 стиля для 3-х %c в TAG)
         console.log(
             info.TAG, 
             info.STYLE_GOLD, 
             info.STYLE_BLUE, 
-            '', // Сброс для текста после тегов
+            'color: transparent;', // Четко закрываем 3-й тег %c в Nebula Apex
             `🚀 CORE: ${mode} ENGINE ACTIVE`
         );
 
-        // 3. Развертывание (без скрытых групп для максимальной видимости)
+        // 3. Развертывание (Максимальная видимость всех уровней)
         OmniChronos.initQuantumModules(info);
     },
 
     initQuantumModules: (info) => {
+        // Золотая рамка для ID уровня (L10, L20...)
         const STYLE_L = 'color: #FFD700; background: #222; font-weight: bold; padding: 2px 5px; border-radius: 3px; border: 1px solid #444;';
+        // Описание синхронизации
         const STYLE_DESC = 'color: #888; font-family: "Courier New", monospace;';
 
         OMNI_Registry.forEach((deploy, index) => {
-            const layerID = `L${(index + 1) * 10}`; // Генерация ID (L10, L20...)
+            const layerID = `L${(index + 1) * 10}`; 
             try {
                 deploy();
-                // Каждый уровень теперь — отдельная стильная строка
+                
+                // Исправленный лог: убрали лишние %c, добавили четкое разделение
                 console.log(
                     `%c${layerID}%c ⚡ %c${deploy.name || 'Omni-Module'}%c is synchronized.`,
                     STYLE_L,
-                    'color: #555;',
-                    'color: #00BFFF; font-weight: bold;',
-                    STYLE_DESC
+                    'color: #555;', // Для молнии
+                    'color: #00BFFF; font-weight: bold;', // Для имени модуля
+                    STYLE_DESC // Для статуса
                 );
             } catch (e) {
-                console.error(`%c[FAULT]%c ${layerID} failure:`, 'color: #f00;', 'color: #888;', e);
+                console.error(`%c[FAULT]%c ${layerID} failure:`, 'color: #f00; font-weight: bold;', 'color: #888;', e);
             }
         });
         
-        console.log('%c[SYSTEM]%c All neural layers are locked. Stealth: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
+        console.log('%c[SUCCESS]%c All neural layers are locked. Stealth: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
     }
     
 };
@@ -2496,13 +2501,13 @@ const boot = () => {
         const isWhiteListed = typeof isTechHost !== 'undefined' ? isTechHost : info.isTechHost;
         
         // Красивый стартовый лог
-        console.log(
+     /*   console.log(
             info.TAG, 
             info.STYLE_GOLD, 
             info.STYLE_BLUE, 
             `🚀 OMNI-SCANNER v3.3.9: ${isWhiteListed ? 'TRUSTED' : 'STRICT'} MODE.`
         );
-
+*/
         // Запуск центрального процессора (он сам развернет нужные модули)
         OmniChronos.initBaseFoundation();
 
