@@ -1,32 +1,24 @@
 // ==UserScript==
 // @name         Omni-Device-Bridge
 // @namespace    OmniProtocol
-// @version      1.0.5
-// @description  Системный мост управления телефоном [Auto-Check: 1h]
+// @version      1.0.6
+// @description  Системный мост управления телефоном [Shadow-DOM Active]
 // @author       Командор
 // @match        *://*/*
 // @grant        unsafeWindow
-// @run-at       document-start
+// @run-at       document-idle
 // @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni-Device-Bridge.user.js
 // @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni-Device-Bridge.user.js
-// @updateCheck  3600
 // ==/UserScript==
-
-/**
- * СТАТУС СИСТЕМЫ:
- * Последнее обновление: 2026-04-01 | 22:15
- * Цикл проверки: 3600s (1 час)
- */
 
 (function() {
     'use strict';
 
+    // 1. БАЗА ДАННЫХ ИНТЕНТОВ
     const OmniBridge = {
         config: {
-            TAG: '%c[OMNI-BRIDGE]',
-            STYLE: 'color: #00ffff; font-weight: bold;',
-            VERSION: '1.0.5',
-            DEPLOYED: '2026-04-01 22:15',
+            VERSION: '1.0.6',
+            DEPLOYED: '2026-04-01 22:40',
             APPS: {
                 SETTINGS: 'intent://#Intent;action=android.settings.SETTINGS;end',
                 REVANCED: 'intent://#Intent;package=app.revanced.android.youtube;end',
@@ -36,48 +28,51 @@
         },
         launch: function(appKey) {
             const intent = this.config.APPS[appKey];
-            if (intent) {
-                console.log(this.config.TAG, this.config.STYLE, `Запуск модуля: ${appKey}...`);
-                window.location.href = intent;
-            }
+            if (intent) window.location.replace(intent);
         }
     };
 
     window.OmniBridge = OmniBridge;
 
-    // Функция создания интерфейса
-    function createOmniButton() {
-        if (document.getElementById('omni-bridge-btn')) return;
+    // 2. СОЗДАНИЕ ИЗОЛИРОВАННОЙ КНОПКИ (Shadow DOM)
+    function injectBridge() {
+        if (document.getElementById('omni-root')) return;
+
+        const host = document.createElement('div');
+        host.id = 'omni-root';
+        host.style = 'position:fixed; bottom:100px; right:10px; z-index:2147483647 !important; width:50px; height:50px;';
+        document.documentElement.appendChild(host);
+
+        const shadow = host.attachShadow({mode: 'closed'});
+        const btn = document.createElement('div');
         
-        let btn = document.createElement('div');
-        btn.id = 'omni-bridge-btn';
         btn.innerHTML = 'Ω';
-        btn.style = 'position:fixed; bottom:85px; right:15px; width:48px; height:48px; background:rgba(0,20,30,0.8); color:#00ffff; border-radius:50%; display:flex; align-items:center; justify-content:center; z-index:9999999; border:1px solid #00ffff; font-size:22px; cursor:pointer; backdrop-filter:blur(10px); box-shadow: 0 0 15px rgba(0,255,255,0.4);';
-        
-        btn.onclick = function() {
-            let action = prompt(`OMNI-CONTROL v${OmniBridge.config.VERSION}\nLast Update: ${OmniBridge.config.DEPLOYED}\nNext Check: in 1 hour\n\n1: Общие настройки\n2: YouTube ReVanced\n3: Wi-Fi Сети\n4: Биометрия`);
-            if(action == '1') OmniBridge.launch('SETTINGS');
-            if(action == '2') OmniBridge.launch('REVANCED');
-            if(action == '3') OmniBridge.launch('WIFI');
-            if(action == '4') OmniBridge.launch('BIO');
+        btn.style = `
+            width: 46px; height: 46px; 
+            background: rgba(0, 40, 60, 0.9); 
+            color: #00ffff; 
+            border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            border: 2px solid #00ffff; 
+            font-size: 24px; font-family: sans-serif;
+            box-shadow: 0 0 15px rgba(0,255,255,0.6);
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        `;
+
+        btn.onclick = () => {
+            const action = prompt(`OMNI-BRIDGE v${OmniBridge.config.VERSION}\n${OmniBridge.config.DEPLOYED}\n\n1: Settings\n2: ReVanced\n3: WiFi\n4: Bio`);
+            if(action === '1') OmniBridge.launch('SETTINGS');
+            if(action === '2') OmniBridge.launch('REVANCED');
+            if(action === '3') OmniBridge.launch('WIFI');
+            if(action === '4') OmniBridge.launch('BIO');
         };
-        
-        document.body.appendChild(btn);
+
+        shadow.appendChild(btn);
     }
 
-    // Инициализация при появлении DOM
-    if (document.body) {
-        createOmniButton();
-    } else {
-        const observer = new MutationObserver(() => {
-            if (document.body) {
-                createOmniButton();
-                observer.disconnect();
-            }
-        });
-        observer.observe(document.documentElement, { childList: true });
-    }
+    // Запуск через 2 секунды после загрузки (чтобы Chrome успел прогрузить AdGuard)
+    setTimeout(injectBridge, 2000);
 
-    // Принудительный запрос обновления через AdGuard API (если доступно)
-    console.log(OmniBridge.config.TAG, OmniBridge.config.STYLE, `Omni-Bridge v${OmniBridge.config.VERSION} активен. Проверка обновлений: каждый час.`);
 })();
