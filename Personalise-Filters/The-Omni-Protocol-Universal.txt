@@ -362,17 +362,9 @@ $header=X-Robots-Tag: noai, noimageai, important
 ! Regex захватывает все основные мировые и региональные поисковики одним проходом
 @@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|yandex|ya|dzen|mail|qwant|ecosia|startpage|swisscows|baidu|naver|sogou|so)\.(com|ru|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,generichide,css,xmlhttprequest
 
-! [L11-S4.2: DNS-ACCELERATION-GLOBAL]
-! Снятие DNS-барьеров для мгновенного резолвинга поисковиков.
-@@||google.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||yandex.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||ya.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||bing.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||duckduckgo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||baidu.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||naver.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||yahoo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||qwant.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+! --- [L11-S4.2: OMNI-DNS-TURBO] ---
+! Мгновенный резолвинг для глобальных поисковых систем через Regex-фильтрацию типов запросов
+@@/^https?:\/\/([^\/]+\.)?(google|yandex|ya|bing|duckduckgo|baidu|naver|yahoo|qwant)\.(com|ru|net|org|jp|cn|me)(\/.*)?$/$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 
 
 ! [115-S5: HARDWARE-GHOSTING — APEX EDITION]
