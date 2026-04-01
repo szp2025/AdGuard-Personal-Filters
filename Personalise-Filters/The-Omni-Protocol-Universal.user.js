@@ -2407,39 +2407,48 @@ const deployOmniStack = (mode) => {
  * OMNI-CHRONOS: Центральный процессор протокола
  */
 const OmniChronos = {
-   initBaseFoundation: () => {
+ initBaseFoundation: () => {
         const info = OMNI_Infobase();
         const mode = info.getMode();
 
-        // 1. Отрисовка лога
-        renderOmniStatus(info, mode);
+        // 1. Стартовый манифест (всегда виден)
+        console.log(
+            info.TAG, 
+            info.STYLE_GOLD, 
+            info.STYLE_BLUE, 
+            `🚀 DEPLOYMENT: ${mode} MODE [v3.3.9]`
+        );
 
-        // 2. Логика развертывания
         if (mode === 'COMPATIBILITY') {
-            // В режиме совместимости берем только L11 (первый в реестре)
             const baseLayer = OMNI_Registry[0];
-            if (baseLayer) try { baseLayer(); } catch(e) {}
+            if (baseLayer) baseLayer();
             return;
         }
 
-        // 3. В режиме ULTIMATE запускаем полный цикл развертывания
+        // 2. Развертывание модулей
         OmniChronos.initQuantumModules();
     },
+    
 
-    initQuantumModules: () => {
-        console.groupCollapsed('%c[SYSTEM]%c Deploying Defense Layers...', 'color: #888; font-weight: bold;', 'color: #fff;');
+   initQuantumModules: () => {
+        // Группируем инициализацию, чтобы не спамить 30+ строк
+        console.groupCollapsed('%c[SYSTEM]%c Initialization Sequence', 'color: #888;', 'color: #fff;');
         
         OMNI_Registry.forEach((deploy, index) => {
             try {
                 deploy();
+                // Лог внутри группы (виден при раскрытии)
                 console.log(`%c[L${index + 1}]%c ${deploy.name || 'Module'} active.`, 'color: #00BFFF;', 'color: #888;');
             } catch (e) {
-                console.error(`%c[FAULT]%c Layer ${index + 1}:`, 'color: #f00;', 'color: #888;', e);
+                // Ошибки выводим ВНЕ группы или ярким цветом, чтобы не пропустить
+                console.error(`%c[CRITICAL FAULT]%c Layer ${index + 1}:`, 'color: #f00; font-weight: bold;', 'color: #888;', e);
             }
         });
         
         console.groupEnd();
-        console.log('%c[SUCCESS]%c All Shields Online. Stealth Mode: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
+        
+        // Финальный статус (всегда виден)
+        console.log('%c[SUCCESS]%c Stealth Engine: Fully Operational.', 'color: #0f0; font-weight: bold;', 'color: #fff;');
     }
 
     // ТОЧКА ВХОДА: Принудительный запуск
