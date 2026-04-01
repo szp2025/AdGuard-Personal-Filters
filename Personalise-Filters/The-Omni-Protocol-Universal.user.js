@@ -750,15 +750,6 @@
                !!document.querySelector('frameset, table[bgcolor], center');
     };
 
-        const sendOmniPush = (title, message) => {
-        try {
-            GM_notification({
-                title: `Omni-Scanner: ${title}`,
-                text: message,
-                timeout: 4000
-            });
-        } catch (e) {}
-    };
 
     const repairLegacyJS = () => {
         const jq = window.jQuery || window.$;
