@@ -99,22 +99,17 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 ! Если скрипт на странице пытается проверить доступность ADB или базы данных,
 ! мы возвращаем "Success", но с пустым ответом, чтобы запутать логику скрипта.
 #%#//scriptlet("set-constant", "XMLHttpRequest.prototype.send", "function() { if (this._url && this._url.match(/:5555|:5037|:3306|:5432/)) return; return send.apply(this, arguments); }")
-! --- [SPOOF-FLOW-SYNC] Разрешение для подмененных потоков ---
-@@||googlevideo.com^$app=com.google.android.apps.youtube.music|com.google.android.youtube
-@@||youtubei.googleapis.com^$app=com.google.android.apps.youtube.music|com.google.android.youtube
 
-! --- [ULTRA-YOUTUBE-BYPASS] Разблокировка для ReVanced 5.29.0 ---
-@@||googlevideo.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
-@@||youtubei.googleapis.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
-@@||ytimg.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
-@@||ggpht.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
-@@||s.youtube.com^$app=com.google.android.youtube|com.google.android.apps.youtube.music
+! --- [OMNI-REGEX-BASE] Универсальный захват видеопотоков и API ---
+@@/^https?:\/\/([^\/]+\.)?(googlevideo|youtubei\.googleapis|ytimg|ggpht)\.com\/.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music
 
-! --- [IOS-TV-H264-TUNNEL] Специально для твоего конфига ---
-@@||googlevideo.com^$app=com.google.android.youtube
-@@||youtubei.googleapis.com^$app=com.google.android.youtube
-@@||ytimg.com^$app=com.google.android.youtube
+! --- [OMNI-REGEX-SPOOF] Глубокая инспекция параметров для ReVanced/iOS ---
+! Разрешаем только критические запросы к видео, игнорируя аналитику
+@@/^https?:\/\/([^\/]+\.)?googlevideo\.com\/videoplayback\?.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music
 
+! --- [OMNI-TELEMETRY-KILLER] Блокировка сбора данных (Без исключений) ---
+! Мы не используем @@ (разрешение), а жестко режем статистику через Regex
+||/^https?:\/\/([^\/]+\.)?s\.youtube\.com\/api\/stats\/.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music,important
 
 ! [L2: NETWORK-VOID — V125.0 — THE PURGE]
 ! Склеенный слой: Сетевая тишина (L2) + Стерилизация URL (L25).
