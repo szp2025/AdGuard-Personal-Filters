@@ -2434,50 +2434,51 @@ const deployOmniStack = (mode) => {
  * OMNI-CHRONOS: Центральный процессор протокола
  */
 const OmniChronos = {
- initBaseFoundation: () => {
+initBaseFoundation: () => {
         const info = OMNI_Infobase();
         const mode = info.getMode();
 
-        // 1. Стартовый манифест (всегда виден)
+        // 1. Очистка jQuery спама (чтобы логи были чистыми)
+        if (window.jQuery) window.jQuery.migrateMute = true;
+
+        // 2. Главный баннер
         console.log(
             info.TAG, 
             info.STYLE_GOLD, 
             info.STYLE_BLUE, 
-            `🚀 DEPLOYMENT: ${mode} MODE [v3.3.9]`
+            '', // Сброс для текста после тегов
+            `🚀 CORE: ${mode} ENGINE ACTIVE`
         );
 
-        if (mode === 'COMPATIBILITY') {
-            const baseLayer = OMNI_Registry[0];
-            if (baseLayer) baseLayer();
-            return;
-        }
-
-        // 2. Развертывание модулей
-        OmniChronos.initQuantumModules();
+        // 3. Развертывание (без скрытых групп для максимальной видимости)
+        OmniChronos.initQuantumModules(info);
     },
-    
 
-   initQuantumModules: () => {
-        // Группируем инициализацию, чтобы не спамить 30+ строк
-        console.groupCollapsed('%c[SYSTEM]%c Initialization Sequence', 'color: #888;', 'color: #fff;');
-        
+    initQuantumModules: (info) => {
+        const STYLE_L = 'color: #FFD700; background: #222; font-weight: bold; padding: 2px 5px; border-radius: 3px; border: 1px solid #444;';
+        const STYLE_DESC = 'color: #888; font-family: "Courier New", monospace;';
+
         OMNI_Registry.forEach((deploy, index) => {
+            const layerID = `L${(index + 1) * 10}`; // Генерация ID (L10, L20...)
             try {
                 deploy();
-                // Лог внутри группы (виден при раскрытии)
-                console.log(`%c[L${index + 1}]%c ${deploy.name || 'Module'} active.`, 'color: #00BFFF;', 'color: #888;');
+                // Каждый уровень теперь — отдельная стильная строка
+                console.log(
+                    `%c${layerID}%c ⚡ %c${deploy.name || 'Omni-Module'}%c is synchronized.`,
+                    STYLE_L,
+                    'color: #555;',
+                    'color: #00BFFF; font-weight: bold;',
+                    STYLE_DESC
+                );
             } catch (e) {
-                // Ошибки выводим ВНЕ группы или ярким цветом, чтобы не пропустить
-                console.error(`%c[CRITICAL FAULT]%c Layer ${index + 1}:`, 'color: #f00; font-weight: bold;', 'color: #888;', e);
+                console.error(`%c[FAULT]%c ${layerID} failure:`, 'color: #f00;', 'color: #888;', e);
             }
         });
         
-        console.groupEnd();
-        
-        // Финальный статус (всегда виден)
-        console.log('%c[SUCCESS]%c Stealth Engine: Fully Operational.', 'color: #0f0; font-weight: bold;', 'color: #fff;');
+        console.log('%c[SYSTEM]%c All neural layers are locked. Stealth: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
     }
-}
+    
+};
     // ТОЧКА ВХОДА: Принудительный запуск
     try {
         OmniChronos.initBaseFoundation();
