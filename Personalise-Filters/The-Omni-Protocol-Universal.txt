@@ -65,21 +65,19 @@
 /^https?:\/\/api\.[a-z0-9-]+\.(top|xyz|pw|click|icu|site|online|space)\//^$important,xmlhttprequest,third-party
 
 
-! --- [OMNI-YANDEX-V9.0] Эксклюзивный коридор для Яндекса ---
-! Прямые правила без Regex для исправления ERR_ADDRESS
-@@||yandex.ru^$important,document,xmlhttprequest,js,css
-@@||ya.ru^$important,document,xmlhttprequest,js,css
-@@||yandex.net^$important,js,xmlhttprequest,image
-@@||yastatic.net^$important,js,xmlhttprequest,css
+! --- [OMNI-YANDEX-V10.0] Тотальная разблокировка Яндекса ---
+@@||yandex.ru^$important
+@@||ya.ru^$important
+@@||dzen.ru^$important
+@@||yastatic.net^$important
+@@||yandex.net^$important
+@@||dzeninfra.ru^$important
 
-! --- [OMNI-GLOBAL-REGEX] Всё остальное (Google, YT, Bing) ---
-! ОставляемRegex для тех, кому он не мешает
+! --- [OMNI-GLOBAL-CORE] Всё остальное через Regex ---
 @@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|googlevideo|youtubei\.googleapis|ytimg|ggpht)\.(com|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,xmlhttprequest,app=com.google.android.youtube|com.google.android.apps.youtube.music
 
-! --- [DNS-YANDEX-ACCEL] Персональный DNS-форсаж ---
-! Снимаем барьеры только для доменов Яндекса
-@@||yandex.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
-@@||ya.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+! --- [OMNI-TELEMETRY-KILL] Статистику всё равно режем ---
+||/^https?:\/\/([^\/]+\.)?s\.youtube\.com\/api\/stats\/.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music,important
 
 
 ! --- UNIVERSAL SMART BYPASS ---
@@ -121,21 +119,8 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 ! Только проверенные гиганты, чтобы не создавать нагрузку на DNS-стек
 @@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|googlevideo|youtubei\.googleapis|ytimg|ggpht)\.(com|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,xmlhttprequest,app=com.google.android.youtube|com.google.android.apps.youtube.music
 
-! --- [OMNI-CIS-RECOVERY] Реанимация Яндекса и Дзена ---
-! Убираем Regex для СНГ, переходим на классический быстрый синтаксис (фикс ERR_ADDRESS)
-@@||yandex.ru^$important,document,xmlhttprequest,js
-@@||ya.ru^$important,document,xmlhttprequest,js
-@@||dzen.ru^$important,document,xmlhttprequest,js
-@@||dzeninfra.ru^$important,js,xmlhttprequest
-@@||yastatic.net^$important,js,xmlhttprequest
-@@||yandex.net^$important,js,xmlhttprequest
-
-! --- [OMNI-TELEMETRY-KILL] Статистика всё еще под замком ---
-||/^https?:\/\/([^\/]+\.)?s\.youtube\.com\/api\/stats\/.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music,important
 
 
-! --- [DNS-OMNI-TURBO] Форсаж резолвинга ---
-@@/^https?:\/\/([^\/]+\.)?(google|yandex|ya|bing|duckduckgo|baidu|naver|yahoo|qwant)\.(com|ru|net|org|jp|cn|me)(\/.*)?$/$dnstype=~HTTPS,dnstype=~64,dnstype=~65
 
 
 
