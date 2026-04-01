@@ -100,16 +100,24 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 ! мы возвращаем "Success", но с пустым ответом, чтобы запутать логику скрипта.
 #%#//scriptlet("set-constant", "XMLHttpRequest.prototype.send", "function() { if (this._url && this._url.match(/:5555|:5037|:3306|:5432/)) return; return send.apply(this, arguments); }")
 
-! --- [OMNI-REGEX-BASE] Универсальный захват видеопотоков и API ---
-@@/^https?:\/\/([^\/]+\.)?(googlevideo|youtubei\.googleapis|ytimg|ggpht)\.com\/.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music
+! --- [CORE-REACTIVE-GATE] Поисковики + Стриминг + API ---
+! Объединяем всё: от Google и Yandex до видеосерверов YouTube
+@@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|yandex|ya|dzen|mail|qwant|ecosia|startpage|swisscows|baidu|naver|sogou|so|googlevideo|youtubei\.googleapis|ytimg|ggpht)\.(com|ru|net|org|it|fr|de|co\.uk|jp|cn|me|com\.tr)(\/.*)?$/$important,document,generichide,css,xmlhttprequest,app=com.google.android.youtube|com.google.android.apps.youtube.music
 
-! --- [OMNI-REGEX-SPOOF] Глубокая инспекция параметров для ReVanced/iOS ---
-! Разрешаем только критические запросы к видео, игнорируя аналитику
-@@/^https?:\/\/([^\/]+\.)?googlevideo\.com\/videoplayback\?.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music
+! --- [DZEN-CIS-INFRA] Оживление контента (Плитки/Видео/Статика) ---
+! Разблокировка критических ресурсов для корректной отрисовки интерфейсов
+@@||dzeninfra.ru^$important,xmlhttprequest,js,domain=dzen.ru
+@@||yastatic.net^$important,js,domain=dzen.ru|yandex.ru|ya.ru
+@@||yandex.net^$important,js,xmlhttprequest,domain=dzen.ru|yandex.ru
 
-! --- [OMNI-TELEMETRY-KILLER] Блокировка сбора данных (Без исключений) ---
-! Мы не используем @@ (разрешение), а жестко режем статистику через Regex
+! --- [DNS-ACCELERATION] Форсаж резолвинга (No-Latency) ---
+! Снятие барьеров с DNS-запросов типов 64/65 для мгновенного отклика
+@@/^https?:\/\/([^\/]+\.)?(google|yandex|ya|bing|duckduckgo|baidu|naver|yahoo|qwant)\.(com|ru|net|org|jp|cn|me)(\/.*)?$/$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+
+! --- [TELEMETRY-KILLER] Тотальное подавление слежки ---
+! Важнейшее правило: блокировка сбора статистики даже внутри разрешенных приложений
 ||/^https?:\/\/([^\/]+\.)?s\.youtube\.com\/api\/stats\/.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music,important
+
 
 ! [L2: NETWORK-VOID — V125.0 — THE PURGE]
 ! Склеенный слой: Сетевая тишина (L2) + Стерилизация URL (L25).
