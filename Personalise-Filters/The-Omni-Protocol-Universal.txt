@@ -358,9 +358,12 @@ $header=X-Robots-Tag: noai, noimageai, important
 ! Эвристический проход для ВСЕХ значимых поисковых систем мира.
 ! Разрешаем структуру (document), стили (css) и живой поиск (xhr).
 
-! --- [OMNI-SEARCH-MASTER] Глобальное разрешение для поисковых систем ---
-! Regex захватывает все основные мировые и региональные поисковики одним проходом
+! --- [OMNI-SEARCH-MASTER] Глобальное разрешение + Фикс для Dzen/Yandex ---
 @@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|yandex|ya|dzen|mail|qwant|ecosia|startpage|swisscows|baidu|naver|sogou|so)\.(com|ru|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,generichide,css,xmlhttprequest
+
+! --- [DZEN-INFRA-PATCH] Разрешение для контента Дзена ---
+@@||dzeninfra.ru^$important,xmlhttprequest,js,domain=dzen.ru
+@@||yastatic.net^$important,js,domain=dzen.ru|yandex.ru
 
 ! --- [L11-S4.2: OMNI-DNS-TURBO] ---
 ! Мгновенный резолвинг для глобальных поисковых систем через Regex-фильтрацию типов запросов
