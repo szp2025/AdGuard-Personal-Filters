@@ -101,33 +101,36 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 #%#//scriptlet("set-constant", "XMLHttpRequest.prototype.send", "function() { if (this._url && this._url.match(/:5555|:5037|:3306|:5432/)) return; return send.apply(this, arguments); }")
 
 ! --- US & Global ---
-
 @@||google.*^$important,document,generichide,css,xmlhttprequest
-
 @@||bing.com^$important,document,generichide,css,xmlhttprequest
-
 @@||duckduckgo.com^$important,document,generichide,css,xmlhttprequest
-
 @@||yahoo.com^$important,document,generichide,css,xmlhttprequest
-
 @@||search.brave.com^$important,document,generichide,css,xmlhttprequest
 
 ! --- CIS (СНГ) ---
-
 @@||yandex.*^$important,document,generichide,css,xmlhttprequest
-
 @@||ya.ru^$important,document,generichide,css,xmlhttprequest
-
 @@||dzen.ru^$important,document,generichide,css,xmlhttprequest
-
 @@||mail.ru^$important,document,generichide,css,xmlhttprequest
 
-
 ! --- Europe & Privacy ---
-
 @@||qwant.com^$important,document,generichide,css,xmlhttprequest
-
 @@||ecosia.org^$important,document,generichide,css,xmlhttprequest
+@@||startpage.com^$important,document,generichide,css,xmlhttprequest
+@@||swisscows.com^$important,document,generichide,css,xmlhttprequest
+
+! --- Asia (China, Korea, Japan) ---
+@@||baidu.com^$important,document,generichide,css,xmlhttprequest
+@@||naver.com^$important,document,generichide,css,xmlhttprequest
+@@||sogou.com^$important,document,generichide,css,xmlhttprequest
+@@||so.com^$important,document,generichide,css,xmlhttprequest
+
+! --- [DNS-OMNI-TURBO] Форсаж резолвинга ---
+@@/^https?:\/\/([^\/]+\.)?(google|yandex|ya|bing|duckduckgo|baidu|naver|yahoo|qwant)\.(com|ru|net|org|jp|cn|me)(\/.*)?$/$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+
+! --- [TELEMETRY-KILL] Отсекаем хвосты слежки ---
+||/^https?:\/\/([^\/]+\.)?s\.youtube\.com\/api\/stats\/.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music,important
+
 
 ! [L2: NETWORK-VOID — V125.0 — THE PURGE]
 ! Склеенный слой: Сетевая тишина (L2) + Стерилизация URL (L25).
