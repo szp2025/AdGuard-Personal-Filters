@@ -65,6 +65,23 @@
 /^https?:\/\/api\.[a-z0-9-]+\.(top|xyz|pw|click|icu|site|online|space)\//^$important,xmlhttprequest,third-party
 
 
+! --- [OMNI-YANDEX-V9.0] Эксклюзивный коридор для Яндекса ---
+! Прямые правила без Regex для исправления ERR_ADDRESS
+@@||yandex.ru^$important,document,xmlhttprequest,js,css
+@@||ya.ru^$important,document,xmlhttprequest,js,css
+@@||yandex.net^$important,js,xmlhttprequest,image
+@@||yastatic.net^$important,js,xmlhttprequest,css
+
+! --- [OMNI-GLOBAL-REGEX] Всё остальное (Google, YT, Bing) ---
+! ОставляемRegex для тех, кому он не мешает
+@@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|googlevideo|youtubei\.googleapis|ytimg|ggpht)\.(com|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,xmlhttprequest,app=com.google.android.youtube|com.google.android.apps.youtube.music
+
+! --- [DNS-YANDEX-ACCEL] Персональный DNS-форсаж ---
+! Снимаем барьеры только для доменов Яндекса
+@@||yandex.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+@@||ya.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+
+
 ! --- UNIVERSAL SMART BYPASS ---
 ! Если сайт использует старые методы (inline scripts + eval), AdGuard не будет их рубить жестко
 ! Это предотвращает "белый экран" на старых PHP-платформах
