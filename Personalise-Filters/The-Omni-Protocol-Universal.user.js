@@ -43,22 +43,26 @@ const clearTraces = () => {
     }
 };
 
-    /**
+/**
  * OMNI-INFOBASE: Эвристическая база данных и стили
  */
 const OMNI_Infobase = () => ({
-    // Стили консоли
+    // Стили консоли (Исправлено: 3 тега %c — 3 стиля)
     TAG: '%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9 %c',
     STYLE_GOLD: 'color: #FFD700; background: #000; font-weight: bold; padding: 4px; border-left: 4px solid #FFD700;',
     STYLE_BLUE: 'color: #00BFFF; background: #111; font-weight: bold; padding: 4px;',
-    
+    STYLE_RESET: 'color: #AAA; background: transparent; font-style: italic;', // Для закрытия %c и версии
+
+    // ТУРБО-СТИЛИ (как в Kinetic Media Core)
+    STYLE_TURBO_TAG: 'color: #00FFFF; background: #003333; font-weight: bold; border-left: 3px solid #00FFFF; padding: 2px 5px;',
+    STYLE_TURBO_TEXT: 'color: #00FFFF; font-weight: bold; text-shadow: 0 0 5px #00FFFF;',
+
     // Анализ окружения
     isUnsafeHTTP: window.location.protocol === 'http:',
     isAdminPanel: /admin|phpmyadmin|sql|controlpanel/i.test(window.location.href),
     hasOldTech:   !!document.querySelector('frameset, table[bgcolor], center'),
     isTechHost:   /localhost|127\.0\.0\.1|celeo\.net/i.test(window.location.hostname),
     
-    // Предикт режима
     getMode: function() {
         return (this.isTechHost || (this.isUnsafeHTTP && (this.isAdminPanel || this.hasOldTech))) 
                ? 'COMPATIBILITY' 
@@ -2434,27 +2438,25 @@ const deployOmniStack = (mode) => {
  * OMNI-CHRONOS: Центральный процессор протокола
  */
 const OmniChronos = {
-    initBaseFoundation: () => {
+initBaseFoundation: () => {
         const info = OMNI_Infobase();
         const mode = info.getMode();
 
-        // 1. Главный баннер (СТРОГО 3 стиля для 3-х %c)
-        // Мы убрали лишние запятые, чтобы текст "CORE: ACTIVE" шел СРАЗУ за баннером
+        // 1. Главный баннер (Теперь без лишних %c в выводе)
         console.log(
             info.TAG, 
             info.STYLE_GOLD, 
             info.STYLE_BLUE, 
-            'color: #AAA; font-style: italic;', // Стиль для 3-го %c (текст после версии)
+            info.STYLE_RESET, 
             `🚀 CORE: ${mode} ENGINE ACTIVE`
         );
 
-        // 2. Развертывание уровней
+        // 2. Развертывание
         OmniChronos.initQuantumModules(info);
     },
 
     initQuantumModules: (info) => {
         const STYLE_L = 'color: #FFD700; background: #222; font-weight: bold; padding: 2px 5px; border-radius: 3px; border: 1px solid #444;';
-        const STYLE_SYMBOL = 'color: #FF4500; font-weight: bold;'; // Огненная молния
         const STYLE_NAME = 'color: #00BFFF; font-weight: bold; text-transform: lowercase;';
         const STYLE_DESC = 'color: #666; font-family: "Courier New", monospace;';
 
@@ -2463,15 +2465,14 @@ const OmniChronos = {
             try {
                 deploy();
                 
-                // Идеально выровненный лог уровня
+                // ТУРБО-ЛОГ для каждого модуля (стиль как у Kinetic Media)
                 console.log(
-                    `%c${layerID}%c %c⚡%c %c${deploy.name || 'omni-module'}%c is synchronized.`,
-                    STYLE_L,
-                    '', // Сброс
-                    STYLE_SYMBOL,
-                    '', // Сброс
+                    `%c[Omni-Chronos-v3.3.9]%c ⚡ %c${layerID}: %c${deploy.name || 'omni-module'}%c [ACTIVE]`,
+                    info.STYLE_TURBO_TAG,
+                    'color: #FF4500; font-weight: bold;', // Молния
+                    info.STYLE_TURBO_TEXT,
                     STYLE_NAME,
-                    STYLE_DESC
+                    'color: #00FF41; font-weight: bold;' // Зеленый ACTIVE
                 );
             } catch (e) {
                 console.error(`%c[FAULT]%c ${layerID} failure:`, 'color: #f00; font-weight: bold;', 'color: #888;', e);
