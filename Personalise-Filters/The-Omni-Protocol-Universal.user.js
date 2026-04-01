@@ -778,6 +778,18 @@
                 return;
             }
 
+        const getHeuristicMode = () => {
+        const isUnsafeHTTP = window.location.protocol === 'http:';
+        const isAdminPanel = /admin|phpmyadmin|sql|controlpanel/i.test(window.location.href);
+        const hasOldTech = !!document.querySelector('frameset, table[bgcolor], center');
+        const isLocal = /localhost|127.0.0.1|celeo\.net/.test(window.location.hostname);
+
+        if (isLocal || (isUnsafeHTTP && (isAdminPanel || hasOldTech))) {
+            return 'COMPATIBILITY'; // Режим совместимости
+        }
+        return 'ULTIMATE'; // Режим полной защиты
+    };
+            
             // Запуск всех квантовых модулей
             OmniChronos.initQuantumModules();
         },
