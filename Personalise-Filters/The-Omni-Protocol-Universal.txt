@@ -61,6 +61,8 @@ $network,domain=outlook.office365.com|outlook.office.com|graph.microsoft.com|mic
 @@||graph.microsoft.com^$important
 @@||outlook.office365.com^$important
 
+@@||celeo.net^$document,important
+
 ! --- [MALWARE & PHISHING PROTECTION LAYER] ---
 ||*cryptobrowser.site^
 ||*get-monero.org^
