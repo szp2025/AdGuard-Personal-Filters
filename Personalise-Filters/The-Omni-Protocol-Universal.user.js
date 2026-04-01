@@ -2458,7 +2458,7 @@ initBaseFoundation: () => {
             }
         });
         console.log('%c[SUCCESS]%c Stealth: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
-    }}
+    }
 };
 
 /**
