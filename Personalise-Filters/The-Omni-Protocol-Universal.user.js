@@ -751,26 +751,6 @@
     };
 
 
-    const repairLegacyJS = () => {
-        const jq = window.jQuery || window.$;
-        if (jq && jq.fn) {
-            try {
-                if (!jq.fn.editable) jq.fn.editable = { defaults: {} };
-                else if (jq.fn.editable && !jq.fn.editable.defaults) jq.fn.editable.defaults = {};
-                console.log(OMNI_TAG, STYLE_CORE, '🛠️ L40: Legacy components patched.');
-            } catch(e) {}
-        }
-    };
-
-    const isLegacyFramework = () => {
-        const scripts = Array.from(document.scripts);
-        return scripts.some(s => /jquery[-.](([1-2]\.)|(3\.[0-3]\.))/i.test(s.src)) || 
-               !!document.querySelector('frameset, table[bgcolor], center');
-    };
-
-
-
-
     /**
      * OMNI-CHRONOS: Центральный процессор протокола
      */
