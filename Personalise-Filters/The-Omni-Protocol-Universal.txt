@@ -100,12 +100,34 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 ! мы возвращаем "Success", но с пустым ответом, чтобы запутать логику скрипта.
 #%#//scriptlet("set-constant", "XMLHttpRequest.prototype.send", "function() { if (this._url && this._url.match(/:5555|:5037|:3306|:5432/)) return; return send.apply(this, arguments); }")
 
-! --- [OMNI-SEARCH-MASTER] Глобальное разрешение + Фикс для Dzen/Yandex ---
-@@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|yandex|ya|dzen|mail|qwant|ecosia|startpage|swisscows|baidu|naver|sogou|so)\.(com|ru|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,generichide,css,xmlhttprequest
+! --- US & Global ---
 
-! --- [DZEN-INFRA-PATCH] Разрешение для контента Дзена ---
-@@||dzeninfra.ru^$important,xmlhttprequest,js,domain=dzen.ru
-@@||yastatic.net^$important,js,domain=dzen.ru|yandex.ru
+@@||google.*^$important,document,generichide,css,xmlhttprequest
+
+@@||bing.com^$important,document,generichide,css,xmlhttprequest
+
+@@||duckduckgo.com^$important,document,generichide,css,xmlhttprequest
+
+@@||yahoo.com^$important,document,generichide,css,xmlhttprequest
+
+@@||search.brave.com^$important,document,generichide,css,xmlhttprequest
+
+! --- CIS (СНГ) ---
+
+@@||yandex.*^$important,document,generichide,css,xmlhttprequest
+
+@@||ya.ru^$important,document,generichide,css,xmlhttprequest
+
+@@||dzen.ru^$important,document,generichide,css,xmlhttprequest
+
+@@||mail.ru^$important,document,generichide,css,xmlhttprequest
+
+
+! --- Europe & Privacy ---
+
+@@||qwant.com^$important,document,generichide,css,xmlhttprequest
+
+@@||ecosia.org^$important,document,generichide,css,xmlhttprequest
 
 ! [L2: NETWORK-VOID — V125.0 — THE PURGE]
 ! Склеенный слой: Сетевая тишина (L2) + Стерилизация URL (L25).
