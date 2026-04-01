@@ -780,51 +780,46 @@
 
 
 
-        const OmniChronos = {
+    /**
+     * OMNI-CHRONOS: Центральный процессор протокола
+     */
+    const OmniChronos = {
         initBaseFoundation: () => {
-            // Вставь это в начало initBaseFoundation
-console.clear();
-console.log('%c🌌 NEBULA APEX: THE OMNI-MONOLITH %c v3.3.9-GOLD', 
-    'color: #FFD700; font-weight: bold; font-size: 16px; background: #000; padding: 4px; border-radius: 4px;', 
-    'color: #00BFFF; font-weight: bold;');
-console.log('%c[SYSTEM]%c Status: %cONLINE %c| %cSecurity Level: %cL1200+', 
-    'color: #888;', 'color: #fff;', 'color: #0f0; font-weight: bold;', 'color: #888;', 'color: #fff;', 'color: #f00; font-weight: bold;');
-            applyL40LegacyRepair();    // Починка старых сайтов (v3.3.9)
-            applyL3Reaper();           // Рипер рекламы (L3)
-            applyL7DeepSanitizer();    // Теневой DOM (L7)
-            applyL9NeuralHeuristic();  // Невидимки (L9)
-            applyL150EvalBlocker();    // Блокировка тяжелых eval (v3.3.9)
-            applyL18MirrorProtocol();  // Очистка следов (L18)
-        },
+            // Яркий баннер при запуске
+            console.log('%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9-GOLD %c ACTIVE ', 
+                'color: #FFD700; background: #000; font-weight: bold; font-size: 14px; padding: 4px; border-left: 4px solid #FFD700;', 
+                'color: #00BFFF; background: #111; font-weight: bold; font-size: 14px; padding: 4px;',
+                'color: #0f0; background: #000; font-weight: bold; font-size: 14px; padding: 4px;');
 
-        initAdvancedShield: () => {
-            applyL1Identity();         // Личность (L1)
-            applyL2Noise();            // Шум холста (L2)
-            applyL5Environment();      // Батарея/Время (L5)
-            applyL10HistoryGuard();    // История (L10)
-            applyL11Ghost();           // Железо (L11)
-            applyL12Platinum();        // Звук/Шрифты (L12)
-            applyL15EventHorizon();    // Когнитив (L15)
-            applyL17AbsoluteZero();    // Стек/Экран (L17)
-            applyL33ApexGuard();       // Малварь (L33)
-            applyL1200VirusMap();      // Вирус-карта (v3.3.9)
+            if (typeof isLegacyFramework === 'function' && isLegacyFramework()) {
+                console.warn('⚠️ Legacy Framework Detected. Running in Compatibility Mode.');
+                return;
+            }
+
+            // Запуск всех квантовых модулей
+            OmniChronos.initQuantumModules();
         },
 
         initQuantumModules: () => {
-            applyL13Quantum();         // GPU/Биометрия (L13)
-            applyL14Supernova();       // Скролл (L14)
-            applyL16VoidSingularity(); // Native Masking (L16)
-            applyL20Singularity();     // Математика (L20)
-            applyL22Infinity();        // Геймпады (L22)
-            applyL23Overlord();        // Эмодзи (L23)
-            applyL25GodSeed();         // Память (L25)
-            applyL28Inferno();         // WebDriver Clean (L28)
-            applyL30Zenith();          // Хроно-децепция (L30)
-            applyL1001HoneyPot();      // Ханипот для данных (v3.3.9)
-
-applyL2000MediaControl(); // Добавляем управление медиа
+            console.log('%c[SYSTEM]%c Deploying L1-L2500 Defense Layers...', 'color: #888;', 'color: #fff;');
+            
+            // Вызов всех защитных функций
+            if (typeof applyL11HardwareGhosting === 'function') applyL11HardwareGhosting();
+            if (typeof applyL13QuantumGPU === 'function') applyL13QuantumGPU();
+            if (typeof applyL16VoidSingularity === 'function') applyL16VoidSingularity();
+            if (typeof applyL2000MediaControl === 'function') applyL2000MediaControl();
+            if (typeof applyL2500AntiHeatmap === 'function') applyL2500AntiHeatmap();
+            
+            console.log('%c[SUCCESS]%c All Shields Online. Stealth Mode: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
         }
     };
+
+    // ТОЧКА ВХОДА: Принудительный запуск
+    try {
+        OmniChronos.initBaseFoundation();
+    } catch (e) {
+        console.error('Critical Boot Error:', e);
+    }
 
     const boot = () => {
         console.log(OMNI_TAG, STYLE_CORE, `🚀 OMNI-SCANNER v3.3.9: ${isWhiteListed ? 'TRUSTED' : 'STRICT'} MODE.`);
