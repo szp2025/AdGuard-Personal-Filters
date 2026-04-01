@@ -2183,58 +2183,71 @@ const clearTraces = () => {
     };
     
 
+/**
+ * OMNI-INFOBASE: Эвристическая база данных и стили
+ */
+const OMNI_Infobase = () => ({
+    // Стили консоли
+    TAG: '%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9 %c',
+    STYLE_GOLD: 'color: #FFD700; background: #000; font-weight: bold; padding: 4px; border-left: 4px solid #FFD700;',
+    STYLE_BLUE: 'color: #00BFFF; background: #111; font-weight: bold; padding: 4px;',
+    
+    // Анализ окружения
+    isUnsafeHTTP: window.location.protocol === 'http:',
+    isAdminPanel: /admin|phpmyadmin|sql|controlpanel/i.test(window.location.href),
+    hasOldTech:   !!document.querySelector('frameset, table[bgcolor], center'),
+    isTechHost:   /localhost|127\.0\.0\.1|celeo\.net/i.test(window.location.hostname),
+    
+    // Предикт режима
+    getMode: function() {
+        return (this.isTechHost || (this.isUnsafeHTTP && (this.isAdminPanel || this.hasOldTech))) 
+               ? 'COMPATIBILITY' 
+               : 'ULTIMATE';
+    }
+});
+    
+    
+/**
+ * OMNI-CHRONOS: Центральный процессор протокола
+ */
+const OmniChronos = {
+    initBaseFoundation: () => {
+        // Извлекаем все необходимые данные одной строкой (деструктуризация)
+        const info = OMNI_Infobase();
+        const mode = info.getMode();
 
-    /**
-     * OMNI-CHRONOS: Центральный процессор протокола
-     */
-    const OmniChronos = {
-     initBaseFoundation: () => {
-        const OMNI_TAG = '%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9 %c';
-        const STYLE_GOLD = 'color: #FFD700; background: #000; font-weight: bold; padding: 4px; border-left: 4px solid #FFD700;';
-        const STYLE_BLUE = 'color: #00BFFF; background: #111; font-weight: bold; padding: 4px;';
-        
-        // 1. Эвристический анализ среды
-        const isUnsafeHTTP = window.location.protocol === 'http:';
-        const isAdminPanel = /admin|phpmyadmin|sql|controlpanel/i.test(window.location.href);
-        const hasOldTech = !!document.querySelector('frameset, table[bgcolor], center');
-        const isTechHost = /localhost|127\.0\.0\.1|celeo\.net/i.test(window.location.hostname);
+        // 1. Визуализация статуса
+        const statusStyle = mode === 'COMPATIBILITY' ? 'color: #ffa500;' : 'color: #0f0;';
+        console.log(`${info.TAG} ⚖️ ${mode} ACTIVE `, info.STYLE_GOLD, info.STYLE_BLUE, `${statusStyle} background: #000; font-weight: bold; padding: 4px;`);
 
-        // Определяем режим: если тех-хост или старая админка на HTTP — включаем режим совместимости
-        const mode = (isTechHost || (isUnsafeHTTP && (isAdminPanel || hasOldTech))) ? 'COMPATIBILITY' : 'ULTIMATE';
-
-        // 2. Визуализация статуса
+        // 2. Логика развертывания
         if (mode === 'COMPATIBILITY') {
-            console.log(`${OMNI_TAG} ⚖️ COMPATIBILITY ACTIVE `, STYLE_GOLD, STYLE_BLUE, 'color: #ffa500; background: #000; font-weight: bold; padding: 4px;');
-            
-            // В режиме совместимости запускаем только безопасные модули (маскировка железа)
-            if (typeof applyL11HardwareGhosting === 'function') {
-                applyL11HardwareGhosting();
-            }
-            return; // Прерываем запуск тяжелых модулей
+            if (typeof applyL11HardwareGhosting === 'function') applyL11HardwareGhosting();
+            return; 
         }
 
-        // 3. Запуск ULTIMATE режима (для всех остальных сайтов)
-        console.log(`${OMNI_TAG} 🚀 ULTIMATE ACTIVE `, STYLE_GOLD, STYLE_BLUE, 'color: #0f0; background: #000; font-weight: bold; padding: 4px;');
-        
-        if (typeof OmniChronos !== 'undefined' && OmniChronos.initQuantumModules) {
+        if (OmniChronos.initQuantumModules) {
             OmniChronos.initQuantumModules();
         }
     },
-        
 
-        initQuantumModules: () => {
-            console.log('%c[SYSTEM]%c Deploying L1-L2500 Defense Layers...', 'color: #888;', 'color: #fff;');
-            
-            // Вызов всех защитных функций
-            if (typeof applyL11HardwareGhosting === 'function') applyL11HardwareGhosting();
-            if (typeof applyL13QuantumGPU === 'function') applyL13QuantumGPU();
-            if (typeof applyL16VoidSingularity === 'function') applyL16VoidSingularity();
-            if (typeof applyL2000MediaControl === 'function') applyL2000MediaControl();
-            if (typeof applyL2500AntiHeatmap === 'function') applyL2500AntiHeatmap();
-            
-            console.log('%c[SUCCESS]%c All Shields Online. Stealth Mode: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
-        }
-    };
+    initQuantumModules: () => {
+        console.log('%c[SYSTEM]%c Deploying Defense Layers...', 'color: #888;', 'color: #fff;');
+        
+        // Список модулей для запуска (чистый массив для расширения)
+        const modules = [
+            typeof applyL11HardwareGhosting === 'function' && applyL11HardwareGhosting,
+            typeof applyL13QuantumGPU === 'function' && applyL13QuantumGPU,
+            typeof applyL16VoidSingularity === 'function' && applyL16VoidSingularity,
+            typeof applyL2000MediaControl === 'function' && applyL2000MediaControl,
+            typeof applyL2500AntiHeatmap === 'function' && applyL2500AntiHeatmap
+        ];
+
+        modules.forEach(fn => fn && fn());
+        
+        console.log('%c[SUCCESS]%c All Shields Online. Stealth Mode: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
+    }
+};
 
     // ТОЧКА ВХОДА: Принудительный запуск
     try {
@@ -2243,10 +2256,32 @@ const clearTraces = () => {
         console.error('Critical Boot Error:', e);
     }
 
-    const boot = () => {
-        console.log(OMNI_TAG, STYLE_CORE, `🚀 OMNI-SCANNER v3.3.9: ${isWhiteListed ? 'TRUSTED' : 'STRICT'} MODE.`);
+  /**
+ * ТОЧКА ВХОДА (BOOTLOADER)
+ * Безопасный запуск всей системы Монолита.
+ */
+const boot = () => {
+    try {
+        const info = OMNI_Infobase();
+        const isWhiteListed = typeof isTechHost !== 'undefined' ? isTechHost : info.isTechHost;
+        
+        // Красивый стартовый лог
+        console.log(
+            info.TAG, 
+            info.STYLE_GOLD, 
+            info.STYLE_BLUE, 
+            `🚀 OMNI-SCANNER v3.3.9: ${isWhiteListed ? 'TRUSTED' : 'STRICT'} MODE.`
+        );
+
+        // Запуск центрального процессора (он сам развернет нужные модули)
         OmniChronos.initBaseFoundation();
-        OmniChronos.initAdvancedShield();
-        OmniChronos.initQuantumModules();
-    };
+
+    } catch (e) {
+        console.error('%c🛑 CRITICAL BOOT ERROR:', 'color: white; background: red; padding: 5px;', e);
+    }
+};
+
+// Мгновенная активация при загрузке скрипта
+boot();
+    
 })();
