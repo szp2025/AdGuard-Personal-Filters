@@ -60,26 +60,32 @@ const OMNI_Infobase = () => ({
     getMode: function() { return this.isTechHost ? 'COMPATIBILITY' : 'ULTIMATE'; }
 });
 
-    /**
- * ЛОГИЧЕСКИЙ ФИЛЬТР: Очистка консоли от мусора библиотек
+/**
+ * ЛОГИЧЕСКИЙ ФИЛЬТР: Очистка консоли от мусора библиотек (Stealth Version)
  */
 const silenceLibraryNoise = () => {
     const orgWarn = console.warn;
     const orgLog = console.log;
 
-    // Подавляем JQMIGRATE и прочий устаревший шум
+    // 1. Очистка WARN (подавляем JQMIGRATE и прочий шум)
     console.warn = function(...args) {
         const msg = args[0] ? String(args[0]) : '';
-        if (msg.includes('JQMIGRATE') || msg.includes('deprecated')) {
-            return; // Игнорируем этот спам
+        // Список исключений для полной тишины
+        if (msg.includes('JQMIGRATE') || msg.includes('deprecated') || msg.includes('DevTools')) {
+            return; 
         }
         return orgWarn.apply(this, arguments);
     };
 
-    // Можно также подавить мелкие логи миграции, если они мешают
+    // 2. Очистка LOG (убираем мусор миграции)
     console.log = function(...args) {
         const msg = args[0] ? String(args[0]) : '';
+        
+        // 🔥 КРИТИЧЕСКАЯ ПРОВЕРКА: Если лог содержит наш собственный тег, 
+        // но это не основной запуск — мы можем случайно зациклить вывод.
+        // Просто пропускаем JQMIGRATE.
         if (msg.includes('JQMIGRATE')) return;
+
         return orgLog.apply(this, arguments);
     };
 };
