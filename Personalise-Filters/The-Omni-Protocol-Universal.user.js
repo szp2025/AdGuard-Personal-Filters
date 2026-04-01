@@ -2477,7 +2477,7 @@ const OmniChronos = {
         // Финальный статус (всегда виден)
         console.log('%c[SUCCESS]%c Stealth Engine: Fully Operational.', 'color: #0f0; font-weight: bold;', 'color: #fff;');
     }
-
+}
     // ТОЧКА ВХОДА: Принудительный запуск
     try {
         OmniChronos.initBaseFoundation();
