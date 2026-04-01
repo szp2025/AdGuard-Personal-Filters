@@ -67,30 +67,23 @@ const silenceLibraryNoise = () => {
     const orgWarn = console.warn;
     const orgLog = console.log;
 
-    // 1. Очистка WARN (подавляем JQMIGRATE и прочий шум)
     console.warn = function(...args) {
-        const msg = args[0] ? String(args[0]) : '';
-        // Список исключений для полной тишины
+        const msg = String(args[0] || '');
+        // Список мусора, который мы полностью игнорируем
         if (msg.includes('JQMIGRATE') || msg.includes('deprecated') || msg.includes('DevTools')) {
             return; 
         }
-        return orgWarn.apply(this, arguments);
+
+        // Если это не мусор, выводим как обычный варнинг без баннера NEBULA
+        return orgWarn.apply(console, args);
     };
 
-    // 2. Очистка LOG (убираем мусор миграции)
     console.log = function(...args) {
-        const msg = args[0] ? String(args[0]) : '';
-        
-        // 🔥 КРИТИЧЕСКАЯ ПРОВЕРКА: Если лог содержит наш собственный тег, 
-        // но это не основной запуск — мы можем случайно зациклить вывод.
-        // Просто пропускаем JQMIGRATE.
+        const msg = String(args[0] || '');
         if (msg.includes('JQMIGRATE')) return;
-
-        return orgLog.apply(this, arguments);
+        return orgLog.apply(console, args);
     };
-};
-
-// Запускаем немедленно
+};// Запускаем немедленно
 silenceLibraryNoise();
     
    
