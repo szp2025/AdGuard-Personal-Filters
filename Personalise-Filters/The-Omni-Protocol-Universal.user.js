@@ -2434,46 +2434,44 @@ const deployOmniStack = (mode) => {
  * OMNI-CHRONOS: Центральный процессор протокола
  */
 const OmniChronos = {
-initBaseFoundation: () => {
+    initBaseFoundation: () => {
         const info = OMNI_Infobase();
         const mode = info.getMode();
 
-        // 1. Управление jQuery (пока оставляем видимым, но гасим лишний шум если нужно)
-        if (window.jQuery) {
-            // window.jQuery.migrateMute = true; // Раскомментировать, если спам станет невыносимым
-        }
-
-        // 2. Главный баннер (Исправлено: 3 стиля для 3-х %c в TAG)
+        // 1. Главный баннер (СТРОГО 3 стиля для 3-х %c)
+        // Мы убрали лишние запятые, чтобы текст "CORE: ACTIVE" шел СРАЗУ за баннером
         console.log(
             info.TAG, 
             info.STYLE_GOLD, 
             info.STYLE_BLUE, 
-            'color: transparent;', // Четко закрываем 3-й тег %c в Nebula Apex
+            'color: #AAA; font-style: italic;', // Стиль для 3-го %c (текст после версии)
             `🚀 CORE: ${mode} ENGINE ACTIVE`
         );
 
-        // 3. Развертывание (Максимальная видимость всех уровней)
+        // 2. Развертывание уровней
         OmniChronos.initQuantumModules(info);
     },
 
     initQuantumModules: (info) => {
-        // Золотая рамка для ID уровня (L10, L20...)
         const STYLE_L = 'color: #FFD700; background: #222; font-weight: bold; padding: 2px 5px; border-radius: 3px; border: 1px solid #444;';
-        // Описание синхронизации
-        const STYLE_DESC = 'color: #888; font-family: "Courier New", monospace;';
+        const STYLE_SYMBOL = 'color: #FF4500; font-weight: bold;'; // Огненная молния
+        const STYLE_NAME = 'color: #00BFFF; font-weight: bold; text-transform: lowercase;';
+        const STYLE_DESC = 'color: #666; font-family: "Courier New", monospace;';
 
         OMNI_Registry.forEach((deploy, index) => {
             const layerID = `L${(index + 1) * 10}`; 
             try {
                 deploy();
                 
-                // Исправленный лог: убрали лишние %c, добавили четкое разделение
+                // Идеально выровненный лог уровня
                 console.log(
-                    `%c${layerID}%c ⚡ %c${deploy.name || 'Omni-Module'}%c is synchronized.`,
+                    `%c${layerID}%c %c⚡%c %c${deploy.name || 'omni-module'}%c is synchronized.`,
                     STYLE_L,
-                    'color: #555;', // Для молнии
-                    'color: #00BFFF; font-weight: bold;', // Для имени модуля
-                    STYLE_DESC // Для статуса
+                    '', // Сброс
+                    STYLE_SYMBOL,
+                    '', // Сброс
+                    STYLE_NAME,
+                    STYLE_DESC
                 );
             } catch (e) {
                 console.error(`%c[FAULT]%c ${layerID} failure:`, 'color: #f00; font-weight: bold;', 'color: #888;', e);
@@ -2482,41 +2480,21 @@ initBaseFoundation: () => {
         
         console.log('%c[SUCCESS]%c All neural layers are locked. Stealth: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
     }
-    
 };
-    // ТОЧКА ВХОДА: Принудительный запуск
-    try {
-        OmniChronos.initBaseFoundation();
-    } catch (e) {
-        console.error('Critical Boot Error:', e);
-    }
 
-  /**
- * ТОЧКА ВХОДА (BOOTLOADER)
- * Безопасный запуск всей системы Монолита.
+/**
+ * BOOTLOADER: Единственная точка входа
  */
 const boot = () => {
     try {
-        const info = OMNI_Infobase();
-        const isWhiteListed = typeof isTechHost !== 'undefined' ? isTechHost : info.isTechHost;
-        
-        // Красивый стартовый лог
-     /*   console.log(
-            info.TAG, 
-            info.STYLE_GOLD, 
-            info.STYLE_BLUE, 
-            `🚀 OMNI-SCANNER v3.3.9: ${isWhiteListed ? 'TRUSTED' : 'STRICT'} MODE.`
-        );
-*/
-        // Запуск центрального процессора (он сам развернет нужные модули)
+        // Мы вызываем initBaseFoundation только ОДИН РАЗ здесь
         OmniChronos.initBaseFoundation();
-
     } catch (e) {
         console.error('%c🛑 CRITICAL BOOT ERROR:', 'color: white; background: red; padding: 5px;', e);
     }
 };
 
-// Мгновенная активация при загрузке скрипта
+// Запуск системы
 boot();
     
 })();
