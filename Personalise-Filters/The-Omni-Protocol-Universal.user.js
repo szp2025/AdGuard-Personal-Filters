@@ -66,6 +66,33 @@ const OMNI_Infobase = () => ({
     }
 });
 
+    /**
+ * ЛОГИЧЕСКИЙ ФИЛЬТР: Очистка консоли от мусора библиотек
+ */
+const silenceLibraryNoise = () => {
+    const orgWarn = console.warn;
+    const orgLog = console.log;
+
+    // Подавляем JQMIGRATE и прочий устаревший шум
+    console.warn = function(...args) {
+        const msg = args[0] ? String(args[0]) : '';
+        if (msg.includes('JQMIGRATE') || msg.includes('deprecated')) {
+            return; // Игнорируем этот спам
+        }
+        return orgWarn.apply(this, arguments);
+    };
+
+    // Можно также подавить мелкие логи миграции, если они мешают
+    console.log = function(...args) {
+        const msg = args[0] ? String(args[0]) : '';
+        if (msg.includes('JQMIGRATE')) return;
+        return orgLog.apply(this, arguments);
+    };
+};
+
+// Запускаем немедленно
+silenceLibraryNoise();
+    
    
     // --- [L-LIBRARY: DEFINITIONS] ---
 
