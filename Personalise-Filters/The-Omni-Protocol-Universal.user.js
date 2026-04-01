@@ -35,6 +35,14 @@
 (function() {
     'use strict';
 
+    // Добавь это в начало основного блока инициализации
+const clearTraces = () => {
+    if (window.console && window.console.clear && !/localhost|127\.0\.0\.1/.test(window.location.hostname)) {
+        // Очищаем консоль от стартовых логов расширения через 100мс
+        setTimeout(() => console.clear(), 100);
+    }
+};
+    
     // --- [L-LIBRARY: DEFINITIONS] ---
 
     /**
