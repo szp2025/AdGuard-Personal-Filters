@@ -2092,16 +2092,22 @@ const applyL1200VirusMap = () => {
         return false;
     };
 
-    // 2. ПЕРЕХВАТ СОБЫТИЙ ВЗАИМОДЕЙСТВИЯ (UI Guard)
-    window.addEventListener('click', e => {
-        const a = e.target.closest('a');
-        if (a && a.href) {
-            if (interceptThreat(a.href, 'Link Click')) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
+// 2. ПЕРЕХВАТ СОБЫТИЙ ВЗАИМОДЕЙСТВИЯ (UI Guard)
+window.addEventListener('click', e => {
+    const a = e.target.closest('a');
+    if (a && a.href) {
+        // --- ДОБАВЛЯЕМ ПРОВЕРКУ ТУТ ---
+        const isGitHubEdit = a.closest('[aria-label="Edit this file"], .js-blob-edit-button');
+        if (isGitHubEdit) return; // Пропускаем клик, если это кнопка редактора
+        // ------------------------------
+
+        if (interceptThreat(a.href, 'Link Click')) {
+            e.preventDefault();
+            e.stopPropagation();
         }
-    }, true);
+    }
+}, true);
+    
 
     // 3. ПЕРЕХВАТ ПРОГРАММНЫХ ОКОН (Window Hijack Protection)
     const originalOpen = window.open;
