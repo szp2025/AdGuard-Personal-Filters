@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         Omni-Device-Bridge
 // @namespace    OmniProtocol
-// @version      1.5.0
-// @description  Системный мост [Chrome-Internal Mode]
+// @version      1.6.0
+// @description  Системный мост [Omnibox Bypass]
 // @author       Командор
 // @match        *://*/*
+// @match        chrome://omnibox/*
 // @grant        none
 // @run-at       document-start
 // ==/UserScript==
@@ -21,14 +22,14 @@
         if (apps[id]) window.location.href = apps[id];
     };
 
-    // Создаем глобальную функцию, которую Chrome сможет вызвать из адресной строки
-    window.omni = () => {
-        const cmd = prompt("OMNI-INTERNAL\n1: Settings | 2: ReVanced | 3: WiFi");
+    // Слушаем глобальный вызов
+    window.omniTrigger = () => {
+        const cmd = prompt("OMNI-SYSTEM\n1: Settings\n2: ReVanced\n3: WiFi");
         if (cmd) launch(cmd);
     };
 
-    // Если мы на странице ошибки (как на твоем скрине), пробуем пробиться через заголовок
-    if (document.title.includes("omni.system")) {
-        window.omni();
+    // Авто-активация, если зашли через наш ярлык
+    if (window.location.hash === '#run') {
+        window.omniTrigger();
     }
 })();
