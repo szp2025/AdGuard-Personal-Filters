@@ -782,6 +782,13 @@
 
         const OmniChronos = {
         initBaseFoundation: () => {
+            // Вставь это в начало initBaseFoundation
+console.clear();
+console.log('%c🌌 NEBULA APEX: THE OMNI-MONOLITH %c v3.3.9-GOLD', 
+    'color: #FFD700; font-weight: bold; font-size: 16px; background: #000; padding: 4px; border-radius: 4px;', 
+    'color: #00BFFF; font-weight: bold;');
+console.log('%c[SYSTEM]%c Status: %cONLINE %c| %cSecurity Level: %cL1200+', 
+    'color: #888;', 'color: #fff;', 'color: #0f0; font-weight: bold;', 'color: #888;', 'color: #fff;', 'color: #f00; font-weight: bold;');
             applyL40LegacyRepair();    // Починка старых сайтов (v3.3.9)
             applyL3Reaper();           // Рипер рекламы (L3)
             applyL7DeepSanitizer();    // Теневой DOM (L7)
