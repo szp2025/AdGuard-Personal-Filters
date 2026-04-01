@@ -358,30 +358,9 @@ $header=X-Robots-Tag: noai, noimageai, important
 ! Эвристический проход для ВСЕХ значимых поисковых систем мира.
 ! Разрешаем структуру (document), стили (css) и живой поиск (xhr).
 
-! --- US & Global ---
-@@||google.*^$important,document,generichide,css,xmlhttprequest
-@@||bing.com^$important,document,generichide,css,xmlhttprequest
-@@||duckduckgo.com^$important,document,generichide,css,xmlhttprequest
-@@||yahoo.com^$important,document,generichide,css,xmlhttprequest
-@@||search.brave.com^$important,document,generichide,css,xmlhttprequest
-
-! --- CIS (СНГ) ---
-@@||yandex.*^$important,document,generichide,css,xmlhttprequest
-@@||ya.ru^$important,document,generichide,css,xmlhttprequest
-@@||dzen.ru^$important,document,generichide,css,xmlhttprequest
-@@||mail.ru^$important,document,generichide,css,xmlhttprequest
-
-! --- Europe & Privacy ---
-@@||qwant.com^$important,document,generichide,css,xmlhttprequest
-@@||ecosia.org^$important,document,generichide,css,xmlhttprequest
-@@||startpage.com^$important,document,generichide,css,xmlhttprequest
-@@||swisscows.com^$important,document,generichide,css,xmlhttprequest
-
-! --- Asia (China, Korea, Japan) ---
-@@||baidu.com^$important,document,generichide,css,xmlhttprequest
-@@||naver.com^$important,document,generichide,css,xmlhttprequest
-@@||sogou.com^$important,document,generichide,css,xmlhttprequest
-@@||so.com^$important,document,generichide,css,xmlhttprequest
+! --- [OMNI-SEARCH-MASTER] Глобальное разрешение для поисковых систем ---
+! Regex захватывает все основные мировые и региональные поисковики одним проходом
+@@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|yandex|ya|dzen|mail|qwant|ecosia|startpage|swisscows|baidu|naver|sogou|so)\.(com|ru|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,generichide,css,xmlhttprequest
 
 ! [L11-S4.2: DNS-ACCELERATION-GLOBAL]
 ! Снятие DNS-барьеров для мгновенного резолвинга поисковиков.
