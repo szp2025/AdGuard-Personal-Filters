@@ -100,13 +100,12 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 ! мы возвращаем "Success", но с пустым ответом, чтобы запутать логику скрипта.
 #%#//scriptlet("set-constant", "XMLHttpRequest.prototype.send", "function() { if (this._url && this._url.match(/:5555|:5037|:3306|:5432/)) return; return send.apply(this, arguments); }")
 
-! --- [OMNI-REGEX-STREAM-V1] Базовая мощь ---
-! Одной строкой разрешаем все видео-потоки и API для YouTube и Music
-@@/^https?:\/\/([^\/]+\.)?(googlevideo|youtubei\.googleapis|ytimg|ggpht)\.com\/.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music
+! --- [OMNI-SEARCH-MASTER] Глобальное разрешение + Фикс для Dzen/Yandex ---
+@@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|yandex|ya|dzen|mail|qwant|ecosia|startpage|swisscows|baidu|naver|sogou|so)\.(com|ru|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,generichide,css,xmlhttprequest
 
-! --- [OMNI-TELEMETRY-KILLER] Тотальное подавление сбора данных ---
-! Блокируем статистику s.youtube.com даже внутри разрешенных приложений
-||/^https?:\/\/([^\/]+\.)?s\.youtube\.com\/api\/stats\/.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music,important
+! --- [DZEN-INFRA-PATCH] Разрешение для контента Дзена ---
+@@||dzeninfra.ru^$important,xmlhttprequest,js,domain=dzen.ru
+@@||yastatic.net^$important,js,domain=dzen.ru|yandex.ru
 
 ! [L2: NETWORK-VOID — V125.0 — THE PURGE]
 ! Склеенный слой: Сетевая тишина (L2) + Стерилизация URL (L25).
