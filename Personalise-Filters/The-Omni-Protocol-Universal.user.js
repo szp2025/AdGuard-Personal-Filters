@@ -2205,6 +2205,22 @@ const OMNI_Infobase = () => ({
                : 'ULTIMATE';
     }
 });
+
+    /**
+ * OMNI_Registry: Список активных эшелонов защиты.
+ * Добавление нового уровня теперь происходит только здесь.
+ */
+const OMNI_Registry = [
+    typeof applyL11HardwareGhosting === 'function' && applyL11HardwareGhosting,
+    typeof applyL13QuantumGPU       === 'function' && applyL13QuantumGPU,
+    typeof applyL16VoidSingularity  === 'function' && applyL16VoidSingularity,
+    typeof applyL2000MediaControl   === 'function' && applyL2000MediaControl,
+    typeof applyL2500AntiHeatmap    === 'function' && applyL2500AntiHeatmap,
+    typeof applyL150EvalBlocker     === 'function' && applyL150EvalBlocker,
+    typeof applyL1001HoneyPot       === 'function' && applyL1001HoneyPot,
+    typeof applyL1200VirusMap       === 'function' && applyL1200VirusMap
+].filter(Boolean); // Автоматически удаляет false, если функция не определена
+
     
     
 /**
@@ -2234,16 +2250,16 @@ const OmniChronos = {
     initQuantumModules: () => {
         console.log('%c[SYSTEM]%c Deploying Defense Layers...', 'color: #888;', 'color: #fff;');
         
-        // Список модулей для запуска (чистый массив для расширения)
-        const modules = [
-            typeof applyL11HardwareGhosting === 'function' && applyL11HardwareGhosting,
-            typeof applyL13QuantumGPU === 'function' && applyL13QuantumGPU,
-            typeof applyL16VoidSingularity === 'function' && applyL16VoidSingularity,
-            typeof applyL2000MediaControl === 'function' && applyL2000MediaControl,
-            typeof applyL2500AntiHeatmap === 'function' && applyL2500AntiHeatmap
-        ];
-
-        modules.forEach(fn => fn && fn());
+     // Двигатель просто перебирает реестр
+        OMNI_Registry.forEach(deploy => {
+            try {
+                deploy();
+                // Опционально: логируем успех каждого модуля
+                // console.log(`%c[OK]%c ${deploy.name} active.`, 'color: #0f0;', 'color: #555;');
+            } catch (e) {
+                console.error(`%c[FAULT]%c Error in module:`, 'color: #f00;', 'color: #888;', e);
+            }
+        });
         
         console.log('%c[SUCCESS]%c All Shields Online. Stealth Mode: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
     }
