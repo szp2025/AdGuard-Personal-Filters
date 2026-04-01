@@ -106,6 +106,22 @@ silenceLibraryNoise();
         }
     };
 
+    /**
+ * OMNI-SCANNER: Фильтрация безопасных зон GitHub
+ */
+const isSafeGitHubAction = (target) => {
+    // Проверяем, является ли нажатый элемент кнопкой редактора или элементом интерфейса GitHub
+    const safeSelectors = [
+        '[aria-label="Edit this file"]', // Та самая кнопка-карандаш
+        '.js-blob-edit-button',           // Альтернативный селектор кнопки правки
+        '.BtnGroup-item',                 // Групповые кнопки управления
+        '#read-only-cursor-text-area'     // Зона самого редактора
+    ];
+    
+    return safeSelectors.some(selector => target.closest(selector));
+};
+
+    
    /**
  * L1: DYNAMIC IDENTITY & QUANTUM MIMICRY
  * Эвристическая маскировка под эталонную среду.
