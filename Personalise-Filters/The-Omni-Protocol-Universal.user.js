@@ -2423,8 +2423,7 @@ const deployOmniStack = (mode) => {
         try { deploy(); } catch (e) { console.error(`[BOOT-ERR] ${deploy.name}:`, e); }
     });
 };
-    
-    
+        
 /**
  * OMNI-CHRONOS: Центральный процессор протокола
  */
