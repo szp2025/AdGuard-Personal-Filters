@@ -8,6 +8,8 @@
 // @grant        unsafeWindow
 // @grant        GM_log
 // @run-at       document-start
+// @grant        unsafeWindow
+// @grant        GM_addStyle
 // @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni-Device-Bridge.user.js
 // @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni-Device-Bridge.user.js
 // ==/UserScript==
