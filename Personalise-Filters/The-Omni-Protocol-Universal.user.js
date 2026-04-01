@@ -47,20 +47,19 @@ const clearTraces = () => {
  * OMNI-INFOBASE: Эвристическая база данных и стили
  */
 const OMNI_Infobase = () => ({
-    TAG: '%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9 %c',
+    // Убрали лишний %c в конце, теперь их ровно два
+    TAG: '%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9',
     STYLE_GOLD: 'color: #FFD700; background: #000; font-weight: bold; padding: 4px; border-left: 4px solid #FFD700;',
     STYLE_BLUE: 'color: #00BFFF; background: #111; font-weight: bold; padding: 4px;',
-    STYLE_RESET: 'color: #AAA; background: transparent; font-style: italic;',
     
+    // ТУРБО-СТИЛИ (Turbo-Kinetic)
     STYLE_TURBO_TAG: 'color: #00FFFF; background: #003333; font-weight: bold; border-left: 3px solid #00FFFF; padding: 2px 5px;',
     STYLE_TURBO_TEXT: 'color: #00FFFF; font-weight: bold; text-shadow: 0 0 5px #00FFFF;',
 
     isTechHost: /localhost|127\.0\.0\.1|celeo\.net/i.test(window.location.hostname),
-    getMode: function() {
-        return this.isTechHost ? 'COMPATIBILITY' : 'ULTIMATE';
-    }
+    getMode: function() { return this.isTechHost ? 'COMPATIBILITY' : 'ULTIMATE'; }
 });
-    
+
     /**
  * ЛОГИЧЕСКИЙ ФИЛЬТР: Очистка консоли от мусора библиотек
  */
@@ -2432,8 +2431,8 @@ initBaseFoundation: () => {
         const info = OMNI_Infobase();
         const mode = info.getMode();
 
-        // ЕДИНСТВЕННЫЙ ВЫВОД ГЛАВНОГО БАННЕРА
-        console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, info.STYLE_RESET, `🚀 CORE: ${mode} ACTIVE`);
+        // ВЫВОДИМ БАННЕР ТОЛЬКО ТУТ (Один раз на всю сессию)
+        console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, ` 🚀 CORE: ${mode} ACTIVE`);
 
         OmniChronos.initQuantumModules(info);
     },
@@ -2442,8 +2441,10 @@ initBaseFoundation: () => {
         OMNI_Registry.forEach((deploy, index) => {
             const layerID = `L${(index + 1) * 10}`;
             try {
-                deploy();
-                // ТУРБО-ЛОГ в стиле Kinetic
+                // Если внутри deploy() есть console.log(info.TAG...) — его нужно найти и удалить!
+                deploy(); 
+                
+                // Наш единственный законный лог уровня
                 console.log(
                     `%c[Omni-Chronos-v3.3.9]%c ⚡ %c${layerID}: %c${deploy.name || 'omni-module'}%c [ACTIVE]`,
                     info.STYLE_TURBO_TAG,
@@ -2453,7 +2454,7 @@ initBaseFoundation: () => {
                     'color: #00FF41; font-weight: bold;'
                 );
             } catch (e) {
-                console.error(`%c[FAULT]%c ${layerID} failure:`, 'color: #f00;', 'color: #888;', e);
+                console.error(`%c[FAULT]%c ${layerID}:`, 'color: #f00;', 'color: #888;', e);
             }
         });
         console.log('%c[SUCCESS]%c Stealth: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
