@@ -755,44 +755,39 @@
      * OMNI-CHRONOS: Центральный процессор протокола
      */
     const OmniChronos = {
-        initBaseFoundation: () => {
-// Список исключений (домены, где защита будет отключена для стабильности)
-        const whiteList = ['celeo.net', 'localhost', '127.0.0.1'];
-        const currentHost = window.location.hostname;
-
-        if (whiteList.some(host => currentHost.includes(host))) {
-            console.log('%c⚠️ [BYPASS]%c Domain in whitelist. Shields down for compatibility.', 
-                'color: #ffa500; font-weight: bold;', 'color: #888;');
-            return; // Прерываем запуск Монолита на этом сайте
-        }
-
-            
-            // Яркий баннер при запуске
-            console.log('%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9-GOLD %c ACTIVE ', 
-                'color: #FFD700; background: #000; font-weight: bold; font-size: 14px; padding: 4px; border-left: 4px solid #FFD700;', 
-                'color: #00BFFF; background: #111; font-weight: bold; font-size: 14px; padding: 4px;',
-                'color: #0f0; background: #000; font-weight: bold; font-size: 14px; padding: 4px;');
-
-            if (typeof isLegacyFramework === 'function' && isLegacyFramework()) {
-                console.warn('⚠️ Legacy Framework Detected. Running in Compatibility Mode.');
-                return;
-            }
-
-        const getHeuristicMode = () => {
+     initBaseFoundation: () => {
+        const OMNI_TAG = '%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9 %c';
+        const STYLE_GOLD = 'color: #FFD700; background: #000; font-weight: bold; padding: 4px; border-left: 4px solid #FFD700;';
+        const STYLE_BLUE = 'color: #00BFFF; background: #111; font-weight: bold; padding: 4px;';
+        
+        // 1. Эвристический анализ среды
         const isUnsafeHTTP = window.location.protocol === 'http:';
         const isAdminPanel = /admin|phpmyadmin|sql|controlpanel/i.test(window.location.href);
         const hasOldTech = !!document.querySelector('frameset, table[bgcolor], center');
-        const isLocal = /localhost|127.0.0.1|celeo\.net/.test(window.location.hostname);
+        const isTechHost = /localhost|127\.0\.0\.1|celeo\.net/i.test(window.location.hostname);
 
-        if (isLocal || (isUnsafeHTTP && (isAdminPanel || hasOldTech))) {
-            return 'COMPATIBILITY'; // Режим совместимости
-        }
-        return 'ULTIMATE'; // Режим полной защиты
-    };
+        // Определяем режим: если тех-хост или старая админка на HTTP — включаем режим совместимости
+        const mode = (isTechHost || (isUnsafeHTTP && (isAdminPanel || hasOldTech))) ? 'COMPATIBILITY' : 'ULTIMATE';
+
+        // 2. Визуализация статуса
+        if (mode === 'COMPATIBILITY') {
+            console.log(`${OMNI_TAG} ⚖️ COMPATIBILITY ACTIVE `, STYLE_GOLD, STYLE_BLUE, 'color: #ffa500; background: #000; font-weight: bold; padding: 4px;');
             
-            // Запуск всех квантовых модулей
+            // В режиме совместимости запускаем только безопасные модули (маскировка железа)
+            if (typeof applyL11HardwareGhosting === 'function') {
+                applyL11HardwareGhosting();
+            }
+            return; // Прерываем запуск тяжелых модулей
+        }
+
+        // 3. Запуск ULTIMATE режима (для всех остальных сайтов)
+        console.log(`${OMNI_TAG} 🚀 ULTIMATE ACTIVE `, STYLE_GOLD, STYLE_BLUE, 'color: #0f0; background: #000; font-weight: bold; padding: 4px;');
+        
+        if (typeof OmniChronos !== 'undefined' && OmniChronos.initQuantumModules) {
             OmniChronos.initQuantumModules();
-        },
+        }
+    },
+        
 
         initQuantumModules: () => {
             console.log('%c[SYSTEM]%c Deploying L1-L2500 Defense Layers...', 'color: #888;', 'color: #fff;');
