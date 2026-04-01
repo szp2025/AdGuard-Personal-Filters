@@ -161,7 +161,6 @@ const applyL1Identity = () => {
     }
 
     // Используем стили из Infobase для единообразия логов
-    console.log(info.TAG, info.STYLE_GOLD, `👤 L1: Identity Mimicry [${isTech ? 'SOFT' : 'ULTIMATE'}]`);
 };
     
 
@@ -219,7 +218,6 @@ const applyL2Noise = () => {
     }
 
     // Логирование в едином стиле через Инфобазу
-    console.log(info.TAG, info.STYLE_GOLD, '🎨 L2: Neural Noise & WebRTC Ghosting Active');
 };
     
     
@@ -282,7 +280,6 @@ const applyL2Noise = () => {
         };
         setTimeout(ghostClean, 3000);
 
-        console.log(OMNI_TAG, STYLE_CORE, '🪓 L3: Heuristic Spectral Reaper Active');
     };
 
     
@@ -344,7 +341,6 @@ const applyL5Environment = () => {
     }
 
     // Логирование через централизованные стили Infobase
-    console.log(info.TAG, info.STYLE_GOLD, '🔋 L5: Environment Sync (New York) & Power Stealth');
 };
     
     /**
@@ -395,7 +391,6 @@ const applyL5Environment = () => {
         wrapHistory('pushState');
         wrapHistory('replaceState');
 
-        console.log(OMNI_TAG, STYLE_CORE, '🧪 L6: Reactive URL Sterilizer & History Guard Active');
     };
     
     
@@ -449,7 +444,6 @@ const applyL5Environment = () => {
         omniOverwrite(document, 'visibilityState', 'visible');
         omniOverwrite(document, 'hidden', false);
 
-        console.log(OMNI_TAG, STYLE_CORE, '🌑 L7: Deep Shadow & Idle Ghosting Active');
     };
     
 
@@ -500,7 +494,6 @@ const applyL5Environment = () => {
             };
         }
 
-        console.log(OMNI_TAG, STYLE_CORE, '📋 L8: Clipboard Integrity & Anti-Hijack Active');
     };
     
 
@@ -564,7 +557,6 @@ const applyL5Environment = () => {
         // 3. ПЕРИОДИЧЕСКАЯ "САНИТАРИЯ"
         window.requestIdleCallback(isolateTrackers);
 
-        console.log(OMNI_TAG, STYLE_CORE, '🧠 L9: Neural-Heuristic & Self-Healing Active');
     };
     
 
@@ -640,7 +632,6 @@ const applyL5Environment = () => {
              }
         });
 
-        console.log(OMNI_TAG, STYLE_CORE, '📜 L10: History Integrity & Anti-Trap Active');
     };
 
 /**
@@ -684,7 +675,6 @@ const applyL11HardwareGhosting = () => {
     }
 
     // Использование централизованного стиля логов
-    console.log(info.TAG, info.STYLE_GOLD, `👻 L11: Ghost Protocol [${isTech ? 'NATIVE' : 'HARDWARE-SHIELD'}]`);
 };
     
 
@@ -763,7 +753,6 @@ const applyL12Platinum = () => {
     }
 
     // Использование централизованного стиля логов
-    console.log(info.TAG, info.STYLE_GOLD, `💎 L12: Platinum Stealth [${isTech ? 'BYPASS' : 'ACTIVE'}]`);
 };
     
 
@@ -845,7 +834,6 @@ const applyL13Quantum = () => {
     };
 
     // Логирование через централизованные стили
-    console.log(info.TAG, info.STYLE_GOLD, `🔮 L13: Quantum GPU & Bio-Jitter [${isTech ? 'BYPASS' : 'ACTIVE'}]`);
 };
     
     
@@ -931,7 +919,6 @@ const applyL14Supernova = () => {
     }
 
     // Финальное логирование через стили Монолита
-    console.log(info.TAG, info.STYLE_GOLD, `🌟 L14: Supernova [${isTech ? 'BYPASS' : 'SHIELDED'}]`);
 };
     
     
@@ -1013,7 +1000,6 @@ const applyL15EventHorizon = () => {
     }
 
     // Логирование в стиле OMNI-MONOLITH
-    console.log(info.TAG, info.STYLE_GOLD, `🕳️ L15: Event Horizon [${isTech ? 'BYPASS' : 'COGNITIVE-STEALTH'}]`);
 };
     
     
@@ -1085,7 +1071,6 @@ const applyL16VoidSingularity = () => {
     }
 
     // Логирование в стиле OMNI-MONOLITH
-    console.log(info.TAG, info.STYLE_GOLD, `🌌 L16: Void Singularity [${isTech ? 'BYPASS' : 'NATIVE-MIMICRY'}]`);
 };
     
   /**
@@ -1155,7 +1140,6 @@ const applyL17AbsoluteZero = () => {
     omniOverwrite(window, 'outerHeight', window.innerHeight);
 
     // Логирование через золотой стандарт Infobase
-    console.log(info.TAG, info.STYLE_GOLD, `❄️ L17: Absolute Zero [${isTech ? 'DEBUG-MODE' : 'STERILE'}]`);
 };
     
     
@@ -1245,7 +1229,6 @@ const applyL18MirrorProtocol = () => {
     };
 
     // Логирование в стиле OMNI-MONOLITH
-    console.log(info.TAG, info.STYLE_GOLD, `🪞 L18: Mirror Protocol [SYNERGY-COMPLETE]`);
 };
     
 
@@ -1318,7 +1301,6 @@ const applyL20Singularity = () => {
     }
 
     // Логирование в стиле OMNI-MONOLITH
-    console.log(info.TAG, info.STYLE_GOLD, `🌌 L20: Singularity [MATH-SHIELD & ASYNC-GHOST]`);
 };
     
     
@@ -1404,7 +1386,6 @@ const applyL22Infinity = () => {
         };
     }
 
-    console.log(info.TAG, info.STYLE_GOLD, `♾️ L22: Absolute Infinity [PERIPHERAL-SHIELD ACTIVE]`);
 };
     
 
@@ -1484,7 +1465,6 @@ const applyL23Overlord = () => {
         HTMLCanvasElement.prototype.toDataURL.toString = () => "function toDataURL() { [native code] }";
     } catch(e) {}
 
-    console.log(info.TAG, info.STYLE_GOLD, `👑 L23: Transcendent Overlord [GEOMETRY-POISONED]`);
 };
     
  /**
@@ -1562,7 +1542,6 @@ const applyL25GodSeed = () => {
         deepMask(CanvasRenderingContext2D.prototype.fillText, 'fillText');
     }
 
-    console.log(info.TAG, info.STYLE_GOLD, `🌱 L25: God-Seed [INTEGRITY-VERIFIED]`);
 };
     
 
@@ -1649,7 +1628,6 @@ const applyL28Inferno = () => {
         deepMask(Error.prototype.toString, 'toString');
     }
 
-    console.log(info.TAG, info.STYLE_GOLD, `🔥 L28: Inferno Shield [AUTOMATION-PURGED]`);
 };
     
 
@@ -1725,7 +1703,6 @@ const applyL30Zenith = () => {
         deepMask(performance.now, 'now');
     }
 
-    console.log(info.TAG, info.STYLE_GOLD, `✨ L30: Zenith [SPACE-TIME-ANONYMIZED]`);
 };
     
 
@@ -1809,7 +1786,6 @@ const applyL33ApexGuard = () => {
     });
 
     // 5. SECURITY NOTIFICATION
-    console.log(info.TAG, info.STYLE_GOLD, `🛡️ L33: Apex Guard [MALWARE-SHIELD ACTIVE]`);
 };
 
   /**
@@ -1865,7 +1841,6 @@ const applyL40LegacyRepair = () => {
         try {
             if (!orgToString.call(orgToString).includes('[native code]')) {
                 // Попытка экстренного восстановления, если кто-то (не мы) его повредил
-                console.log(info.TAG, '🛠️ Warning: Found corrupted toString. Attempting recovery.');
             }
         } catch (e) {}
 
@@ -1884,7 +1859,6 @@ const applyL40LegacyRepair = () => {
 
     // 7. РЕАКТИВНЫЙ И УМНЫЙ ЗАПУСК
     if (checkLegacy()) {
-        console.log(info.TAG, info.STYLE_GOLD, '🚀 L40: Legacy environment detected. Auto-Repair Engaged.');
         
         // Используем requestIdleCallback для минимального влияния на CPU
         if (window.requestIdleCallback) {
@@ -1975,7 +1949,6 @@ const applyL150EvalBlocker = (target = document.documentElement) => {
     window.setTimeout = wrapTimer(window.setTimeout, 'setTimeout');
     window.setInterval = wrapTimer(window.setInterval, 'setInterval');
 
-    console.log(info.TAG, info.STYLE_GOLD, `🛑 L150: Heavy Eval Blocker [ULTRA-SECURITY ACTIVE]`);
 };
     
 
@@ -2060,7 +2033,6 @@ const applyL1001HoneyPot = () => {
     };
     if (typeof deepMask === 'function') deepMask(Storage.prototype.key, 'key');
 
-    console.log(info.TAG, info.STYLE_GOLD, `🛡️ L1001: HoneyPot [DATA-MIRAGE ACTIVE]`);
 };
     
 
@@ -2151,7 +2123,6 @@ const applyL1200VirusMap = () => {
     };
     if (typeof deepMask === 'function') deepMask(URL.createObjectURL, 'createObjectURL');
 
-    console.log(info.TAG, info.STYLE_GOLD, `🛡️ L1200: Apex Virus Map [ANTI-MALWARE ACTIVE]`);
 };
     
 
@@ -2185,7 +2156,6 @@ const applyL1200VirusMap = () => {
                 // 2. АВТО-КЛИК
                 if (skipBtn) {
                     skipBtn.click();
-                    console.log(OMNI_TAG, STYLE_CORE, '⚡ L2000: Skip Button Triggered.');
                 }
             } else {
                 // 3. СБРОС СОСТОЯНИЯ (Эргономичность)
@@ -2228,11 +2198,9 @@ const applyL1200VirusMap = () => {
                 video.volume = Math.max(0, Math.min(1, video.volume + delta));
                 
                 // Визуальная индикация (опционально)
-                console.log(OMNI_TAG, `🔊 Volume: ${Math.round(video.volume * 100)}%`);
             }
         }, { passive: false });
 
-        console.log(OMNI_TAG, STYLE_CORE, '⚡ L2000: Kinetic Media Core [TURBO-MODE ACTIVE]');
     };
     
 
@@ -2272,7 +2240,6 @@ const applyL1200VirusMap = () => {
                     image: 'https://cdn-icons-png.flaticon.com/512/9438/9438567.png', // Иконка щита
                     timeout: 4000,
                     onclick: () => {
-                        console.log(OMNI_TAG, '🔗 User interacted with notification.');
                     }
                 });
                 lastPushTime = now;
@@ -2280,11 +2247,7 @@ const applyL1200VirusMap = () => {
                 // 3. FALLBACK (Реактивность)
                 // Если мы работаем вне Tampermonkey (например, как обычный инжект),
                 // используем стандартный console.log с выделением.
-                console.log(
-                    `%c 🛡️ OMNI-ALERT: ${title} %c ${message} `,
-                    'background: #ff4b2b; color: #fff; border-radius: 3px 0 0 3px; padding: 2px 5px; font-weight: bold;',
-                    'background: #333; color: #ff4b2b; border-radius: 0 3px 3px 0; padding: 2px 5px;'
-                );
+               ;
             }
         } catch (e) {
             // Тихий провал, чтобы не ломать логику основного скрипта
@@ -2338,7 +2301,6 @@ const applyL1200VirusMap = () => {
                     jq.fx.off = true; // Выключаем анимации во вкладках на фоне для экономии ресурсов
                 }
 
-                console.log(OMNI_TAG, STYLE_CORE, `🛠️ L40: Legacy Instance [${index}] Patched.`);
             } catch (e) {
                 // Тихая ошибка для стабильности системы
             }
@@ -2411,7 +2373,6 @@ const OMNI_Registry = [
 const renderOmniStatus = (info, mode) => {
     const isCompat = mode === 'COMPATIBILITY';
     const statusStyle = `color: ${isCompat ? '#ffa500' : '#0f0'}; background: #000; font-weight: bold; padding: 4px;`;
-    console.log(`${info.TAG} ⚖️ ${mode} ACTIVE `, info.STYLE_GOLD, info.STYLE_BLUE, statusStyle);
 };
 
 // Вспомогательный диспетчер модулей
