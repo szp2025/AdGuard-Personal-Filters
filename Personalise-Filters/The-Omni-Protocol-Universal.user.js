@@ -756,6 +756,17 @@
      */
     const OmniChronos = {
         initBaseFoundation: () => {
+// Список исключений (домены, где защита будет отключена для стабильности)
+        const whiteList = ['celeo.net', 'localhost', '127.0.0.1'];
+        const currentHost = window.location.hostname;
+
+        if (whiteList.some(host => currentHost.includes(host))) {
+            console.log('%c⚠️ [BYPASS]%c Domain in whitelist. Shields down for compatibility.', 
+                'color: #ffa500; font-weight: bold;', 'color: #888;');
+            return; // Прерываем запуск Монолита на этом сайте
+        }
+
+            
             // Яркий баннер при запуске
             console.log('%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9-GOLD %c ACTIVE ', 
                 'color: #FFD700; background: #000; font-weight: bold; font-size: 14px; padding: 4px; border-left: 4px solid #FFD700;', 
