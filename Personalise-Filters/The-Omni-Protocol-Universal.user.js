@@ -47,12 +47,12 @@ const clearTraces = () => {
  * OMNI-INFOBASE: Эвристическая база данных и стили
  */
 const OMNI_Infobase = () => ({
-    // Убрали лишний %c в конце, теперь их ровно два
-    TAG: '%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9',
+    // Убираем лишний %c в конце, оставляем только 2 — для Золота и Синего
+    TAG: '%c🌌 NEBULA APEX %c OMNI-MONOLITH v3.3.9', 
     STYLE_GOLD: 'color: #FFD700; background: #000; font-weight: bold; padding: 4px; border-left: 4px solid #FFD700;',
     STYLE_BLUE: 'color: #00BFFF; background: #111; font-weight: bold; padding: 4px;',
     
-    // ТУРБО-СТИЛИ (Turbo-Kinetic)
+    // Стили для турбо-логов (те самые бирюзовые из скриншота)
     STYLE_TURBO_TAG: 'color: #00FFFF; background: #003333; font-weight: bold; border-left: 3px solid #00FFFF; padding: 2px 5px;',
     STYLE_TURBO_TEXT: 'color: #00FFFF; font-weight: bold; text-shadow: 0 0 5px #00FFFF;',
 
@@ -647,7 +647,7 @@ const applyL5Environment = () => {
  * L11: THE GHOST PROTOCOL (V5.5)
  * Глубокая маскировка железа и защита от детерминированных тайминг-атак.
  */
-const applyL11Ghost = () => {
+const applyL11HardwareGhosting = () => {
     // 1. Получаем эвристический слепок из центральной базы
     const info = OMNI_Infobase();
     const isTech = info.isTechHost;
