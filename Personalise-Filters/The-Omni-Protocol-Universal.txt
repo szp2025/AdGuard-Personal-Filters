@@ -25,59 +25,45 @@
 ! # THE OMNI-PROTOCOL: ULTRA-APEX CORE (v10.0)              #
 ! ###########################################################
 
-! --- [OMNI-PROTOCOL: MICROSOFT INFRASTRUCTURE STABILITY] ---
-! Разрешаем критические узлы для Outlook Desktop и Office 365
-@@||outlook.office365.com^$important
-@@||outlook.office.com^$important
-@@||graph.microsoft.com^$important
-@@||autodiscover.*^$important
+! [OMNI-V5] MICROSOFT CORE STABILITY: OFFICE 365 & OUTLOOK
+! ----------------------------------------------------------------
+! 1. Эвристика для облачных сервисов MS (Office, Outlook, Live, Auth)
+@@/^https?:\/\/([a-z0-9-]+\.)*(microsoft|office|office365|live|outlook|msauth|msftauth|microsoftonline)\.(com|net)\//^$important,document,jsinject,extension
 
-! Отключаем сетевой перехват для доменов авторизации и контактов
-$network,domain=outlook.office365.com|outlook.office.com|graph.microsoft.com|microsoftonline.com
+! 2. Реактивный байпас для системных узлов (Graph, Autodiscover, CDN)
+@@/^https?:\/\/([a-z0-9-]+\.)*(graph\.microsoft\.com|autodiscover\..*|res\.cdn\.office\.net|static\.sharepointonline\.com)\//^$important,network
 
-! Глобальные исключения для стабильности синхронизации
-@@||microsoft.com^$important
-@@||office.com^$important
-@@||office.net^$important
-@@||office365.com^$important
+! 3. Глобальный байпас Stealth для предотвращения циклов авторизации
+@@||microsoftonline.com^$stealth
+@@||msauth.net^$stealth
 
-! --- [ULTIMATE BYPASS: Microsoft Office 365 & Outlook Desktop] ---
-! Полное исключение из фильтрации для всех сервисов MS Office
-@@||microsoft.com^$important
-@@||office.com^$important
-@@||office.net^$important
-@@||office365.com^$important
-@@||live.com^$important
-@@||outlook.com^$important
-@@||msauth.net^$important
-@@||msftauth.net^$important
-@@||microsoftonline.com^$important
+! [OMNI-HEURISTIC-WORK] Автоматическое определение тех-ресурсов
+! ----------------------------------------------------------------
+! 1. Эвристика по структуре (HTTP + IP/Тех-домены/Celeo)
+@@/^http:\/\/([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|localhost|.*\.local|.*\.celeo\.net|.*hdx.*)\//$stealth,important
 
-! Исключение для CDN и статики, где лежат аватары и списки контактов
-@@||res.cdn.office.net^$important
-@@||static.sharepointonline.com^$important
+! 2. Эвристика по путям (Админки), исключая глобальные сервисы
+@@/(\/myadmin\/|\/sql\/|\/config\/|\/setup\/)/$stealth,domain=~google.com|~youtube.com|~facebook.com|~yandex.ru
 
-! Специфические эндпоинты для адресной книги и Graph API
-@@||graph.microsoft.com^$important
-@@||outlook.office365.com^$important
 
-@@||celeo.net^$document,important
+! [OMNI-V4] REAKTIV PROTECTION: CRYPTO, PHISHING & SESSION-HIJACK
+! ----------------------------------------------------------------
 
-! --- [MALWARE & PHISHING PROTECTION LAYER] ---
-||*cryptobrowser.site^
-||*get-monero.org^
-||*freebitco.in^
-||*minerstat.com^
-||*coinhive.com^
-||*bitly.com/bad-link-example^
-! Блокировка известных зон для фишинга
-.top^$important
-.xyz^$important,third-party
-.click^$important
-.gdn^$important
-! Блокировка скриптов, крадущих куки
-||track.uc.cn^
-||umid.amap.com^
+! 1. [REACTIVE-CRYPTO] Блокировка майнеров через JS, WebAssembly и WebSocket
+/(miner|monero|coinhive|cryptoloot|webminer|authedmine|coin-hive|shasta|deepminer|cryptonight|wasm|hashing|pool)\.(js|wasm)/^$important,third-party,script,websocket
+
+! 2. [ELITE-PHISHING] Эвристика мусорных зон (TLD) с защитой от двойных расширений
+/^https?:\/\/([a-z0-9-]+\.)*([a-z0-9-]{15,}|[a-z0-9-]+\.(top|xyz|click|gdn|wf|loan|men|bid|kim|vip|work|icu|monster|beauty|casa|icu|buzz|today|cyou|bond|best|xyz|fit))\//$important,third-party
+
+! 3. [SESSION-GUARD] Пресечение кражи Cookie и Fingerprinting-векторов
+/(track|umid|collect|log|analytics|pixel|hit|event|stat|beacon|telemetry|fingerprint|capture)\.(uc\.cn|amap\.com|.*\.cn|.*\.xyz|.*\.pw|.*\.ru|.*\.site)/^$important,script,xmlhttprequest,image,ping
+
+! 4. [FAST-REDIRECT] Реактивная блокировка коротких ссылок-ловушек (5-10 символов)
+/^(https?:\/\/)?(bit\.ly|goo\.gl|t\.co|tinyurl\.com|is\.gd|buff\.ly|t2m\.io|rebrand\.ly)\/[a-zA-Z0-9]{5,10}$/$important,third-party,domain=~google.com|~youtube.com|~facebook.com|~github.com|~linkedin.com
+
+! 5. [VOID-XHR] Блокировка скрытых запросов к подозрительным API (API-Phishing)
+/^https?:\/\/api\.[a-z0-9-]+\.(top|xyz|pw|click|icu|site|online|space)\//^$important,xmlhttprequest,third-party
+
 
 ! --- UNIVERSAL SMART BYPASS ---
 ! Если сайт использует старые методы (inline scripts + eval), AdGuard не будет их рубить жестко
@@ -104,13 +90,6 @@ $network=ip,set_mtu=1452,important,notify,tag=MTU_LTE_CLOAKING
 ! --- 3. ACK-Delay Randomization (Защита от замера дистанции до сервера) ---
 ! Это эвристика против "TCP Side Channel Attack". Метим пакеты для глубокой инспекции.
 $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
-
-
-! Отключаем стелс только там, где есть признаки старых систем или специфических путей
-@@/myadmin/^$stealth,domain=~google.com|~youtube.com|~facebook.com
-@@/sql/^$stealth
-@@||celeo.net^$stealth
-
 
 ! [L1: IDS-GHOST-PORTING - V69.0]
 ! Мы убираем reject. Теперь пакеты просто "исчезают". 
