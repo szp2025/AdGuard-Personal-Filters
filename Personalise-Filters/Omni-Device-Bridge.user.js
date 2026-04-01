@@ -1,14 +1,12 @@
 // ==UserScript==
 // @name         Omni-Device-Bridge
 // @namespace    OmniProtocol
-// @version      1.4.0
-// @description  Системный мост [Hash-Trigger Mode]
+// @version      1.5.0
+// @description  Системный мост [Chrome-Internal Mode]
 // @author       Командор
 // @match        *://*/*
 // @grant        none
 // @run-at       document-start
-// @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni-Device-Bridge.user.js
-// @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/Personalise-Filters/Omni-Device-Bridge.user.js
 // ==/UserScript==
 
 (function() {
@@ -20,23 +18,17 @@
             2: 'intent://#Intent;package=app.revanced.android.youtube;end',
             3: 'intent://#Intent;action=android.settings.WIFI_SETTINGS;end'
         };
-        if (apps[id]) window.location.replace(apps[id]);
+        if (apps[id]) window.location.href = apps[id];
     };
 
-    // ГЛАВНЫЙ ТРИГГЕР: Проверка хэштега в URL
-    function checkOmni() {
-        if (window.location.hash === '#omni') {
-            // Очищаем хэштег, чтобы не зациклиться
-            history.replaceState(null, null, ' ');
-            
-            const cmd = prompt("OMNI-COMMANDER v1.4.0\n1: Settings | 2: ReVanced | 3: WiFi");
-            if (cmd) launch(cmd);
-        }
+    // Создаем глобальную функцию, которую Chrome сможет вызвать из адресной строки
+    window.omni = () => {
+        const cmd = prompt("OMNI-INTERNAL\n1: Settings | 2: ReVanced | 3: WiFi");
+        if (cmd) launch(cmd);
+    };
+
+    // Если мы на странице ошибки (как на твоем скрине), пробуем пробиться через заголовок
+    if (document.title.includes("omni.system")) {
+        window.omni();
     }
-
-    // Проверяем при загрузке и при изменении URL
-    checkOmni();
-    window.addEventListener('hashchange', checkOmni);
-
-    console.log("Omni-Bridge v1.4.0: Ожидание хэштега #omni");
 })();
