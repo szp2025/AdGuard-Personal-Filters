@@ -34,8 +34,7 @@
 @@/^https?:\/\/([a-z0-9-]+\.)*(graph\.microsoft\.com|autodiscover\..*|res\.cdn\.office\.net|static\.sharepointonline\.com)\//^$important,network
 
 ! 3. Глобальный байпас Stealth для предотвращения циклов авторизации
-@@||microsoftonline.com^$stealth
-@@||msauth.net^$stealth
+@@/^https?:\/\/([^\/]+\.)?(microsoftonline|msauth|msftauth)\.(com|net)(\/.*)?$/$stealth,important,document,xmlhttprequest,subdocument
 
 ! [OMNI-HEURISTIC-WORK] Автоматическое определение тех-ресурсов
 ! ----------------------------------------------------------------
@@ -64,14 +63,9 @@
 ! 5. [VOID-XHR] Блокировка скрытых запросов к подозрительным API (API-Phishing)
 /^https?:\/\/api\.[a-z0-9-]+\.(top|xyz|pw|click|icu|site|online|space)\//^$important,xmlhttprequest,third-party
 
+! --- [OMNI-YANDEX-V15.0] Тотальная разблокировка (Unified Core) ---
+@@/^https?:\/\/([^\/]+\.)?(yandex|ya|dzen|yastatic|dzeninfra)\.(ru|net|fr|by|kz|com|com\.tr)(\/.*)?$/$important,document,xmlhttprequest,subdocument,image,stylesheet,script
 
-! --- [OMNI-YANDEX-V10.0] Тотальная разблокировка Яндекса ---
-@@||yandex.ru^$important
-@@||ya.ru^$important
-@@||dzen.ru^$important
-@@||yastatic.net^$important
-@@||yandex.net^$important
-@@||dzeninfra.ru^$important
 
 ! --- [OMNI-GLOBAL-CORE] Всё остальное через Regex ---
 @@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|googlevideo|youtubei\.googleapis|ytimg|ggpht)\.(com|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,xmlhttprequest,app=com.google.android.youtube|com.google.android.apps.youtube.music
@@ -81,14 +75,12 @@
 
 
 ! --- UNIVERSAL SMART BYPASS ---
-! Если сайт использует старые методы (inline scripts + eval), AdGuard не будет их рубить жестко
-! Это предотвращает "белый экран" на старых PHP-платформах
-$scriptlet(abort-current-inline-script, eval),badfilter
-$scriptlet(prevent-addEventListener, deviceorientation),badfilter
+! --- [OMNI-SMART-BYPASS-V15.0] Динамическая адаптация для PHP/Legacy-платформ ---
+@@||*$scriptlet(abort-current-inline-script, eval),domain=~yandex.ru|~google.com|~youtube.com
+@@||*$scriptlet(prevent-addEventListener, deviceorientation),domain=~yandex.ru|~google.com|~youtube.com
 
 ! Разрешаем базовую отрисовку, если скриптлеты мешают DOM-структуре
 @@*$document,jsinject,extension,content,~third-party
-
 
 ! [L0: DPI-EVASION & ORGANIC-PACKETS - V68.0]
 
@@ -120,10 +112,6 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 @@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|googlevideo|youtubei\.googleapis|ytimg|ggpht)\.(com|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,xmlhttprequest,app=com.google.android.youtube|com.google.android.apps.youtube.music
 
 
-
-
-
-
 ! [L2: NETWORK-VOID — V125.0 — THE PURGE]
 ! Склеенный слой: Сетевая тишина (L2) + Стерилизация URL (L25).
 ! Объединяет блокировку доменов, эвристику путей и удаление маркеров слежки.
@@ -149,8 +137,8 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 ||*.fbcdn.net^$app=com.facebook.katana,third-party,important
 ||advertising.apple.com^$important,app=~system
 ||app-measurement.com^$important,third-party,reject
-
 ||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,tag=MEDIA_SPY_SILENCE
+
 #%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
 #%#//scriptlet("set-constant", "navigator.mediaDevices.getDisplayMedia", "undefined")
 #%#//scriptlet("set-constant", "ScreenCapture.prototype.getDisplayMedia", "undefined")
