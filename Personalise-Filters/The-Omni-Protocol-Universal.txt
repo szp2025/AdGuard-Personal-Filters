@@ -797,6 +797,26 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 ||*.ad.xiaomi.com^$important,reject
 
 
+! Разрешаем критические узлы авторизации и синхронизации профиля Google.
+@@||accounts.google.com^$important,domain=~samsung.com|~lg.com|~sony.com
+@@||android.clients.google.com^$important
+@@||identitytoolkit.googleapis.com^$important
+@@||oauthaccountmanager.googleapis.com^$important
+
+! Разрешаем проверку интернет-соединения Samsung (чтобы ТВ не писал "Нет сети").
+@@||samsungcloudsolution.com^$important
+@@||samsungotn.net^$important,domain=~samsung.com
+! Разрешаем базовый API YouTube для работы интерфейса (плитки, поиск).
+@@||youtubei.googleapis.com^$important,domain=~samsung.com
+
+
+! [L12: VIDEO-STREAM-STABILITY] Исключения для стабильности 4K-потока и YouTube TV.
+! Отключаем HTTPS-дешифровку для видео-сегментов (снижает нагрузку на CPU и фиксит буферизацию).
+@@||googlevideo.com^$important,domain=~samsung.com|~lg.com|~sony.com
+@@||youtube.com^$important,domain=~samsung.com|~lg.com|~sony.com
+@@||ytimg.com^$important,domain=~samsung.com|~lg.com|~sony.com
+
+
 ! [DNS-REWRITE-MONOLITH] Глобальное зацикливание телеметрии Smart-TV и IoT.
 ! Samsung, LG, Sony, Microsoft, Vizio, Amazon FireTV, Roku.
 ! Оптимизировано: один Regex покрывает все домены (com/net/org).
