@@ -859,6 +859,23 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 @@||224.0.0.251^$important
 
 
+! [AESTHETIC-BLOCKING] Стилизация заблокированных элементов.
+! Вместо "разбитого" окна — аккуратное скрытие.
+##.ad-container:style(display: none !important;)
+##.overlay-ads:style(visibility: hidden !important;)
+
+! [SCRIPTLET-STEALTH] Умное подавление всплывающих окон.
+youtube.com,facebook.com#%#//scriptlet("prevent-window-open")
+#%#//scriptlet("abort-current-inline-script", "window.open")
+! [SCRIPTLET-BEAUTY] Маскировка блокировки под успех.
+#%#//scriptlet("set-constant", "adblock", "false")
+#%#//scriptlet("set-constant", "google_ad_status", "1")
+
+! [L12: VISUAL-NOTIFY] Эстетическое скрытие элементов.
+##.ad-layer, .overlay-ad:style(border: 1px dashed rgba(255,0,0,0.2) !important; background: transparent !important;)
+
+
+
 ! [CAST-STABILITY] Стабильный мост для трансляций (ReVanced/SmartTube).
 ! 1. Разрешаем сопряжение (Lounge API). Ограничено только для домена YouTube.
 @@||youtube.com/api/lounge/*^$important,domain=youtube.com
