@@ -2051,111 +2051,63 @@ const applyL1001HoneyPot = () => {
 };
     
 
-  /**
- * L1200: APEX VIRUS MAP (Anti-Malware V5.5)
- * Глубокая инспекция сетевых переходов и блокировка исполняемых архивов.
+/**
+ * L1200: APEX VIRUS MAP (Public Edition)
+ * Баланс между безопасностью и свободой навигации.
  */
 const applyL1200VirusMap = () => {
     const info = OMNI_Infobase();
-    const isTech = info.isTechHost;
     
-    // Расширенный список опасных форматов (включая скрипты и контейнеры)
-    const DANGER_EXT = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|js|jar|apk|app|dmg|iso|bin|docm|xlsm|lnk|wsf|com)$/i;
+    // Список расширений, которые реально опасны при АВТО-загрузке
+    const DANGER_EXT = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|jar|apk|app|dmg|iso|bin|lnk|wsf|com)$/i;
 
-    // 1. ПРЕДИКТИВНЫЙ АНАЛИЗ URL
     const isMalicious = (url) => {
         if (!url || typeof url !== 'string') return false;
-        // Очистка от параметров (?...) и якорей (#...) для чистого детекта расширения
         const cleanUrl = url.split(/[?#]/)[0];
         return DANGER_EXT.test(cleanUrl);
     };
 
     const interceptThreat = (url, context = 'Navigation') => {
-        if (isTech || !url) return false;
+        if (!url || url.includes(window.location.hostname)) return false; // Не блокируем свои домены
         
         if (isMalicious(url)) {
-            // Мгновенная остановка загрузки потока
-            window.stop();
+            // Если это клик пользователя — мы ПРЕДУПРЕЖДАЕМ, но не блокируем намертво без выбора
+            console.error(info.TAG, `🛑 L1200: [${context}] Potential threat:`, url);
             
-            console.error(info.TAG, `🛑 L1200: [${context}] Intercepted high-risk payload:`, url);
-            
-            // Интеграция с Omni-Push уведомлениями
-            if (typeof sendOmniPush === 'function') {
-                sendOmniPush('Shield Alert', `Malicious ${context.toLowerCase()} blocked.`);
-            }
-            
-            // Визуальное оповещение для предотвращения паники
-            alert(`🛑 [OMNI-SHIELD L1200]\n\nКритическая угроза заблокирована!\nТип: ${context}\nОбъект: ${url.split('/').pop().substring(0, 30)}...`);
-            return true;
+            // Вместо window.stop() используем подтверждение, чтобы не ломать работу
+            return true; 
         }
         return false;
     };
 
-  // 2. ПЕРЕХВАТ СОБЫТИЙ ВЗАИМОДЕЙСТВИЯ (UI Guard - GitHub Optimized)
+    // 2. УМНЫЙ ПЕРЕХВАТ КЛИКОВ (Не блокирует работу)
     window.addEventListener('click', e => {
-        // Ищем ближайшую ссылку от точки клика
         const a = e.target.closest('a');
-        
         if (a && a.href) {
             const url = a.href;
 
-            // 🛡️ БЕЛЫЙ СПИСОК GITHUB (Абсолютный приоритет)
-            // 1. Проверка по атрибутам кнопки (карандаш, raw, и т.д.)
-            const isGuiTool = a.closest('[aria-label*="Edit"], [aria-label*="Delete"], .js-blob-edit-button, .btn-octicon');
-            // 2. Проверка по структуре URL (если в ссылке есть /edit/ - это редактор)
-            const isEditUrl = url.includes('/edit/') || url.includes('/delete/');
-
-            if (isGuiTool || isEditUrl) {
-                return; // Пропускаем легитимные действия GitHub
-            }
-
-            // 🔍 ПРОВЕРКА НА УГРОЗЫ (Для всех остальных ссылок)
-            if (interceptThreat(url, 'Link Click')) {
-                e.preventDefault();
-                e.stopPropagation();
+            // Если ссылка ведет на опасный файл
+            if (isMalicious(url)) {
+                // Если пользователь нажал сам — спрашиваем его
+                if (!confirm(`⚠️ [OMNI-SHIELD L1200]\n\nСсылка ведет на исполняемый файл:\n${url.split('/').pop()}\n\nВы уверены, что хотите продолжить?`)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
             }
         }
     }, true);
-    
 
-    // 3. ПЕРЕХВАТ ПРОГРАММНЫХ ОКОН (Window Hijack Protection)
+    // 3. ЖЕСТКАЯ БЛОКИРОВКА ДЛЯ СКРЫТЫХ УГРОЗ (Window Open / Redirect)
+    // Здесь мы блокируем намертво, так как это часто происходит без участия юзера
     const originalOpen = window.open;
     window.open = function(url, ...args) {
-        if (interceptThreat(url, 'Window Open')) return null;
-        return originalOpen.apply(this, arguments);
-    };
-    if (typeof deepMask === 'function') deepMask(window.open, 'open');
-
-    // 4. ЗАЩИТА LOCATION API (Redirect Guard)
-    const locProtos = [window.location.assign, window.location.replace];
-    const locNames = ['assign', 'replace'];
-
-    locNames.forEach((name, i) => {
-        const orgMethod = window.location[name];
-        window.location[name] = function(url) {
-            if (interceptThreat(url, `Location ${name}`)) return;
-            return orgMethod.call(this, url);
-        };
-        // Location методы часто защищены, поэтому используем try-catch внутри нативизации если нужно
-    });
-
-    // 5. BLOB & DATA-URL INSPECTION (Modern Malware Vectors)
-    // Современные атаки формируют EXE-файл прямо в памяти (Blob) и предлагают скачать его.
-    const orgCreateObjectURL = URL.createObjectURL;
-    URL.createObjectURL = function(obj) {
-        const url = orgCreateObjectURL.apply(this, arguments);
-        
-        // Если пытаются создать объект из Blob с подозрительным MIME-типом
-        if (obj instanceof Blob && (DANGER_EXT.test(obj.type) || obj.type === 'application/octet-stream')) {
-            console.warn(info.TAG, '⚠️ L1200: Suspicious Blob-URL creation neutralized.');
-            return 'blob:omni-blocked-threat';
+        if (interceptThreat(url, 'Hidden Window')) {
+            alert("🛑 Omni-Shield заблокировал попытку скрытого открытия опасного файла.");
+            return null;
         }
-        return url;
+        return originalOpen.apply(this, args);
     };
-    if (typeof deepMask === 'function') deepMask(URL.createObjectURL, 'createObjectURL');
-
 };
-    
 
 
     /**
