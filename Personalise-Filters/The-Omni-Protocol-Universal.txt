@@ -761,17 +761,21 @@ $network=tcp,set_mss=1460,important
     } \
 })();")
 
-! [S3: CLIENT-ISOLATION] Жесткая изоляция приложений в сетевом стеке.
-! 1. CallApp: Блокировка утечки контактов и аналитики.
-$client=com.callapp.contacts,important,domain=~google.com|~yandex.*|~googleusercontent.com,reject
+! [S3: CLIENT-ISOLATION-MONOLITH] Стерилизация сетевой активности приложений.
+! Глобальное исключение для системных пушей и аналитики (Google/Yandex).
+@@||google.com^$client=com.whatsapp|org.telegram.messenger|com.callapp.contacts,important
+@@||gstatic.com^$client=com.whatsapp|org.telegram.messenger,important
 
-! 2. WhatsApp: Изоляция Meta-трекеров при сохранении медиа-функций.
-$client=com.whatsapp,important,domain=~whatsapp.net|~whatsapp.com|~cdn.whatsapp.net|~fbcdn.net|~google.com|~gstatic.com,reject
+! 1. CallApp: Изоляция (Только системный поиск и фото контактов).
+$client=com.callapp.contacts,important,domain=~yandex.*|~googleusercontent.com,reject
 
-! 3. Telegram: Блокировка внешних вызовов из встроенного WebView.
-$client=org.telegram.messenger,important,domain=~telegram.org|~telegram.dog|~t.me|~telesco.pe|~google.com|~ggpht.com,reject
+! 2. WhatsApp: Изоляция Meta (Только мессенджер и медиа-CDN).
+$client=com.whatsapp,important,domain=~whatsapp.net|~whatsapp.com|~cdn.whatsapp.net|~fbcdn.net,reject
 
-! 4. Дополнение: Изоляция TikTok (если установлен) — блокировка ByteDance-трекинга.
+! 3. Telegram: Изоляция WebView (Только официальные узлы и видео-сообщения).
+$client=org.telegram.messenger,important,domain=~telegram.org|~telegram.dog|~t.me|~telesco.pe|~ggpht.com,reject
+
+! 4. TikTok: Тотальное подавление ByteDance трекинга.
 $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byteoversea.com|~ibyteimg.com,reject
 
 
@@ -794,10 +798,8 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 
 ! [DNS-REWRITE-MONOLITH] Глобальное зацикливание телеметрии Smart-TV и IoT.
 ! Samsung, LG, Sony, Microsoft, Vizio, Amazon FireTV, Roku.
-||/^(.*(samsung(otn|ads|cloud)|lg(smartad|common|musicid)|sony\.tv\.(data|telemetry)|atsc\.tv|telemetry\.microsoft|events\.data\.microsoft|tvinteractive|device-metrics|roku\.com/logs|logs\.roku)\.com)$/^$dnsrewrite=0.0.0.0,important
-
-! [DNS-REWRITE-STC] Блокировка OTN-серверов Samsung (Резервный слой).
-||samsungotn.net^$dnsrewrite=0.0.0.0,important
+! Оптимизировано: один Regex покрывает все домены (com/net/org).
+||/^(.*(samsung(otn|ads|cloud)|lg(smartad|common|musicid)|sony\.tv\.(data|telemetry)|atsc\.tv|telemetry\.microsoft|events\.data\.microsoft|tvinteractive|device-metrics|roku\.com/logs|logs\.roku)\.(com|net|org))$/^$dnsrewrite=0.0.0.0,important
 
 
 ! [CAST-STABILITY] Стабильный мост для трансляций (ReVanced/SmartTube).
@@ -819,17 +821,18 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 ! --- 1. COSMETIC STERILIZATION ---
 ! Удаление визуальных следов рекламы, куки-баннеров и мусора.
 
-! [UI-PURGE-MONOLITH] Глобальная эвристическая стерилизация интерфейса.
-! 1. Базовые классы и динамические слоты (Объединено)
-##.ads-container, .ad-box, .cookie-banner, .newsletter-popup, [id*="ad-slot"], [class*="sponsored"]
+! [UI-PURGE-OPTIMIZED] Оптимизированная стерилизация (Без наслоений)
+! 1. Скоростной слой: Точные классы и ID. Работает мгновенно.
+##.ads-container, .ad-box, .cookie-banner, .newsletter-popup, .sponsored-post, [id*="ad-slot"]
 
-! 2. Процедурная очистка (Extended CSS) — Умный захват контейнеров
+! 2. Эвристический слой: Глубокая очистка по смыслу (Extended CSS).
+! Удаляет секции, если внутри реклама, даже если классы замаскированы.
 #?#div:has(> iframe[src*="ads"])
-#?#section:has(div[class*="ad-"])
+#?#section:has(div[class*="ad-"]):not(section#main)
 #?#div:has-text(/^Advertisement$|^Реклама$|^Sponsorisé$/)
 
-! 3. Глушение "фантомных дыр" — Схлопывание пустых мест (Все в одной строке)
-##.ad-wrapper:empty, .ad-unit:empty, .ad-container:empty, [id^="google_ads_"]:empty
+! 3. Финальный слой: Схлопывание "дыр". Только для уникальных ID Google и оберток.
+##.ad-wrapper:empty, .ad-unit:empty, [id^="google_ads_"]:empty
 
 
 ! --- 2. OMNI-CORE ATOMIC ENGINE ---
