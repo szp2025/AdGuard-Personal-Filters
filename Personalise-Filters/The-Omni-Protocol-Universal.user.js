@@ -23,13 +23,6 @@
 // @description:en  L301-L600: [QUANTUM] Canvas/WebGL/Audio Noise Injection. Native Code Masking (Function.toString override).
 // @description:en  L601-L900: [BIO-ENTROPY] Mouse/Scroll Humanizer, Micro-Jitter for Math/Date functions.
 // @description:en  L901-L1200: [DEFENSE] Apex Virus Map (1500+ signatures), HoneyPot Disinformation, Clipboard Guard.
-//
-// @description:ru  ЯДРО: Omni-Chronos v3.3.9 Logic.
-// @description:ru  L0-L100: [БАЗА] Reaper Engine (Блокировка), Санация Shadow-DOM, Стерилизатор URL (Очистка меток).
-// @description:ru  L101-L300: [СТЕЛС] Подмена личности MacIntel, Hardware Ghosting (Имитация 8 ядер / 8ГБ ОЗУ).
-// @description:ru  L301-L600: [КВАНТ] Шум Canvas/WebGL/Audio. Маскировка под нативный код (подмена toString).
-// @description:ru  L601-L900: [БИО-ЭНТРОПИЯ] Гуманизация движений мыши/скролла, Микро-джиттер Math/Date функций.
-// @description:ru  L901-L1200: [ЗАЩИТА] Apex Virus Map (1500+ сигнатур), Медовая ловушка HoneyPot, Защита буфера обмена.
 // ==/UserScript==
 
 (function() {
@@ -75,6 +68,329 @@ const OMNI_Config = () => {
         // Добавляем сюда сайты, где клики всегда разрешены (GitHub, Google и т.д.)
         TRUSTED_HOSTS: /github\.com|google\.com|gitlab\.com|bitbucket\.org|localhost/i.test(hostname),
 
+        // --- [ L1: IDENTITY & MIMICRY ] ---
+        // Данные для маскировки под эталонную среду
+        IDENTITY: {
+            ua: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            platform: 'MacIntel',
+            vendor: 'Google Inc.',
+            model: '',
+            platformName: 'macOS',
+            platformVersion: '14.4.1',
+            brands: [
+                { brand: 'Not A(A_Brand', version: '99' },
+                { brand: 'Google Chrome', version: '124' },
+                { brand: 'Chromium', version: '124' }
+            ]
+        },
+        
+        // --- [ L2: NEURAL NOISE & GHOST ] ---
+        NOISE: {
+            CANVAS_NOISE: true,      // Включить микро-шум пикселей
+            PIXEL_COUNT: 4,          // Сколько пикселей зашумлять (эвристика)
+            GHOST_WEBRTC: true,      // Скрывать реальные IP через WebRTC
+            BLOCK_DEVICES: true      // Скрывать список микрофонов/камер
+        },
+
+        // --- [ L3: HEURISTIC REAPER ] ---
+        REAPER: {
+            // Селекторы для мгновенного CSS-подавления
+            CSS_BLOCK: `
+                [class*="ad-"][class*="-container"], [id*="ad-banner"], 
+                [class*="premium-ad"], .adsbygoogle, #ad-slot,
+                [class*="sponsored-content"], [class*="block-notice"]
+            `,
+            // Паттерны для MutationObserver
+            AD_PATTERN: '[class*="ad-"], [id*="ad-"], [class*="banner"]',
+            TRAP_PATTERN: '[class*="overlay"], [class*="popup"]',
+            BAD_WORDS: ['adblock', 'cookies', 'подпишитесь', 'реклама'],
+            // Настройки оптимизации
+            IDLE_TIMEOUT: 500,
+            GHOST_CLEAN_DELAY: 3000
+        },
+
+        // --- [ L5: ENVIRONMENT & POWER ] ---
+        ENV: {
+            TZ: "America/New_York",
+            LOCALE: "en-US",
+            OFFSET: 300, // Минуты (EST)
+            // Идеальное состояние батареи (100% + AC)
+            BATTERY: {
+                level: 1,
+                charging: true,
+                chargingTime: 0,
+                dischargingTime: Infinity
+            }
+        },
+
+        // --- [ L6: URL STERILIZER ] ---
+        STERILIZER: {
+            // Список "мусорных" параметров для удаления из URL
+            TRASH_PARAMS: [
+                'utm_', 'fbclid', 'gclid', 'yclid', '_openstat', 
+                'mc_cid', 'msclkid', 'aff_id', 'click_id', 'ref',
+                'ysclid', 'query_id', 'rb_clickid'
+            ]
+        },
+
+        // --- [ L7: DEEP SHADOW & GHOST ] ---
+        GHOST: {
+            FORCE_OPEN_SHADOW: true, // Принудительно открывать Shadow DOM для чистки
+            IDLE_STATE: 'active',    // Состояние пользователя для IdleDetector
+            SCREEN_STATE: 'locked',  // Состояние экрана для IdleDetector
+            ALWAYS_VISIBLE: true     // Запретить сайтам видеть переключение вкладок
+        },
+
+        // --- [ L8: CLIPBOARD GUARD ] ---
+        CLIPBOARD: {
+            // Удаление невидимых символов и Zero-Width Joiners
+            CLEAN_REGEXP: /[\u200B-\u200D\uFEFF\u202E]/g,
+            // Блокировать фоновую запись без участия пользователя (User Gesture)
+            REQUIRE_USER_ACTIVATION: true,
+            // Исключения для защиты структуры кода
+            CODE_SELECTORS: 'pre, code'
+        },
+
+        // --- [ L9: NEURAL-HEURISTIC ] ---
+        NEURAL: {
+            // Паттерны для поиска трекеров в именах классов и ID
+            TRACKING_REGEXP: /[atb][drk][ck]/i,
+            // Целевые теги для сканирования
+            SUSPECT_TAGS: 'img, iframe, div, span',
+            // Тайминг дебаунса для MutationObserver (мс)
+            DEBOUNCE_MS: 100,
+            // Стили для изоляции ("Координаты пустоты")
+            ISOLATION_STYLE: {
+                display: 'none',
+                pointerEvents: 'none',
+                position: 'absolute',
+                top: '-9999px',
+                left: '-9999px'
+            }
+        },
+
+        // --- [ L10: HISTORY INTEGRITY ] ---
+        HISTORY: {
+            MAX_CALLS_PER_SECOND: 5, // Порог срабатывания защиты от спама
+            BLOCK_SPAM: true,         // Включить блокировку при превышении лимита
+            SYNC_WITH_L6: true       // Использовать общие параметры стерилизации
+        },
+
+        // --- [ L11: HARDWARE GHOSTING ] ---
+        HARDWARE: {
+            CORES: 8,              // Виртуальное кол-во ядер
+            MEMORY: 8,             // Виртуальная RAM (GB)
+            TOUCH_POINTS: 0,       // 0 = имитация десктопа без тачскрина
+            // Параметры джиттера для performance.now()
+            JITTER: {
+                TECH_RANGE: 0.001, // Минимальный шум для дебага
+                USER_RANGE: 0.015, // Защитный шум для обычных сайтов
+                BASE_OFFSET: 0.005  // Базовое смещение
+            },
+            // Список API сенсоров для полной блокировки
+            SENSORS_BLOCK: ['vibrate', 'DeviceMotionEvent', 'DeviceOrientationEvent']
+        },
+        
+        // --- [ L12: PLATINUM STEALTH ] ---
+        STEALTH: {
+            // Шум для шрифтов (минимальный, чтобы не ломать верстку)
+            FONT_NOISE: 0.0001,
+            // Девиация для аудио-сигнала
+            AUDIO_POISON: 0.0000001,
+            // Блокировка ресурсных таймингов (защита от Cache Probing)
+            BLOCK_RESOURCE_TIMING: true,
+            // Список сенсоров для блокировки через Listeners
+            SENSOR_EVENTS: ['deviceorientation', 'devicemotion']
+        },
+
+        // --- [ L13: QUANTUM STEALTH ] ---
+        QUANTUM: {
+            // Биометрия: нано-шум для координат мыши (0.0001 не виден глазу)
+            POINTER_NOISE: 0.0001,
+            // Экран: фиксация параметров Retina-дисплея
+            RATIO: 2,
+            DEPTH: 24,
+            // GPU: Маскировка под Intel Iris (MacIntel профиль)
+            GPU_MASK: {
+                0x9245: "Intel Inc.",                     // UNMASKED_VENDOR_WEBGL
+                0x9246: "Intel(R) Iris(TM) Graphics 6100", // UNMASKED_RENDERER_WEBGL
+                37445:  "Intel Inc.", 
+                37446:  "Intel(R) Iris(TM) Graphics 6100",
+                0x8DFA: 30,    // MAX_VARYING_VECTORS
+                0x8DF8: 1024   // MAX_VERTEX_UNIFORM_VECTORS
+            }
+        },
+
+        // --- [ L14: SUPERNOVA STEALTH ] ---
+        SUPERNOVA: {
+            SCROLL_JITTER: 0.0001, // Шум для WheelEvent
+            LANGUAGES: ['en-US', 'en'], // Принудительный языковой стек
+            // Список разрешений, которые всегда будут в статусе 'prompt'
+            MASKED_PERMISSIONS: ['notifications', 'geolocation', 'push', 'microphone', 'camera'],
+            CANVAS_POISON_BIT: 1 // Смещение для инверсии пикселя
+        },
+
+        // --- [ L15: EVENT HORIZON ] ---
+        HORIZON: {
+            // Когнитивный шум для timeStamp событий (мс)
+            INPUT_JITTER: { MIN: 0.1, MAX: 0.5 },
+            // Акустическая девиация (шаг и вероятность шума)
+            AUDIO_STEP: 8,
+            AUDIO_PROBABILITY: 0.8,
+            // Принудительная локаль для Intl объектов
+            LOCALE: 'en-US'
+        },
+
+    // --- [ L16: VOID SINGULARITY ] ---
+            SINGULARITY: {
+                NATIVE_MASK: true,      // Включить Proxy-маскировку под native code
+                FORCE_ORIENTATION: 'landscape-primary', // Фиксация десктопного режима
+                FORCE_ANGLE: 0,
+                LOCALE: 'en-US'
+            },
+
+        // --- [ L17: ABSOLUTE ZERO ] ---
+        ZERO: {
+            // Метрики эталонного монитора
+            SCREEN: {
+                width: 1920,
+                height: 1080,
+                availWidth: 1920,
+                availHeight: 1040, // Имитация панели задач
+                depth: 24
+            },
+            // Параметры теплового шума (джиттера)
+            THERMAL_DRIFT: 0.0002,
+            // Стоп-слова для очистки стека ошибок
+            STACK_FILTER: ['omni', 'at <anonymous>', 'eval', 'extension']
+        },
+
+        // --- [ L18: MIRROR PROTOCOL ] ---
+        MIRROR: {
+            // Имитация задержки сети для "фейковой" загрузки трекеров (мс)
+            FAKE_LOAD_DELAY: 15,
+            TRACKER_REGEX: /ads|analytics|pixel|track|doubleclick/i,
+            // Параметры "идеального" 4G соединения
+            NETWORK: {
+                effectiveType: '4g',
+                saveData: false,
+                downlink: 10,
+                rtt: 50
+            },
+            // Селекторы для скрытия пустых рекламных блоков
+            ARTIFACT_SELECTOR: 'div[id*="googlesyndication"], [id*="ad-unit"], iframe[src="about:blank"]'
+        },
+
+        // --- [ L20: SINGULARITY POINT ] ---
+        SINGULARITY: {
+            MATH_NOISE: 1e-17,        // Шум на грани точности Double
+            PROMISE_JITTER_CHANCE: 0.05, // 5% шанс задержки микрозадачи
+            // Квота: 500 GB (в байтах)
+            STORAGE: {
+                QUOTA: 536870912000, 
+                USAGE: 104857600,     // 100 MB занято
+                IDB: 52428800,        // 50 MB IndexedDB
+                CACHES: 52428800      // 50 MB Cache API
+            }
+        },
+
+        // --- [ L22: ABSOLUTE INFINITY ] ---
+        INFINITY: {
+            // Изоляция Gamepad (VendorID/ProductID)
+            EMPTY_GAMEPADS: Object.freeze([]),
+            // Протоколы расширений для блокировки сканирования
+            EXT_PROTOCOLS: ['chrome-extension://', 'moz-extension://', 'extension://'],
+            // Скрытие глобальных переменных от перечисления
+            HIDDEN_GLOBALS: ['__REDUX_DEVTOOLS_EXTENSION__', 'chrome', 'browser', 'ethereum'],
+            // Принудительная светлая тема (matches: false для prefers-dark)
+            FORCE_LIGHT_MODE: true
+        },
+
+        // --- [ L23: TRANSCENDENT OVERLORD ] ---
+        OVERLORD: {
+            BEZIER_NOISE: 1e-7,       // Сдвиг кривых Безье
+            EMOJI_JITTER: 0.0001,     // Смещение для сглаживания эмодзи
+            CANVAS_TRAP_LIMIT: 5,     // Макс. кол-во чтений до "отравления"
+            TRAP_COLOR: 'rgba(255,255,255,0.001)' // Цвет шума для ловушки
+        },
+
+        // --- [ L25: GOD-SEED ] ---
+        GOD_SEED: {
+            // "Золотой стандарт" железа (снижает аномальность профиля)
+            HARDWARE: {
+                MEMORY: 8,           // 8 GB RAM
+                CONCURRENCY: 8       // 8 Cores CPU
+            },
+            RECURSIVE_MASK: true,    // Включить бесконечный Proxy для toString
+            NATIVE_LABEL: 'function () { [native code] }'
+        },
+
+        // --- [ L28: INFERNO SHIELD ] ---
+        INFERNO: {
+            // Список детектов автоматизации для перевода в "теневой" режим
+            GHOST_VARS: [
+                'webdriver', '_phantom', '__nightmare', '_selenium', 
+                'callPhantom', 'cdc_adoQbh2ncp63213jsedu3jkzh', '__sh_',
+                '__webdriver_evaluate', '__webdriver_unwrapped'
+            ],
+            // Имитация диалекта Safari (JavaScriptCore)
+            MIMIC_SAFARI: true,
+            ERROR_CONTEXT: " (In 'eval')"
+        },
+
+        // --- [ L30: ZENITH / INTERSTELLAR VOID ] ---
+        ZENITH: {
+            DATE_JITTER_MAX: 2,       // Рандомизация даты (0-2мс)
+            PERF_PRECISION: 10,       // Округление до 100мкс (1/10)
+            NANO_NOISE: 0.001,        // Наносекундный джиттер
+            DEFAULT_LOCALE: 'en-US'
+        },
+
+        // --- [ L33: APEX GUARD ] ---
+        APEX: {
+            // Флаги песочницы для iframe (без allow-downloads)
+            IFRAME_SANDBOX: 'allow-scripts allow-same-origin allow-forms',
+            BLOCK_DATA_URL: true,
+            PROTECTED_TAGS: ['HTMLAnchorElement', 'HTMLAreaElement']
+        },
+
+        // --- [ L40: LEGACY & FRAGILE REPAIR ] ---
+        LEGACY: {
+            // Признаки старых библиотек для активации ремонта
+            SENSORS: ['jQuery', 'Prototype', 'MooTools'],
+            // Фильтр бесполезных ворнингов, забивающих логи безопасности
+            SILENCE_RE: /jQuery\.browser|is deprecated|property is non-standard|ms-clear/i,
+            REPAIR_DELAY: 400 // Фолбэк задержка для старых систем
+        },       
+
+        // --- [ L150: HEAVY EVAL BLOCKER ] ---
+        EVAL_GUARD: {
+            MAX_SAFE_SIZE: 150000,    // Порог 150KB
+            MAX_OBFUSCATED_SIZE: 50000, // Порог для кода с признаками eval-nesting
+            ACTION: 'BLOCK_AND_PURGE',
+            TARGETS: ['eval', 'Function', 'setTimeout', 'setInterval']
+        },
+
+        // --- [ L1001: HISTORY & HONEYPOT ] ---
+        HISTORY: {
+            MAX_CALLS_PER_SECOND: 3,   // Защита от History Flooding
+            BLOCK_SPAM: true
+        },
+        STERILIZER: {
+            // Список параметров, подлежащих немедленному удалению
+            TRASH_PARAMS: ['utm_', 'fbclid', 'gclid', '_ga', '_gl', 'yclid', 'msclkid'],
+            FALLBACK_REGEXP: /[?&](utm_|fbclid|gclid|yclid|msclkid)=[^&]+/gi
+        },
+
+        // --- [ L2000: KINETIC MEDIA CORE ] ---
+        MEDIA: {
+            TURBO_RATE: 16,           // Максимальная скорость в Chromium
+            SKIP_OFFSET: 0.3,         // Запас времени до конца (сек)
+            VOLUME_STEP: 0.05,        // Шаг изменения громкости колесом
+            CLEANUP_INTERVAL: 1000    // Интервал очистки оверлеев
+        },
+        
+        
         // --- [ СООБЩЕНИЯ СИСТЕМЫ ] ---
         MESSAGES: {
             SHIELD_ALERT: '⚠️ [OMNI-SHIELD L1200]\n\nОбнаружен подозрительный объект:\n',
@@ -145,62 +461,39 @@ const isSafeGitHubAction = (target) => {
     return safeSelectors.some(selector => target.closest(selector));
 };
 
-    
-   /**
+ /**
  * L1: DYNAMIC IDENTITY & QUANTUM MIMICRY
  * Эвристическая маскировка под эталонную среду.
  */
-const applyL1Identity = () => {
-    // 1. Получаем данные из нашей центральной базы знаний
+ const applyL1Identity = () => {
     const info = OMNI_Infobase();
-    
-    // Если CONFIG не определен (внешняя зависимость), выходим безопасно
-    if (typeof CONFIG === 'undefined') return;
+    const conf = OMNI_Config(); // Используем наш новый конфиг
 
-    // 2. Использование готовой эвристики вместо повторных проверок RegExp
     const isTech = info.isTechHost;
-    const targetUA = isTech ? navigator.userAgent : CONFIG.identity.ua;
+    const targetUA = isTech ? navigator.userAgent : conf.IDENTITY.ua;
 
-    // 3. Базовые параметры (используем централизованный метод перезаписи)
-    // Мы больше не считаем RegExp внутри — мы просто берем флаг isTech
-    omniOverwrite(navigator, 'platform', CONFIG.identity.platform);
-    omniOverwrite(navigator, 'vendor', CONFIG.identity.vendor);
+    // Перезапись параметров через данные из конфига
+    omniOverwrite(navigator, 'platform', conf.IDENTITY.platform);
+    omniOverwrite(navigator, 'vendor', conf.IDENTITY.vendor);
     omniOverwrite(navigator, 'userAgent', targetUA);
     omniOverwrite(navigator, 'webdriver', false);
 
-    // 4. РЕАКТИВНОСТЬ: Защита Client Hints
+    // Работа с Client Hints тоже идет через конфиг
     if (navigator.userAgentData) {
-        const highEntropyData = {
-            architecture: 'x86',
-            bitness: '64',
-            model: '',
-            platform: 'macOS',
-            platformVersion: '14.4.1',
-            uaFullVersion: targetUA
-        };
-        
         omniOverwrite(navigator, 'userAgentData', {
-            getHighEntropyValues: (hints) => Promise.resolve(highEntropyData),
-            brands: [
-                { brand: 'Not A(A_Brand', version: '99' },
-                { brand: 'Google Chrome', version: '124' },
-                { brand: 'Chromium', version: '124' }
-            ],
+            getHighEntropyValues: (hints) => Promise.resolve({
+                architecture: 'x86',
+                bitness: '64',
+                model: conf.IDENTITY.model,
+                platform: conf.IDENTITY.platformName,
+                platformVersion: conf.IDENTITY.platformVersion,
+                uaFullVersion: targetUA
+            }),
+            brands: conf.IDENTITY.brands,
             mobile: false,
-            platform: 'macOS'
+            platform: conf.IDENTITY.platformName
         });
     }
-
-    // 5. ЭРГОНОМИЧНОСТЬ: Скрытие признаков автоматизации
-    if (navigator.plugins) {
-        const fakePlugins = [
-            { name: 'PDF Viewer', filename: 'internal-pdf-viewer', description: 'Portable Document Format' },
-            { name: 'Chrome PDF Viewer', filename: 'internal-pdf-viewer', description: 'Google Chrome PDF Viewer' }
-        ];
-        omniOverwrite(navigator, 'plugins', fakePlugins);
-    }
-
-    // Используем стили из Infobase для единообразия логов
 };
     
 
@@ -210,54 +503,44 @@ const applyL1Identity = () => {
  */
 const applyL2Noise = () => {
     const info = OMNI_Infobase();
+    const conf = OMNI_Config(); // Подключаем конфиг
 
-    // 1. Динамический шум для Canvas (Реактивный метод)
-    const originalGetImageData = CanvasRenderingContext2D.prototype.getImageData;
-    
-    CanvasRenderingContext2D.prototype.getImageData = function(x, y, w, h) {
-        const imageData = originalGetImageData.apply(this, arguments);
-        
-        // Эвристика: используем центральный флаг isTechHost и проверку на мелкие элементы
-        const isSmall = w < 16 || h < 16;
-        
-        // Если это не тех-зона и не мелкая иконка — вносим шум
-        if (!info.isTechHost && !isSmall) {
-            // Вносим микро-шум только в 4 случайных пикселя (незаметно для глаза, фатально для отпечатка)
-            for (let i = 0; i < 4; i++) {
-                const offset = Math.floor(Math.random() * (imageData.data.length / 4)) * 4;
-                // Изменяем значение канала на +/- 1 единицу
-                imageData.data[offset] += (Math.random() > 0.5 ? 1 : -1);
+    // 1. Динамический шум для Canvas
+    if (conf.NOISE.CANVAS_NOISE) {
+        const originalGetImageData = CanvasRenderingContext2D.prototype.getImageData;
+        CanvasRenderingContext2D.prototype.getImageData = function(x, y, w, h) {
+            const imageData = originalGetImageData.apply(this, arguments);
+            const isSmall = w < 16 || h < 16;
+
+            if (!info.isTechHost && !isSmall) {
+                // Берем количество пикселей из конфига
+                for (let i = 0; i < conf.NOISE.PIXEL_COUNT; i++) {
+                    const offset = Math.floor(Math.random() * (imageData.data.length / 4)) * 4;
+                    imageData.data[offset] += (Math.random() > 0.5 ? 1 : -1);
+                }
             }
-        }
-        return imageData;
-    };
+            return imageData;
+        };
+    }
 
-    // 2. WebRTC Ghosting (Эргономичный метод)
-    if (window.RTCPeerConnection) {
+    // 2. WebRTC Ghosting
+    if (window.RTCPeerConnection && conf.NOISE.GHOST_WEBRTC) {
         const RealRTC = window.RTCPeerConnection;
         window.RTCPeerConnection = function(config) {
-            // Если мы в ULTIMATE режиме, блокируем реальные ICE-серверы
             if (config && config.iceServers) {
                 config.iceServers = info.isTechHost ? config.iceServers : [];
             }
-            
             const pc = new RealRTC(config);
-            
-            // Подмена метода сбора кандидатов (убираем реальные IP)
-            pc.addIceCandidate = (c) => Promise.resolve();
+            pc.addIceCandidate = () => Promise.resolve();
             return pc;
         };
-        // Сохраняем прототип для совместимости
         window.RTCPeerConnection.prototype = RealRTC.prototype;
     }
 
-    // 3. Блокировка перечисления медиа-устройств
-    if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-        // Мы просто возвращаем пустой список, имитируя отсутствие разрешений
+    // 3. Блокировка устройств
+    if (navigator.mediaDevices && conf.NOISE.BLOCK_DEVICES) {
         navigator.mediaDevices.enumerateDevices = () => Promise.resolve([]);
     }
-
-    // Логирование в едином стиле через Инфобазу
 };
     
     
@@ -266,61 +549,49 @@ const applyL2Noise = () => {
      * L3: HEURISTIC SPECTRAL REAPER
      * Реактивная зачистка рекламных и анти-адблок узлов.
      */
-    const applyL3Reaper = (target = document.documentElement) => {
-        // 1. ЭРГОНОМИЧНОСТЬ: Глобальный CSS-подавитель (работает мгновенно, до JS)
-        const style = document.createElement('style');
-        style.textContent = `
-            [class*="ad-"][class*="-container"], [id*="ad-banner"], 
-            [class*="premium-ad"], .adsbygoogle, #ad-slot,
-            [class*="sponsored-content"], [class*="block-notice"] {
-                display: none !important;
-                visibility: hidden !important;
-                opacity: 0 !important;
-                pointer-events: none !important;
-                height: 0 !important;
-                width: 0 !important;
-            }
-        `;
-        target.appendChild(style);
+  const applyL3Reaper = (target = document.documentElement) => {
+    const conf = OMNI_Config(); // Вызов конфига
 
-        // 2. РЕАКТИВНОСТЬ: Оптимизированный MutationObserver
-        const reaper = new MutationObserver((mutations) => {
-            // Используем requestIdleCallback, чтобы не грузить CPU во время рендеринга
-            window.requestIdleCallback(() => {
-                for (const mutation of mutations) {
-                    for (const node of mutation.addedNodes) {
-                        if (node.nodeType !== 1) continue;
+    // 1. CSS-подавитель через конфиг
+    const style = document.createElement('style');
+    style.textContent = `${conf.REAPER.CSS_BLOCK} { 
+        display: none !important; visibility: hidden !important; 
+        opacity: 0 !important; pointer-events: none !important; 
+        height: 0 !important; width: 0 !important; 
+    }`;
+    target.appendChild(style);
 
-                        // ЭВРИСТИКА: Ищем признаки мусора по сложным паттернам
-                        const isAd = node.matches('[class*="ad-"], [id*="ad-"], [class*="banner"]');
-                        const isModalTrap = node.matches('[class*="overlay"], [class*="popup"]') && 
-                                           (node.innerText?.includes('adblock') || node.innerText?.includes('cookies'));
+    // 2. MutationObserver
+    const reaper = new MutationObserver((mutations) => {
+        window.requestIdleCallback(() => {
+            for (const mutation of mutations) {
+                for (const node of mutation.addedNodes) {
+                    if (node.nodeType !== 1) continue;
 
-                        if (isAd || isModalTrap) {
-                            // Не просто удаляем (remove может вызвать триггер восстановления), 
-                            // а "очищаем" контент и скрываем
-                            node.innerHTML = '';
-                            node.setAttribute('data-omni-reaped', 'true');
-                            node.style.setProperty('display', 'none', 'important');
-                        }
+                    const isAd = node.matches(conf.REAPER.AD_PATTERN);
+                    const isModalTrap = node.matches(conf.REAPER.TRAP_PATTERN) && 
+                                       conf.REAPER.BAD_WORDS.some(word => node.innerText?.toLowerCase().includes(word));
+
+                    if (isAd || isModalTrap) {
+                        node.innerHTML = '';
+                        node.setAttribute('data-omni-reaped', 'true');
+                        node.style.setProperty('display', 'none', 'important');
                     }
                 }
-            }, { timeout: 500 });
+            }
+        }, { timeout: conf.REAPER.IDLE_TIMEOUT });
+    });
+
+    reaper.observe(target, { childList: true, subtree: true });
+
+    // 3. Периодическая чистка (GHOST CLEAN)
+    setTimeout(() => {
+        const potentialTraps = document.querySelectorAll('div[style*="z-index: 2147483647"]');
+        potentialTraps.forEach(trap => {
+            if (trap.innerText?.length < 500) trap.remove();
         });
-
-        // Запуск наблюдателя с фильтром по атрибутам и дочерним элементам
-        reaper.observe(target, { childList: true, subtree: true });
-
-        // 3. ПЕРИОДИЧЕСКАЯ ЭВРИСТИКА (Чистка скрытых слоев)
-        const ghostClean = () => {
-            const potentialTraps = document.querySelectorAll('div[style*="z-index: 2147483647"]');
-            potentialTraps.forEach(trap => {
-                if (trap.innerText?.length < 500) trap.remove();
-            });
-        };
-        setTimeout(ghostClean, 3000);
-
-    };
+    }, conf.REAPER.GHOST_CLEAN_DELAY);
+};
 
     
 
@@ -329,45 +600,32 @@ const applyL2Noise = () => {
  * Синхронизация часового пояса, локали и фиксация статуса питания.
  */
 const applyL5Environment = () => {
-    // 1. Получаем эвристический слепок реальности
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
 
-    // ЭВРИСТИКА: Не меняем время в тех-зонах (чтобы логи сервера совпадали с локальными)
-    // Больше никаких RegExp внутри модуля — используем готовый флаг
+    // Эвристика: не меняем окружение в тех-зонах
     if (info.isTechHost) return;
 
-    // Параметры для эталонной среды (целевой профиль)
-    const targetTZ = "America/New_York";
-    const targetLocale = "en-US";
-    const targetOffset = 300; // Нью-Йорк (EST)
-
-    // 2. Глубокая подмена Intl (реактивный метод)
+    // 1. Подмена Intl и Date
     if (window.Intl) {
         const orgResolvedOptions = Intl.DateTimeFormat.prototype.resolvedOptions;
-
         Intl.DateTimeFormat.prototype.resolvedOptions = function() {
             const options = orgResolvedOptions.apply(this, arguments);
-            // Применяем маскировку часового пояса и локали
             return Object.assign(options, { 
-                timeZone: targetTZ, 
-                locale: targetLocale 
+                timeZone: conf.ENV.TZ, 
+                locale: conf.ENV.LOCALE 
             });
         };
 
-        // Подмена Date для синхронизации с TZ (защита от проверки разницы во времени)
         Date.prototype.getTimezoneOffset = function() {
-            return targetOffset; 
+            return conf.ENV.OFFSET; 
         };
     }
 
-    // 3. БАТАРЕЯ: Эргономичный фейк (защита от разряда как маркера фингерпринтинга)
+    // 2. Фейковая батарея через параметры конфига
     if (navigator.getBattery) {
-        // Мы возвращаем "замороженное" идеальное состояние: 100% на зарядке
         const fakeBattery = {
-            charging: true,
-            chargingTime: 0,
-            dischargingTime: Infinity,
-            level: 1, 
+            ...conf.ENV.BATTERY,
             onchargingchange: null,
             onchargingtimechange: null,
             ondischargingtimechange: null,
@@ -376,11 +634,9 @@ const applyL5Environment = () => {
             removeEventListener: () => {},
             dispatchEvent: () => false
         };
-        // Перезаписываем метод возврата промиса батареи
         navigator.getBattery = () => Promise.resolve(fakeBattery);
     }
 
-    // Логирование через централизованные стили Infobase
 };
     
     /**
@@ -388,216 +644,198 @@ const applyL5Environment = () => {
      * Очистка URL от слежки и динамическая защита History API.
      */
     const applyL6UrlSterilizer = () => {
-        // 1. Список "мусорных" параметров (расширенный)
-        const trashParams = [
-            'utm_', 'fbclid', 'gclid', 'yclid', '_openstat', 
-            'mc_cid', 'msclkid', 'aff_id', 'click_id', 'ref'
-        ];
+    const conf = OMNI_Config(); // Вызов конфига
 
-        const sterilize = (urlStr) => {
-            try {
-                const url = new URL(urlStr);
-                let changed = false;
-                
-                // Эвристика: удаляем всё, что начинается с utm_ или есть в списке
-                const params = [...url.searchParams.keys()];
-                params.forEach(p => {
-                    if (trashParams.some(trash => p.startsWith(trash) || p === trash)) {
-                        url.searchParams.delete(p);
-                        changed = true;
-                    }
-                });
-                return changed ? url.toString() : urlStr;
-            } catch (e) { return urlStr; }
-        };
-
-        // 2. ПЕРВИЧНАЯ ОЧИСТКА (при загрузке)
-        const currentUrl = window.location.href;
-        const cleanUrl = sterilize(currentUrl);
-        if (cleanUrl !== currentUrl) {
-            window.history.replaceState({}, document.title, cleanUrl);
-        }
-
-        // 3. РЕАКТИВНЫЙ ПЕРЕХВАТ (History API)
-        // Если какой-то скрипт решит дописать метку динамически — мы её сразу удалим
-        const wrapHistory = (method) => {
-            const original = window.history[method];
-            window.history[method] = function(state, title, url) {
-                const sterilizedUrl = url ? sterilize(new URL(url, document.baseURI).href) : url;
-                return original.apply(this, [state, title, sterilizedUrl]);
-            };
-        };
-
-        wrapHistory('pushState');
-        wrapHistory('replaceState');
-
+    const sterilize = (urlStr) => {
+        try {
+            const url = new URL(urlStr);
+            let changed = false;
+            
+            const params = [...url.searchParams.keys()];
+            params.forEach(p => {
+                // Сверяемся со списком из конфига
+                if (conf.STERILIZER.TRASH_PARAMS.some(trash => p.startsWith(trash) || p === trash)) {
+                    url.searchParams.delete(p);
+                    changed = true;
+                }
+            });
+            return changed ? url.toString() : urlStr;
+        } catch (e) { return urlStr; }
     };
+
+    // 1. Первичная очистка
+    const currentUrl = window.location.href;
+    const cleanUrl = sterilize(currentUrl);
+    if (cleanUrl !== currentUrl) {
+        window.history.replaceState({}, document.title, cleanUrl);
+    }
+
+    // 2. Реактивный перехват History API
+    const wrapHistory = (method) => {
+        const original = window.history[method];
+        window.history[method] = function(state, title, url) {
+            const sterilizedUrl = url ? sterilize(new URL(url, document.baseURI).href) : url;
+            return original.apply(this, [state, title, sterilizedUrl]);
+        };
+    };
+
+    wrapHistory('pushState');
+    wrapHistory('replaceState');
+};
     
     
    /**
      * L7: DEEP SHADOW & IDLE GHOSTING
      * Рекурсивная очистка теневого DOM и маскировка активности пользователя.
      */
-    const applyL7DeepSanitizer = () => {
-        // 1. РЕАКТИВНЫЙ SHADOW DOM (Глубокое проникновение)
-        const originalAttachShadow = Element.prototype.attachShadow;
-        
-        Element.prototype.attachShadow = function(init) {
-            // ЭВРИСТИКА: Принудительно делаем Shadow DOM открытым ('open'), 
-            // чтобы наш Reaper мог видеть и чистить его содержимое.
-            if (init && init.mode === 'closed') {
-                init.mode = 'open';
-            }
-            
-            const shadow = originalAttachShadow.apply(this, arguments);
-            
-            // Запускаем L3 Reaper для новой "тени" с задержкой (эргономичность)
-            window.requestIdleCallback(() => {
-                if (typeof applyL3Reaper === 'function') {
-                    applyL3Reaper(shadow);
-                }
-            });
-            
-            return shadow;
-        };
+ const applyL7DeepSanitizer = () => {
+    const conf = OMNI_Config();
 
-        // 2. IDLE GHOSTING (Вместо удаления — вечная "активность")
-        // Сайты используют это, чтобы знать, когда ты отошел от ПК. Мы говорим: "Я тут всегда".
-        if ('IdleDetector' in window) {
-            const RealIdleDetector = window.IdleDetector;
-            
-            window.IdleDetector = function() {
-                return {
-                    start: () => Promise.resolve(),
-                    addEventListener: () => {},
-                    removeEventListener: () => {},
-                    state: { userState: 'active', screenState: 'locked' }
-                };
-            };
-            
-            // Сохраняем статические методы для бесшовной интеграции
-            window.IdleDetector.requestPermission = () => Promise.resolve('granted');
+    // 1. РЕАКТИВНЫЙ SHADOW DOM
+    const originalAttachShadow = Element.prototype.attachShadow;
+    Element.prototype.attachShadow = function(init) {
+        // Если конфиг требует — открываем все тени
+        if (conf.GHOST.FORCE_OPEN_SHADOW && init && init.mode === 'closed') {
+            init.mode = 'open';
         }
+        
+        const shadow = originalAttachShadow.apply(this, arguments);
+        
+        window.requestIdleCallback(() => {
+            if (typeof applyL3Reaper === 'function') {
+                applyL3Reaper(shadow);
+            }
+        });
+        
+        return shadow;
+    };
 
-        // 3. ЭРГОНОМИЧНОСТЬ: Блокировка Page Visibility (Защита от "заморозки" вкладок)
-        // Не дает сайту понять, что ты переключил вкладку.
+    // 2. IDLE GHOSTING
+    if ('IdleDetector' in window) {
+        window.IdleDetector = function() {
+            return {
+                start: () => Promise.resolve(),
+                addEventListener: () => {},
+                removeEventListener: () => {},
+                // Берем состояние из центрального конфига
+                state: { userState: conf.GHOST.IDLE_STATE, screenState: conf.GHOST.SCREEN_STATE }
+            };
+        };
+        window.IdleDetector.requestPermission = () => Promise.resolve('granted');
+    }
+
+    // 3. Page Visibility Protection
+    if (conf.GHOST.ALWAYS_VISIBLE) {
         omniOverwrite(document, 'visibilityState', 'visible');
         omniOverwrite(document, 'hidden', false);
-
-    };
+    }
+};
     
 
  /**
      * L8: CLIPBOARD INTEGRITY & ANTI-HIJACK
      * Стерилизация буфера обмена и защита от фоновой подмены данных.
      */
-    const applyL8ClipboardGuard = () => {
-        // 1. ЭВРИСТИКА: Стерилизация текста (удаление невидимых символов и Zero-Width Joiners)
-        const sterilizeText = (text) => {
-            if (!text) return '';
-            // Удаляем невидимые символы управления, которые часто используются для обхода фильтров или атак
-            return text.replace(/[\u200B-\u200D\uFEFF\u202E]/g, '').trim();
-        };
+const applyL8ClipboardGuard = () => {
+    const info = OMNI_Infobase();
+    const conf = OMNI_Config();
 
-        // 2. РЕАКТИВНЫЙ ПЕРЕХВАТ (Защита от "Читать далее" и инъекций)
-        document.addEventListener('copy', (e) => {
-            const selection = window.getSelection();
-            const text = selection.toString();
-            
-            if (text) {
-                const cleanText = sterilizeText(text);
-                
-                // Передаем только чистый текст, отсекая попытки сайта внедрить скрытый HTML
-                e.clipboardData.setData('text/plain', cleanText);
-                
-                // ЭРГОНОМИЧНОСТЬ: Если копируем из кода (pre/code), сохраняем структуру, но без мусора
-                if (selection.anchorNode && selection.anchorNode.parentNode.closest('pre, code')) {
-                    // Оставляем как есть, но предотвращаем дефолтное поведение сайта
-                }
+    const sterilizeText = (text) => {
+        if (!text) return '';
+        // Используем паттерн из конфига
+        return text.replace(conf.CLIPBOARD.CLEAN_REGEXP, '').trim();
+    };
 
-                e.stopImmediatePropagation(); // Не даем скриптам сайта перехватить событие позже
+    // 1. РЕАКТИВНЫЙ ПЕРЕХВАТ (событие copy)
+    document.addEventListener('copy', (e) => {
+        const selection = window.getSelection();
+        const text = selection.toString();
+        
+        if (text) {
+            const cleanText = sterilizeText(text);
+            e.clipboardData.setData('text/plain', cleanText);
+
+            // Проверка на копирование кода через конфиг
+            const isCode = selection.anchorNode && 
+                           selection.anchorNode.parentNode.closest(conf.CLIPBOARD.CODE_SELECTORS);
+
+            if (!isCode) {
+                // Если не код, гарантируем отсутствие скрытых инъекций
+                e.stopImmediatePropagation();
                 e.preventDefault();
             }
-        }, true);
-
-        // 3. ЗАЩИТА ОТ ФОНОВОЙ ПОДМЕНЫ (Async Clipboard API)
-        // Блокирует попытки сайта записать что-то в буфер без твоего ведома
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            const originalWriteText = navigator.clipboard.writeText.bind(navigator.clipboard);
-            navigator.clipboard.writeText = function(text) {
-                // Разрешаем запись только если есть недавний клик или нажатие клавиши (User Gesture)
-                if (navigator.userActivation && navigator.userActivation.isActive) {
-                    return originalWriteText(sterilizeText(text));
-                }
-                console.warn(OMNI_TAG, '🚫 Blocked unauthorized clipboard write attempt.');
-                return Promise.reject(new Error('Unauthorized Clipboard Write'));
-            };
         }
+    }, true);
 
-    };
+    // 2. ЗАЩИТА АСИНХРОННОГО API
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        const originalWriteText = navigator.clipboard.writeText.bind(navigator.clipboard);
+        navigator.clipboard.writeText = function(text) {
+            const isAuthorized = !conf.CLIPBOARD.REQUIRE_USER_ACTIVATION || 
+                                (navigator.userActivation && navigator.userActivation.isActive);
+
+            if (isAuthorized) {
+                return originalWriteText(sterilizeText(text));
+            }
+
+            // Используем TAG из Infobase и сообщение из конфига
+            console.warn(info.TAG, info.STYLE_TURBO_TAG, conf.MESSAGES.CLIPBOARD_BLOCKED);
+            return Promise.reject(new Error('Unauthorized Clipboard Write'));
+        };
+    }
+};
     
 
   /**
      * L9: NEURAL-HEURISTIC & GHOST ISOLATION
      * Интеллектуальное подавление трекеров и защита от самовосстановления.
      */
-    const applyL9NeuralHeuristic = () => {
-        // 1. ЭВРИСТИЧЕСКИЙ СКАНЕР (Анализ подозрительных микро-объектов)
-        const isolateTrackers = () => {
-            const suspects = document.querySelectorAll('img, iframe, div, span');
+   const applyL9NeuralHeuristic = () => {
+    const conf = OMNI_Config(); // Вызов конфига
+
+    // 1. ЭВРИСТИЧЕСКИЙ СКАНЕР
+    const isolateTrackers = () => {
+        const suspects = document.querySelectorAll(conf.NEURAL.SUSPECT_TAGS);
+        
+        suspects.forEach(el => {
+            if (el.hasAttribute('data-omni-isolated')) return;
+
+            const style = window.getComputedStyle(el);
+            const isInvisible = style.width === '1px' || style.height === '1px' || 
+                               style.opacity === '0' || style.visibility === 'hidden';
             
-            suspects.forEach(el => {
-                // Если элемент уже обработан нами — пропускаем
-                if (el.hasAttribute('data-omni-isolated')) return;
+            const isExternal = el.src && !el.src.includes(window.location.hostname);
+            const hasTrackingClass = conf.NEURAL.TRACKING_REGEXP.test(el.className + el.id);
 
-                const style = window.getComputedStyle(el);
-                const isInvisible = style.width === '1px' || style.height === '1px' || 
-                                   style.opacity === '0' || style.visibility === 'hidden';
+            if (isInvisible && (isExternal || hasTrackingClass)) {
+                el.setAttribute('data-omni-isolated', 'true');
+                // Применяем стили изоляции из конфига
+                Object.assign(el.style, conf.NEURAL.ISOLATION_STYLE);
                 
-                // Проверяем источник (Эвристика: трекеры часто грузятся с других доменов)
-                const isExternal = el.src && !el.src.includes(window.location.hostname);
-                const hasTrackingClass = /[atb][drk][ck]/i.test(el.className + el.id); // ad, trk, track
-
-                if (isInvisible && (isExternal || hasTrackingClass)) {
-                    // ЭРГОНОМИЧНОСТЬ: Вместо удаления (remove), которое триггерит скрипты восстановления,
-                    // мы "замораживаем" элемент в пространстве.
-                    el.setAttribute('data-omni-isolated', 'true');
-                    Object.assign(el.style, {
-                        display: 'none',
-                        pointerEvents: 'none',
-                        position: 'absolute',
-                        top: '-9999px',
-                        left: '-9999px'
-                    });
-                    
-                    // Если это iframe-трекер, обнуляем его контент
-                    if (el.tagName === 'IFRAME') el.src = 'about:blank';
-                }
-            });
-        };
-
-        // 2. РЕАКТИВНОСТЬ: MutationObserver с защитой от циклов (Anti-Self-Healing)
-        let debounceTimer;
-        const observer = new MutationObserver((mutations) => {
-            // Чтобы не вешать браузер при массовом добавлении узлов, используем дебаунс
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                // Эвристика: если сайт пытается восстановить удаленный узел, мы это увидим
-                isolateTrackers();
-            }, 100);
+                if (el.tagName === 'IFRAME') el.src = 'about:blank';
+            }
         });
-
-        observer.observe(document.documentElement, { 
-            childList: true, 
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['style', 'class'] // Следим за попытками "проявить" скрытое
-        });
-
-        // 3. ПЕРИОДИЧЕСКАЯ "САНИТАРИЯ"
-        window.requestIdleCallback(isolateTrackers);
-
     };
+
+    // 2. РЕАКТИВНОСТЬ (Anti-Self-Healing)
+    let debounceTimer;
+    const observer = new MutationObserver(() => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            isolateTrackers();
+        }, conf.NEURAL.DEBOUNCE_MS);
+    });
+
+    observer.observe(document.documentElement, { 
+        childList: true, 
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style', 'class'] 
+    });
+
+    // 3. ПЕРИОДИЧЕСКАЯ "САНИТАРИЯ"
+    window.requestIdleCallback(isolateTrackers);
+};
     
 
   /**
@@ -679,42 +917,38 @@ const applyL5Environment = () => {
  * Глубокая маскировка железа и защита от детерминированных тайминг-атак.
  */
 const applyL11HardwareGhosting = () => {
-    // 1. Получаем эвристический слепок из центральной базы
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. ЭВРИСТИКА: Динамическое железо (Hardware Masking)
-    // Используем готовый флаг isTech вместо RegExp
-    const targetCores = isTech ? (navigator.hardwareConcurrency || 4) : 8;
-    
+    // 1. Маскировка ресурсов (CPU / RAM)
+    const targetCores = isTech ? (navigator.hardwareConcurrency || 4) : conf.HARDWARE.CORES;
     omniOverwrite(navigator, 'hardwareConcurrency', targetCores);
-    omniOverwrite(navigator, 'deviceMemory', 8); // Стандарт: 8GB RAM для маскировки
+    omniOverwrite(navigator, 'deviceMemory', conf.HARDWARE.MEMORY);
 
-    // 3. РЕАКТИВНОСТЬ: Защита от вибрации и физических сенсоров
-    // Эти API часто используются для идентификации мобильных устройств
+    // 2. Блокировка физических сенсоров (через список из конфига)
     if (navigator.vibrate) navigator.vibrate = () => false;
-    if (window.DeviceMotionEvent) window.DeviceMotionEvent = undefined;
-    if (window.DeviceOrientationEvent) window.DeviceOrientationEvent = undefined;
+    conf.HARDWARE.SENSORS_BLOCK.forEach(sensor => {
+        if (window[sensor] !== undefined) window[sensor] = undefined;
+    });
 
-    // 4. ЭРГОНОМИЧНОСТЬ: Квантовое огрубление времени (Anti-Timing Attacks)
-    // Защита от атак по времени (Side-channel attacks)
+    // 3. Квантовое огрубление времени (Anti-Timing)
     const originalNow = performance.now.bind(performance);
     performance.now = function() {
         const time = originalNow();
-        // Вносим джиттер (микро-дрожание) 5-20 микросекунд.
-        // Эвристика: на тех-страницах джиттер минимален (0.001), чтобы не мешать дебагу.
-        const jitterRange = isTech ? 0.001 : 0.015;
-        const jitter = (Math.random() * jitterRange) + 0.005;
+        const range = isTech ? conf.HARDWARE.JITTER.TECH_RANGE : conf.HARDWARE.JITTER.USER_RANGE;
+        const jitter = (Math.random() * range) + conf.HARDWARE.JITTER.BASE_OFFSET;
         return time + jitter;
     };
 
-    // 5. СЕНСОРНАЯ ЭРГОНОМИКА: Маскировка макс. точек касания
-    // Скрываем признаки тачскрина (выдаем себя за десктоп)
+    // 4. Маскировка тач-интерфейса
     if (navigator.maxTouchPoints !== undefined) {
-        omniOverwrite(navigator, 'maxTouchPoints', isTech ? navigator.maxTouchPoints : 0);
+        const points = isTech ? navigator.maxTouchPoints : conf.HARDWARE.TOUCH_POINTS;
+        omniOverwrite(navigator, 'maxTouchPoints', points);
     }
 
-    // Использование централизованного стиля логов
+    // Лог синхронизации (используем стили из Infobase)
+    console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, conf.MESSAGES.HARDWARE_SYNC);
 };
     
 
@@ -723,77 +957,60 @@ const applyL11HardwareGhosting = () => {
  * Эвристическое зашумление аудио-аналитики и защита от Font Fingerprinting.
  */
 const applyL12Platinum = () => {
-    // 1. Получаем эвристический слепок (мгновенно, без RegExp)
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. ШРИФТОВОЙ ШУМ (Font Fingerprinting Shield)
-    // Глубокая подмена getBoundingClientRect (вызывается крайне часто!)
+    // 1. ШРИФТОВОЙ ШУМ (Font Fingerprinting Shield)
     const originalGBR = Element.prototype.getBoundingClientRect;
-    
     Element.prototype.getBoundingClientRect = function() {
         const rect = originalGBR.apply(this, arguments);
-        
-        // Эвристика: шумим только если элемент похож на тестовый замер шрифта.
-        // Мы используем быстрые логические проверки вместо тяжелых вызовов.
         const isFontCheck = this.offsetWidth === 0 || this.style.fontFamily || this.tagName === 'SPAN';
         
         if (!isTech && isFontCheck) {
-            // Вносим микро-шум (0.0001 пикселя), фатальный для хеш-функций
-            const noise = (Math.random() * 0.0001); 
+            // Вносим шум из конфига
+            const noise = (Math.random() * conf.STEALTH.FONT_NOISE); 
             return {
-                x: rect.x, y: rect.y, 
+                ...rect, // Копируем базу
                 width: rect.width + noise, 
                 height: rect.height + noise,
-                top: rect.top, right: rect.right, 
-                bottom: rect.bottom, left: rect.left,
                 toJSON: () => rect.toJSON ? rect.toJSON() : {}
             };
         }
         return rect;
     };
 
-    // 3. АУДИО-ОТПЕЧАТОК (Audio Context Poisoning)
-    const poisonAudio = () => {
+    // 2. АУДИО-ОТПЕЧАТОК (Audio Context Poisoning)
+    if (window.AudioBuffer) {
         const originalGetChannelData = AudioBuffer.prototype.getChannelData;
-        
         AudioBuffer.prototype.getChannelData = function() {
             const data = originalGetChannelData.apply(this, arguments);
             if (!isTech && data && data.length > 0) {
-                // Вносим микро-девиацию в первый сэмпл (изменяет итоговый хеш сигнала)
-                data[0] = data[0] + (Math.random() * 0.0000001);
+                // Изменяем хеш сигнала через нано-шум
+                data[0] = data[0] + (Math.random() * conf.STEALTH.AUDIO_POISON);
             }
             return data;
         };
-    };
-    
-    // Применяем отравление аудио-буфера
-    if (window.AudioBuffer) poisonAudio();
+    }
 
-    // 4. ЗАЩИТА ДАТЧИКОВ (Эвристическая блокировка)
+    // 3. ЗАЩИТА ДАТЧИКОВ (Listen-level Guard)
     const sensorGuard = (e) => {
-        if (!isTech) {
-            // Полная остановка события для предотвращения сбора телеметрии
-            e.stopImmediatePropagation();
-        }
+        if (!isTech) e.stopImmediatePropagation();
     };
-    
-    ['deviceorientation', 'devicemotion'].forEach(event => {
+    conf.STEALTH.SENSOR_EVENTS.forEach(event => {
         window.addEventListener(event, sensorGuard, true);
     });
 
-    // 5. БЛОКИРОВКА СТАТИСТИКИ (Anti-Resource Timing)
-    // Скрываем тайминги ресурсов, чтобы предотвратить атаку по времени (Cache Probing)
-    if (window.performance && performance.getEntriesByType) {
+    // 4. БЛОКИРОВКА СТАТИСТИКИ (Anti-Resource Timing)
+    if (window.performance && conf.STEALTH.BLOCK_RESOURCE_TIMING) {
         const orgGetEntries = performance.getEntriesByType.bind(performance);
         performance.getEntriesByType = (type) => {
             if (type === 'resource' && !isTech) return [];
             return orgGetEntries(type);
         };
     }
-
-    // Использование централизованного стиля логов
 };
+    
     
 
 /**
@@ -801,12 +1018,11 @@ const applyL12Platinum = () => {
  * Биометрическая энтропия и полная эмуляция графического стека.
  */
 const applyL13Quantum = () => {
-    // 1. Извлекаем данные из центрального процессора Infobase
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. БИОМЕТРИЧЕСКИЙ ДЖИТТЕР (Mouse & Pointer Protection)
-    // Подменяем координаты на уровне геттеров прототипа.
+    // 1. БИОМЕТРИЧЕСКИЙ ДЖИТТЕР (Mouse & Pointer Protection)
     const wrapMouseEvent = (Proto) => {
         if (!Proto) return;
         ['screenX', 'screenY', 'clientX', 'clientY'].forEach(prop => {
@@ -816,9 +1032,8 @@ const applyL13Quantum = () => {
             Object.defineProperty(Proto, prop, {
                 get: function() {
                     const val = descriptor.get.call(this);
-                    // Эвристика: вносим шум 0.0001, ломающий математический хеш траектории,
-                    // но сохраняющий визуальную целостность (пиксель остается тем же).
-                    return isTech ? val : val + (Math.random() * 0.0001);
+                    // Эвристика: шум из конфига ломает хеш траектории
+                    return isTech ? val : val + (Math.random() * conf.QUANTUM.POINTER_NOISE);
                 },
                 configurable: true
             });
@@ -828,24 +1043,14 @@ const applyL13Quantum = () => {
     wrapMouseEvent(MouseEvent.prototype);
     if (window.PointerEvent) wrapMouseEvent(PointerEvent.prototype);
 
-    // 3. GPU MIMICRY (WebGL Deep Shield)
+    // 2. GPU MIMICRY (WebGL Deep Shield)
     const maskWebGL = (proto) => {
         if (!proto) return;
         const originalGetParameter = proto.getParameter;
         
         proto.getParameter = function(p) {
-            if (!isTech) {
-                // Маскируем GPU под стандартный офисный чип Intel Iris (MacIntel профиль)
-                const gpuMask = {
-                    0x9245: "Intel Inc.",                     // UNMASKED_VENDOR_WEBGL
-                    0x9246: "Intel(R) Iris(TM) Graphics 6100", // UNMASKED_RENDERER_WEBGL
-                    37445:  "Intel Inc.", 
-                    37446:  "Intel(R) Iris(TM) Graphics 6100",
-                    0x8DFA: 30,    // MAX_VARYING_VECTORS
-                    0x8DF8: 1024   // MAX_VERTEX_UNIFORM_VECTORS
-                };
-                
-                if (gpuMask[p] !== undefined) return gpuMask[p];
+            if (!isTech && conf.QUANTUM.GPU_MASK[p] !== undefined) {
+                return conf.QUANTUM.GPU_MASK[p];
             }
             return originalGetParameter.apply(this, arguments);
         };
@@ -854,26 +1059,22 @@ const applyL13Quantum = () => {
     maskWebGL(WebGLRenderingContext.prototype);
     if (window.WebGL2RenderingContext) maskWebGL(WebGL2RenderingContext.prototype);
 
-    // 4. ЭРГОНОМИЧНОСТЬ: Display & Canvas Integrity
-    // Принудительная Retina-фиксация и маскировка дисплея
-    omniOverwrite(window, 'devicePixelRatio', 2);
+    // 3. Display Integrity (Retina Masking)
+    omniOverwrite(window, 'devicePixelRatio', conf.QUANTUM.RATIO);
     if (window.screen) {
-        omniOverwrite(window.screen, 'colorDepth', 24);
-        omniOverwrite(window.screen, 'pixelDepth', 24);
+        omniOverwrite(window.screen, 'colorDepth', conf.QUANTUM.DEPTH);
+        omniOverwrite(window.screen, 'pixelDepth', conf.QUANTUM.DEPTH);
     }
 
-    // Защита от GPU-readback (Clickjacking/Fingerprinting векторы)
+    // 4. Canvas Readback Protection
     const orgGetContext = HTMLCanvasElement.prototype.getContext;
-    HTMLCanvasElement.prototype.getContext = function(type, attributes) {
-        if (type === '2d' && attributes && !isTech) {
-            // Флаг 'willReadFrequently' оптимизирует чтение пикселей программно, 
-            // но также может использоваться для скрытия аппаратных особенностей.
-            attributes.willReadFrequently = true;
+    HTMLCanvasElement.prototype.getContext = function(type, attributes = {}) {
+        if (type === '2d' && !isTech) {
+            attributes.willReadFrequently = true; // Оптимизация и скрытие аппаратного ускорения
         }
-        return orgGetContext.apply(this, arguments);
+        return orgGetContext.apply(this, [type, attributes]);
     };
 
-    // Логирование через централизованные стили
 };
     
     
@@ -883,12 +1084,11 @@ const applyL13Quantum = () => {
  * Сверхновая защита Canvas, скролл-мимикрия и Permissions-прокси.
  */
 const applyL14Supernova = () => {
-    // 1. Получаем данные из центрального узла
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. БИОЛОГИЧЕСКИЙ СКРОЛЛ (Scroll Signature Protection)
-    // Современные анти-фроды анализируют детерминированность скролла.
+    // 1. БИОЛОГИЧЕСКИЙ СКРОЛЛ (Scroll Signature Protection)
     const wrapWheelEvent = (Proto) => {
         if (!Proto) return;
         ['deltaY', 'deltaX'].forEach(prop => {
@@ -898,9 +1098,8 @@ const applyL14Supernova = () => {
             Object.defineProperty(Proto, prop, {
                 get: function() {
                     const val = descriptor.get.call(this);
-                    // Эвристика: вносим микро-джиттер, который ломает уникальный «почерк» скроллинга,
-                    // делая его математически непредсказуемым для систем анализа.
-                    return isTech ? val : val + (Math.random() * 0.0001);
+                    // Джиттер из конфига ломает уникальный «почерк» скроллинга
+                    return isTech ? val : val + (Math.random() * conf.SUPERNOVA.SCROLL_JITTER);
                 },
                 configurable: true
             });
@@ -908,40 +1107,31 @@ const applyL14Supernova = () => {
     };
     wrapWheelEvent(WheelEvent.prototype);
 
-    // 3. CANVAS DATA POISONING (Invisible Hash Corruption)
-    // Мы не рисуем лишнего, а меняем 1 пиксель прямо перед экспортом.
+    // 2. CANVAS DATA POISONING (Invisible Hash Corruption)
     const poisonCanvas = (proto) => {
         const orgToDataURL = proto.toDataURL;
-        
         proto.toDataURL = function() {
             if (!isTech) {
                 try {
                     const ctx = this.getContext('2d');
-                    // Работаем только с валидными холстами
                     if (ctx && this.width > 0 && this.height > 0) {
                         const imageData = ctx.getImageData(0, 0, 1, 1);
-                        // Инвертируем младший бит красного канала первого пикселя
-                        // Визуально разницы 0, но хеш MD5/SHA всей картинки полностью меняется.
-                        imageData.data[0] = (imageData.data[0] + 1) % 255; 
+                        // Инвертируем бит красного канала первого пикселя
+                        imageData.data[0] = (imageData.data[0] + conf.SUPERNOVA.CANVAS_POISON_BIT) % 255; 
                         ctx.putImageData(imageData, 0, 0);
                     }
-                } catch (e) { /* Игнорируем Tainted Canvas ошибки */ }
+                } catch (e) {}
             }
             return orgToDataURL.apply(this, arguments);
         };
     };
     poisonCanvas(HTMLCanvasElement.prototype);
 
-    // 4. ТЕНЕВЫЕ РАЗРЕШЕНИЯ (Permissions API Spoofing)
+    // 3. ТЕНЕВЫЕ РАЗРЕШЕНИЯ (Permissions API Spoofing)
     if (navigator.permissions && navigator.permissions.query) {
         const originalQuery = navigator.permissions.query;
         navigator.permissions.query = function(params) {
-            if (isTech) return originalQuery.apply(this, arguments);
-
-            const masked = ['notifications', 'geolocation', 'push', 'microphone', 'camera'];
-            if (masked.includes(params.name)) {
-                // Имитируем состояние нового чистого профиля ('prompt'), 
-                // скрывая от сайтов реальный список запретов или разрешений.
+            if (!isTech && conf.SUPERNOVA.MASKED_PERMISSIONS.includes(params.name)) {
                 return Promise.resolve({
                     state: 'prompt',
                     name: params.name,
@@ -952,13 +1142,11 @@ const applyL14Supernova = () => {
         };
     }
 
-    // 5. ЭРГОНОМИЧНОСТЬ: Runtime Identity
-    // Синхронизируем языки с выбранным профилем (en-US)
+    // 4. Runtime Identity (Language Sync)
     if (navigator.languages) {
-        omniOverwrite(navigator, 'languages', ['en-US', 'en']);
+        omniOverwrite(navigator, 'languages', conf.SUPERNOVA.LANGUAGES);
     }
 
-    // Финальное логирование через стили Монолита
 };
     
     
@@ -967,13 +1155,11 @@ const applyL14Supernova = () => {
  * Когнитивная мимикрия ввода и стерилизация акустической аналитики.
  */
 const applyL15EventHorizon = () => {
-    // 1. Извлекаем эвристические данные из центрального узла
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. КОГНИТИВНАЯ МИМИКРИЯ (Human-Like Jitter)
-    // Рандомизируем timeStamp событий ввода, чтобы обмануть детекторы ботов,
-    // которые ищут идеально ровные интервалы между кликами.
+    // 1. КОГНИТИВНАЯ МИМИКРИЯ (Human-Like Jitter)
     const humanizeEvent = (Proto) => {
         if (!Proto) return;
         const descriptor = Object.getOwnPropertyDescriptor(Proto, 'timeStamp');
@@ -982,32 +1168,27 @@ const applyL15EventHorizon = () => {
         Object.defineProperty(Proto, 'timeStamp', {
             get: function() {
                 const baseTS = descriptor.get.call(this);
-                // Эвристика: добавляем шум 0.1-0.5 мс. 
-                // Это ломает статистический анализ «машинного» ввода.
-                return isTech ? baseTS : baseTS + (Math.random() * 0.4 + 0.1);
+                if (isTech) return baseTS;
+                // Эвристика из конфига: шум ломает статистику бот-детекторов
+                const jitter = Math.random() * (conf.HORIZON.INPUT_JITTER.MAX - conf.HORIZON.INPUT_JITTER.MIN) + conf.HORIZON.INPUT_JITTER.MIN;
+                return baseTS + jitter;
             },
             configurable: true
         });
     };
     
-    // Применяем к мыши, клавиатуре и тач-событиям
     [MouseEvent.prototype, KeyboardEvent.prototype, window.TouchEvent ? TouchEvent.prototype : null]
-        .filter(p => p)
-        .forEach(humanizeEvent);
+        .filter(p => p).forEach(humanizeEvent);
 
-    // 3. АКУСТИЧЕСКАЯ СТЕРИЛИЗАЦИЯ (Spectrum Noise)
-    // Защита от Fingerprinting через анализ частот аудио-выхода.
+    // 2. АКУСТИЧЕСКАЯ СТЕРИЛИЗАЦИЯ (Spectrum Noise)
     if (window.AudioAnalyserNode) {
         const originalGetByte = AudioAnalyserNode.prototype.getByteFrequencyData;
-
-        // Вносим едва заметный шум в спектральные данные
         AudioAnalyserNode.prototype.getByteFrequencyData = function(array) {
             const res = originalGetByte.apply(this, arguments);
             if (!isTech && array && array.length > 0) {
-                // Изменяем амплитуду случайных частот на +/- 1 единицу.
-                // Этого достаточно, чтобы изменить хеш спектра, но не слышно для уха.
-                for (let i = 0; i < array.length; i += 8) { // Шаг 8 для оптимизации CPU
-                    if (Math.random() > 0.8) {
+                // Вносим шум в спектр (амплитуда +/- 1)
+                for (let i = 0; i < array.length; i += conf.HORIZON.AUDIO_STEP) {
+                    if (Math.random() > conf.HORIZON.AUDIO_PROBABILITY) {
                         array[i] = Math.max(0, Math.min(255, array[i] + (Math.random() > 0.5 ? 1 : -1)));
                     }
                 }
@@ -1016,30 +1197,26 @@ const applyL15EventHorizon = () => {
         };
     }
 
-    // 4. RESOURCE TIMING PRIVACY (Buffer Management)
-    // Автоматическая очистка истории загрузки ресурсов при переполнении буфера.
+    // 3. RESOURCE TIMING PRIVACY (Buffer Management)
     if (window.performance) {
         performance.onresourcetimingbufferfull = () => {
             if (!isTech) performance.clearResourceTimings();
         };
     }
 
-    // 5. ГЛУБОКАЯ МАСКИРОВКА ЛОКАЛИ (Consistency Shield)
-    // Принудительная установка en-US для всех объектов форматирования данных.
+    // 4. ГЛУБОКАЯ МАСКИРОВКА ЛОКАЛИ (Intl Shield)
     if (typeof Intl !== 'undefined') {
-        const targetLocale = 'en-US';
+        const lock = conf.HORIZON.LOCALE;
         
-        // Перезапись конструкторов для обеспечения единообразия вывода
         const orgCollator = Intl.Collator;
-        Intl.Collator = function() { return new orgCollator(targetLocale); };
+        Intl.Collator = function() { return new orgCollator(lock); };
         Intl.Collator.prototype = orgCollator.prototype;
 
         const orgNumberFormat = Intl.NumberFormat;
-        Intl.NumberFormat = function() { return new orgNumberFormat(targetLocale); };
+        Intl.NumberFormat = function() { return new orgNumberFormat(lock); };
         Intl.NumberFormat.prototype = orgNumberFormat.prototype;
     }
 
-    // Логирование в стиле OMNI-MONOLITH
 };
     
     
@@ -1048,23 +1225,21 @@ const applyL15EventHorizon = () => {
  * Глубокая маскировка под нативный код и фиксация системных констант.
  */
 const applyL16VoidSingularity = () => {
-    // 1. Извлекаем эвристику из центрального процессора
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. РЕАКТИВНАЯ МАСКИРОВКА (Proxy-based Native Code)
-    // Создаем "идеальное зеркало": любой метод, пропущенный через makeNative, 
-    // будет клясться системе, что он — часть браузера (C++ / Rust код).
+    // 1. РЕАКТИВНАЯ МАСКИРОВКА (Proxy-based Native Code)
     const makeNative = (fn, name) => {
+        if (!conf.SINGULARITY.NATIVE_MASK) return fn;
         return new Proxy(fn, {
             get: (target, prop) => {
-                // Имитируем поведение нативной функции при обращении к служебным свойствам
+                // Имитируем поведение нативной функции
                 if (prop === 'toString') return () => `function ${name || target.name}() { [native code] }`;
                 if (prop === 'name') return name || target.name;
                 return target[prop];
             },
-            // Защита от попыток вызвать конструктор на не-конструкторах
-            apply: (target, thisArg, argumentsList) => Reflect.apply(target, thisArg, argumentsList)
+            apply: (target, thisArg, args) => Reflect.apply(target, thisArg, args)
         });
     };
 
@@ -1079,52 +1254,46 @@ const applyL16VoidSingularity = () => {
 
     criticalMethods.forEach(m => {
         if (m.obj && m.obj[m.prop] && !isTech) {
-            // Накладываем маску нативного кода только в режиме защиты
             m.obj[m.prop] = makeNative(m.obj[m.prop], m.prop);
         }
     });
 
-    // 3. INTL COLLATOR ENTROPY (OS-Level Consistency)
+    // 2. INTL COLLATOR ENTROPY (OS-Level Consistency)
     if (window.Intl && Intl.Collator) {
         const RealCollator = Intl.Collator;
-        // Подменяем конструктор, сохраняя прототипную цепочку
         window.Intl.Collator = function(locales, options) {
-            const forceLocale = isTech ? locales : 'en-US';
+            const forceLocale = isTech ? locales : conf.SINGULARITY.LOCALE;
             return new RealCollator(forceLocale, options);
         };
         window.Intl.Collator.prototype = RealCollator.prototype;
-        // Нативизируем сам конструктор
         window.Intl.Collator = makeNative(window.Intl.Collator, 'Collator');
     }
 
-    // 4. SCREEN ORIENTATION FIX (Desktop Mimicry)
-    // Жестко фиксируем ориентацию, исключая признаки мобильных устройств (акселерометров)
+    // 3. SCREEN ORIENTATION FIX (Desktop Mimicry)
     if (window.screen && screen.orientation) {
         const lockOrientation = () => {
-            omniOverwrite(screen.orientation, 'type', 'landscape-primary');
-            omniOverwrite(screen.orientation, 'angle', 0);
+            omniOverwrite(screen.orientation, 'type', conf.SINGULARITY.FORCE_ORIENTATION);
+            omniOverwrite(screen.orientation, 'angle', conf.SINGULARITY.FORCE_ANGLE);
         };
         lockOrientation();
-        // Блокируем попытки сайтов менять ориентацию (защита от "fingerprinting by tilting")
-        screen.orientation.lock = () => Promise.resolve();
-        screen.orientation.lock = makeNative(screen.orientation.lock, 'lock');
+        
+        // Блокируем попытки сайтов менять ориентацию
+        screen.orientation.lock = makeNative(() => Promise.resolve(), 'lock');
     }
 
-    // Логирование в стиле OMNI-MONOLITH
 };
+    
     
   /**
  * L17: ABSOLUTE ZERO (V5.5)
  * Глубокая санитизация стеков ошибок и унификация экранных метрик.
  */
 const applyL17AbsoluteZero = () => {
-    // 1. Извлекаем эвристику из центрального процессора
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. СТЕРЕЛИЗАЦИЯ СТЕКА (Stack Trace Shield)
-    // Анти-фроды часто провоцируют ошибки, чтобы прочитать Error.stack. 
-    // Если там есть слово 'omni' или анонимные вызовы инжектора — это провал.
+    // 1. СТЕРЕЛИЗАЦИЯ СТЕКА (Stack Trace Shield)
     const orgError = window.Error;
     const stackDescriptor = Object.getOwnPropertyDescriptor(orgError.prototype, 'stack') || 
                             Object.getOwnPropertyDescriptor(new orgError(), 'stack');
@@ -1134,10 +1303,9 @@ const applyL17AbsoluteZero = () => {
             get: function() {
                 const stack = stackDescriptor.get ? stackDescriptor.get.call(this) : this.value;
                 if (typeof stack === 'string') {
-                    // ЭВРИСТИКА: Удаляем любые упоминания нашего присутствия.
-                    // Оставляем только "чистые" нативные строки.
+                    // Очистка стека по черному списку из конфига
                     return stack.split('\n')
-                        .filter(line => !line.includes('at <anonymous>') && !line.includes('omni'))
+                        .filter(line => !conf.ZERO.STACK_FILTER.some(word => line.includes(word)))
                         .join('\n') || "Error\n    at <anonymous>:1:1";
                 }
                 return stack;
@@ -1146,40 +1314,32 @@ const applyL17AbsoluteZero = () => {
         });
     }
 
-    // 3. ADVANCED JITTER (Квантовый дрейф времени)
-    // Улучшенная версия L11. Используем синусоидальный дрейф для имитации 
-    // естественной нестабильности кварцевого резонатора процессора.
+    // 2. ADVANCED JITTER (Синусоидальный тепловой шум)
     const originalNow = performance.now.bind(performance);
     performance.now = function() {
         const time = originalNow();
         if (isTech) return time;
-        // Джиттер 0-0.2 микросекунды, зависящий от времени (имитация теплового шума).
-        const drift = Math.abs(Math.sin(time)) * 0.0002; 
+        // Имитация нестабильности кварца (синусоидальный дрейф)
+        const drift = Math.abs(Math.sin(time)) * conf.ZERO.THERMAL_DRIFT; 
         return time + drift;
     };
 
-    // 4. SCREEN PRIVACY (Эталонный десктоп 1080p)
-    // Унифицируем метрики, чтобы исключить Fingerprinting по размеру монитора.
+    // 3. SCREEN PRIVACY & ANTI-DEVTOOLS
+    const s = conf.ZERO.SCREEN;
     const screenSpecs = {
-        width: 1920,
-        height: 1080,
-        availWidth: 1920,
-        availHeight: 1040, // 40px на Taskbar/Dock
-        colorDepth: 24,
-        pixelDepth: 24
+        width: s.width, height: s.height,
+        availWidth: s.availWidth, availHeight: s.availHeight,
+        colorDepth: s.depth, pixelDepth: s.depth
     };
 
     Object.keys(screenSpecs).forEach(key => {
         omniOverwrite(window.screen, key, screenSpecs[key]);
     });
 
-    // 5. ANTI-DEVTOOLS (Скрытие признаков консоли)
-    // Сайты определяют открытую консоль по разнице между outer и inner размерами.
-    // Мы делаем их идентичными, создавая иллюзию закрытой панели разработчика.
+    // Синхронизация для скрытия признаков открытой консоли
     omniOverwrite(window, 'outerWidth', window.innerWidth);
     omniOverwrite(window, 'outerHeight', window.innerHeight);
 
-    // Логирование через золотой стандарт Infobase
 };
     
     
@@ -1188,25 +1348,20 @@ const applyL17AbsoluteZero = () => {
  * Эмуляция успешной загрузки ресурсов и бесшумная зачистка DOM-артефактов.
  */
 const applyL18MirrorProtocol = () => {
-    // 1. Получаем эвристику из центрального процессора
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. РЕАКТИВНАЯ МИМИКРИЯ (Script Load Faker)
-    // Перехватываем попытки внедрения скриптов-трекеров.
+    // 1. РЕАКТИВНАЯ МИМИКРИЯ (Script Load Faker)
     const originalAppendChild = Node.prototype.appendChild;
-
     const fakeLoad = (el) => {
         if (!isTech && el.tagName === 'SCRIPT' && el.src) {
-            // ЭВРИСТИКА: Если скрипт похож на аналитику или рекламу, имитируем "успех".
-            const isTracker = /ads|analytics|pixel|track|doubleclick/i.test(el.src);
-            if (isTracker) {
-                // Маскируем геттер/сеттер onload, чтобы триггеруть событие "загружено"
+            if (conf.MIRROR.TRACKER_REGEX.test(el.src)) {
                 Object.defineProperty(el, 'onload', {
                     set: function(fn) { 
                         if (typeof fn === 'function') {
-                            // Имитируем небольшую сетевую задержку (10-50мс)
-                            setTimeout(() => fn.call(el, new Event('load')), 15);
+                            // Имитируем задержку сети из конфига
+                            setTimeout(() => fn.call(el, new Event('load')), conf.MIRROR.FAKE_LOAD_DELAY);
                         }
                     },
                     configurable: true
@@ -1220,29 +1375,19 @@ const applyL18MirrorProtocol = () => {
         return originalAppendChild.apply(this, arguments);
     };
 
-    // 3. NETWORK STEALTH (Безупречный статус соединения)
-    // Поддерживаем иллюзию стабильного 4G соединения без ограничений трафика.
+    // 2. NETWORK STEALTH (Безупречный статус 4G)
     omniOverwrite(navigator, 'onLine', true);
     if (navigator.connection) {
-        const connMask = {
-            effectiveType: '4g',
-            saveData: false,
-            downlink: 10,
-            rtt: 50
-        };
-        Object.keys(connMask).forEach(key => {
-            omniOverwrite(navigator.connection, key, connMask[key]);
+        const net = conf.MIRROR.NETWORK;
+        Object.keys(net).forEach(key => {
+            omniOverwrite(navigator.connection, key, net[key]);
         });
     }
 
-    // 4. ЭРГОНОМИЧНАЯ ЗАЧИСТКА (DOM Sanitization)
-    // Скрываем "ошметки" заблокированной рекламы, чтобы не портить UI, 
-    // но не удаляем их, чтобы не сломать зависимости в коде сайта.
+    // 3. ЭРГОНОМИЧНАЯ ЗАЧИСТКА (DOM Sanitization)
     const purgeArtifacts = () => {
         if (isTech) return;
-        const selector = 'div[id*="googlesyndication"], [id*="ad-unit"], iframe[src="about:blank"]';
-        const artifacts = document.querySelectorAll(selector);
-        
+        const artifacts = document.querySelectorAll(conf.MIRROR.ARTIFACT_SELECTOR);
         artifacts.forEach(art => {
             if (art.offsetHeight === 0 || art.style.visibility === 'hidden') {
                 art.style.setProperty('display', 'none', 'important');
@@ -1251,15 +1396,13 @@ const applyL18MirrorProtocol = () => {
         });
     };
 
-    // Используем простой планировщик для очистки после рендеринга
     if (window.requestIdleCallback) {
         window.requestIdleCallback(purgeArtifacts);
     } else {
         setTimeout(purgeArtifacts, 1000);
     }
 
-    // 5. ФИНАЛЬНАЯ СИНЕРГИЯ: Фильтрация системного спама
-    // Приглушаем ворнинги о заблокированных расширениями ресурсах.
+    // 4. ФИНАЛЬНАЯ СИНЕРГИЯ: Фильтрация ворнингов консоли
     const orgWarn = console.warn;
     console.warn = function(...args) {
         if (!isTech && args[0] && typeof args[0] === 'string') {
@@ -1268,7 +1411,7 @@ const applyL18MirrorProtocol = () => {
         return orgWarn.apply(this, arguments);
     };
 
-    // Логирование в стиле OMNI-MONOLITH
+    console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, conf.MESSAGES.MIRROR_ENGAGED);
 };
     
 
@@ -1276,71 +1419,53 @@ const applyL18MirrorProtocol = () => {
  * L20: SINGULARITY POINT (V5.5)
  * Математическая энтропия, джиттер микрозадач и Spoof дисковой квоты.
  */
-const applyL20Singularity = () => {
-    // 1. Извлекаем данные из центрального процессора Infobase
+const applyL120Singularity = () => {
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. МАТЕМАТИЧЕСКАЯ ЭНТРОПИЯ (Floating Point Noise)
-    // Вносим шум в младшие биты (1e-17). Этого достаточно, чтобы изменить 
-    // хеш сложных вычислений, но визуально результат (координаты, цвета) не изменится.
+    // 1. МАТЕМАТИЧЕСКАЯ ЭНТРОПИЯ (Floating Point Noise)
     const mathFunctions = ['sin', 'cos', 'tan', 'exp', 'log', 'sqrt', 'pow'];
     mathFunctions.forEach(fn => {
         const original = Math[fn];
         Math[fn] = function(...args) {
             const res = original.apply(Math, args);
-            if (isTech || typeof res !== 'number' || isNaN(res) || !isFinite(res)) return res;
+            if (isTech || typeof res !== 'number' || !isFinite(res)) return res;
             
-            // Микро-шум на пределе точности Double (1e-17).
-            // Ломает JS-бенчмарки, вычисляющие версию движка по точности вычислений.
-            return res + (Math.random() * 1e-17);
+            // Вносим шум из конфига
+            return res + (Math.random() * conf.SINGULARITY.MATH_NOISE);
         };
-        // Нативизация toString (защита от детекта подмены)
-        try {
-            Math[fn].toString = () => `function ${fn}() { [native code] }`;
-        } catch(e) {}
+        // Нативизация (L16 Integration)
+        try { Math[fn].toString = () => `function ${fn}() { [native code] }`; } catch(e) {}
     });
 
-    // 3. ДЖИТТЕР ПРОМИСОВ (Async Microtask Jitter)
-    // Рандомизируем время выполнения Promise.then. Это ломает "Event Loop Fingerprinting",
-    // когда сайт замеряет скорость микрозадач для определения производительности CPU.
+    // 2. ДЖИТТЕР ПРОМИСОВ (Async Microtask Jitter)
     const originalThen = Promise.prototype.then;
     Promise.prototype.then = function(onFulfilled, onRejected) {
-        // Шум в 5% случаев, чтобы имитировать естественные скачки нагрузки на поток.
-        if (!isTech && Math.random() > 0.95) {
+        if (!isTech && Math.random() < conf.SINGULARITY.PROMISE_JITTER_CHANCE) {
             const jitter = (fn) => typeof fn === 'function' ? (v) => setTimeout(() => fn(v), 0) : fn;
             return originalThen.call(this, jitter(onFulfilled), jitter(onRejected));
         }
         return originalThen.apply(this, arguments);
     };
 
-    // 4. STORAGE QUOTA SPOOF (Эталонный диск)
-    // Предотвращаем определение устройства по объему свободного места (Quota API).
+    // 3. STORAGE QUOTA SPOOF (Эталонный диск)
     if (navigator.storage && navigator.storage.estimate) {
+        const s = conf.SINGULARITY.STORAGE;
         navigator.storage.estimate = function() {
-            // Возвращаем идеальные 500 GB / 100 MB занято (стандарт десктопа)
             return Promise.resolve({
-                quota: 536870912000, 
-                usage: 104857600,    
-                usageDetails: {
-                    indexedDB: 52428800,
-                    caches: 52428800
-                }
+                quota: s.QUOTA, usage: s.USAGE,
+                usageDetails: { indexedDB: s.IDB, caches: s.CACHES }
             });
         };
-        // Маскируем саму функцию под нативную
-        try {
-            navigator.storage.estimate.toString = () => `function estimate() { [native code] }`;
-        } catch(e) {}
+        try { navigator.storage.estimate.toString = () => `function estimate() { [native code] }`; } catch(e) {}
     }
 
-    // 5. WebDriver & Automation Shield
-    // Финальный сброс флагов автоматизации для обхода Headless-детекторов.
+    // 4. WebDriver & Automation Shield
     if (navigator.webdriver !== undefined) {
         omniOverwrite(navigator, 'webdriver', false);
     }
 
-    // Логирование в стиле OMNI-MONOLITH
 };
     
     
@@ -1349,54 +1474,49 @@ const applyL20Singularity = () => {
  * Изоляция Gamepad API, защита от сканирования расширений и локальный Spoof.
  */
 const applyL22Infinity = () => {
-    // 1. Получаем эвристику из центрального узла
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. GAMEPAD ISOLATION (Peripheral Stealth)
-    // Геймпады имеют уникальные ID (Vendor/Product). Мы возвращаем пустой замороженный массив,
-    // чтобы не ломать логику сайтов, но скрыть оборудование.
-    if (navigator.getGamepads) {
-        navigator.getGamepads = function() {
-            return isTech ? [] : Object.freeze([]);
-        };
-        // Нативизация метода (L16 Integration)
+    // Вспомогательная функция нативизации (наследуется из L16)
+    const makeNative = (fn, name) => {
         try {
-            navigator.getGamepads.toString = () => "function getGamepads() { [native code] }";
+            fn.toString = () => `function ${name || fn.name}() { [native code] }`;
         } catch(e) {}
+        return fn;
+    };
+
+    // 1. GAMEPAD ISOLATION (Peripheral Stealth)
+    if (navigator.getGamepads) {
+        navigator.getGamepads = makeNative(function() {
+            return isTech ? [] : conf.INFINITY.EMPTY_GAMEPADS;
+        }, 'getGamepads');
     }
 
-    // 3. EXTENSION SHIELD (Resource Scan Protection)
-    // Блокируем попытки сайтов проверить наличие расширений через fetch к внутренним протоколам.
-    const originalFetch = window.fetch.bind(window);
-    window.fetch = function(input, init) {
+    // 2. EXTENSION SHIELD (Resource Scan Protection)
+    const originalFetch = window.fetch;
+    window.fetch = makeNative(function(input, init) {
         const url = (typeof input === 'string') ? input : (input instanceof URL ? input.href : (input?.url || ''));
         
-        if (!isTech && (url.includes('-extension://') || url.startsWith('moz-extension://'))) {
-            // Тихое логирование попытки сканирования
+        if (!isTech && conf.INFINITY.EXT_PROTOCOLS.some(proto => url.includes(proto))) {
             return Promise.reject(new TypeError('Failed to fetch'));
         }
         return originalFetch.apply(this, arguments);
-    };
+    }, 'fetch');
 
-    // 4. INTL RELATIVE TIME (Locale Lockdown)
-    // Гарантируем, что форматирование относительного времени (напр. "2 mins ago") 
-    // всегда соответствует профилю en-US.
+    // 3. INTL RELATIVE TIME (Locale Lockdown)
     if (window.Intl && Intl.RelativeTimeFormat) {
         const RealRTF = Intl.RelativeTimeFormat;
-        window.Intl.RelativeTimeFormat = function(locales, options) {
+        window.Intl.RelativeTimeFormat = makeNative(function(locales, options) {
             const targetLocale = isTech ? locales : 'en-US';
             return new RealRTF(targetLocale, options);
-        };
+        }, 'RelativeTimeFormat');
         window.Intl.RelativeTimeFormat.prototype = RealRTF.prototype;
     }
 
-    // 5. RUNTIME INTEGRITY (Global Variable Shield)
-    // Скрываем присутствие отладочных инструментов и специфических объектов расширений.
-    const forbiddenGlobals = ['__REDUX_DEVTOOLS_EXTENSION__', 'chrome', 'browser'];
-    forbiddenGlobals.forEach(g => {
+    // 4. RUNTIME INTEGRITY (Global Variable Shield)
+    conf.INFINITY.HIDDEN_GLOBALS.forEach(g => {
         if (window[g] && !isTech) {
-            // Делаем их невидимыми для перечисления (for...in, Object.keys)
             Object.defineProperty(window, g, { 
                 enumerable: false, 
                 configurable: true,
@@ -1405,27 +1525,26 @@ const applyL22Infinity = () => {
         }
     });
 
-    // 6. DARK MODE SPOOF (System Theme Privacy)
-    // Предотвращаем детекцию системной темы через Media Queries.
+    // 5. DARK MODE SPOOF (System Theme Privacy)
     if (window.matchMedia) {
         const originalMatchMedia = window.matchMedia;
-        window.matchMedia = function(query) {
-            if (!isTech && query.includes('prefers-color-scheme')) {
-                // Всегда возвращаем "светлую тему" (matches: false для dark)
+        window.matchMedia = makeNative(function(query) {
+            if (!isTech && query.includes('prefers-color-scheme') && conf.INFINITY.FORCE_LIGHT_MODE) {
                 return {
-                    matches: false,
+                    matches: false, // Всегда "светлая"
                     media: query,
                     onchange: null,
                     addEventListener: () => {},
                     removeEventListener: () => {},
-                    addListener: () => {}, // Deprecated, но нужен для совместимости
+                    addListener: () => {},
                     removeListener: () => {}
                 };
             }
             return originalMatchMedia.apply(this, arguments);
-        };
+        }, 'matchMedia');
     }
 
+    console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, conf.MESSAGES.INFINITY_ACTIVE);
 };
     
 
@@ -1434,76 +1553,68 @@ const applyL22Infinity = () => {
  * Рандомизация кривых Безье и защита от Emoji-фингерпринтинга.
  */
 const applyL23Overlord = () => {
-    // 1. Получаем данные из ядра Infobase
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. ГЕОМЕТРИЧЕСКИЙ ДЖИТТЕР (Bezier Curve Entropy)
-    // Кривые Безье отрисовываются по-разному в зависимости от GPU и драйверов.
-    // Сдвиг на 1e-7 (0.0000001) меняет математическую модель кривой, 
-    // что делает хеш рендеринга уникальным, не искажая картинку.
+    // Вспомогательная нативизация (L16)
+    const makeNative = (fn, name) => {
+        try { fn.toString = () => `function ${name || fn.name}() { [native code] }`; } catch(e) {}
+        return fn;
+    };
+
+    // 1. ГЕОМЕТРИЧЕСКИЙ ДЖИТТЕР (Bezier Curve Entropy)
     const originalBezier = CanvasRenderingContext2D.prototype.bezierCurveTo;
-    CanvasRenderingContext2D.prototype.bezierCurveTo = function(cp1x, cp1y, cp2x, cp2y, x, y) {
+    CanvasRenderingContext2D.prototype.bezierCurveTo = makeNative(function(cp1x, cp1y, cp2x, cp2y, x, y) {
         if (isTech) return originalBezier.apply(this, arguments);
         
-        const noise = () => (Math.random() * 1e-7); 
-        return originalBezier.call(
-            this, 
+        const noise = () => (Math.random() * conf.OVERLORD.BEZIER_NOISE); 
+        return originalBezier.call(this, 
             cp1x + noise(), cp1y + noise(), 
             cp2x + noise(), cp2y + noise(), 
             x + noise(), y + noise()
         );
-    };
+    }, 'bezierCurveTo');
 
-    // 3. EMOJI HASH POISONING (Sub-pixel Anti-aliasing Jitter)
-    // Эмодзи — мощный маркер ОС. Смещение на 0.0001 пикселя заставляет браузер 
-    // заново рассчитывать сглаживание краев (anti-aliasing), полностью меняя контрольную сумму.
+    // 2. EMOJI HASH POISONING (Anti-aliasing Jitter)
     const originalFillText = CanvasRenderingContext2D.prototype.fillText;
-    CanvasRenderingContext2D.prototype.fillText = function(text, x, y, maxWidth) {
+    CanvasRenderingContext2D.prototype.fillText = makeNative(function(text, x, y, maxWidth) {
         if (!isTech && /\p{Emoji}/u.test(text)) {
-            const jitter = 0.0001 * (Math.random() > 0.5 ? 1 : -1);
+            const jitter = conf.OVERLORD.EMOJI_JITTER * (Math.random() > 0.5 ? 1 : -1);
             return originalFillText.call(this, text, x + jitter, y + jitter, maxWidth);
         }
         return originalFillText.apply(this, arguments);
-    };
+    }, 'fillText');
 
-    // 4. WINDOW CONSISTENCY (Immutable DevTools Shield)
-    // Закрепляем размеры окна через геттеры, чтобы никакие скрипты сайта 
-    // не могли принудительно обновить или считать реальные outer-параметры.
+    // 3. WINDOW CONSISTENCY (Immutable Shield)
     ['outerWidth', 'outerHeight'].forEach(prop => {
         try {
             Object.defineProperty(window, prop, {
                 get: () => prop === 'outerWidth' ? window.innerWidth : window.innerHeight,
-                configurable: false, // Делаем неизменяемым
+                configurable: false,
                 enumerable: true
             });
         } catch (e) {}
     });
 
-    // 5. РЕАКТИВНАЯ ЗАЩИТА (Canvas Extraction Trap)
-    // Если сайт вызывает toDataURL более 5 раз, мы расцениваем это как агрессивный фингерпринтинг 
-    // и "отравляем" холст белым шумом (rgba 0.001), чтобы сбить алгоритм сравнения хешей.
+    // 4. РЕАКТИВНАЯ ЗАЩИТА (Canvas Extraction Trap)
     let canvasReadCount = 0;
     const orgToDataURL = HTMLCanvasElement.prototype.toDataURL;
     
-    HTMLCanvasElement.prototype.toDataURL = function() {
+    HTMLCanvasElement.prototype.toDataURL = makeNative(function() {
         canvasReadCount++;
-        if (!isTech && canvasReadCount > 5) {
+        if (!isTech && canvasReadCount > conf.OVERLORD.CANVAS_TRAP_LIMIT) {
             const ctx = this.getContext('2d');
             if (ctx) {
-                // Вносим едва уловимую примесь, которая накапливается при повторных вызовах
-                ctx.fillStyle = 'rgba(255,255,255,0.001)';
+                ctx.fillStyle = conf.OVERLORD.TRAP_COLOR;
                 ctx.fillRect(0, 0, 1, 1);
+                if (canvasReadCount === conf.OVERLORD.CANVAS_TRAP_LIMIT + 1) {
+                    console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, conf.MESSAGES.CANVAS_TRAP);
+                }
             }
         }
         return orgToDataURL.apply(this, arguments);
-    };
-
-    // Интеграция с L16 (нативизация)
-    try {
-        CanvasRenderingContext2D.prototype.bezierCurveTo.toString = () => "function bezierCurveTo() { [native code] }";
-        HTMLCanvasElement.prototype.toDataURL.toString = () => "function toDataURL() { [native code] }";
-    } catch(e) {}
+    }, 'toDataURL');
 
 };
     
@@ -1512,27 +1623,25 @@ const applyL23Overlord = () => {
  * Рекурсивная маскировка прототипов и эталонный Device Memory Spoof.
  */
 const applyL25GodSeed = () => {
-    // 1. Получаем ядро эвристики
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. ПЕРВОРОДНАЯ МАСКИРОВКА (Recursive Native Mimicry)
-    // Этот механизм делает любую JS-функцию неотличимой от нативного кода C++.
+    // 1. ПЕРВОРОДНАЯ МАСКИРОВКА (Recursive Native Mimicry)
     const deepMask = (fn, name) => {
         if (typeof fn !== 'function' || isTech) return;
 
-        const nativeString = `function ${name}() { [native code] }`;
+        const nativeString = `function ${name || ''}() { [native code] }`;
         
-        // Фиксируем имя функции (некоторые детекторы сверяют .name)
+        // Фиксация имени функции
         try {
             Object.defineProperty(fn, 'name', { 
-                value: name, 
+                value: name || fn.name, 
                 configurable: true 
             });
         } catch (e) {}
 
-        // Рекурсивный Proxy для toString. 
-        // Закрывает лазейку: fn.toString.toString() === "function toString() { [native code] }"
+        // Рекурсивный Proxy для toString: ломает детекторы, проверяющие сам toString
         const toStringProxy = new Proxy(Function.prototype.toString, {
             apply: (target, thisArg) => {
                 if (thisArg === fn) return nativeString;
@@ -1550,12 +1659,10 @@ const applyL25GodSeed = () => {
         } catch (e) {}
     };
 
-    // 3. DEVICE MEMORY & CPU (Hardware Normalization)
-    // Устанавливаем параметры "Золотого эталона" (8 ядер / 8 GB RAM).
-    // Это самая распространенная конфигурация, не вызывающая подозрений у анти-фрода.
+    // 2. DEVICE MEMORY & CPU (Hardware Normalization)
     const hardwareProps = {
-        deviceMemory: 8,
-        hardwareConcurrency: 8
+        deviceMemory: conf.GOD_SEED.HARDWARE.MEMORY,
+        hardwareConcurrency: conf.GOD_SEED.HARDWARE.CONCURRENCY
     };
 
     Object.keys(hardwareProps).forEach(prop => {
@@ -1570,17 +1677,21 @@ const applyL25GodSeed = () => {
         }
     });
 
-    // 4. ИНТЕГРАЦИЯ МАСКИРОВКИ (Applying to all previous layers)
-    // Накладываем "Божественное семя" на критические точки входа
-    if (navigator.storage && navigator.storage.estimate) {
-        deepMask(navigator.storage.estimate, 'estimate');
-    }
-    if (window.performance && performance.now) {
-        deepMask(performance.now, 'now');
-    }
-    if (CanvasRenderingContext2D.prototype.fillText) {
-        deepMask(CanvasRenderingContext2D.prototype.fillText, 'fillText');
-    }
+    // 3. ИНТЕГРАЦИЯ МАСКИРОВКИ (Cross-Layer Application)
+    // Накладываем "Божественное семя" на все критические функции прошлых уровней
+    const criticalTargets = [
+        { obj: navigator.storage, prop: 'estimate' },
+        { obj: performance, prop: 'now' },
+        { obj: CanvasRenderingContext2D.prototype, prop: 'fillText' },
+        { obj: CanvasRenderingContext2D.prototype, prop: 'bezierCurveTo' },
+        { obj: HTMLCanvasElement.prototype, prop: 'toDataURL' }
+    ];
+
+    criticalTargets.forEach(target => {
+        if (target.obj && target.obj[target.prop]) {
+            deepMask(target.obj[target.prop], target.prop);
+        }
+    });
 
 };
     
@@ -1590,28 +1701,18 @@ const applyL25GodSeed = () => {
  * Эмуляция порядка свойств Navigator и тотальная дезинфекция автоматизации.
  */
 const applyL28Inferno = () => {
-    // 1. Извлекаем ядро эвристики
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. СТЕРИЛИЗАЦИЯ ПЕРЕМЕННЫХ (Automation Shadowing)
-    // Мы не удаляем свойства (это вызывает ошибки в коде анти-фрода), 
-    // а делаем их невидимыми и неперечисляемыми.
-    const ghostVars = [
-        'webdriver', '_phantom', '__nightmare', '_selenium', 
-        'callPhantom', 'cdc_adoQbh2ncp63213jsedu3jkzh', '__sh_',
-        '__webdriver_evaluate', '__webdriver_unwrapped'
-    ];
-
-    ghostVars.forEach(v => {
-        const targets = [window, navigator, document];
-        targets.forEach(target => {
+    // 1. СТЕРИЛИЗАЦИЯ ПЕРЕМЕННЫХ (Automation Shadowing)
+    conf.INFERNO.GHOST_VARS.forEach(v => {
+        [window, navigator, document].forEach(target => {
             if (v in target) {
                 try {
-                    // Теневое переопределение: свойство есть, но оно ведет в "пустоту"
                     Object.defineProperty(target, v, {
                         get: () => undefined,
-                        enumerable: false, // Невидимо для Object.keys / for...in
+                        enumerable: false, // Скрыто от итерации
                         configurable: true
                     });
                 } catch (e) {}
@@ -1619,52 +1720,49 @@ const applyL28Inferno = () => {
         });
     });
 
-    // 3. LINGUISTIC MIMICRY (JS-Engine Dialect)
-    // Подделываем формат сообщений об ошибках под движок JavaScriptCore (Safari/WebKit).
-    // Это критично для имитации MacIntel.
+    // 2. LINGUISTIC MIMICRY (JS-Engine Dialect)
     const originalErrorToString = Error.prototype.toString;
     Error.prototype.toString = function() {
         if (isTech) return originalErrorToString.apply(this, arguments);
 
         const baseMsg = originalErrorToString.apply(this, arguments);
         
-        // Характерный синтаксис Safari: добавление контекста (In 'eval')
-        if (baseMsg.includes('is not a function')) {
-            return baseMsg.replace('is not a function', "is not a function. (In 'eval')");
+        // Подделка под WebKit/Safari при ошибках типов
+        if (conf.INFERNO.MIMIC_SAFARI && baseMsg.includes('is not a function')) {
+            return baseMsg.replace('is not a function', `is not a function.${conf.INFERNO.ERROR_CONTEXT}`);
         }
         
         return baseMsg;
     };
 
-    // 4. NAVIGATOR INTEGRITY (Property Order & Stealth)
-    // Гарантируем, что свойство 'webdriver' не просто false, а полностью скрыто из перечисления,
-    // как это реализовано в нативных браузерах.
-    if (Object.keys(navigator).includes('webdriver')) {
-        try {
-            Object.defineProperty(Navigator.prototype, 'webdriver', {
-                get: () => false,
-                enumerable: false,
-                configurable: true
-            });
-        } catch (e) {}
-    }
+    // 3. NAVIGATOR & CHROME ISOLATION (Safari Consistency)
+    // Если мы мимикрируем под Safari, удаляем/скрываем следы Chrome
+    const cleanTargets = [
+        { obj: Navigator.prototype, prop: 'webdriver', val: false },
+        { obj: window, prop: 'chrome', val: undefined }
+    ];
 
-    // 5. CHROME-OBJECT ISOLATION (Safari Mimicry)
-    // Если мы имитируем MacIntel/Safari, наличие объекта window.chrome — это прямой провал.
-    if (window.chrome && !isTech) {
-        try {
-            Object.defineProperty(window, 'chrome', {
-                get: () => undefined,
-                enumerable: false,
-                configurable: true
-            });
-        } catch (e) {}
-    }
+    cleanTargets.forEach(t => {
+        if (t.prop in t.obj && !isTech) {
+            try {
+                Object.defineProperty(t.obj, t.prop, {
+                    get: () => t.val,
+                    enumerable: false,
+                    configurable: true
+                });
+            } catch (e) {}
+        }
+    });
 
-    // Интеграция с L25 (нативизация новых геттеров)
+    // 4. ИНТЕГРАЦИЯ С GOD-SEED (L25)
+    // Применяем глубокую нативизацию к новым переопределениям
     if (typeof deepMask === 'function') {
-        const desc = Object.getOwnPropertyDescriptor(Navigator.prototype, 'webdriver');
-        if (desc && desc.get) deepMask(desc.get, 'get webdriver');
+        const wdDesc = Object.getOwnPropertyDescriptor(Navigator.prototype, 'webdriver');
+        if (wdDesc && wdDesc.get) deepMask(wdDesc.get, 'get webdriver');
+        
+        const chDesc = Object.getOwnPropertyDescriptor(window, 'chrome');
+        if (chDesc && chDesc.get) deepMask(chDesc.get, 'get chrome');
+
         deepMask(Error.prototype.toString, 'toString');
     }
 
@@ -1676,67 +1774,56 @@ const applyL28Inferno = () => {
  * Side-Channel Defense и Хроно-децепция (Date Entropy).
  */
 const applyL30Zenith = () => {
-    // 1. Извлекаем ядро эвристики
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. ХРОНО-ДЕЦЕПЦИЯ (Date Jitter & Proxying)
-    // Рандомизация текущего времени на уровне миллисекунд ломает статистический 
-    // анализ "скорости ответа" системы.
+    // 1. ХРОНО-ДЕЦЕПЦИЯ (Date Jitter & Proxying)
     const OriginalDate = window.Date;
-    const jitter = () => (Math.random() * 2); // Шум в 0-2мс
+    const jitter = () => (Math.random() * conf.ZENITH.DATE_JITTER_MAX);
 
     const DateProxy = new Proxy(OriginalDate, {
         construct(target, args) {
             const d = new target(...args);
-            // Вносим шум только при создании "текущего момента" (new Date())
+            // Шум только для "текущего момента"
             if (args.length === 0 && !isTech) {
                 d.setMilliseconds(d.getMilliseconds() + jitter());
             }
             return d;
         },
-        apply(target, thisArg, args) {
-            // Если Date() вызван как функция, он возвращает строку.
-            return target.apply(thisArg, args);
-        }
+        apply: (target, thisArg, args) => target.apply(thisArg, args)
     });
 
-    // Подменяем статический метод now() — главную мишень для фингерпринтинга.
+    // Защита главного метода замера скорости (Fingerprinting target)
     DateProxy.now = function() {
         const n = OriginalDate.now();
         return isTech ? n : n + jitter();
     };
 
-    // Наследуем прототип для прохождения теста (instanceof Date)
     DateProxy.prototype = OriginalDate.prototype;
     window.Date = DateProxy;
 
-    // 3. SIDE-CHANNEL DEFENSE (Precision Degradation)
-    // Защита от атак типа Spectre/Meltdown и замера таймингов кэша CPU.
+    // 2. SIDE-CHANNEL DEFENSE (Precision Degradation)
     if (window.performance && performance.now) {
         const orgPerfNow = performance.now.bind(performance);
         performance.now = function() {
             const t = orgPerfNow();
             if (isTech) return t;
-            // Снижаем точность до 100мкс + добавляем микро-джиттер (наносекунды).
-            // Это делает невозможным высокоточные замеры времени выполнения JS-циклов.
-            return Math.floor(t * 10) / 10 + (Math.random() * 0.001);
+            // Деградация до 100мкс + нано-шум для блокировки Spectre атак
+            const p = conf.ZENITH.PERF_PRECISION;
+            return Math.floor(t * p) / p + (Math.random() * conf.ZENITH.NANO_NOISE);
         };
     }
 
-    // 4. LINGUISTIC TIMEZONE LOCK (Locale Integrity)
-    // Гарантируем, что методы вывода даты не "протекут", если системная локаль 
-    // не совпадает с эмулируемой (en-US).
+    // 3. LINGUISTIC TIMEZONE LOCK
     try {
         const orgToLocaleString = OriginalDate.prototype.toLocaleString;
         OriginalDate.prototype.toLocaleString = function(locale, options) {
-            // Принудительно используем en-US, если не указано иное.
-            return orgToLocaleString.call(this, isTech ? locale : (locale || 'en-US'), options);
+            return orgToLocaleString.call(this, isTech ? locale : (locale || conf.ZENITH.DEFAULT_LOCALE), options);
         };
     } catch (e) {}
 
-    // 5. ИНТЕГРАЦИЯ С GOD-SEED (L25)
-    // Нативизация всех новых прокси-методов
+    // 4. ИНТЕГРАЦИЯ С L25 (God-Seed)
     if (typeof deepMask === 'function') {
         deepMask(DateProxy, 'Date');
         deepMask(DateProxy.now, 'now');
@@ -1751,81 +1838,69 @@ const applyL30Zenith = () => {
  * Тотальная блокировка авто-скачиваний и защита от программного фишинга.
  */
 const applyL33ApexGuard = () => {
-    // 1. Получаем эвристику из центрального узла OMNI
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. ПРОТОТИПНЫЙ ПЕРЕХВАТ (Download Attribute Lockdown)
-    // Мы блокируем саму возможность программного назначения атрибута 'download'.
-    const blockDownloadAttribute = (Proto) => {
+    // 1. ПРОТОТИПНЫЙ ПЕРЕХВАТ (Download Attribute Lockdown)
+    const blockDownloadAttribute = (ProtoName) => {
+        const Proto = window[ProtoName]?.prototype;
         if (!Proto || isTech) return;
         
-        // Перехват дескриптора свойства .download
         const originalDesc = Object.getOwnPropertyDescriptor(Proto, 'download');
         
         Object.defineProperty(Proto, 'download', {
             set: function(value) {
                 if (value) {
-                    // Логируем попытку скрытого скачивания
-                    console.warn(info.TAG, '🚫 Blocked property-based auto-download attempt.');
+                    console.warn(info.TAG, conf.MESSAGES.DOWNLOAD_BLOCKED);
                     return false;
                 }
                 return originalDesc ? originalDesc.set.call(this, value) : null;
             },
-            get: function() {
-                return originalDesc ? originalDesc.get.call(this) : '';
-            },
+            get: function() { return originalDesc ? originalDesc.get.call(this) : ''; },
             configurable: true
         });
 
-        // Перехват метода setAttribute (универсальный способ добавления атрибутов)
+        // Блокировка через setAttribute
         const orgSetAttr = Proto.setAttribute;
         Proto.setAttribute = function(name, value) {
             if (name && name.toLowerCase() === 'download') {
-                console.warn(info.TAG, '🚫 Blocked attribute-based auto-download attempt.');
                 return; 
             }
             return orgSetAttr.apply(this, arguments);
         };
         
-        // Нативизация подмененного метода
         if (typeof deepMask === 'function') deepMask(Proto.setAttribute, 'setAttribute');
     };
 
-    // Применяем к ссылкам и областям — основным векторам инъекций
-    blockDownloadAttribute(HTMLAnchorElement.prototype);
-    blockDownloadAttribute(HTMLAreaElement.prototype);
+    conf.APEX.PROTECTED_TAGS.forEach(tag => blockDownloadAttribute(tag));
 
-    // 3. IFRAME SANDBOXING (Creation Guard)
-    // Автоматически добавляем ограничения для всех создаваемых iframe, 
-    // чтобы они не могли инициировать загрузки без ведома пользователя.
+    // 2. IFRAME SANDBOXING (Creation Guard)
     const originalCreateElement = document.createElement;
     document.createElement = function(tagName, options) {
         const el = originalCreateElement.call(document, tagName, options);
         
-        if (!isTech && tagName.toLowerCase() === 'iframe') {
-            // sandbox без 'allow-downloads' полностью блокирует попытки iframe качать файлы
-            el.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms');
+        if (!isTech && tagName && tagName.toLowerCase() === 'iframe') {
+            // Принудительная изоляция без права на инициацию загрузки
+            el.setAttribute('sandbox', conf.APEX.IFRAME_SANDBOX);
         }
         
         return el;
     };
     if (typeof deepMask === 'function') deepMask(document.createElement, 'createElement');
 
-    // 4. DATA-URL & PHISHING PROTECTION
-    // Блокируем переходы на протокол 'data:', который часто используется для подделки страниц логина
-    // или автоматического исполнения JS-скриптов вне контекста текущей страницы.
+    // 3. DATA-URL & PHISHING PROTECTION
     window.addEventListener('beforeunload', (e) => {
         const activeEl = document.activeElement;
-        if (!isTech && activeEl && activeEl.tagName === 'A' && activeEl.href.startsWith('data:')) {
-            console.error(info.TAG, '⚠️ Phishing risk detected: Data-URL navigation blocked.');
-            // Прерываем навигацию
-            activeEl.href = '#'; 
-            e.preventDefault();
+        if (!isTech && conf.APEX.BLOCK_DATA_URL && activeEl?.tagName === 'A') {
+            if (activeEl.href && activeEl.href.startsWith('data:')) {
+                console.error(info.TAG, conf.MESSAGES.PHISHING_PREVENTED);
+                activeEl.href = '#'; 
+                e.preventDefault();
+            }
         }
     });
 
-    // 5. SECURITY NOTIFICATION
 };
 
   /**
@@ -1833,79 +1908,57 @@ const applyL33ApexGuard = () => {
  * Починка прототипов для старых версий jQuery и предотвращение конфликтов.
  */
 const applyL40LegacyRepair = () => {
-    // 1. Получаем ядро эвристики
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
 
-    // 2. ДЕТЕКЦИЯ ХРУПКОЙ СРЕДЫ (Framework Sniffer)
+    // 1. ДЕТЕКЦИЯ ХРУПКОЙ СРЕДЫ
     const checkLegacy = () => {
         return !!(
-            (window.jQuery && window.jQuery.fn && window.jQuery.fn.jquery && window.jQuery.fn.jquery.startsWith('1.')) || 
-            window.Prototype || 
-            window.MooTools ||
-            !window.requestAnimationFrame // Признак антиквариата
+            (window.jQuery?.fn?.jquery?.startsWith('1.')) || 
+            window.Prototype || window.MooTools || !window.requestAnimationFrame
         );
     };
 
     const repairLegacyJS = () => {
         if (isTech) return;
 
-        // 3. SIZZLE ENGINE FIX (jQuery Selectors)
-        // Старый движок Sizzle падает, если document.querySelectorAll выдает 
-        // необычные исключения при подмене. Мы оборачиваем поиск в безопасный слой.
+        // 2. SIZZLE ENGINE FIX (Защита от падений старого jQuery)
         if (window.jQuery && window.jQuery.find) {
             const orgFind = window.jQuery.find;
             window.jQuery.find = function() {
                 try {
                     return orgFind.apply(this, arguments);
                 } catch (e) {
-                    // Возвращаем пустой объект jQuery, чтобы цепочка вызовов не прервалась
-                    return window.jQuery();
+                    return window.jQuery(); // Возврат пустого набора вместо краша
                 }
             };
-            // Нативизация через L25
             if (typeof deepMask === 'function') deepMask(window.jQuery.find, 'find');
         }
 
-        // 4. EVENT SHIMMING (Ensuring Onload Flow)
-        // Если сайт очень старый и ждет события 'load' после наших манипуляций,
-        // мы гарантируем его доставку, если документ уже готов.
+        // 3. EVENT SHIMMING (Гарантированная загрузка)
         if (document.readyState === 'complete') {
             window.dispatchEvent(new Event('load'));
         }
 
-        // 5. TOSTRING RESTORATION (Integrity Check)
-        // Некоторые старые проверки безопасности (JSON Hijacking protection)
-        // сверяют Function.prototype.toString. Мы следим за его чистотой.
-        const orgToString = Function.prototype.toString;
-        try {
-            if (!orgToString.call(orgToString).includes('[native code]')) {
-                // Попытка экстренного восстановления, если кто-то (не мы) его повредил
-            }
-        } catch (e) {}
-
-        // 6. CONSOLE DEPRECATION SILENCE
-        // Старые библиотеки забивают консоль ворнингами о "deprecated" методах.
-        // Это мешает нам видеть логи атак из L33 (Apex Guard).
+        // 4. CONSOLE DEPRECATION SILENCE (Очистка эфира для Apex Guard)
         const orgWarn = console.warn;
         console.warn = function(...args) {
-            if (args[0] && typeof args[0] === 'string' && 
-               /jQuery.browser|is deprecated|property is non-standard/.test(args[0])) {
+            if (args[0] && typeof args[0] === 'string' && conf.LEGACY.SILENCE_RE.test(args[0])) {
                 return;
             }
             return orgWarn.apply(this, arguments);
         };
+
     };
 
-    // 7. РЕАКТИВНЫЙ И УМНЫЙ ЗАПУСК
+    // 5. РЕАКТИВНЫЙ ЗАПУСК
     if (checkLegacy()) {
-        
-        // Используем requestIdleCallback для минимального влияния на CPU
+        console.log(info.TAG, conf.MESSAGES.LEGACY_DETECTED);
         if (window.requestIdleCallback) {
             requestIdleCallback(() => repairLegacyJS());
         } else {
-            // Фолбэк для совсем старых сред
-            setTimeout(repairLegacyJS, 400);
+            setTimeout(repairLegacyJS, conf.LEGACY.REPAIR_DELAY);
         }
     }
 };
@@ -1916,19 +1969,16 @@ const applyL40LegacyRepair = () => {
  */
 const applyL150EvalBlocker = (target = document.documentElement) => {
     const info = OMNI_Infobase();
+    const conf = OMNI_Config();
     const isTech = info.isTechHost;
     
-    // Порог безопасности: 150KB. Легитимный eval() таких размеров — это архитектурная ошибка.
-    const MAX_EVAL_SAFE_SIZE = 150000; 
+    const MAX_SIZE = conf.EVAL_GUARD.MAX_SAFE_SIZE;
 
     // 1. ПЕРЕХВАТ ЯДРА (Global Execution Hijack)
-    // Оборачиваем eval и конструктор Function для анализа входящего кода.
     const createExecutionGuard = (originalFn, name) => {
         const guardedFn = function(code) {
-            if (typeof code === 'string' && code.length > MAX_EVAL_SAFE_SIZE && !isTech) {
-                console.error(info.TAG, `🛑 L150: Blocked heavy ${name}() execution [Size: ${code.length}]`);
-                
-                // Интеграция с системой уведомлений (если есть)
+            if (typeof code === 'string' && code.length > MAX_SIZE && !isTech) {
+                console.error(info.TAG, conf.MESSAGES.HEAVY_PAYLOAD, `[Size: ${code.length}]`);
                 if (typeof sendOmniPush === 'function') {
                     sendOmniPush('Security Alert', `Heavy ${name} injection neutralized.`);
                 }
@@ -1937,33 +1987,31 @@ const applyL150EvalBlocker = (target = document.documentElement) => {
             return originalFn.apply(window, arguments);
         };
 
-        // Нативизация через L25 God-Seed
+        // Глубокая нативизация (L25 God-Seed)
         if (typeof deepMask === 'function') deepMask(guardedFn, name);
         return guardedFn;
     };
 
     window.eval = createExecutionGuard(window.eval, 'eval');
-    // window.Function — это конструктор, поэтому обрабатываем его аккуратно
+    
     const originalFunction = window.Function;
     window.Function = createExecutionGuard(originalFunction, 'Function');
     window.Function.prototype = originalFunction.prototype;
 
     // 2. DOM-ОБСЕРВЕР (Injection Integrity)
-    // Нейтрализуем подозрительные <script> до их исполнения.
+    // Предотвращаем вставку тяжелых скриптов напрямую в HTML
     const obs = new MutationObserver(mutations => {
         for (const m of mutations) {
             for (const node of m.addedNodes) {
                 if (node.tagName === 'SCRIPT') {
                     const content = node.textContent || '';
-                    
-                    // ЭВРИСТИКА: Размер + наличие признаков обфускации (вложенные eval)
-                    const isSuspicious = content.length > MAX_EVAL_SAFE_SIZE || 
-                                       (content.includes('eval(') && content.length > 50000);
+                    const isSuspicious = content.length > MAX_SIZE || 
+                                       (content.includes('eval(') && content.length > conf.EVAL_GUARD.MAX_OBFUSCATED_SIZE);
 
                     if (isSuspicious && !isTech) {
-                        node.type = 'text/plain'; // Отключаем исполнение браузером
-                        node.remove(); // Удаляем из DOM
-                        console.warn(info.TAG, '🛑 L150: Heavy script node neutralized.');
+                        node.type = 'text/plain'; // Отключаем выполнение
+                        node.remove();
+                        console.warn(info.TAG, conf.MESSAGES.SCRIPT_PURGED);
                     }
                 }
             }
@@ -1973,11 +2021,9 @@ const applyL150EvalBlocker = (target = document.documentElement) => {
     obs.observe(target, { childList: true, subtree: true });
 
     // 3. ТАЙМЕРНЫЙ ФИЛЬТР (String-to-Code Protection)
-    // setTimeout/setInterval позволяют передавать строку вместо функции — это классическая лазейка.
     const wrapTimer = (originalTimer, name) => {
         const guardedTimer = function(handler, timeout, ...args) {
-            if (typeof handler === 'string' && handler.length > MAX_EVAL_SAFE_SIZE && !isTech) {
-                console.error(info.TAG, `🛑 L150: Blocked string-based ${name} injection.`);
+            if (typeof handler === 'string' && handler.length > MAX_SIZE && !isTech) {
                 return 0;
             }
             return originalTimer.call(window, handler, timeout, ...args);
@@ -1996,86 +2042,83 @@ const applyL150EvalBlocker = (target = document.documentElement) => {
  * L1001: HONEYPOT (Data Privacy V5.5)
  * Динамическая подмена данных в Storage при неавторизованном доступе.
  */
-const applyL1001HoneyPot = () => {
+const applyL10HistoryGuard = () => {
     const info = OMNI_Infobase();
-    const isTech = info.isTechHost;
-    
-    // Регулярное выражение для выявления критических ключей
-    const SENSITIVE_KEYS = /token|auth|pass|wallet|secret|key|session|credit|account/i;
+    const conf = OMNI_Config();
 
-    // 1. STORAGE MIRAGE (LocalStorage & SessionStorage)
-    const createHoneyProxy = (storageType) => {
-        const proto = storageType === 'localStorage' ? Storage.prototype : window[storageType].constructor.prototype;
-        const orgGetItem = proto.getItem;
+    let callCount = 0;
+    let lastCallTime = Date.now();
 
-        proto.getItem = function(key) {
-            if (isTech) return orgGetItem.apply(this, arguments);
+    // 1. ДЕТЕКТОР СПАМА (Rate Limiter)
+    const isHistorySpam = () => {
+        const now = Date.now();
+        if (now - lastCallTime < 1000) {
+            callCount++;
+        } else {
+            callCount = 1;
+            lastCallTime = now;
+        }
+        return callCount > conf.HISTORY.MAX_CALLS_PER_SECOND;
+    };
 
-            // ЭВРИСТИКА: Проверяем доверенность события
-            // Скрипты автоматизации часто инициируют события, где isTrusted === false
-            const isUntrusted = window.event && window.event.isTrusted === false;
-            const isSensitive = SENSITIVE_KEYS.test(key);
+    // 2. УНИВЕРСАЛЬНЫЙ СТЕРИЛИЗАТОР (Data Privacy)
+    const quickSterilize = (url) => {
+        if (!url || typeof url !== 'string') return url;
+        try {
+            const tempUrl = new URL(url, document.baseURI);
+            const keys = [...tempUrl.searchParams.keys()];
+            
+            let cleaned = false;
+            keys.forEach(p => {
+                if (conf.STERILIZER.TRASH_PARAMS.some(t => p.startsWith(t))) {
+                    tempUrl.searchParams.delete(p);
+                    cleaned = true;
+                }
+            });
+            
+            return cleaned ? tempUrl.toString() : url;
+        } catch (e) {
+            // Резервный метод через регулярные выражения
+            return url.replace(conf.STERILIZER.FALLBACK_REGEXP, '')
+                      .replace(/\?$/, '').replace(/&&+/g, '&');
+        }
+    };
 
-            if (isSensitive && isUntrusted) {
-                console.warn(info.TAG, `🛡️ L1001: HoneyPot triggered on ${storageType} for: ${key}`);
-                
-                // Возвращаем "Мираж" — правдоподобный JSON, который никуда не ведет
-                return JSON.stringify({
-                    status: "expired",
-                    code: 403,
-                    reason: "Security validation required",
-                    challenge: Math.random().toString(36).substring(7),
-                    timestamp: Date.now()
-                });
+    // 3. РЕАКТИВНЫЙ ПЕРЕХВАТ (Monkey Patching)
+    const wrapHistoryMethod = (methodName) => {
+        const original = window.history[methodName];
+        if (typeof original !== 'function') return;
+
+        const guardedMethod = function(state, title, url) {
+            // Защита от зацикливания истории (Anti-Trap)
+            if (conf.HISTORY.BLOCK_SPAM && isHistorySpam()) {
+                console.warn(info.TAG, conf.MESSAGES.HISTORY_SPAM, methodName);
+                return;
             }
 
-            return orgGetItem.apply(this, arguments);
+            // Очистка URL перед сохранением
+            const finalUrl = url ? quickSterilize(url) : url;
+            
+            return original.apply(this, [state, title, finalUrl]);
         };
-        
-        // Нативизация метода
-        if (typeof deepMask === 'function') deepMask(proto.getItem, 'getItem');
-    };
 
-    ['localStorage', 'sessionStorage'].forEach(type => createHoneyProxy(type));
-
-    // 2. COOKIE GHOSTING (Selective Sanitation)
-    // Защита document.cookie от программного чтения через сторонние скрипты.
-    const orgCookieDesc = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie');
-    if (orgCookieDesc && orgCookieDesc.get) {
-        Object.defineProperty(document, 'cookie', {
-            get: function() {
-                const fullCookie = orgCookieDesc.get.call(this);
-                // Если чтение не инициировано доверенным действием пользователя
-                if (window.event && !window.event.isTrusted && SENSITIVE_KEYS.test(fullCookie)) {
-                    // Возвращаем куки без чувствительных данных (фильтрация)
-                    return fullCookie.split('; ')
-                        .filter(c => !SENSITIVE_KEYS.test(c))
-                        .join('; ');
-                }
-                return fullCookie;
-            },
-            set: orgCookieDesc.set,
-            configurable: true,
-            enumerable: true
-        });
-    }
-
-    // 3. STORAGE KEY OBFUSCATION
-    // Если скрипт перебирает ключи через storage.key(i), мы подменяем имена 
-    // чувствительных ключей на случайные строки.
-    const orgKey = Storage.prototype.key;
-    Storage.prototype.key = function(index) {
-        const k = orgKey.call(this, index);
-        if (k && SENSITIVE_KEYS.test(k) && window.event && !window.event.isTrusted) {
-            return `__secure_session_${Math.random().toString(36).slice(2, 8)}`;
+        // Нативизация (L25 God-Seed)
+        if (typeof deepMask === 'function') {
+            deepMask(guardedMethod, methodName);
         }
-        return k;
+
+        window.history[methodName] = guardedMethod;
     };
-    if (typeof deepMask === 'function') deepMask(Storage.prototype.key, 'key');
+
+    wrapHistoryMethod('pushState');
+    wrapHistoryMethod('replaceState');
 
 };
     
 
+ /**
+ * L1200: VirusMap
+ */
 const applyL1200VirusMap = () => {
     const info = OMNI_Infobase(); // Стили и теги
     const conf = OMNI_Config();   // Правила и расширения
@@ -2107,7 +2150,6 @@ const applyL1200VirusMap = () => {
     }, true);
 
     // Лог о запуске с использованием ваших золотых стилей
-    console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, `Shield active in ${info.getMode()} mode.`);
 };
 
 
@@ -2115,77 +2157,69 @@ const applyL1200VirusMap = () => {
      * L2000: KINETIC MEDIA CORE (V5 Turbo)
      * Мгновенная аннигиляция рекламы и продвинутый UI-контроль.
      */
-    const applyL2000MediaControl = () => {
-        const isYouTube = window.location.hostname.includes('youtube.com');
-        const AD_SELECTORS = '.ad-interrupting, .ad-showing, .video-ads, .ytp-ad-player-overlay';
-        const SKIP_SELECTORS = '.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-ad-skip-button-slot, .ytp-ad-skip-button-container';
+  const applyL2000MediaControl = () => {
+    const info = OMNI_Infobase();
+    const conf = OMNI_Config();
+    const isYouTube = window.location.hostname.includes('youtube.com');
 
-        const turboSkip = (video) => {
-            if (!video) return;
+    const AD_SELECTORS = '.ad-interrupting, .ad-showing, .video-ads, .ytp-ad-player-overlay';
+    const SKIP_SELECTORS = '.ytp-ad-skip-button, .ytp-ad-skip-button-modern, .ytp-ad-skip-button-slot';
 
-            const isAd = document.querySelector(AD_SELECTORS);
-            const skipBtn = document.querySelector(SKIP_SELECTORS);
+    const turboSkip = (video) => {
+        if (!video) return;
 
-            if (isAd) {
-                // 1. РЕАКТИВНОЕ УСКОРЕНИЕ
-                // Выключаем звук и проматываем в 16 раз быстрее (максимум для Chrome)
-                video.muted = true;
-                video.playbackRate = 16;
-                
-                // Прямой прыжок в конец (с запасом 0.3с для срабатывания триггеров плеера)
-                if (isFinite(video.duration) && video.currentTime < video.duration - 0.5) {
-                    video.currentTime = video.duration - 0.3;
-                }
+        const isAd = document.querySelector(AD_SELECTORS);
+        const skipBtn = document.querySelector(SKIP_SELECTORS);
 
-                // 2. АВТО-КЛИК
-                if (skipBtn) {
-                    skipBtn.click();
-                }
-            } else {
-                // 3. СБРОС СОСТОЯНИЯ (Эргономичность)
-                // Возвращаем звук и нормальную скорость, если реклама ушла
-                if (video.playbackRate > 2) video.playbackRate = 1;
-                // Не трогаем muted, если пользователь сам выключил звук
+        if (isAd) {
+            // 1. РЕАКТИВНОЕ УСКОРЕНИЕ (Time Compression)
+            video.muted = true;
+            video.playbackRate = conf.MEDIA.TURBO_RATE;
+            
+            // Прямой прыжок в финал рекламного блока
+            if (isFinite(video.duration) && video.currentTime < video.duration - 0.5) {
+                video.currentTime = video.duration - conf.MEDIA.SKIP_OFFSET;
             }
 
-            // 4. ОЧИСТКА МУСОРА (Overlay Cleanup)
-            const overlays = document.querySelectorAll('.ytp-ad-overlay-container, .ytp-ad-image-overlay');
-            overlays.forEach(el => el.remove());
-        };
-
-        // ИНТЕЛЛЕКТУАЛЬНЫЙ МОНИТОРИНГ
-        const initObserver = () => {
-            const video = document.querySelector('video');
-            if (!video) return;
-
-            // Используем событие обновления времени для минимальной задержки
-            video.addEventListener('timeupdate', () => turboSkip(video));
+            // 2. АВТО-КЛИК
+            if (skipBtn) skipBtn.click();
             
-            // MutationObserver для появления кнопок в DOM
-            const observer = new MutationObserver(() => turboSkip(video));
-            observer.observe(document.body, { childList: true, subtree: true });
-        };
-
-        // Запуск при загрузке и при смене навигации (для SPA типа YouTube)
-        initObserver();
-        if (isYouTube) {
-            window.addEventListener('yt-navigate-finish', initObserver);
+            console.log(info.TAG, conf.MESSAGES.AD_ANNIHILATED);
+        } else {
+            // 3. СБРОС (Возврат в реальное время)
+            if (video.playbackRate > 2) video.playbackRate = 1;
         }
 
-        // 5. КИНЕТИЧЕСКИЙ ГРОМКОСТЬ (Mouse Wheel)
-        document.addEventListener('wheel', e => {
-            const video = document.activeElement?.tagName === 'VIDEO' ? document.activeElement : document.querySelector('video');
-            if (video && (video.contains(e.target) || isYouTube)) {
-                // Предотвращаем скролл страницы, если мы над плеером
-                e.preventDefault();
-                const delta = e.deltaY > 0 ? -0.05 : 0.05;
-                video.volume = Math.max(0, Math.min(1, video.volume + delta));
-                
-                // Визуальная индикация (опционально)
-            }
-        }, { passive: false });
-
+        // 4. ОЧИСТКА ОВЕРЛЕЕВ (Visual Hygiene)
+        const overlays = document.querySelectorAll('.ytp-ad-overlay-container, .ytp-ad-image-overlay');
+        overlays.forEach(el => el.remove());
     };
+
+    // ИНТЕЛЛЕКТУАЛЬНЫЙ МОНИТОРИНГ
+    const initObserver = () => {
+        const video = document.querySelector('video');
+        if (!video) return;
+
+        video.addEventListener('timeupdate', () => turboSkip(video));
+        
+        const observer = new MutationObserver(() => turboSkip(video));
+        observer.observe(document.body, { childList: true, subtree: true });
+    };
+
+    initObserver();
+    if (isYouTube) window.addEventListener('yt-navigate-finish', initObserver);
+
+    // 5. КИНЕТИЧЕСКАЯ ГРОМКОСТЬ (UX Flow)
+    document.addEventListener('wheel', e => {
+        const video = document.querySelector('video');
+        if (video && (video.contains(e.target) || isYouTube)) {
+            e.preventDefault();
+            const delta = e.deltaY > 0 ? -conf.MEDIA.VOLUME_STEP : conf.MEDIA.VOLUME_STEP;
+            video.volume = Math.max(0, Math.min(1, video.volume + delta));
+        }
+    }, { passive: false });
+
+};
     
 
 
