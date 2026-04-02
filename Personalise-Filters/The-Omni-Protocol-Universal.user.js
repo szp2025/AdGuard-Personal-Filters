@@ -60,6 +60,31 @@ const OMNI_Infobase = () => ({
     getMode: function() { return this.isTechHost ? 'COMPATIBILITY' : 'ULTIMATE'; }
 });
 
+    /**
+ * OMNI-CONFIG: Технические параметры и правила безопасности
+ */
+const OMNI_Config = () => {
+    const hostname = window.location.hostname;
+
+    return {
+        // --- [ ЯДРО МАЛВАРИ ] ---
+        // Весь список опасных расширений в одном месте
+        DANGER_EXT: /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|jar|apk|app|dmg|iso|bin|lnk|wsf|com)$/i,
+
+        // --- [ ПРАВИЛА ИСКЛЮЧЕНИЙ ] ---
+        // Добавляем сюда сайты, где клики всегда разрешены (GitHub, Google и т.д.)
+        TRUSTED_HOSTS: /github\.com|google\.com|gitlab\.com|bitbucket\.org|localhost/i.test(hostname),
+
+        // --- [ СООБЩЕНИЯ СИСТЕМЫ ] ---
+        MESSAGES: {
+            SHIELD_ALERT: '⚠️ [OMNI-SHIELD L1200]\n\nОбнаружен подозрительный объект:\n',
+            CONFIRM_CONTINUE: '\n\nФайл может быть опасен. Вы уверены, что хотите его скачать?',
+            HIDDEN_THREAT: '🛑 [OMNI-SHIELD] Заблокирована попытка скрытого запуска файла.'
+        }
+    };
+};
+    
+
 /**
  * ЛОГИЧЕСКИЙ ФИЛЬТР: Очистка консоли от мусора библиотек (Stealth Version)
  */
@@ -2051,62 +2076,38 @@ const applyL1001HoneyPot = () => {
 };
     
 
-/**
- * L1200: APEX VIRUS MAP (Public Edition)
- * Баланс между безопасностью и свободой навигации.
- */
 const applyL1200VirusMap = () => {
-    const info = OMNI_Infobase();
-    
-    // Список расширений, которые реально опасны при АВТО-загрузке
-    const DANGER_EXT = /\.(exe|msi|bat|vbs|ps1|reg|hta|scr|pif|cmd|jar|apk|app|dmg|iso|bin|lnk|wsf|com)$/i;
+    const info = OMNI_Infobase(); // Стили и теги
+    const conf = OMNI_Config();   // Правила и расширения
 
     const isMalicious = (url) => {
         if (!url || typeof url !== 'string') return false;
         const cleanUrl = url.split(/[?#]/)[0];
-        return DANGER_EXT.test(cleanUrl);
+        return conf.DANGER_EXT.test(cleanUrl); // Берем из конфига
     };
 
-    const interceptThreat = (url, context = 'Navigation') => {
-        if (!url || url.includes(window.location.hostname)) return false; // Не блокируем свои домены
-        
-        if (isMalicious(url)) {
-            // Если это клик пользователя — мы ПРЕДУПРЕЖДАЕМ, но не блокируем намертво без выбора
-            console.error(info.TAG, `🛑 L1200: [${context}] Potential threat:`, url);
-            
-            // Вместо window.stop() используем подтверждение, чтобы не ломать работу
-            return true; 
-        }
-        return false;
-    };
-
-    // 2. УМНЫЙ ПЕРЕХВАТ КЛИКОВ (Не блокирует работу)
+    // Слушатель кликов
     window.addEventListener('click', e => {
         const a = e.target.closest('a');
-        if (a && a.href) {
-            const url = a.href;
+        
+        // Если мы на доверенном хосте (из конфига) — ничего не блокируем
+        if (conf.TRUSTED_HOSTS) return; 
 
-            // Если ссылка ведет на опасный файл
-            if (isMalicious(url)) {
-                // Если пользователь нажал сам — спрашиваем его
-                if (!confirm(`⚠️ [OMNI-SHIELD L1200]\n\nСсылка ведет на исполняемый файл:\n${url.split('/').pop()}\n\nВы уверены, что хотите продолжить?`)) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                }
+        if (a && a.href && isMalicious(a.href)) {
+            const fileName = a.href.split('/').pop().substring(0, 40);
+            
+            // Собираем сообщение из конфига
+            const msg = conf.MESSAGES.SHIELD_ALERT + fileName + conf.MESSAGES.CONFIRM_CONTINUE;
+            
+            if (!confirm(msg)) {
+                e.preventDefault();
+                e.stopPropagation();
             }
         }
     }, true);
 
-    // 3. ЖЕСТКАЯ БЛОКИРОВКА ДЛЯ СКРЫТЫХ УГРОЗ (Window Open / Redirect)
-    // Здесь мы блокируем намертво, так как это часто происходит без участия юзера
-    const originalOpen = window.open;
-    window.open = function(url, ...args) {
-        if (interceptThreat(url, 'Hidden Window')) {
-            alert("🛑 Omni-Shield заблокировал попытку скрытого открытия опасного файла.");
-            return null;
-        }
-        return originalOpen.apply(this, args);
-    };
+    // Лог о запуске с использованием ваших золотых стилей
+    console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, `Shield active in ${info.getMode()} mode.`);
 };
 
 
