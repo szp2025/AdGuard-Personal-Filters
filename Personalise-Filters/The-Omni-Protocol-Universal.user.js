@@ -2114,39 +2114,46 @@ const applyL10HistoryGuard = () => {
     
 
  /**
- * L1200: VirusMap
+ * L1200: VIRUS MAP (V8.0 - DATA-HREF COMPATIBLE)
+ * Поддержка кликов по строкам таблиц (ticket-row) и кастомным атрибутам.
  */
 const applyL1200VirusMap = () => {
-    const info = OMNI_Infobase(); // Стили и теги
-    const conf = OMNI_Config();   // Правила и расширения
+    const info = OMNI_Infobase();
+    const isTech = info.isTechHost;
 
-    const isMalicious = (url) => {
-        if (!url || typeof url !== 'string') return false;
-        const cleanUrl = url.split(/[?#]/)[0];
-        return conf.DANGER_EXT.test(cleanUrl); // Берем из конфига
+    const isPathDangerous = (url) => {
+        if (!url || typeof url !== 'string' || isTech) return false;
+        return /^(javascript:|data:text\/html)/i.test(url) || /\.(exe|msi|bat)$/i.test(url.split('?')[0]);
     };
 
-    // Слушатель кликов
-    window.addEventListener('click', e => {
-        const a = e.target.closest('a');
+    // 1. УМНЫЙ ПЕРЕХВАТ КЛИКА
+    window.addEventListener('click', (e) => {
+        // Ищем либо обычную ссылку <a>, либо элемент с data-href (как в вашей таблице)
+        const trigger = e.target.closest('a') || e.target.closest('[data-href]');
         
-        // Если мы на доверенном хосте (из конфига) — ничего не блокируем
-        if (conf.TRUSTED_HOSTS) return; 
-
-        if (a && a.href && isMalicious(a.href)) {
-            const fileName = a.href.split('/').pop().substring(0, 40);
+        if (trigger) {
+            const url = trigger.href || trigger.getAttribute('data-href');
             
-            // Собираем сообщение из конфига
-            const msg = conf.MESSAGES.SHIELD_ALERT + fileName + conf.MESSAGES.CONFIRM_CONTINUE;
-            
-            if (!confirm(msg)) {
+            if (url && isPathDangerous(url)) {
+                console.error(info.TAG, '🛑 L1200: Blocked dangerous custom transition.');
                 e.preventDefault();
-                e.stopPropagation();
+                e.stopImmediatePropagation();
+                return false;
             }
+            // ВАЖНО: Если это легитимный data-href, мы НЕ мешаем.
         }
-    }, true);
+    }, { capture: true, passive: false });
 
-    // Лог о запуске с использованием ваших золотых стилей
+    // 2. ЗАЩИТА LOCATION (Для JS-переходов сайта)
+    // Перехватываем попытки сайта изменить адрес программно
+    const originalOpen = window.open;
+    window.open = function(url, ...args) {
+        if (!isTech && isPathDangerous(url)) return null;
+        return originalOpen.apply(this, args);
+    };
+    if (typeof deepMask === 'function') deepMask(window.open, 'open');
+
+    console.log(info.TAG, '✅ L1200: Virus Map V8.0 (Data-Href Fixed).');
 };
 
 
