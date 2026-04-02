@@ -810,18 +810,36 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 @@||youtubei.googleapis.com^$important,domain=~samsung.com
 
 
-! [L12: VIDEO-STREAM-STABILITY] Исключения для стабильности 4K-потока и YouTube TV.
+! [VIDEO-STREAM-STABILITY] Исключения для стабильности 4K-потока и YouTube TV.
 ! Отключаем HTTPS-дешифровку для видео-сегментов (снижает нагрузку на CPU и фиксит буферизацию).
 @@||googlevideo.com^$important,domain=~samsung.com|~lg.com|~sony.com
 @@||youtube.com^$important,domain=~samsung.com|~lg.com|~sony.com
 @@||ytimg.com^$important,domain=~samsung.com|~lg.com|~sony.com
 
-! [L12: SOCIAL-STABILITY] Исключения для Facebook и Meta-сервисов.
+! [SOCIAL-STABILITY] Исключения для Facebook и Meta-сервисов.
 ! Отключаем HTTPS-дешифровку для обхода Certificate Pinning (фиксит загрузку ленты).
 @@||facebook.com^$important,domain=~samsung.com
 @@||fbcdn.net^$important,domain=~samsung.com
 @@||fbsbx.com^$important,domain=~samsung.com
 @@||messenger.com^$important,domain=~samsung.com
+
+! [L12: EU-FRANCE-STEALTH] Локальная оптимизация для Франции.
+||ads.samsungads.com^$important,reject
+||fr-redirection.samsungcloudsolution.com^$important,reject
+||config.samsungads.com^$important,reject
+||static.doubleclick.net^$important,empty
+
+! [SYSTEM-NOISE-REDUCTION] Отсечение фонового шума Android.
+||android.googleapis.com/generate_204^$important,empty
+||connectivitycheck.gstatic.com^$important,empty
+||telemetry.sdk.google.com^$important,reject
+||play-fe.googleapis.com^$important,domain=~com.android.vending
+
+! [HARDENED-SECURITY] Защита от скрытых угроз и майнинга.
+||coin-hive.com^$important,reject
+||doubleverify.com^$important,reject
+||pixel.facebook.com^$important,reject
+||analytics.google.com^$important,reject
 
 
 ! [DNS-REWRITE-MONOLITH] Глобальное зацикливание телеметрии Smart-TV и IoT.
