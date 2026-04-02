@@ -1411,7 +1411,6 @@ const applyL18MirrorProtocol = () => {
         return orgWarn.apply(this, arguments);
     };
 
-    console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, conf.MESSAGES.MIRROR_ENGAGED);
 };
     
 
@@ -1544,7 +1543,6 @@ const applyL22Infinity = () => {
         }, 'matchMedia');
     }
 
-    console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, conf.MESSAGES.INFINITY_ACTIVE);
 };
     
 
@@ -1954,7 +1952,6 @@ const applyL40LegacyRepair = () => {
 
     // 5. РЕАКТИВНЫЙ ЗАПУСК
     if (checkLegacy()) {
-        console.log(info.TAG, conf.MESSAGES.LEGACY_DETECTED);
         if (window.requestIdleCallback) {
             requestIdleCallback(() => repairLegacyJS());
         } else {
@@ -2184,7 +2181,6 @@ const applyL1200VirusMap = () => {
             // 2. АВТО-КЛИК
             if (skipBtn) skipBtn.click();
             
-            console.log(info.TAG, conf.MESSAGES.AD_ANNIHILATED);
         } else {
             // 3. СБРОС (Возврат в реальное время)
             if (video.playbackRate > 2) video.playbackRate = 1;
