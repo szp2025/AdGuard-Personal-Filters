@@ -194,38 +194,6 @@ $removeparam=/^(utm_[a-z]+|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb
 ! Предотвращает определение реального IP и системного DNS через WebRTC-пиры.
 ||*$webrtc,important,third-party,reject,domain=~google.com|~yandex.ru|~zoom.us|~teams.microsoft.com|~discord.com|~slack.com,tag=DNS_FORCE_FALLBACK
 
-! --- 4. DOH-DECEPTION (Эвристика имитации сбоя DNS) ---
-! Имитируем "таймаут" для DoH-запросов на уровне скриптов.
-#%#//scriptlet("execute-script", "(function(){ \
-    const origFetch = window.fetch; \
-    window.fetch = function(u, ...a) { \
-        if (u && typeof u === 'string' && u.match(/dns-query|dns-json|v1\/query/)) { \
-            return Promise.reject(new TypeError('DNS Service Unavailable')); \
-        } \
-        return origFetch.apply(this, [u, ...a]); \
-    }; \
-})();")
-
-#%#//scriptlet("execute-script", "(function(){ \
-    const host = location.hostname; \
-    const rand = (a,b)=> a + Math.random()*(b-a); \
-    const safeDefine = (obj, prop, val) => { try{ Object.defineProperty(obj, prop, { get: ()=>val, configurable: true }); }catch(e){} }; \
-    \
-    if (host.includes('tf1.fr')) { safeDefine(window, '__TF1_CONFIG__', { adblock: { serverRequest: false } }); } \
-    safeDefine(window, '__tcfapi', function(c, v, cb){ if(cb) cb({eventStatus:'useractioncomplete', gdprApplies:true}, true); }); \
-    safeDefine(window, '__uspapi', function(c, v, cb){ if(cb) cb({uspString:'1---', optOut:false}, true); }); \
-    \
-    /** [QUANTUM ENTROPY] **/ \
-    const oST = window.setTimeout; \
-    window.setTimeout = (fn, d, ...a) => oST(fn, d + rand(0, 3), ...a); \
-    const oNow = performance.now.bind(performance); \
-    performance.now = () => oNow() + rand(0, 4); \
-    \
-    /** [GRAPHICS SPOOF] **/ \
-    safeDefine(navigator, 'hardwareConcurrency', 8); \
-    safeDefine(navigator, 'deviceMemory', 8); \
-    CanvasRenderingContext2D.prototype.measureText = () => ({ width: rand(10, 95), actualBoundingBoxLeft: 0, actualBoundingBoxRight: 0 }); \
-})();")
 
 ! [L4: DECEPTION-ZONE — V121.0 — THE GASLIGHTER]
 ! Схлопнутый слой: Geo-Zones + Port-Reaper  + Analytics-Deception.
@@ -258,27 +226,11 @@ $removeparam=/^(utm_[a-z]+|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb
 ! Имитирует успешную отправку данных для SDK, предотвращая цикличные повторы запросов.
 /^https?:\/\/([^\/]+\.)?(telemetry|stats|metrics|analytics|data|crashlytics|report|diagnostics|log|events|track|survey|feedback|insight|usage|collect|monitor|sync|measure|debug|trace|ping|beacon)\.(microsoft|google|apple|amazon|samsung|huawei|xiaomi|adguard|crashlytics|fb|facebook|doubleclick|adjust|appsflyer|mixpanel|amplitude|segment|braze|app-measurement)(\/.*)?$/$important,third-party,xmlhttprequest,ping,other,empty,tag=SILENCE_ZONE
 
-#%#//scriptlet("set-constant", "ga", "function() { return; }")
-#%#//scriptlet("set-constant", "Mixpanel.prototype.track", "function() { return; }")
-#%#//scriptlet("set-constant", "Amplitude.prototype.logEvent", "function() { return; }")
 
-! --- 4. STEALTH-REDIRECT PROTECTION ---
-! Предотвращаем автоматические редиректы на опасные TLD.
-#%#//scriptlet("set-constant", "window.onbeforeunload", "null")
-#%#//scriptlet("set-constant", "window.location.replace", "function() { return; }")
-##img[width="1"][height="1"], img[style*="width: 1px"], img[style*="height: 1px"]
 
 ! [L5: CRYPTO-DRAINER-GHOST - V78.0]
 ! Тихая блокировка WebSocket: скрипт "висит" в ожидании Handshake.
 ||*$websocket,third-party,important,xmlhttprequest,other,domain=~binance.com|~revolut.com|~metamask.io|~ledger.com|~trezor.io|~trustwallet.com|~.*bank.*|~.*gouv.*,tag=DRAINER_GHOST
-
-! [L6 : CRYPTO-WALLET-GASLIGHTING]
-! Эвристика: скрываем наличие крипто-кошельков от сайтов.
-! Если сайт ищет MetaMask или TrustWallet, мы возвращаем "undefined" (пустоту).
-#%#//scriptlet("set-constant", "window.ethereum", "undefined")
-#%#//scriptlet("set-constant", "window.solana", "undefined")
-#%#//scriptlet("set-constant", "window.bitcoin", "undefined")
-
 
 ! [L7: STERILE-CHANNEL-GHOST - V79.0]
 ! Полная изоляция: запрет любых сторонних запросов и скриптов.
@@ -290,12 +242,6 @@ $removeparam=/^(utm_[a-z]+|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb
 ! [UDP-CLOAKING] Блокируем UDP тише, чтобы QUIC плавно откатывался на TCP.
 ! Исключаем медиа-гигантов и критические сервисы для сохранения скорости.
 ||*$network,udp,important,third-party,domain=~google.com|~youtube.com|~googlevideo.com|~ytimg.com|~twitch.tv|~github.com|~binance.com|~discord.com|~zoom.us,tag=UDP_SILENCE
-
-! [L7.1: WEBRTC-SPOOFING-EVOLUTION]
-! Создаем "кукольный театр" для WebRTC. Объекты есть, но они ничего не делают.
-#%#//scriptlet("set-constant", "RTCPeerConnection", "function(){}")
-#%#//scriptlet("set-constant", "RTCPeerConnection.prototype.createOffer", "function(){return Promise.reject();}")
-#%#//scriptlet("set-constant", "navigator.getUserMedia", "undefined")
 
 ! [L11.2: STUN-GHOSTING]
 ! Блокировка сигнальных серверов WebRTC для предотвращения утечки реального IP.
@@ -310,15 +256,6 @@ $removeparam=/^(utm_[a-z]+|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb
 ||*$image,third-party,important,width<3,height<3,empty,tag=PIXEL_SHADOW
 
 
-! [L12.1: BEACON-SPOOFING-EVOLUTION]
-! Эвристика: перехват создания объектов Image и подмена их на "пустышки".
-#%#//scriptlet("set-constant", "Image.prototype.src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")
-! [L12.2: URL-LEAK-CLEANER]
-#%#//scriptlet("remove-param", "fbclid")
-#%#//scriptlet("remove-param", "gclid")
-#%#//scriptlet("remove-param", "utm_source")
-#%#//scriptlet("remove-param", "utm_campaign")
-
 ! [L9: AI-GHOST-ISOLATION - V81.0]
 ! Блокировка ИИ-скреперов и ботов для защиты данных от обучения нейросетей.
 /^https?:\/\/([^\/]+\.)?(gptbot|claudebot|anthropic|commoncrawl|ccbot|perplexitybot|coherebot|omni-bot|bytespider|diffbot|facebookexternalhit|google-extended|images\.google\.com|semrushbot|ahrefsbot|mj12bot|dotbot|rogerbot|exabot|petalbot|yandexbot|bingbot|duckduckbot|applebot|baiduspider|sogou|yisouspider|mojebot)(\/.*)?$/$important,third-party,xmlhttprequest,other,reject,tag=AI_SCAVENGER_GHOST
@@ -330,11 +267,6 @@ $removeparam=/^(utm_[a-z]+|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb
 ||*/sitemap_index.xml$important,third-party,xmlhttprequest,other,reject,tag=SITEMAP_GHOST
 
 
-! [L9.1: DATA-POISONING-EVOLUTION]
-! Эвристика: запрещаем программный доступ к тексту для сторонних скриптов.
-! Твой глаз видит текст, а бот видит "undefined" или "Access Denied".
-#%#//scriptlet("set-constant", "document.getSelection", "function(){return null;}")
-#%#//scriptlet("set-constant", "navigator.webdriver", "true") 
 ! Мы прикидываемся ботом сами, чтобы другие боты считали нас "своими" и не трогали.
 
 ! [L9.2: NO-AI-SIGNAL]
@@ -570,23 +502,6 @@ $header=X-Content-Type-Options: nosniff, important
 @@||qwant.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
 
 
-! [115-S5: HARDWARE-GHOSTING — APEX EDITION]
-! Батарея: всегда 100%, статус "заряжается". Идеальный камуфляж.
-#%#//scriptlet("set-constant", "navigator.getBattery", "function(){return Promise.resolve({charging:true,chargingTime:0,dischargingTime:Infinity,level:1,onchargingchange:null,onchargingtimechange:null,ondischargingtimechange:null,onlevelchange:null});}")
-
-! Буфер обмена и USB: возвращаем пустые данные вместо ошибки.
-#%#//scriptlet("set-constant", "navigator.clipboard.readText", "function(){return Promise.resolve('');}")
-#%#//scriptlet("set-constant", "navigator.usb.getDevices", "function(){return Promise.resolve([]);}")
-#%#//scriptlet("set-constant", "navigator.bluetooth.getAvailability", "function(){return Promise.resolve(false);}")
-
-! Уведомления: статус "запрещено пользователем" (естественное поведение).
-#%#//scriptlet("set-constant", "Notification.permission", "denied")
-
-! [L11-S6: SCREEN-DEFENSE — V84.0]
-! Имитируем ошибку доступа к захвату экрана (NotAllowedError).
-#%#//scriptlet("set-constant", "navigator.getDisplayMedia", "function(){return Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));}")
-#%#//scriptlet("set-constant", "HTMLVideoElement.prototype.captureStream", "function(){return null;}")
-#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.captureStream", "function(){return null;}")
 
 ! [L12: OMNI-SENTINEL] Высшая стерилизация сетевых пакетов и заголовков.
 
@@ -597,34 +512,6 @@ $header=X-Content-Type-Options: nosniff, important
 ! [L12-S2: HEADER-PURGE] Выжигание идентификаторов и сессионных меток.
 ! 1. Fingerprinting Protection: Удаление аппаратных ID устройства.
 $removeheader=/^X-(Device-ID|Machine-ID|Serial-Number|Hardware-Key|App-Instance-ID)/,important
-
-! [ANNONYANCE-KILLER] Убираем назойливые согласия и баннеры.
-#%#//scriptlet("prevent-facebook-net-proxy")
-#%#//scriptlet("abort-current-inline-script", "didomi")
-#%#//scriptlet("abort-current-inline-script", "cookie")
-##.qc-cmp2-container:style(display: none !important;)
-
-! [ HEURISTIC-SMART-ANNONYANCE] Умный эвристический движок против баннеров.
-! 1. Универсальное подавление популярных CMP-движков (Didomi, Quantcast, OneTrust)
-#%#//scriptlet("abort-on-property-read", "Didomi")
-#%#//scriptlet("abort-on-property-read", "__tcfapi")
-#%#//scriptlet("abort-on-property-read", "OneTrust")
-#%#//scriptlet("abort-on-property-read", "OnetrustActiveGroups")
-
-! 2. Эвристика: Запрещаем сайтам "замораживать" прокрутку (overflow: hidden)
-##body,html:style(overflow: auto !important; position: static !important;)
-
-! 3. Универсальные маски для скрытия контейнеров согласия
-##[class*="cookie-banner"], [id*="cookie-banner"]
-##[class*="consent-layer"], [id*="consent-layer"]
-##[class*="cmp-container"], [id*="cmp-container"]
-##[id^="didomi-host"]
-##div[class^="sp_hl_inner"]
-
-! 4. Скриптлет-обманка: принудительно выставляем статус "Согласен" в памяти браузера
-#%#//scriptlet("set-constant", "google_tag_manager.allow_ad_storage", "true")
-#%#//scriptlet("set-constant", "google_tag_manager.allow_analytics_storage", "true")
-
 
 
 ! 2. Session Integrity: Очистка токенов на неавторизованных доменах.
@@ -647,35 +534,6 @@ $removeheader=/^X-(Auth-Token|Session-ID|Access-Token)/,important,domain=~google
 ||clarity.ms^$set-header=X-MS-Request-ID: $random_string,important
 ||t.aria.microsoft.com^$set-header=X-MS-Tracking: $random_string,important
 ||bing.com/shared/ajax/*^$set-header=X-MS-Entropy: $random_string,important
-
-
-! [L12-S3.1, S4 & S5: GHOST-LOGIC, CHRONOS & BEACON-SPOOF]
-! Объединенная эвристика: Fetch/XHR delay + Beacon spoof + Chronos Shield
-#%#//scriptlet("execute-script", "(function(){ \
-    const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|telemetry|pixel|doubleclick/); \
-    const getD = u => isTr(u) ? (Math.random() * 500 + 200) : 0; \
-    /* 1. Fetch Delay */ \
-    const oF = window.fetch; \
-    window.fetch = function(u, o){ \
-        return new Promise(res => setTimeout(() => res(oF.apply(this, arguments)), getD(u))); \
-    }; \
-    /* 2. XHR Delay (для старых трекеров) */ \
-    const oX = window.XMLHttpRequest.prototype.open; \
-    window.XMLHttpRequest.prototype.open = function(m, u){ \
-        this._u = u; return oX.apply(this, arguments); \
-    }; \
-    const oS = window.XMLHttpRequest.prototype.send; \
-    window.XMLHttpRequest.prototype.send = function(){ \
-        setTimeout(() => oS.apply(this, arguments), getD(this._u)); \
-    }; \
-    /* 3. Beacon Spoof (Фантомная отправка) */ \
-    window.navigator.sendBeacon = function(){ return true; }; \
-    /* 4. Chronos Shield (Anti-Timing) */ \
-    const prec = window.performance.now; \
-    window.performance.now = function(){ \
-        return Math.floor(prec.apply(this, arguments) / 100) * 100; \
-    }; \
-})();")
 
 ! [L13: QUANTUM-MONOLITH — V91.0 — THE FINAL PROTOCOL]
 
@@ -718,36 +576,6 @@ $network=tcp,set_tcp_window=65535,important
 ! 1460 байт — стандарт для Ethernet, исключающий "подписи" VPN-туннелей.
 $network=tcp,set_mss=1460,important
 
-
-! --- S4: APEX-FINGERPRINTING-SPOOF (v91.0) ---
-! Объединенная эвристика: Язык + Шрифты + Экран + Canvas Noise
-#%#//scriptlet("execute-script", "(function(){ \
-    /* 1. Language & Screen (Mobile Standard) */ \
-    Object.defineProperty(navigator, 'language', { get: () => 'fr-FR' }); \
-    Object.defineProperty(navigator, 'languages', { get: () => ['fr-FR', 'fr', 'en-US', 'en'] }); \
-    const s = { w: 360, h: 800 }; \
-    [screen, window].forEach(o => { \
-        if(o.width) Object.defineProperty(o, 'width', { get: () => s.w }); \
-        if(o.height) Object.defineProperty(o, 'height', { get: () => s.h }); \
-    }); \
-    /* 2. Font-Blinding (Offset zeroing) */ \
-    const zero = { get: () => 0 }; \
-    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', zero); \
-    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', zero); \
-    /* 3. Canvas-Poisoning (Микро-шум для каждого кадра) */ \
-    const origGid = CanvasRenderingContext2D.prototype.getImageData; \
-    CanvasRenderingContext2D.prototype.getImageData = function(){ \
-        const d = origGid.apply(this, arguments); \
-        for (let i=0; i<d.data.length; i+=4) { \
-            d.data[i] += (Math.random() > 0.5 ? 1 : -1); \
-        } \
-        return d; \
-    }; \
-    /* 4. Anti-AdBlock (Мимикрия под чистый браузер) */ \
-    window.google_ad_status = 1; \
-    window.navigator.webdriver = false; \
-})();")
-
 ! [L14: SOCIAL-BEHAVIORAL-MONOLITH — V92.0 — APEX GHOST]
 
 ! [S1: SOCIAL-SHIELD] Выжигание сторонних виджетов и трекеров соцсетей.
@@ -767,28 +595,6 @@ $network=tcp,set_mss=1460,important
 ||snapchat.com^$important,third-party,reject
 ||sc-static.net^$important,third-party,reject
 ||pinterest.com/tr/^$important,third-party,reject
-
-#%#var FB_REMOVABLE = true;
-#%#var AT_REMOVABLE = true;
-
-! --- S2: BEHAVIORAL-APEX (Сенсоры и Биометрия) ---
-! Мы не просто удаляем, мы эмулируем "мёртвые" датчики.
-#%#//scriptlet("execute-script", "(function(){ \
-    const noop = function(){}; \
-    /* 1. Обнуляем гироскоп и акселерометр (Биометрия движений) */ \
-    window.DeviceMotionEvent = noop; \
-    window.DeviceOrientationEvent = noop; \
-    window.PointerEvent = noop; \
-    /* 2. Скрываем статус автоматизации (Анти-детект) */ \
-    Object.defineProperty(navigator, 'webdriver', { get: () => false }); \
-    /* 3. Эвристика батареи (Всегда 100% / Зарядка) */ \
-    if(navigator.getBattery) { \
-        navigator.getBattery = () => Promise.resolve({ \
-            charging: true, chargingTime: 0, dischargingTime: Infinity, level: 1, \
-            onchargingchange: null, onlevelchange: null \
-        }); \
-    } \
-})();")
 
 ! [S3: CLIENT-ISOLATION-MONOLITH] Стерилизация сетевой активности приложений.
 ! Глобальное исключение для системных пушей и аналитики (Google/Yandex).
@@ -886,6 +692,333 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 @@||239.255.255.250^$important
 @@||224.0.0.251^$important
 
+! [GALAXY-STORE-SPEEDUP] Ускорение обновлений Samsung Galaxy Store.
+! Пропускаем CDN и сервера обновлений без проверки (фиксит долгую загрузку).
+@@||galaxy.store^$important
+@@||samsungcloudsolution.com^$important
+@@||samsungcloudsolution.net^$important
+@@||samsungapps.com^$important
+@@||samsung.otaupdate.com^$important
+
+! [CAST-STABILITY] Стабильный мост для трансляций (ReVanced/SmartTube).
+! 1. Разрешаем сопряжение (Lounge API). Ограничено только для домена YouTube.
+@@||youtube.com/api/lounge/*^$important,domain=youtube.com
+
+! 2. Разрешаем обнаружение устройств (DIAL/Cast Setup).
+@@||google.com/cast/setup/*^$important
+
+! 3. Дополнение: Разрешаем поиск устройств через SSDP/mDNS (Эвристика)
+@@||239.255.255.250^$important,tag=CAST_FIX
+
+
+! [L16: PERIMETER-MONOLITH — V122.1 — GHOST-NODE]
+! Защита сетевого уровня и маскировка метаданных. Схлопнуто для скорости.
+
+! 1. Сетевой стелс: Фиксация TTL/MSS для обхода DPI и скрытия тетеринга.
+! Маскирует Android/iOS под стандартный сетевой узел, убирая "отпечатки" VPN.
+$network=ip,set_ttl=64,hide_hop_limit=on,important
+$network=tcp,set_tcp_window=65535,set_mss=1460,important
+
+! 2. Приватность переходов: Ограничение передачи заголовка Referer.
+! Предотвращает утечку полного URL предыдущей страницы при переходе на менее защищенные (HTTP) узлы.
+*^$set-header=Referrer-Policy: no-referrer-when-downgrade,important
+
+! 3. Дополнительная стерилизация: Удаление специфических меток слежки из заголовков.
+$removeheader=X-Forwarded-For,important
+$removeheader=Via,important
+
+! [IP-SHIELD] Умная изоляция WebRTC и защита от утечки реального IP.
+! Блокирует STUN-запросы везде, кроме доверенных узлов связи и банков.
+||stun:*^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com|~meet.google.com|~yandex.*|~openai.com|~revolut.com|~lcl.fr,tag=IP_GHOST
+
+! [WEBRTC-INFRA] Глушение сигнальных серверов (кроме поисковых систем).
+||webrtc.org^$important,third-party,reject,domain=~google.*|~yandex.*,tag=IP_GHOST
+
+! 3. LAN-Scan Protection: Запрет внешним сайтам обращаться к твоему локальному "железу".
+! Пресекает атаки типа DNS Rebinding и поиск уязвимостей в роутере/IoT.
+||127.0.0.1^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+||localhost^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+||::1^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+||192.168.0.0/16^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+||10.0.0.0/8^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+||172.16.0.0/12^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+
+
+! [PORT REAPER & GASLIGHTING] Стерилизация входящих соединений и портов.
+! 1. Port Reaper: Блокировка критических портов (SMB, RDP, Telnet, RPC).
+! Оставляем "окно" только для легитимного удаленного доступа и локальной работы.
+||^$important,port=21|22|23|25|135|137|138|139|445|3389|5900|8080|9000,domain=~teamviewer.com|~anydesk.com|~rustdesk.com|~localhost,reject,tag=PORT_ATTACK
+
+! 2. Network Gaslighting: Режим "Тишины" (Stealth Mode).
+! Дропаем запросы на обнаружение и пинги, имитируя отсутствие устройства в сети.
+$network=icmp,action=drop,app=~system,important,tag=STEALTH_MODE
+$network=discovery,action=drop,app=~system,important,tag=STEALTH_MODE
+$network=inbound,action=drop,app=~system,important,tag=STEALTH_MODE
+
+! 3. WebRTC Gaslighting: Защита от деанонимизации через сигнальные порты.
+$network=webrtc,action=drop,app=~system,domain=~google.com|~zoom.us|~yandex.ru,important,tag=STEALTH_MODE
+
+
+! [L17: OMNI-SOVEREIGNTY — V100.0 — THE ABSOLUTE]
+
+! [S1: PORT-SECURITY (Anti-RAT)] Изоляция нестандартных исходящих соединений.
+! 1. Разрешительный лист (Whitelist) для основных протоколов.
+! 80,443 (Web) | 53,853 (DNS) | 587,993 (Mail) | 21,22 (Dev)
+! Блокирует попытки малвари связаться с C2-сервером через экзотические порты.
+||*^$important,port=~80|~443|~53|~853|~587|~993|~465|~21|~22|~123,reject,domain=~google.com|~yandex.ru|~ya.ru|~openai.com|~apple.com|~microsoft.com|~github.com|~gitlab.com|~revolut.com|~lcl.fr|~caf.fr|~gouv.fr,tag=ANTI_RAT
+
+! 2. NTP-Синхронизация: Оставляем порт 123 для точного времени.
+@@||*^$important,port=123,tag=TIME_SYNC
+
+
+! --- S2: MEDIA-PROTECT (Stream & Hardware Blindness) ---
+||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.*|~google.*|~yandex.*
+||*$object,third-party,important,domain=~system
+
+
+! [L18: SIGNAL-MONOLITH — V101.0 — RADIO-SILENCE]
+! Защита SIM-карты, GSM-сигналинга и логики входящих сообщений.
+
+! [S1: SMS-LOGIC ANCHOR] Стерилизация фишинга и защита от подмены отправителя.
+! 1. Strip-Links: Обезоруживание ссылок в SMS.
+! Если домен НЕ входит в доверенный список банков, любая ссылка внутри сообщения 
+! превращается в обычный текст (некликабельно).
+||*^$network=sms-logic-anchor,action=strip-links,domain=~revolut.com|~bnpparibas.fr|~lcl.fr|~n26.com|~sber.ru|~tbank.ru|~apple.com|~google.com|~gouv.fr,important
+
+! 2. Disable-Interaction: Защита от сигнального фишинга (Sender ID).
+! Блокирует возможность взаимодействия (нажатия) в сообщениях с поддельными 
+! именами отправителей, если они не прошли проверку подлинности.
+||*^$network=sms-signaling,action=disable-interaction,senderid=~REVOLUT|~BNP|~N26|~LCL|~GOV|~APPLE|~GOOGLE|~SBER,important,tag=SMS_SHIELD
+
+
+! [S3: RADIO-SILENCE] Изоляция SIM-карты и подавление скрытых сотовых запросов.
+! 1. SIM-Toolkit (STK) & SIM-App: Блокировка скрытых меню оператора.
+! Предотвращает несанкционированный запуск приложений через SIM-меню.
+||*^$network=sim-toolkit,important,reject,tag=RADIO_SILENCE
+||*^$network=sim-app-invoke,important,reject,tag=RADIO_SILENCE
+
+! 2. SMS Type 0 (Silent SMS / Stealth Ping): Защита от триангуляции.
+! Блокирует невидимые сообщения, которые заставляют телефон "ответить" соте, 
+! выдавая точные координаты без уведомления пользователя.
+||*^$network=sms-type0,important,reject,tag=STEALTH_PING
+||/^(ping-sms|ack-sms-silent)/^$important,network,reject,tag=STEALTH_PING
+
+! 3. USSD-Push & Flash-SMS: Подавление навязчивых и опасных системных окон.
+! Защита от мошеннических USSD-запросов, которые могут инициировать списания.
+||/^(stk-menu|ussd-push)/^$important,network,reject,tag=RADIO_SILENCE
+
+! --- S6: URL-ENTROPY (Заметание следов кликов) ---
+$removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=~google.com|~bank|~yandex.ru
+
+
+! ------------------------------------------------------------
+! [HYBRID-SCRIPTLETS] - JS Injection Engine
+! ------------------------------------------------------------
+
+
+
+
+
+
+! --- 4. DOH-DECEPTION (Эвристика имитации сбоя DNS) ---
+! Имитируем "таймаут" для DoH-запросов на уровне скриптов.
+#%#//scriptlet("execute-script", "(function(){ \
+    const origFetch = window.fetch; \
+    window.fetch = function(u, ...a) { \
+        if (u && typeof u === 'string' && u.match(/dns-query|dns-json|v1\/query/)) { \
+            return Promise.reject(new TypeError('DNS Service Unavailable')); \
+        } \
+        return origFetch.apply(this, [u, ...a]); \
+    }; \
+})();")
+
+#%#//scriptlet("execute-script", "(function(){ \
+    const host = location.hostname; \
+    const rand = (a,b)=> a + Math.random()*(b-a); \
+    const safeDefine = (obj, prop, val) => { try{ Object.defineProperty(obj, prop, { get: ()=>val, configurable: true }); }catch(e){} }; \
+    \
+    if (host.includes('tf1.fr')) { safeDefine(window, '__TF1_CONFIG__', { adblock: { serverRequest: false } }); } \
+    safeDefine(window, '__tcfapi', function(c, v, cb){ if(cb) cb({eventStatus:'useractioncomplete', gdprApplies:true}, true); }); \
+    safeDefine(window, '__uspapi', function(c, v, cb){ if(cb) cb({uspString:'1---', optOut:false}, true); }); \
+    \
+    /** [QUANTUM ENTROPY] **/ \
+    const oST = window.setTimeout; \
+    window.setTimeout = (fn, d, ...a) => oST(fn, d + rand(0, 3), ...a); \
+    const oNow = performance.now.bind(performance); \
+    performance.now = () => oNow() + rand(0, 4); \
+    \
+    /** [GRAPHICS SPOOF] **/ \
+    safeDefine(navigator, 'hardwareConcurrency', 8); \
+    safeDefine(navigator, 'deviceMemory', 8); \
+    CanvasRenderingContext2D.prototype.measureText = () => ({ width: rand(10, 95), actualBoundingBoxLeft: 0, actualBoundingBoxRight: 0 }); \
+})();")
+
+
+#%#//scriptlet("set-constant", "ga", "function() { return; }")
+#%#//scriptlet("set-constant", "Mixpanel.prototype.track", "function() { return; }")
+#%#//scriptlet("set-constant", "Amplitude.prototype.logEvent", "function() { return; }")
+
+! --- 4. STEALTH-REDIRECT PROTECTION ---
+! Предотвращаем автоматические редиректы на опасные TLD.
+#%#//scriptlet("set-constant", "window.onbeforeunload", "null")
+#%#//scriptlet("set-constant", "window.location.replace", "function() { return; }")
+##img[width="1"][height="1"], img[style*="width: 1px"], img[style*="height: 1px"]
+
+! [L6 : CRYPTO-WALLET-GASLIGHTING]
+! Эвристика: скрываем наличие крипто-кошельков от сайтов.
+! Если сайт ищет MetaMask или TrustWallet, мы возвращаем "undefined" (пустоту).
+#%#//scriptlet("set-constant", "window.ethereum", "undefined")
+#%#//scriptlet("set-constant", "window.solana", "undefined")
+#%#//scriptlet("set-constant", "window.bitcoin", "undefined")
+
+! [L7.1: WEBRTC-SPOOFING-EVOLUTION]
+! Создаем "кукольный театр" для WebRTC. Объекты есть, но они ничего не делают.
+#%#//scriptlet("set-constant", "RTCPeerConnection", "function(){}")
+#%#//scriptlet("set-constant", "RTCPeerConnection.prototype.createOffer", "function(){return Promise.reject();}")
+#%#//scriptlet("set-constant", "navigator.getUserMedia", "undefined")
+
+
+! [L12.1: BEACON-SPOOFING-EVOLUTION]
+! Эвристика: перехват создания объектов Image и подмена их на "пустышки".
+#%#//scriptlet("set-constant", "Image.prototype.src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")
+! [L12.2: URL-LEAK-CLEANER]
+#%#//scriptlet("remove-param", "fbclid")
+#%#//scriptlet("remove-param", "gclid")
+#%#//scriptlet("remove-param", "utm_source")
+#%#//scriptlet("remove-param", "utm_campaign")
+
+
+! [L9.1: DATA-POISONING-EVOLUTION]
+! Эвристика: запрещаем программный доступ к тексту для сторонних скриптов.
+! Твой глаз видит текст, а бот видит "undefined" или "Access Denied".
+#%#//scriptlet("set-constant", "document.getSelection", "function(){return null;}")
+#%#//scriptlet("set-constant", "navigator.webdriver", "true") 
+
+! [115-S5: HARDWARE-GHOSTING — APEX EDITION]
+! Батарея: всегда 100%, статус "заряжается". Идеальный камуфляж.
+#%#//scriptlet("set-constant", "navigator.getBattery", "function(){return Promise.resolve({charging:true,chargingTime:0,dischargingTime:Infinity,level:1,onchargingchange:null,onchargingtimechange:null,ondischargingtimechange:null,onlevelchange:null});}")
+
+! Буфер обмена и USB: возвращаем пустые данные вместо ошибки.
+#%#//scriptlet("set-constant", "navigator.clipboard.readText", "function(){return Promise.resolve('');}")
+#%#//scriptlet("set-constant", "navigator.usb.getDevices", "function(){return Promise.resolve([]);}")
+#%#//scriptlet("set-constant", "navigator.bluetooth.getAvailability", "function(){return Promise.resolve(false);}")
+
+! Уведомления: статус "запрещено пользователем" (естественное поведение).
+#%#//scriptlet("set-constant", "Notification.permission", "denied")
+
+! [L11-S6: SCREEN-DEFENSE — V84.0]
+! Имитируем ошибку доступа к захвату экрана (NotAllowedError).
+#%#//scriptlet("set-constant", "navigator.getDisplayMedia", "function(){return Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));}")
+#%#//scriptlet("set-constant", "HTMLVideoElement.prototype.captureStream", "function(){return null;}")
+#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.captureStream", "function(){return null;}")
+
+
+! [ANNONYANCE-KILLER] Убираем назойливые согласия и баннеры.
+#%#//scriptlet("prevent-facebook-net-proxy")
+#%#//scriptlet("abort-current-inline-script", "didomi")
+#%#//scriptlet("abort-current-inline-script", "cookie")
+##.qc-cmp2-container:style(display: none !important;)
+
+! [ HEURISTIC-SMART-ANNONYANCE] Умный эвристический движок против баннеров.
+! 1. Универсальное подавление популярных CMP-движков (Didomi, Quantcast, OneTrust)
+#%#//scriptlet("abort-on-property-read", "Didomi")
+#%#//scriptlet("abort-on-property-read", "__tcfapi")
+#%#//scriptlet("abort-on-property-read", "OneTrust")
+#%#//scriptlet("abort-on-property-read", "OnetrustActiveGroups")
+
+! 2. Эвристика: Запрещаем сайтам "замораживать" прокрутку (overflow: hidden)
+##body,html:style(overflow: auto !important; position: static !important;)
+
+! 3. Универсальные маски для скрытия контейнеров согласия
+##[class*="cookie-banner"], [id*="cookie-banner"]
+##[class*="consent-layer"], [id*="consent-layer"]
+##[class*="cmp-container"], [id*="cmp-container"]
+##[id^="didomi-host"]
+##div[class^="sp_hl_inner"]
+
+! 4. Скриптлет-обманка: принудительно выставляем статус "Согласен" в памяти браузера
+#%#//scriptlet("set-constant", "google_tag_manager.allow_ad_storage", "true")
+#%#//scriptlet("set-constant", "google_tag_manager.allow_analytics_storage", "true")
+
+! [L12-S3.1, S4 & S5: GHOST-LOGIC, CHRONOS & BEACON-SPOOF]
+! Объединенная эвристика: Fetch/XHR delay + Beacon spoof + Chronos Shield
+#%#//scriptlet("execute-script", "(function(){ \
+    const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|telemetry|pixel|doubleclick/); \
+    const getD = u => isTr(u) ? (Math.random() * 500 + 200) : 0; \
+    /* 1. Fetch Delay */ \
+    const oF = window.fetch; \
+    window.fetch = function(u, o){ \
+        return new Promise(res => setTimeout(() => res(oF.apply(this, arguments)), getD(u))); \
+    }; \
+    /* 2. XHR Delay (для старых трекеров) */ \
+    const oX = window.XMLHttpRequest.prototype.open; \
+    window.XMLHttpRequest.prototype.open = function(m, u){ \
+        this._u = u; return oX.apply(this, arguments); \
+    }; \
+    const oS = window.XMLHttpRequest.prototype.send; \
+    window.XMLHttpRequest.prototype.send = function(){ \
+        setTimeout(() => oS.apply(this, arguments), getD(this._u)); \
+    }; \
+    /* 3. Beacon Spoof (Фантомная отправка) */ \
+    window.navigator.sendBeacon = function(){ return true; }; \
+    /* 4. Chronos Shield (Anti-Timing) */ \
+    const prec = window.performance.now; \
+    window.performance.now = function(){ \
+        return Math.floor(prec.apply(this, arguments) / 100) * 100; \
+    }; \
+})();")
+
+
+#%#var FB_REMOVABLE = true;
+#%#var AT_REMOVABLE = true;
+
+! --- S2: BEHAVIORAL-APEX (Сенсоры и Биометрия) ---
+! Мы не просто удаляем, мы эмулируем "мёртвые" датчики.
+#%#//scriptlet("execute-script", "(function(){ \
+    const noop = function(){}; \
+    /* 1. Обнуляем гироскоп и акселерометр (Биометрия движений) */ \
+    window.DeviceMotionEvent = noop; \
+    window.DeviceOrientationEvent = noop; \
+    window.PointerEvent = noop; \
+    /* 2. Скрываем статус автоматизации (Анти-детект) */ \
+    Object.defineProperty(navigator, 'webdriver', { get: () => false }); \
+    /* 3. Эвристика батареи (Всегда 100% / Зарядка) */ \
+    if(navigator.getBattery) { \
+        navigator.getBattery = () => Promise.resolve({ \
+            charging: true, chargingTime: 0, dischargingTime: Infinity, level: 1, \
+            onchargingchange: null, onlevelchange: null \
+        }); \
+    } \
+})();")
+
+! --- S4: APEX-FINGERPRINTING-SPOOF (v91.0) ---
+! Объединенная эвристика: Язык + Шрифты + Экран + Canvas Noise
+#%#//scriptlet("execute-script", "(function(){ \
+    /* 1. Language & Screen (Mobile Standard) */ \
+    Object.defineProperty(navigator, 'language', { get: () => 'fr-FR' }); \
+    Object.defineProperty(navigator, 'languages', { get: () => ['fr-FR', 'fr', 'en-US', 'en'] }); \
+    const s = { w: 360, h: 800 }; \
+    [screen, window].forEach(o => { \
+        if(o.width) Object.defineProperty(o, 'width', { get: () => s.w }); \
+        if(o.height) Object.defineProperty(o, 'height', { get: () => s.h }); \
+    }); \
+    /* 2. Font-Blinding (Offset zeroing) */ \
+    const zero = { get: () => 0 }; \
+    Object.defineProperty(HTMLElement.prototype, 'offsetHeight', zero); \
+    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', zero); \
+    /* 3. Canvas-Poisoning (Микро-шум для каждого кадра) */ \
+    const origGid = CanvasRenderingContext2D.prototype.getImageData; \
+    CanvasRenderingContext2D.prototype.getImageData = function(){ \
+        const d = origGid.apply(this, arguments); \
+        for (let i=0; i<d.data.length; i+=4) { \
+            d.data[i] += (Math.random() > 0.5 ? 1 : -1); \
+        } \
+        return d; \
+    }; \
+    /* 4. Anti-AdBlock (Мимикрия под чистый браузер) */ \
+    window.google_ad_status = 1; \
+    window.navigator.webdriver = false; \
+})();")
 
 ! [AESTHETIC-BLOCKING] Стилизация заблокированных элементов.
 ! Вместо "разбитого" окна — аккуратное скрытие.
@@ -901,28 +1034,6 @@ youtube.com,facebook.com#%#//scriptlet("prevent-window-open")
 
 ! [VISUAL-NOTIFY] Эстетическое скрытие элементов.
 ##.ad-layer, .overlay-ad:style(border: 1px dashed rgba(255,0,0,0.2) !important; background: transparent !important;)
-
-! [GALAXY-STORE-SPEEDUP] Ускорение обновлений Samsung Galaxy Store.
-! Пропускаем CDN и сервера обновлений без проверки (фиксит долгую загрузку).
-@@||galaxy.store^$important
-@@||samsungcloudsolution.com^$important
-@@||samsungcloudsolution.net^$important
-@@||samsungapps.com^$important
-@@||samsung.otaupdate.com^$important
-
-
-
-! [CAST-STABILITY] Стабильный мост для трансляций (ReVanced/SmartTube).
-! 1. Разрешаем сопряжение (Lounge API). Ограничено только для домена YouTube.
-@@||youtube.com/api/lounge/*^$important,domain=youtube.com
-
-! 2. Разрешаем обнаружение устройств (DIAL/Cast Setup).
-@@||google.com/cast/setup/*^$important
-
-! 3. Дополнение: Разрешаем поиск устройств через SSDP/mDNS (Эвристика)
-@@||239.255.255.250^$important,tag=CAST_FIX
-
-
 
 ! [L15: THE SINGULARITY — V125.0 — OMNI-CORE]
 ! Объединенный слой: AI-Интеллект + Аппаратный Спуфинг + Стерилизация Памяти.
@@ -1026,54 +1137,6 @@ safeDefine(window, '__uspapi', function(cmd, ver, cb){ if(cb) cb({uspString:'1--
 })();
 ")
 
-! [L16: PERIMETER-MONOLITH — V122.1 — GHOST-NODE]
-! Защита сетевого уровня и маскировка метаданных. Схлопнуто для скорости.
-
-! 1. Сетевой стелс: Фиксация TTL/MSS для обхода DPI и скрытия тетеринга.
-! Маскирует Android/iOS под стандартный сетевой узел, убирая "отпечатки" VPN.
-$network=ip,set_ttl=64,hide_hop_limit=on,important
-$network=tcp,set_tcp_window=65535,set_mss=1460,important
-
-! 2. Приватность переходов: Ограничение передачи заголовка Referer.
-! Предотвращает утечку полного URL предыдущей страницы при переходе на менее защищенные (HTTP) узлы.
-*^$set-header=Referrer-Policy: no-referrer-when-downgrade,important
-
-! 3. Дополнительная стерилизация: Удаление специфических меток слежки из заголовков.
-$removeheader=X-Forwarded-For,important
-$removeheader=Via,important
-
-! [IP-SHIELD] Умная изоляция WebRTC и защита от утечки реального IP.
-! Блокирует STUN-запросы везде, кроме доверенных узлов связи и банков.
-||stun:*^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com|~meet.google.com|~yandex.*|~openai.com|~revolut.com|~lcl.fr,tag=IP_GHOST
-
-! [WEBRTC-INFRA] Глушение сигнальных серверов (кроме поисковых систем).
-||webrtc.org^$important,third-party,reject,domain=~google.*|~yandex.*,tag=IP_GHOST
-
-! 3. LAN-Scan Protection: Запрет внешним сайтам обращаться к твоему локальному "железу".
-! Пресекает атаки типа DNS Rebinding и поиск уязвимостей в роутере/IoT.
-||127.0.0.1^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
-||localhost^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
-||::1^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
-||192.168.0.0/16^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
-||10.0.0.0/8^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
-||172.16.0.0/12^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
-
-
-! [PORT REAPER & GASLIGHTING] Стерилизация входящих соединений и портов.
-! 1. Port Reaper: Блокировка критических портов (SMB, RDP, Telnet, RPC).
-! Оставляем "окно" только для легитимного удаленного доступа и локальной работы.
-||^$important,port=21|22|23|25|135|137|138|139|445|3389|5900|8080|9000,domain=~teamviewer.com|~anydesk.com|~rustdesk.com|~localhost,reject,tag=PORT_ATTACK
-
-! 2. Network Gaslighting: Режим "Тишины" (Stealth Mode).
-! Дропаем запросы на обнаружение и пинги, имитируя отсутствие устройства в сети.
-$network=icmp,action=drop,app=~system,important,tag=STEALTH_MODE
-$network=discovery,action=drop,app=~system,important,tag=STEALTH_MODE
-$network=inbound,action=drop,app=~system,important,tag=STEALTH_MODE
-
-! 3. WebRTC Gaslighting: Защита от деанонимизации через сигнальные порты.
-$network=webrtc,action=drop,app=~system,domain=~google.com|~zoom.us|~yandex.ru,important,tag=STEALTH_MODE
-
-
 ! [UI-PURGE & ADBLOCK-DECEPTION] Визуальная стерилизация и борьба с детекторами.
 ! 1. Глобальный UI-Purge: Схлопывание рекламных и социальных контейнеров.
 ##[class*="ad-"], [id*="ad-slot"], .ad-box, .ads-container, .sponsored-post
@@ -1091,23 +1154,6 @@ $network=webrtc,action=drop,app=~system,domain=~google.com|~zoom.us|~yandex.ru,i
 #%#//scriptlet("set-constant", "adblock", "false")
 #%#//scriptlet("abort-current-inline-script", "isAdBlockActive", "detectAdBlock")
 
-
-
-! [L17: OMNI-SOVEREIGNTY — V100.0 — THE ABSOLUTE]
-
-! [S1: PORT-SECURITY (Anti-RAT)] Изоляция нестандартных исходящих соединений.
-! 1. Разрешительный лист (Whitelist) для основных протоколов.
-! 80,443 (Web) | 53,853 (DNS) | 587,993 (Mail) | 21,22 (Dev)
-! Блокирует попытки малвари связаться с C2-сервером через экзотические порты.
-||*^$important,port=~80|~443|~53|~853|~587|~993|~465|~21|~22|~123,reject,domain=~google.com|~yandex.ru|~ya.ru|~openai.com|~apple.com|~microsoft.com|~github.com|~gitlab.com|~revolut.com|~lcl.fr|~caf.fr|~gouv.fr,tag=ANTI_RAT
-
-! 2. NTP-Синхронизация: Оставляем порт 123 для точного времени.
-@@||*^$important,port=123,tag=TIME_SYNC
-
-
-! --- S2: MEDIA-PROTECT (Stream & Hardware Blindness) ---
-||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.*|~google.*|~yandex.*
-||*$object,third-party,important,domain=~system
 #%#//scriptlet("set-constant", "navigator.mediaDevices.getUserMedia", "undefined")
 #%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "undefined")
 
@@ -1126,42 +1172,10 @@ $network=webrtc,action=drop,app=~system,domain=~google.com|~zoom.us|~yandex.ru,i
     } \
 })();")
 
-! [L18: SIGNAL-MONOLITH — V101.0 — RADIO-SILENCE]
-! Защита SIM-карты, GSM-сигналинга и логики входящих сообщений.
-
-! [S1: SMS-LOGIC ANCHOR] Стерилизация фишинга и защита от подмены отправителя.
-! 1. Strip-Links: Обезоруживание ссылок в SMS.
-! Если домен НЕ входит в доверенный список банков, любая ссылка внутри сообщения 
-! превращается в обычный текст (некликабельно).
-||*^$network=sms-logic-anchor,action=strip-links,domain=~revolut.com|~bnpparibas.fr|~lcl.fr|~n26.com|~sber.ru|~tbank.ru|~apple.com|~google.com|~gouv.fr,important
-
-! 2. Disable-Interaction: Защита от сигнального фишинга (Sender ID).
-! Блокирует возможность взаимодействия (нажатия) в сообщениях с поддельными 
-! именами отправителей, если они не прошли проверку подлинности.
-||*^$network=sms-signaling,action=disable-interaction,senderid=~REVOLUT|~BNP|~N26|~LCL|~GOV|~APPLE|~GOOGLE|~SBER,important,tag=SMS_SHIELD
-
-
 ! --- S2: GHOST-MODE (Маскировка блокировщика) ---
 #%#//scriptlet("set-constant", "window.adguard_installed", "false")
 #%#//scriptlet("set-constant", "window.AG_onLoad", "undefined")
 #%#//scriptlet("set-constant", "AdGuardNightly", "undefined")
-
-! [S3: RADIO-SILENCE] Изоляция SIM-карты и подавление скрытых сотовых запросов.
-! 1. SIM-Toolkit (STK) & SIM-App: Блокировка скрытых меню оператора.
-! Предотвращает несанкционированный запуск приложений через SIM-меню.
-||*^$network=sim-toolkit,important,reject,tag=RADIO_SILENCE
-||*^$network=sim-app-invoke,important,reject,tag=RADIO_SILENCE
-
-! 2. SMS Type 0 (Silent SMS / Stealth Ping): Защита от триангуляции.
-! Блокирует невидимые сообщения, которые заставляют телефон "ответить" соте, 
-! выдавая точные координаты без уведомления пользователя.
-||*^$network=sms-type0,important,reject,tag=STEALTH_PING
-||/^(ping-sms|ack-sms-silent)/^$important,network,reject,tag=STEALTH_PING
-
-! 3. USSD-Push & Flash-SMS: Подавление навязчивых и опасных системных окон.
-! Защита от мошеннических USSD-запросов, которые могут инициировать списания.
-||/^(stk-menu|ussd-push)/^$important,network,reject,tag=RADIO_SILENCE
-
 
 ! --- S4: DEEP-SANITIZER (Unicode & Logic Protection) ---
 ! Превращаем скрытые ссылки и Service Workers в пыль.
@@ -1194,9 +1208,6 @@ $network=webrtc,action=drop,app=~system,domain=~google.com|~zoom.us|~yandex.ru,i
 ! --- S5: TIMING-SHIELD (Защита от микро-замеров CPU) ---
 #%#//scriptlet("set-constant", "performance.now", "function() { return Date.now(); }")
 #%#//scriptlet("set-constant", "screen.updateInterval", "16.67")
-
-! --- S6: URL-ENTROPY (Заметание следов кликов) ---
-$removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=~google.com|~bank|~yandex.ru
 
 ! [L20: MECHANICAL-MONOLITH — V110.0 — THE APEX]
 ! Маскировка GPU, таймингов, сенсоров и сетевого качества.
