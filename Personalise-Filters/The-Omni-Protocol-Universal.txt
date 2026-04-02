@@ -141,35 +141,12 @@ $removeparam=/^(utm_[a-z]+|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb
 ||app-measurement.com^$important,third-party,reject,xmlhttprequest,ping,other
 ||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,tag=MEDIA_SPY_SILENCE,reject
 
-#%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
-#%#//scriptlet("set-constant", "navigator.mediaDevices.getDisplayMedia", "undefined")
-#%#//scriptlet("set-constant", "ScreenCapture.prototype.getDisplayMedia", "undefined")
+
 
 ! Принудительный откат DNS: блокировка DoH для активации локальной фильтрации.
 ||/^https?:\/\/([^\/]+\.)?(dns\.google|dns\.cloudflare\.com|doh\.opendns\.com|dns\.quad9\.net|dns\.adguard-dns\.com|doh\.cleanbrowsing\.org|1\.1\.1\.1|8\.8\.8\.8|9\.9\.9\.9)(\/dns-query|\/v1\?dns=)?.*$/$important,third-party,tag=DNS_FORCE_FALLBACK,xmlhttprequest,other,reject
 
-#%#//scriptlet("execute-script", "(function(){ \
-    const rand = (a,b)=> a + Math.random()*(b-a); \
-    const safeDefine = (obj, prop, val) => { try{ Object.defineProperty(obj, prop, { get: ()=>val, configurable: true }); }catch(e){} }; \
-    const origFetch = window.fetch; \
-    window.fetch = function(u, ...a) { \
-        if (u && typeof u === 'string' && u.match(/dns-query|dns-json|v1\/query/)) return Promise.reject(new TypeError('DNS Service Unavailable')); \
-        return origFetch.apply(this, [u, ...a]); \
-    }; \
-    if (navigator.userAgentData) { \
-        safeDefine(navigator.userAgentData, 'brands', [{brand: 'Chromium', version: '124'}, {brand: 'Google Chrome', version: '124'}]); \
-        safeDefine(navigator.userAgentData, 'mobile', false); \
-        safeDefine(navigator.userAgentData, 'platform', 'Windows'); \
-    } \
-    (function smartRead(){ \
-        setTimeout(() => { \
-            let i = Math.random(); \
-            if (i > 0.8) window.scrollBy({ top: rand(200, 500), behavior: 'smooth' }); \
-            else if (i > 0.3) window.scrollBy({ top: rand(30, 80), behavior: 'smooth' }); \
-            smartRead(); \
-        }, rand(4000, 15000)); \
-    })(); \
-})();")
+
 
 ! --- 5. TRUSTED EXCEPTIONS (Авторизация) ---
 ! Исключения для стабильной работы критических сервисов.
@@ -184,11 +161,7 @@ $removeparam=/^(utm_[a-z]+|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb
 ! Блокируем сторонние медиа-запросы везде, кроме доверенных видео-сервисов.
 ||*$media,third-party,important,reject,xmlhttprequest,other,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com|~spotify.com|~twitch.tv,tag=MEDIA_SPY_SILENCE
 
-! --- 2. ANTI-MIRRORING & WEBRTC (Защита экрана) ---
-! Полное уничтожение возможности скрытого захвата экрана и WebRTC-утечек.
-#%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
-#%#//scriptlet("set-constant", "navigator.mediaDevices.getDisplayMedia", "undefined")
-#%#//scriptlet("set-constant", "ScreenCapture.prototype.getDisplayMedia", "undefined")
+
 
 ! --- 3. DNS-CLOAK-GHOST (Защита от утечек WebRTC и DNS-IP) ---
 ! Предотвращает определение реального IP и системного DNS через WebRTC-пиры.
@@ -220,7 +193,7 @@ $removeparam=/^(utm_[a-z]+|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb
 ||*$important,port=9000,third-party,reject,domain=~localhost,tag=PORT_REAPER
 ||*$important,port=9090,third-party,reject,domain=~localhost,tag=PORT_REAPER
 
-#%#//scriptlet("set-constant", "XMLHttpRequest.prototype.open", "function(m, u) { if (u && u.match(/:8080|:8443|:9000|:8888/)) { Object.defineProperty(this, 'status', {value: 408}); return; } return open.apply(this, arguments); }")
+
 
 ! --- 3. ANALYTICS DECEPTION (SDK-Имитация) ---
 ! Имитирует успешную отправку данных для SDK, предотвращая цикличные повторы запросов.
@@ -817,7 +790,40 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 
 
 
+#%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
+#%#//scriptlet("set-constant", "navigator.mediaDevices.getDisplayMedia", "undefined")
+#%#//scriptlet("set-constant", "ScreenCapture.prototype.getDisplayMedia", "undefined")
+! --- 2. ANTI-MIRRORING & WEBRTC (Защита экрана) ---
+! Полное уничтожение возможности скрытого захвата экрана и WebRTC-утечек.
+#%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
+#%#//scriptlet("set-constant", "navigator.mediaDevices.getDisplayMedia", "undefined")
+#%#//scriptlet("set-constant", "ScreenCapture.prototype.getDisplayMedia", "undefined")
 
+#%#//scriptlet("set-constant", "XMLHttpRequest.prototype.open", "function(m, u) { if (u && u.match(/:8080|:8443|:9000|:8888/)) { Object.defineProperty(this, 'status', {value: 408}); return; } return open.apply(this, arguments); }")
+
+
+#%#//scriptlet("execute-script", "(function(){ \
+    const rand = (a,b)=> a + Math.random()*(b-a); \
+    const safeDefine = (obj, prop, val) => { try{ Object.defineProperty(obj, prop, { get: ()=>val, configurable: true }); }catch(e){} }; \
+    const origFetch = window.fetch; \
+    window.fetch = function(u, ...a) { \
+        if (u && typeof u === 'string' && u.match(/dns-query|dns-json|v1\/query/)) return Promise.reject(new TypeError('DNS Service Unavailable')); \
+        return origFetch.apply(this, [u, ...a]); \
+    }; \
+    if (navigator.userAgentData) { \
+        safeDefine(navigator.userAgentData, 'brands', [{brand: 'Chromium', version: '124'}, {brand: 'Google Chrome', version: '124'}]); \
+        safeDefine(navigator.userAgentData, 'mobile', false); \
+        safeDefine(navigator.userAgentData, 'platform', 'Windows'); \
+    } \
+    (function smartRead(){ \
+        setTimeout(() => { \
+            let i = Math.random(); \
+            if (i > 0.8) window.scrollBy({ top: rand(200, 500), behavior: 'smooth' }); \
+            else if (i > 0.3) window.scrollBy({ top: rand(30, 80), behavior: 'smooth' }); \
+            smartRead(); \
+        }, rand(4000, 15000)); \
+    })(); \
+})();")
 
 
 ! --- 4. DOH-DECEPTION (Эвристика имитации сбоя DNS) ---
