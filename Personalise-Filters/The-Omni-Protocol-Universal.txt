@@ -598,6 +598,12 @@ $header=X-Content-Type-Options: nosniff, important
 ! 1. Fingerprinting Protection: Удаление аппаратных ID устройства.
 $removeheader=/^X-(Device-ID|Machine-ID|Serial-Number|Hardware-Key|App-Instance-ID)/,important
 
+! [ANNONYANCE-KILLER] Убираем назойливые согласия и баннеры.
+#%#//scriptlet("prevent-facebook-net-proxy")
+#%#//scriptlet("abort-current-inline-script", "didomi")
+#%#//scriptlet("abort-current-inline-script", "cookie")
+##.qc-cmp2-container:style(display: none !important;)
+
 
 ! 2. Session Integrity: Очистка токенов на неавторизованных доменах.
 ! Исключения: Глобальные сервисы, Банки, Платежные системы (Stripe, PayPal).
