@@ -816,6 +816,13 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 @@||youtube.com^$important,domain=~samsung.com|~lg.com|~sony.com
 @@||ytimg.com^$important,domain=~samsung.com|~lg.com|~sony.com
 
+! [L12: SOCIAL-STABILITY] Исключения для Facebook и Meta-сервисов.
+! Отключаем HTTPS-дешифровку для обхода Certificate Pinning (фиксит загрузку ленты).
+@@||facebook.com^$important,domain=~samsung.com
+@@||fbcdn.net^$important,domain=~samsung.com
+@@||fbsbx.com^$important,domain=~samsung.com
+@@||messenger.com^$important,domain=~samsung.com
+
 
 ! [DNS-REWRITE-MONOLITH] Глобальное зацикливание телеметрии Smart-TV и IoT.
 ! Samsung, LG, Sony, Microsoft, Vizio, Amazon FireTV, Roku.
