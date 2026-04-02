@@ -28,50 +28,51 @@
 ! [OMNI-V5] MICROSOFT CORE STABILITY: OFFICE 365 & OUTLOOK
 ! ----------------------------------------------------------------
 ! 1. Эвристика для облачных сервисов MS (Office, Outlook, Live, Auth)
-@@/^https?:\/\/([a-z0-9-]+\.)*(microsoft|office|office365|live|outlook|msauth|msftauth|microsoftonline)\.(com|net)\//^$important,document,jsinject,extension
+@@/^https?:\/\/([^\/]+\.)?(microsoft|office|office365|live|outlook|msauth|msftauth|microsoftonline)\.(com|net)(\/.*)?$/$important,document,jsinject,extension
 
 ! 2. Реактивный байпас для системных узлов (Graph, Autodiscover, CDN)
-@@/^https?:\/\/([a-z0-9-]+\.)*(graph\.microsoft\.com|autodiscover\..*|res\.cdn\.office\.net|static\.sharepointonline\.com)\//^$important,network
+@@/^https?:\/\/([^\/]+\.)*(graph\.microsoft\.com|autodiscover\.[a-z0-9-.]+|res\.cdn\.office\.net|static\.sharepointonline\.com)(\/.*)?$/$important,network
 
 ! 3. Глобальный байпас Stealth для предотвращения циклов авторизации
-@@/^https?:\/\/([^\/]+\.)?(microsoftonline|msauth|msftauth)\.(com|net)(\/.*)?$/$stealth,important,document,xmlhttprequest,subdocument
+@@/^https?:\/\/([^\/]+\.)?(microsoftonline|msauth|msftauth)\.(com|net)(\/.*)?$/$stealth,important,document,xmlhttprequest,subdocument,script,other
+
 
 ! [OMNI-HEURISTIC-WORK] Автоматическое определение тех-ресурсов
 ! ----------------------------------------------------------------
 ! 1. Эвристика по структуре (HTTP + IP/Тех-домены/Celeo)
-@@/^http:\/\/([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|localhost|.*\.local|.*\.celeo\.net|.*hdx.*)\//$stealth,important
+@@/^https?:\/\/(([0-9]{1,3}\.){3}[0-9]{1,3}|localhost|[^\/]+\.local|[^\/]+\.celeo\.net|[^\/]+hdx[^\/]+)(\/.*)?$/$stealth,important,document,xmlhttprequest
 
 ! 2. Эвристика по путям (Админки), исключая глобальные сервисы
-@@/(\/myadmin\/|\/sql\/|\/config\/|\/setup\/)/$stealth,domain=~google.com|~youtube.com|~facebook.com|~yandex.ru
+@@/^https?:\/\/[^\/]+(\/myadmin\/|\/sql\/|\/config\/|\/setup\/)(\/.*)?$/$stealth,important,document,xmlhttprequest,domain=~google.com|~youtube.com|~facebook.com|~yandex.ru
 
 
 ! [OMNI-V4] REAKTIV PROTECTION: CRYPTO, PHISHING & SESSION-HIJACK
 ! ----------------------------------------------------------------
 
 ! 1. [REACTIVE-CRYPTO] Блокировка майнеров через JS, WebAssembly и WebSocket
-/(miner|monero|coinhive|cryptoloot|webminer|authedmine|coin-hive|shasta|deepminer|cryptonight|wasm|hashing|pool)\.(js|wasm)/^$important,third-party,script,websocket
+/^https?:\/\/([^\/]+\.)?(miner|monero|coinhive|cryptoloot|webminer|authedmine|coin-hive|shasta|deepminer|cryptonight|wasm|hashing|pool)\.(js|wasm|mem)(\/.*)?$/$important,third-party,script,websocket,xmlhttprequest
 
 ! 2. [ELITE-PHISHING] Эвристика мусорных зон (TLD) с защитой от двойных расширений
-/^https?:\/\/([a-z0-9-]+\.)*([a-z0-9-]{15,}|[a-z0-9-]+\.(top|xyz|click|gdn|wf|loan|men|bid|kim|vip|work|icu|monster|beauty|casa|icu|buzz|today|cyou|bond|best|xyz|fit))\//$important,third-party
+/^https?:\/\/([^\/]+\.)*([a-z0-9-]{18,}|[a-z0-9-]+\.(top|xyz|click|gdn|wf|loan|men|bid|kim|vip|work|icu|monster|beauty|casa|buzz|today|cyou|bond|best|fit))(\.[a-z]{2,3})?\/.*$/$important,third-party,document,subdocument
 
 ! 3. [SESSION-GUARD] Пресечение кражи Cookie и Fingerprinting-векторов
-/(track|umid|collect|log|analytics|pixel|hit|event|stat|beacon|telemetry|fingerprint|capture)\.(uc\.cn|amap\.com|.*\.cn|.*\.xyz|.*\.pw|.*\.ru|.*\.site)/^$important,script,xmlhttprequest,image,ping
+/^https?:\/\/([^\/]+\.)?(track|umid|collect|log|analytics|pixel|hit|event|stat|beacon|telemetry|fingerprint|capture)\.(uc\.cn|amap\.com|[a-z0-9-]+\.(cn|xyz|pw|ru|site))(\/.*)?$/$important,script,xmlhttprequest,image,ping,third-party
 
 ! 4. [FAST-REDIRECT] Реактивная блокировка коротких ссылок-ловушек (5-10 символов)
-/^(https?:\/\/)?(bit\.ly|goo\.gl|t\.co|tinyurl\.com|is\.gd|buff\.ly|t2m\.io|rebrand\.ly)\/[a-zA-Z0-9]{5,10}$/$important,third-party,domain=~google.com|~youtube.com|~facebook.com|~github.com|~linkedin.com
+/^https?:\/\/(bit\.ly|goo\.gl|t\.co|tinyurl\.com|is\.gd|buff\.ly|t2m\.io|rebrand\.ly)\/[a-zA-Z0-9]{5,10}$/$important,third-party,document,subdocument,domain=~google.com|~youtube.com|~facebook.com|~github.com|~linkedin.com
 
 ! 5. [VOID-XHR] Блокировка скрытых запросов к подозрительным API (API-Phishing)
-/^https?:\/\/api\.[a-z0-9-]+\.(top|xyz|pw|click|icu|site|online|space)\//^$important,xmlhttprequest,third-party
+/^https?:\/\/([^\/]+\.)?api\.[a-z0-9-]+\.(top|xyz|pw|click|icu|site|online|space)(\/.*)?$/$important,xmlhttprequest,third-party,other
 
 ! --- [OMNI-YANDEX-V15.0] Тотальная разблокировка (Unified Core) ---
-@@/^https?:\/\/([^\/]+\.)?(yandex|ya|dzen|yastatic|dzeninfra)\.(ru|net|fr|by|kz|com|com\.tr)(\/.*)?$/$important,document,xmlhttprequest,subdocument,image,stylesheet,script
+@@/^https?:\/\/([^\/]+\.)?(yandex|ya|dzen|yastatic|dzeninfra)\.(ru|net|fr|by|kz|com|com\.tr|az|uz|tj|tm|kg|md|ee|lv|lt|ua)(\/.*)?$/$important,document,xmlhttprequest,subdocument,image,stylesheet,script,other
 
 
 ! --- [OMNI-GLOBAL-CORE] Всё остальное через Regex ---
-@@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|googlevideo|youtubei\.googleapis|ytimg|ggpht)\.(com|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,xmlhttprequest,app=com.google.android.youtube|com.google.android.apps.youtube.music
+@@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|googlevideo|youtubei\.googleapis|ytimg|ggpht)\.(com|net|org|it|fr|de|co\.uk|jp|cn|me|ru|by|kz|ch)(\/.*)?$/$important,document,xmlhttprequest,subdocument,image,stylesheet,script,other,app=com.google.android.youtube|com.google.android.apps.youtube.music
 
 ! --- [OMNI-TELEMETRY-KILL] Статистику всё равно режем ---
-||/^https?:\/\/([^\/]+\.)?s\.youtube\.com\/api\/stats\/.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music,important
+||/^https?:\/\/([^\/]+\.)?s\.youtube\.com\/api\/stats\/(ads|watchtime|playback|delay)\/.*$/$app=com.google.android.youtube|com.google.android.apps.youtube.music,important,xmlhttprequest,ping,other
 
 
 ! --- UNIVERSAL SMART BYPASS ---
@@ -102,6 +103,7 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 ! Мы убираем reject. Теперь пакеты просто "исчезают". 
 ! Сканеры будут бесконечно ждать ответа (Time Out), что замедляет атаку в 100 раз.
 ||*^$important,port=22|23|445|1433|1723|1883|3306|3389|5037|5060|5061|5432|5555|5900|5901|6379|6667|8080|8883|9000|9090|14147|27017|33434|4444|55555,domain=~localhost,notify,tag=GHOST_PORT
+
 ! [L1.1: BROWSER-PORT-GASLIGHTING]
 ! Если скрипт на странице пытается проверить доступность ADB или базы данных,
 ! мы возвращаем "Success", но с пустым ответом, чтобы запутать логику скрипта.
@@ -118,32 +120,33 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 
 ! --- 1. GLOBAL PARAMETER STRIPPER (Убийца UTM и ID) ---
 ! Автоматически вырезает маркеры слежки из ссылок при переходе.
-$removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_clickid|s_kwid|dclid|itid|session_id|uuid|device_id|pvid|cachebuster|forward_url|ref_.*)$/,domain=~google.*|~yandex.*|~caf.fr|~bank|~gov|~openai.com
+$removeparam=/^(utm_[a-z]+|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_clickid|s_kwid|dclid|itid|session_id|uuid|device_id|pvid|cache|forward_url|ref_[a-z]+)$/,domain=~google.*|~yandex.*|~caf.fr|~.*bank.*|~.*gouv.*|~.*gosuslugi.*|~openai.com|~apple.com|~microsoft.com
 
 ! --- 2. HEURISTIC & DOMAIN TERMINATOR ---
 ! Блокировка рекламных гигантов и аналитических платформ в один проход.
-||(doubleclick.net|adform.net|adnxs.com|criteo.com|taboola.com|outbrain.com|mgid.com|rubiconproject.com|pubmatic.com|openx.net|appnexus.com|smartadserver.com|hotjar.com|smartlook.com|mixpanel.com|amplitude.com|clarity.ms)^$important,third-party,reject
+||(doubleclick.net|adform.net|adnxs.com|criteo.com|taboola.com|outbrain.com|mgid.com|rubiconproject.com|pubmatic.com|openx.net|appnexus.com|smartadserver.com|hotjar.com|smartlook.com|mixpanel.com|amplitude.com|clarity.ms)^$important,third-party,reject,xmlhttprequest,script,other
 
 ! Эвристика путей: ловим аналитику, пиксели и телеметрию по ключевым паттернам.
-/(adsystem|adserver|adservices|adv|analytics|counter|pixel|metrics|track|telemetry|beacon|collect|google-analytics|metrika\.js|log.*\.js)/^$important,third-party,reject,domain=~google.com|~yandex.ru|~bank|~gov|~openai.com
+/^https?:\/\/([^\/]+\.)?(ad(system|server|services|v)|analytics|counter|pixel|metrics|track|telemetry|beacon|collect|google-analytics|metrika\.js|log[a-z0-9_-]*\.js)(\/.*)?$/$important,third-party,reject,xmlhttprequest,script,image,other,domain=~google.com|~yandex.ru|~.*bank.*|~.*gouv.*|~.*gosuslugi.*|~openai.com|~apple.com|~microsoft.com
 
 ! --- 3. CNAME-CLOAKING & XDN SHIELD ---
 ! Защита от скрытого трекинга через поддомены и междоменную слежку.
-||$xdn,third-party,tracking,domain=~google.com|~yandex.ru|~bank|~gov|~openai.com
+||*$xdn,third-party,tracking,important,xmlhttprequest,script,other,domain=~google.com|~yandex.ru|~.*bank.*|~.*gouv.*|~.*gosuslugi.*|~openai.com|~apple.com|~microsoft.com
 
 ! --- 4. IN-APP TELEMETRY KILLER (Nightly Extra) ---
 ! Специфическая защита для приложений FB, Apple и Google при HTTPS-фильтрации.
-||graph.facebook.com^$app=com.facebook.katana|com.facebook.orca,important
-||*.fbcdn.net^$app=com.facebook.katana,third-party,important
-||advertising.apple.com^$important,app=~system
-||app-measurement.com^$important,third-party,reject
-||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,tag=MEDIA_SPY_SILENCE
+||graph.facebook.com^$app=com.facebook.katana|com.facebook.orca,important,xmlhttprequest,other
+||*.fbcdn.net^$app=com.facebook.katana,third-party,important,image,other
+||advertising.apple.com^$important,app=~system,reject,other
+||app-measurement.com^$important,third-party,reject,xmlhttprequest,ping,other
+||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,tag=MEDIA_SPY_SILENCE,reject
 
 #%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
 #%#//scriptlet("set-constant", "navigator.mediaDevices.getDisplayMedia", "undefined")
 #%#//scriptlet("set-constant", "ScreenCapture.prototype.getDisplayMedia", "undefined")
 
-/^https?:\/\/([^\/]+\.)?(dns\.google|dns\.cloudflare\.com|doh\.opendns\.com|dns\.quad9\.net|dns\.adguard-dns\.com|doh\.cleanbrowsing\.org|1\.1\.1\.1|8\.8\.8\.8|9\.9\.9\.9)\/dns-query/^$important,third-party,tag=DNS_FORCE_FALLBACK
+! Принудительный откат DNS: блокировка DoH для активации локальной фильтрации.
+||/^https?:\/\/([^\/]+\.)?(dns\.google|dns\.cloudflare\.com|doh\.opendns\.com|dns\.quad9\.net|dns\.adguard-dns\.com|doh\.cleanbrowsing\.org|1\.1\.1\.1|8\.8\.8\.8|9\.9\.9\.9)(\/dns-query|\/v1\?dns=)?.*$/$important,third-party,tag=DNS_FORCE_FALLBACK,xmlhttprequest,other,reject
 
 #%#//scriptlet("execute-script", "(function(){ \
     const rand = (a,b)=> a + Math.random()*(b-a); \
@@ -179,7 +182,7 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 
 ! --- 1. MEDIA-SPY-SILENCE (Защита от прослушки и захвата) ---
 ! Блокируем сторонние медиа-запросы везде, кроме доверенных видео-сервисов.
-||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com,tag=MEDIA_SPY_SILENCE
+||*$media,third-party,important,reject,xmlhttprequest,other,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com|~spotify.com|~twitch.tv,tag=MEDIA_SPY_SILENCE
 
 ! --- 2. ANTI-MIRRORING & WEBRTC (Защита экрана) ---
 ! Полное уничтожение возможности скрытого захвата экрана и WebRTC-утечек.
@@ -187,9 +190,9 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 #%#//scriptlet("set-constant", "navigator.mediaDevices.getDisplayMedia", "undefined")
 #%#//scriptlet("set-constant", "ScreenCapture.prototype.getDisplayMedia", "undefined")
 
-! --- 3. DNS-CLOAK-GHOST (Принудительный системный DNS) ---
-! Блокируем DoH-запросы (DNS over HTTPS), заставляя приложения использовать твой локальный DNS.
-/^https?:\/\/([^\/]+\.)?(dns\.google|dns\.cloudflare\.com|doh\.opendns\.com|dns\.quad9\.net|dns\.adguard-dns\.com|doh\.cleanbrowsing\.org|1\.1\.1\.1|8\.8\.8\.8|9\.9\.9\.9)\/dns-query/^$important,third-party,tag=DNS_FORCE_FALLBACK
+! --- 3. DNS-CLOAK-GHOST (Защита от утечек WebRTC и DNS-IP) ---
+! Предотвращает определение реального IP и системного DNS через WebRTC-пиры.
+||*$webrtc,important,third-party,reject,domain=~google.com|~yandex.ru|~zoom.us|~teams.microsoft.com|~discord.com|~slack.com,tag=DNS_FORCE_FALLBACK
 
 ! --- 4. DOH-DECEPTION (Эвристика имитации сбоя DNS) ---
 ! Имитируем "таймаут" для DoH-запросов на уровне скриптов.
@@ -228,17 +231,32 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 ! Схлопнутый слой: Geo-Zones + Port-Reaper  + Analytics-Deception.
 
 ! --- 1. GEO-ZONE GHOSTING (TLD-Фильтр) ---
-! Тихая изоляция подозрительных и опасных доменных зон.
-/^https?:\/\/([^\/]+\.)?(top|zip|mov|review|gdn|loan|bid|click|work|buzz|country|stream|party|date|faith|trade|win|kim|science|gq|tk|ml|cf|ga|men|uno|live|surf|icu|sbs|monster|quest|beauty|best|contact|rest|autos|forum|xyz|fit|shop|info|online|site|website|space|store|tech|host|press|pw|cx|cc|biz|mobi|asia|cm|ws|re|ee|me|link|help|gift|pics|photo|market|agency|email|world|today|money|gold|ltd|company|digital|network|center|systems|services|solutions|group|team|plus|vip|pro|pub|fun|game|cool|rocks|expert|coach|legal|bank|finance|loans|credit|casino|bet|poker|bingo|lotto|adult|sex|porn|xxx|cam|video|tube|download|free|cheap|discount|sale|promo|deal|coupon|buy|secure|check|verify|login|account|update|support|service|client|billing|invoice|payment|token|crypto|coin|wallet|exchange|trade|miner|pool|hash|cloud|data|storage|server|host|dns|proxy|vpn|tor|onion|ssh|api|dev|app|mobile|android|ios|web|blog|news|media|social|chat|mail|post|office|hr|career|business|corp|inc|llp|llc|holdings|invest|capital|fund|asset|safe|trust|shield|guard|protect|security|cyber|hack|exploit|malware|virus|spy|spam|junk|trash|garbage|null|zero|test|demo|example|temp|tmp|bin|file|docs|pdf|xls|doc|ppt|v1|v2|v3|v4|v5|v6|v7|v8|v9|v10)\//^$important,third-party,~document,tag=ZONE_GHOSTING
+! Блокировка опасных зон и подозрительных расширений (zip, mov).
+/^https?:\/\/([^\/]+\.)*(top|zip|mov|gdn|loan|bid|click|buzz|stream|party|win|kim|gq|tk|ml|cf|ga|icu|sbs|monster|quest|beauty|fit|pw|cx|cc|ws|ee|me|link|pics|photo|today|gold|ltd|vip|fun|cool|rocks|casino|bet|poker|bingo|lotto|adult|sex|porn|xxx|cam|tube|download|free|cheap|discount|sale|promo|deal|coupon|buy|secure|verify|token|crypto|coin|wallet|exchange|miner|pool|hash|proxy|vpn|tor|onion|ssh|hack|exploit|malware|virus|spy|spam|junk|trash|garbage|null|zero)(\/.*)?$/$important,third-party,~document,reject,tag=ZONE_GHOSTING
+
+! --- 2. KEYWORD GHOSTING (Прецизионный фильтр) ---
+! Блокирует сторонние API и технические пути только в опасных контекстах.
+/^https?:\/\/([^\/]+\.)?(api|v[0-9]{1,2}|temp|tmp|bin|docs|pdf|xls|doc|ppt)\.[a-z0-9-]+\.(top|xyz|pw|click|icu|site|online|space|store|tech|host|press|biz|mobi|asia|info|website)\/.*$/$important,third-party,~document,reject,tag=ZONE_GHOSTING
+
 
 ! --- 2. PORT-REAPER & NETWORK GASLIGHTING ---
-! Блокируем сканирование портов, имитируя таймаут (408).
-||*^$important,port=81|8000|8008|8080|8081|8443|8888|9000|9090,third-party,domain=~localhost,tag=PORT_REAPER
+! --- [PORT-REAPER] Блокировка сканирования и прокси-портов ---
+! Имитирует отсутствие сервиса на популярных портах админок и прокси.
+||*$important,port=81,third-party,reject,domain=~localhost,tag=PORT_REAPER
+||*$important,port=8000,third-party,reject,domain=~localhost,tag=PORT_REAPER
+||*$important,port=8008,third-party,reject,domain=~localhost,tag=PORT_REAPER
+||*$important,port=8080,third-party,reject,domain=~localhost,tag=PORT_REAPER
+||*$important,port=8081,third-party,reject,domain=~localhost,tag=PORT_REAPER
+||*$important,port=8443,third-party,reject,domain=~localhost,tag=PORT_REAPER
+||*$important,port=8888,third-party,reject,domain=~localhost,tag=PORT_REAPER
+||*$important,port=9000,third-party,reject,domain=~localhost,tag=PORT_REAPER
+||*$important,port=9090,third-party,reject,domain=~localhost,tag=PORT_REAPER
+
 #%#//scriptlet("set-constant", "XMLHttpRequest.prototype.open", "function(m, u) { if (u && u.match(/:8080|:8443|:9000|:8888/)) { Object.defineProperty(this, 'status', {value: 408}); return; } return open.apply(this, arguments); }")
 
 ! --- 3. ANALYTICS DECEPTION (SDK-Имитация) ---
-! Заставляем системы телеметрии "висеть", а скрипты SDK - считать, что данные отправлены успешно.
-/^https?:\/\/([^\/]+\.)?(telemetry|stats|metrics|analytics|data|crashlytics|report|diagnostics|log|events|track|survey|feedback|insight|usage|collect|monitor|sync|measure|debug|trace|ping|beacon)\.(microsoft|google|apple|amazon|samsung|huawei|xiaomi|adguard|crashlytics|fb|facebook|doubleclick|adjust|appsflyer|mixpanel|amplitude|segment|braze|app-measurement)\//^$important,third-party,tag=SILENCE_ZONE
+! Имитирует успешную отправку данных для SDK, предотвращая цикличные повторы запросов.
+/^https?:\/\/([^\/]+\.)?(telemetry|stats|metrics|analytics|data|crashlytics|report|diagnostics|log|events|track|survey|feedback|insight|usage|collect|monitor|sync|measure|debug|trace|ping|beacon)\.(microsoft|google|apple|amazon|samsung|huawei|xiaomi|adguard|crashlytics|fb|facebook|doubleclick|adjust|appsflyer|mixpanel|amplitude|segment|braze|app-measurement)(\/.*)?$/$important,third-party,xmlhttprequest,ping,other,empty,tag=SILENCE_ZONE
 
 #%#//scriptlet("set-constant", "ga", "function() { return; }")
 #%#//scriptlet("set-constant", "Mixpanel.prototype.track", "function() { return; }")
@@ -251,9 +269,8 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 ##img[width="1"][height="1"], img[style*="width: 1px"], img[style*="height: 1px"]
 
 ! [L5: CRYPTO-DRAINER-GHOST - V78.0]
-! Убираем REJECT. Используем тихую блокировку для всех WebSocket-запросов третьих лиц.
-! Вредоносный скрипт будет ждать ответа, пока ты не закроешь вкладку.
-||*$websocket,third-party,important,domain=~binance.com|~revolut.com|~metamask.io|~ledger.com|~trezor.io|~trustwallet.com|~bank,tag=DRAINER_GHOST
+! Тихая блокировка WebSocket: скрипт "висит" в ожидании Handshake.
+||*$websocket,third-party,important,xmlhttprequest,other,domain=~binance.com|~revolut.com|~metamask.io|~ledger.com|~trezor.io|~trustwallet.com|~.*bank.*|~.*gouv.*,tag=DRAINER_GHOST
 
 ! [L6 : CRYPTO-WALLET-GASLIGHTING]
 ! Эвристика: скрываем наличие крипто-кошельков от сайтов.
@@ -264,25 +281,35 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 
 
 ! [L7: STERILE-CHANNEL-GHOST - V79.0]
-||*$third-party,important,domain=~revolut.com|~lcl.fr|~ca-centreest.fr|~google.com|~apple.com|~github.com|~binance.com|~metamask.io|~bank,tag=STERILE_ZONE
-||*$script,third-party,important,domain=~revolut.com|~lcl.fr|~bank,tag=SCRIPT_PURGE
+! Полная изоляция: запрет любых сторонних запросов и скриптов.
+! Разрешено только на критических финансовых и системных доменах.
+||*$third-party,important,xmlhttprequest,other,domain=~revolut.com|~lcl.fr|~ca-centreest.fr|~google.com|~apple.com|~github.com|~binance.com|~metamask.io|~.*bank.*|~.*gouv.*,tag=STERILE_ZONE
+||*$script,third-party,important,domain=~revolut.com|~lcl.fr|~ca-centreest.fr|~.*bank.*,tag=SCRIPT_PURGE
+
 
 ! [UDP-CLOAKING] Блокируем UDP тише, чтобы QUIC плавно откатывался на TCP.
-||*^$network,udp,important,domain=~google.com|~youtube.com|~twitch.tv|~github.com|~binance.com,tag=UDP_SILENCE
+! Исключаем медиа-гигантов и критические сервисы для сохранения скорости.
+||*$network,udp,important,third-party,domain=~google.com|~youtube.com|~googlevideo.com|~ytimg.com|~twitch.tv|~github.com|~binance.com|~discord.com|~zoom.us,tag=UDP_SILENCE
+
 ! [L7.1: WEBRTC-SPOOFING-EVOLUTION]
 ! Создаем "кукольный театр" для WebRTC. Объекты есть, но они ничего не делают.
 #%#//scriptlet("set-constant", "RTCPeerConnection", "function(){}")
 #%#//scriptlet("set-constant", "RTCPeerConnection.prototype.createOffer", "function(){return Promise.reject();}")
 #%#//scriptlet("set-constant", "navigator.getUserMedia", "undefined")
+
 ! [L11.2: STUN-GHOSTING]
-/^https?:\/\/([^\/]+\.)?(stun.*|turnserver\.net|.*\.stun\.hosting)\//^$important,tag=STUN_REAPER
+! Блокировка сигнальных серверов WebRTC для предотвращения утечки реального IP.
+/^https?:\/\/([^\/]+\.)?(stun[0-9-]*|turn|ice|relay|turnserver)\.(net|com|org|hosting|io|me)(\/.*)?$/$important,third-party,xmlhttprequest,other,reject,tag=STUN_REAPER
 
 ! [L8: BEACON-GHOST-REAPER - V80.0]
-! Твоя регулярка, доведенная до бесшумного режима.
-/^https?:\/\/.*(\/(px|pixel|track|tr|telemetry|collect|beacon|event|stat|hit|logs?|u?id|sid|cid|aid|siteid|pt)\/).*(\?|&)(v|u?id|sid|event|t)=.*/$important,third-party,tag=BEACON_GHOST
+! Эвристика путей и параметров: ловим динамические трекеры и "пиксели".
+/^https?:\/\/.*(\/(px|pixel|track|tr|telemetry|collect|beacon|event|stat|hit|logs?|u?id|sid|cid|aid|siteid|pt)\/).*(\?|&)([a-z0-9_-]*v|u?id|sid|event|t|_v|__.*)=.*/$important,third-party,xmlhttprequest,ping,image,other,empty,tag=BEACON_GHOST
 
 ! [PIXEL-CLOAKING] Блокируем микро-изображения (1x1, 0x0, 2x2).
-||*$image,third-party,important,width<3,height<3,tag=PIXEL_SHADOW
+! Предотвращает отслеживание прочтения писем и посещения страниц через "прозрачные" картинки.
+||*$image,third-party,important,width<3,height<3,empty,tag=PIXEL_SHADOW
+
+
 ! [L12.1: BEACON-SPOOFING-EVOLUTION]
 ! Эвристика: перехват создания объектов Image и подмена их на "пустышки".
 #%#//scriptlet("set-constant", "Image.prototype.src", "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7")
@@ -293,12 +320,15 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 #%#//scriptlet("remove-param", "utm_campaign")
 
 ! [L9: AI-GHOST-ISOLATION - V81.0]
-! Твоя регулярка в режиме "тишины". 
-/^https?:\/\/([^\/]+\.)?(gptbot|claudebot|anthropic|commoncrawl|ccbot|perplexitybot|coherebot|omni-bot|bytespider|diffbot|facebookexternalhit|google-extended|images\.google\.com|semrushbot|ahrefsbot|mj12bot|dotbot|rogerbot|exabot|petalbot)\//^$important,third-party,tag=AI_SCAVENGER_GHOST
+! Блокировка ИИ-скреперов и ботов для защиты данных от обучения нейросетей.
+/^https?:\/\/([^\/]+\.)?(gptbot|claudebot|anthropic|commoncrawl|ccbot|perplexitybot|coherebot|omni-bot|bytespider|diffbot|facebookexternalhit|google-extended|images\.google\.com|semrushbot|ahrefsbot|mj12bot|dotbot|rogerbot|exabot|petalbot|yandexbot|bingbot|duckduckbot|applebot|baiduspider|sogou|yisouspider|mojebot)(\/.*)?$/$important,third-party,xmlhttprequest,other,reject,tag=AI_SCAVENGER_GHOST
 
 ! [CRAWLER-TRAP] Блокируем технические файлы, чтобы не палить структуру.
-||*/robots.txt$important,third-party,tag=ROBOTS_GHOST
-||*/sitemap.xml$important,third-party,tag=SITEMAP_GHOST
+! Запрещает сторонним скриптам читать карту сайта и инструкции для ботов.
+||*/robots.txt$important,third-party,xmlhttprequest,other,reject,tag=ROBOTS_GHOST
+||*/sitemap.xml$important,third-party,xmlhttprequest,other,reject,tag=SITEMAP_GHOST
+||*/sitemap_index.xml$important,third-party,xmlhttprequest,other,reject,tag=SITEMAP_GHOST
+
 
 ! [L9.1: DATA-POISONING-EVOLUTION]
 ! Эвристика: запрещаем программный доступ к тексту для сторонних скриптов.
@@ -306,47 +336,180 @@ $removeparam=/^(utm_.*|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb_cli
 #%#//scriptlet("set-constant", "document.getSelection", "function(){return null;}")
 #%#//scriptlet("set-constant", "navigator.webdriver", "true") 
 ! Мы прикидываемся ботом сами, чтобы другие боты считали нас "своими" и не трогали.
+
 ! [L9.2: NO-AI-SIGNAL]
-$header=X-Robots-Tag: noai, noimageai, important
+! Инъекция заголовков для защиты контента от парсинга и генеративного ИИ.
+! Сообщает всем узлам сети о запрете индексации для обучения моделей.
+$header=X-Robots-Tag: noai, noindex, noimageai, nocache, important
+$header=X-Content-Type-Options: nosniff, important
 
 ! [L10: OMNI-MONOLITH - FINAL APEX v82.0]
 
 ! --- S1: SMART-WHITE (Стерильность) ---
-! Добавляем приоритет для GitHub и банковских доменов.
-@@($stealth,content-type=application/(pkcs7-signature|x-x509-ca-cert)|$important,header=Strict-Transport-Security|||gvt1.com^$important,app=com.android.vending|com.google.android.gms|||loirehabitat.fr^$important|||github.com^$document,important)
+! Приоритетные исключения для системных обновлений, безопасности и GitHub.
 
-! --- S2: GMS-STRANGLE (Тихое удушение) ---
-! Переводим Google-аналитику в режим "черной дыры".
-||(mail-ads|ads-settings-pa|adservice).google.*|(google.*/(ads/sponsored|pagead/ads)*)|(googleads.g.doubleclick|static.doubleclick|pagead2.googlesyndication|tpc.googlesyndication).net|google.android.gms/(admob|ads)*|(www.gstatic.com/generate_204|safebrowsing.googleapis.com)^$important,app=~com.android.vending,domain=~google.com,tag=GMS_SILENCE
+! 1. Разрешаем проверку сертификатов и подписей (критично для HTTPS/S-MIME)
+@@||*$stealth,content-type=application/(pkcs7-signature|x-x509-ca-cert),important
+
+! 2. Принудительный HSTS (защита от понижения протокола до HTTP)
+@@||*$important,header=Strict-Transport-Security
+
+! 3. Google Play Store & Services (разрешаем GVT1 для загрузки обновлений и компонентов)
+@@||gvt1.com^$important,app=com.android.vending|com.google.android.gms
+
+! 4. Локальные и государственные сервисы (Loire Habitat)
+@@||loirehabitat.fr^$important,document
+
+! 5. GitHub (Полный приоритет для девелоперской среды)
+@@||github.com^$important,document,xmlhttprequest,other
+
+! --- S2: GMS-STRANGLE (Тихое удушение: Чистые домены) ---
+! Блокировка рекламы и телеметрии Google без использования Regex.
+
+||mail-ads.google.com^$important,app=~com.android.vending,reject,tag=GMS_SILENCE
+||ads-settings-pa.google.com^$important,app=~com.android.vending,reject,tag=GMS_SILENCE
+||adservice.google.com^$important,app=~com.android.vending,reject,tag=GMS_SILENCE
+||googleads.g.doubleclick.net^$important,app=~com.android.vending,reject,tag=GMS_SILENCE
+||static.doubleclick.net^$important,app=~com.android.vending,reject,tag=GMS_SILENCE
+||pagead2.googlesyndication.com^$important,app=~com.android.vending,reject,tag=GMS_SILENCE
+||tpc.googlesyndication.com^$important,app=~com.android.vending,reject,tag=GMS_SILENCE
+||www.gstatic.com/generate_204^$important,app=~com.android.vending,domain=~google.com,empty,tag=GMS_SILENCE
+||safebrowsing.googleapis.com^$important,app=~com.android.vending,domain=~google.com,reject,tag=GMS_SILENCE
+
+! Блокировка путей AdMob внутри системных вызовов
+||google.android.gms/admob^$important,app=~com.android.vending,reject,tag=GMS_SILENCE
+||google.android.gms/ads^$important,app=~com.android.vending,reject,tag=GMS_SILENCE
 
 ! --- S3: YOUTUBE-WARP (Без пауз) ---
-||(youtubei.googleapis.com/youtubei/v1/(player/ad_break|ads)|googlevideo.com/videoplayback?*&(adformat|ptracking)=|(s.youtube|youtube.com/api/stats/ads|youtube.com/get_midroll_info)|(optimizationguide-pa|content-autofill).googleapis.com)^$important,tag=YT_WARP
+! Блокировка рекламных триггеров и аналитики YouTube без задержек.
+
+! 1. Блокировка запросов на рекламные паузы (Ad-insertions)
+||youtubei.googleapis.com/youtubei/v1/player/ad_break^$important,reject,tag=YT_WARP
+||youtubei.googleapis.com/youtubei/v1/ads^$important,reject,tag=YT_WARP
+
+! 2. Фильтрация рекламных сегментов внутри видеопотока
+||googlevideo.com/videoplayback?*&adformat=^$important,reject,tag=YT_WARP
+||googlevideo.com/videoplayback?*&ptracking=^$important,reject,tag=YT_WARP
+
+! 3. Глушение статистики и рекламных отчетов (Убирает "черные экраны")
+||s.youtube.com^$important,empty,tag=YT_WARP
+||youtube.com/api/stats/ads^$important,empty,tag=YT_WARP
+||youtube.com/get_midroll_info^$important,empty,tag=YT_WARP
+
+! 4. Блокировка фонового "автозаполнения" и оптимизаторов
+||optimizationguide-pa.googleapis.com^$important,reject,tag=YT_WARP
+||content-autofill.googleapis.com^$important,reject,tag=YT_WARP
+
 
 ! --- S4: FRAUD-REAPER (Анти-фишинг) ---
-! Скрипт-киллер для фейковых уведомлений.
-||*-(virus-alert|system-update|security-warning)*^$important,tag=FRAUD_KILL
+! Блокировка фейковых "сканеров вирусов" и системных предупреждений.
+
+! 1. Блокировка доменов и путей с типичными триггерами паники
+||*virus-alert*^$important,third-party,reject,tag=FRAUD_KILL
+||*system-update*^$important,third-party,reject,tag=FRAUD_KILL
+||*security-warning*^$important,third-party,reject,tag=FRAUD_KILL
+||*microsoft-support*^$important,third-party,reject,tag=FRAUD_KILL
+||*apple-support-alert*^$important,third-party,reject,tag=FRAUD_KILL
+
+! 2. Блокировка специфических "чистилок" и фейковых оптимизаторов
+||*cleaner-pro*^$important,third-party,reject,tag=FRAUD_KILL
+||*scan-your-pc*^$important,third-party,reject,tag=FRAUD_KILL
+||*device-is-infected*^$important,third-party,reject,tag=FRAUD_KILL
+
+! 3. Блокировка JS-скриптов, имитирующих системные уведомления (Pop-ups)
+||*/js/alert.js$important,third-party,reject,tag=FRAUD_KILL
+||*/js/warning.js$important,third-party,reject,tag=FRAUD_KILL
+
 
 ! --- S5: HARDEN-OMNI (Стелс) ---
-! Мы блокируем 8.8.8.8, чтобы заставить систему использовать твой защищенный DNS.
-||*(analytics|metrics|telemetry|log|coin|mining|tracker)*^$important,third-party,xmlhttprequest,script,tag=OMNI_PURGE
-||(stun*|8.8.8.8|8.8.4.4)^$important,app=~com.android.vending,app=~com.google.android.gms,tag=STUN_GHOST
+! 1. Омни-чистка: ловим остаточные паттерны трекеров и майнеров.
+! Убраны повторы, оставлены только агрессивные маски путей.
+||*(coin|mining|tracker)*^$important,third-party,xmlhttprequest,script,other,tag=OMNI_PURGE
+
+! 2. Блокировка жестко вшитых DNS Google (8.8.8.8 / 8.8.4.4).
+! Это заставляет систему и приложения вернуться к системному (твоему) DNS.
+||8.8.8.8^$important,app=~com.android.vending,app=~com.google.android.gms,tag=DNS_GHOST
+||8.8.4.4^$important,app=~com.android.vending,app=~com.google.android.gms,tag=DNS_GHOST
+
+! 3. STUN-контроль (дополнение к L11.2 для нестандартных портов/адресов).
+||stun.l.google.com^$important,app=~com.android.vending,reject,tag=STUN_GHOST
+||stun1.l.google.com^$important,app=~com.android.vending,reject,tag=STUN_GHOST
+
 
 ! ###########################################################
 
 ! [L11: SOVEREIGN-SHIELD - FINAL v83.0]
 
 ! --- S1: AUTH-EVOLUTION (Авторизация) ---
-@@/^(https?:\/\/)?([^\/]+\.)?(accounts\.google|appleid\.apple|microsoftonline|okta)\.com\/.*$/$important,document,generichide,css,extension,domain=google.com|youtube.com|apple.com|icloud.com|microsoft.com|office.com
-@@*$stealth,content-type=application/x-javascript,domain=accounts.google.com|appleid.apple.com
+! Гарантирует работу систем входа Google, Apple, Microsoft и Okta.
+
+! 1. Разблокировка документов и базовых скриптов на доверенных доменах
+@@||accounts.google.com^$important,document,generichide,css,extension,domain=google.com|youtube.com
+@@||appleid.apple.com^$important,document,generichide,css,extension,domain=apple.com|icloud.com
+@@||login.microsoftonline.com^$important,document,generichide,css,extension,domain=microsoft.com|office.com
+@@||okta.com^$important,document,generichide,css,extension
+
+! 2. Разрешение JS-криптографии и скриптов сессии (Stealth-режим)
+! Это необходимо для работы токенов и биометрии (FIDO/Passkey).
+@@||accounts.google.com^$stealth,content-type=application/x-javascript,important
+@@||appleid.apple.com^$stealth,content-type=application/x-javascript,important
 
 ! --- S2: FINTECH-SHIELD (Банковский коридор) ---
-! Разрешаем критические запросы для KYC и оплаты.
-@@/^(https?:\/\/)?([^\/]+\.)?(openai|chatgpt|yandex|dzen|google|m2mlease|paypal|stripe|revolut|n26|wise|payoneer|monzo|lcl|caf|labanquepostale|societegenerale|bnpparibas|credit-agricole|ca-moncompte|boursobank|visa|mastercard|amex|applepay|googlepay|onfido|jumio|idnow|5play)\.(com|fr|ru|io|life)\/.*$/$important,document,generichide,css,font,application,xmlhttprequest
+! Разрешаем критические запросы для оплаты, KYC и финансовых сервисов.
+
+! 1. Глобальные платежные шлюзы и KYC-провайдеры (Onfido, Jumio, Stripe)
+@@||stripe.com^$important,document,xmlhttprequest,other
+@@||paypal.com^$important,document,xmlhttprequest,other
+@@||visa.com^$important,document,xmlhttprequest,other
+@@||mastercard.com^$important,document,xmlhttprequest,other
+@@||onfido.com^$important,document,xmlhttprequest,other
+@@||jumio.com^$important,document,xmlhttprequest,other
+@@||idnow.io^$important,document,xmlhttprequest,other
+
+! 2. Французский банковский сектор (LCL, CA, BNP, CAF)
+@@||lcl.fr^$important,document,xmlhttprequest,css,font
+@@||caf.fr^$important,document,xmlhttprequest,css,font
+@@||labanquepostale.fr^$important,document,xmlhttprequest,css,font
+@@||societegenerale.fr^$important,document,xmlhttprequest,css,font
+@@||bnpparibas.fr^$important,document,xmlhttprequest,css,font
+@@||credit-agricole.fr^$important,document,xmlhttprequest,css,font
+@@||ca-moncompte.fr^$important,document,xmlhttprequest,css,font
+@@||boursobank.com^$important,document,xmlhttprequest,css,font
+
+! 3. Необанки и финтех (Revolut, N26, Wise, Payoneer)
+@@||revolut.com^$important,document,xmlhttprequest,other
+@@||n26.com^$important,document,xmlhttprequest,other
+@@||wise.com^$important,document,xmlhttprequest,other
+@@||payoneer.com^$important,document,xmlhttprequest,other
+
+! 4. AI и Сервисные платформы (OpenAI, Yandex, Dzen)
+@@||openai.com^$important,document,xmlhttprequest
+@@||chatgpt.com^$important,document,xmlhttprequest
+@@||yandex.ru^$important,document,xmlhttprequest
+@@||dzen.ru^$important,document,xmlhttprequest
+
 
 ! --- S3: BLOAT-REAPER (Чистка системного мусора) ---
-! Убираем Samsung Cloud и рекламные движки Ironsource.
-||(appcloud-config|appcloud-service|samsung.appcloud|ironsrc|supersonicads|cloud-config.samsungdotcom|mail-ads.google|ads-settings-pa).com^$important,tag=BLOAT_PURGE
-||(googleads.g.doubleclick.net/pagead/ads|reminders-pa.googleapis.com/v1/reminders/get|google.*/ads/sponsored)*^$important,tag=ADS_PURGE
+! 1. Samsung Cloud & AppCloud (Предотвращение автоустановки мусора)
+||appcloud-config.com^$important,reject,tag=BLOAT_PURGE
+||appcloud-service.com^$important,reject,tag=BLOAT_PURGE
+||samsung.appcloud.com^$important,reject,tag=BLOAT_PURGE
+||cloud-config.samsungdotcom.com^$important,reject,tag=BLOAT_PURGE
+
+! 2. IronSource & Supersonic (Уничтожение игровых рекламных движков)
+||ironsrc.com^$important,reject,tag=BLOAT_PURGE
+||is.com^$important,reject,tag=BLOAT_PURGE
+||supersonicads.com^$important,reject,tag=BLOAT_PURGE
+
+! 3. Google Ads & Reminders (Тихое глушение GMS рекламы)
+||mail-ads.google.com^$important,reject,tag=ADS_PURGE
+||ads-settings-pa.google.com^$important,reject,tag=ADS_PURGE
+||googleads.g.doubleclick.net^$important,reject,tag=ADS_PURGE
+||reminders-pa.googleapis.com^$important,empty,tag=ADS_PURGE
+
+! 4. Эвристика спонсорского контента Google
+||google.*/ads/sponsored*^$important,reject,tag=ADS_PURGE
+
 
 ! [L11-S4.0: SENSOR-GHOSTING v83.0 — THE APEX]
 ! Ослепление шпионских сайтов через эвристическую подмену ответов API.
@@ -360,15 +523,51 @@ $header=X-Robots-Tag: noai, noimageai, important
 ! Разрешаем структуру (document), стили (css) и живой поиск (xhr).
 
 ! --- [OMNI-SEARCH-MASTER] Глобальное разрешение + Фикс для Dzen/Yandex ---
-@@/^https?:\/\/([^\/]+\.)?(google|bing|duckduckgo|yahoo|brave|yandex|ya|dzen|mail|qwant|ecosia|startpage|swisscows|baidu|naver|sogou|so)\.(com|ru|net|org|it|fr|de|co\.uk|jp|cn|me)(\/.*)?$/$important,document,generichide,css,xmlhttprequest
+! Обеспечивает работу поисковых систем и их динамических элементов.
+
+! 1. Западные и приватные поисковики (Google, Bing, DuckDuckGo, Brave, Qwant)
+@@||google.*^$important,document,xmlhttprequest,generichide,css
+@@||bing.com^$important,document,xmlhttprequest,generichide,css
+@@||duckduckgo.com^$important,document,xmlhttprequest,generichide,css
+@@||brave.com^$important,document,xmlhttprequest,generichide,css
+@@||qwant.com^$important,document,xmlhttprequest,generichide,css
+@@||ecosia.org^$important,document,xmlhttprequest,generichide,css
+@@||startpage.com^$important,document,xmlhttprequest,generichide,css
+
+! 2. RU-сегмент: Yandex, Dzen, Mail.ru (Исправление работы ленты и поиска)
+@@||yandex.ru^$important,document,xmlhttprequest,generichide,css
+@@||ya.ru^$important,document,xmlhttprequest,generichide,css
+@@||dzen.ru^$important,document,xmlhttprequest,generichide,css
+@@||mail.ru^$important,document,xmlhttprequest,generichide,css
+
+! 3. Азиатский сегмент (Baidu, Naver, Sogou)
+@@||baidu.com^$important,document,xmlhttprequest,generichide,css
+@@||naver.com^$important,document,xmlhttprequest,generichide,css
+@@||sogou.com^$important,document,xmlhttprequest,generichide,css
 
 ! --- [DZEN-INFRA-PATCH] Разрешение для контента Дзена ---
-@@||dzeninfra.ru^$important,xmlhttprequest,js,domain=dzen.ru
-@@||yastatic.net^$important,js,domain=dzen.ru|yandex.ru
+! Обеспечивает подгрузку статики и API для работы ленты и видео.
+
+! 1. Инфраструктура Дзена (API, видео-плеер, бесконечная лента)
+@@||dzeninfra.ru^$important,xmlhttprequest,script,domain=dzen.ru,tag=DZEN_FIX
+
+! 2. Статические ресурсы Яндекса (Шрифты, иконки, JS-библиотеки)
+! Ограничиваем область действия только Дзеном и Яндексом для безопасности.
+@@||yastatic.net^$important,script,domain=dzen.ru|yandex.ru|ya.ru,tag=DZEN_FIX
 
 ! --- [L11-S4.2: OMNI-DNS-TURBO] ---
-! Мгновенный резолвинг для глобальных поисковых систем через Regex-фильтрацию типов запросов
-@@/^https?:\/\/([^\/]+\.)?(google|yandex|ya|bing|duckduckgo|baidu|naver|yahoo|qwant)\.(com|ru|net|org|jp|cn|me)(\/.*)?$/$dnstype=~HTTPS,dnstype=~64,dnstype=~65
+! Ускорение резолвинга: исключаем избыточные типы DNS-запросов для поисковиков.
+! Оставляем только чистые A/AAAA для мгновенного отклика.
+
+@@||google.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||yandex.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||ya.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||bing.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||duckduckgo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||baidu.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||naver.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||yahoo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||qwant.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
 
 
 ! [115-S5: HARDWARE-GHOSTING — APEX EDITION]
@@ -391,17 +590,39 @@ $header=X-Robots-Tag: noai, noimageai, important
 
 ! [L12: OMNI-SENTINEL — THE PURIFIED APEX v90.0]
 
-! [L12-S1: IP-KILL-SWITCH] Защита от ботнетов
-||^$networkaddress=ip,important,reject,domain=~google.com|~yandex.ru|~openai.com|~apple.com|~microsoft.com|~revolut.com|~binance.com|~lcl.fr
+! [L12-S1: IP-KILL-SWITCH] Защита от ботнетов и прямых IP-подключений.
+! Блокирует все запросы, где вместо домена указан числовой IP-адрес.
+||^$networkaddress=ip,important,reject,domain=~google.com|~yandex.ru|~openai.com|~apple.com|~microsoft.com|~revolut.com|~binance.com|~lcl.fr|~github.com|~192.168.0.0/16|~10.0.0.0/8|~127.0.0.1
 
-! [L12-S2: HEADER-PURGE] Стерилизация аппаратных ID
-$removeheader=/^(X-(Device-ID|Machine-ID|Serial-Number|Hardware-Key))/ ,important
-$removeheader=/^(X-(Auth-Token|Session-ID))/ ,domain=~google.com|~bank|~openai.com|~yandex.ru|~revolut.com|~lcl.fr|~github.com
 
-! [L12-S3.2: QUANTUM-ENTROPY] Внесение хаоса в аналитику
-||(google-analytics\.com|doubleclick\.net|scorecardresearch\.com|app-measurement\.com|^analytics\.)^$set-header=X-Omni-Noise: $random_string,important
-||(facebook\.com/tr/|connect\.facebook\.net|^graph\.)^$set-header=X-FB-Entropy: $random_string,important
-||(bing\.com/shared/ajax/|clarity\.ms|^t\.aria\.)^$set-header=X-MS-Chaos: $random_string,important
+! [L12-S2: HEADER-PURGE] Стерилизация аппаратных и сессионных заголовков.
+! 1. Тотальное удаление аппаратных идентификаторов (Fingerprinting Protection)
+$removeheader=/^X-(Device-ID|Machine-ID|Serial-Number|Hardware-Key|App-Instance-ID)/,important
+
+! 2. Очистка сессионных данных на подозрительных/сторонних сайтах
+! Разрешено только для критической инфраструктуры (Банки, Auth, Dev).
+$removeheader=/^X-(Auth-Token|Session-ID|Access-Token)/,domain=~google.com|~yandex.ru|~ya.ru|~dzen.ru|~openai.com|~apple.com|~microsoft.com|~revolut.com|~lcl.fr|~github.com|~paypal.com|~stripe.com,important
+
+
+! --- [L12-S3.2: QUANTUM-ENTROPY] Внесение хаоса в аналитику ---
+! Активная дезинформация трекеров через инъекцию случайных заголовков.
+
+! 1. Google & Global Analytics: Ломаем серверную склейку профилей.
+||google-analytics.com^$set-header=X-Omni-Noise: $random_string,important
+||doubleclick.net^$set-header=X-Omni-Noise: $random_string,important
+||scorecardresearch.com^$set-header=X-Omni-Noise: $random_string,important
+||app-measurement.com^$set-header=X-Omni-Noise: $random_string,important
+
+! 2. Meta/Facebook: Создаем энтропию для графа социальных связей.
+||facebook.com/tr/^$set-header=X-FB-Entropy: $random_string,important
+||connect.facebook.net^$set-header=X-FB-Entropy: $random_string,important
+||graph.facebook.com^$set-header=X-FB-Entropy: $random_string,important
+
+! 3. Microsoft & Clarity: Хаос в тепловых картах и телеметрии.
+||bing.com/shared/ajax/^$set-header=X-MS-Chaos: $random_string,important
+||clarity.ms^$set-header=X-MS-Chaos: $random_string,important
+||t.aria.microsoft.com^$set-header=X-MS-Chaos: $random_string,important
+
 
 ! [L12-S3.1, S4 & S5: GHOST-LOGIC, CHRONOS & BEACON-SPOOF]
 ! Объединенная эвристика: Fetch/XHR delay + Beacon spoof + Chronos Shield
@@ -434,16 +655,54 @@ $removeheader=/^(X-(Auth-Token|Session-ID))/ ,domain=~google.com|~bank|~openai.c
 ! [L13: QUANTUM-MONOLITH — V91.0 — THE FINAL PROTOCOL]
 
 ! --- S1: DNS-ARMOR (Реактивная фильтрация) ---
-||(doubleclick.net|googlesyndication.com)^$dnstype=A,empty,third-party,reject
-||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov|~caf.fr
-||^$dnstype=(HTTPS|65|64|QUIC),reject,domain=~system|~google.com|~yandex.ru|~openai.com|~bank|~gov
+! 1. Точечный DNS-удар по гигантам рекламы (Doubleclick/GoogleSyndication)
+||doubleclick.net^$dnstype=A,empty,third-party,reject,tag=DNS_ARMOR
+||googlesyndication.com^$dnstype=A,empty,third-party,reject,tag=DNS_ARMOR
+
+! 2. Эвристическая DNS-блокировка по паттернам (метрики, трекеры, куки-баннеры)
+! С мощным списком исключений для госсектора, банков и поиска.
+||/^(ads|metrics|telemetry|track|stats|beacon|log|consent|cookie|onetrust|fingerprint|amplitude|pixel\.)\./^$dnstype=A,empty,ping,third-party,reject,domain=~google.com|~yandex.ru|~ya.ru|~dzen.ru|~openai.com|~apple.com|~microsoft.com|~revolut.com|~lcl.fr|~caf.fr|~gouv.fr|~service-public.fr,tag=DNS_ARMOR
+
+! 3. Глушение избыточных и медленных типов DNS-запросов (HTTPS/SVCB/QUIC)
+! Форсирует использование стандартных A/AAAA для мгновенного отклика.
+||^$dnstype=HTTPS,reject,domain=~google.com|~yandex.ru|~openai.com|~revolut.com|~github.com,tag=DNS_ARMOR
+||^$dnstype=64,reject,domain=~google.com|~yandex.ru|~openai.com|~revolut.com|~github.com,tag=DNS_ARMOR
+||^$dnstype=65,reject,domain=~google.com|~yandex.ru|~openai.com|~revolut.com|~github.com,tag=DNS_ARMOR
+
 
 ! --- S2: PROTOCOL-PQC (Квантовый щит) ---
+! 1. Принудительная активация постквантовых алгоритмов шифрования (ML-KEM)
+! Усиление защиты TLS-сессий для предотвращения будущей дешифровки данных.
 $network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum,important,domain=~ftp:*|~ftps:*
-||$networkaddress=(quic|http3|tls1.0|tls1.1|ssl3.0),reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~gov|~ftp:*|~ftps:*
+
+! 2. Протокольный фильтр: уничтожение устаревших и "протекающих" соединений.
+! Оставляем исключения для видео и критических сервисов, где QUIC/HTTP3 важны для скорости.
+||^$networkaddress=quic,reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~apple.com|~microsoft.com,tag=PQC_SHIELD
+||^$networkaddress=http3,reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~apple.com|~microsoft.com,tag=PQC_SHIELD
+||^$networkaddress=tls1.0,reject,important,tag=PQC_SHIELD
+||^$networkaddress=tls1.1,reject,important,tag=PQC_SHIELD
+||^$networkaddress=ssl3.0,reject,important,tag=PQC_SHIELD
+
+! 3. Защита FTP/FTPS (Изоляция от общих TLS-правил для стабильности передачи файлов)
+@@||ftp:*^$important
+@@||ftps:*^$important
+
 
 ! --- S3: GHOST-PACKET (DPI Bypass) ---
-$network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,important
+! Маскировка характеристик пакетов для обхода глубокого анализа трафика (DPI).
+
+! 1. Фиксация TTL (Time To Live): Скрывает количество прыжков и тип ОС.
+! Значение 64 характерно для Linux/Android/iOS.
+$network=ip,set_ttl=64,hide_hop_limit=on,important
+
+! 2. Оптимизация TCP Window: Стандартизация размера буфера приема.
+! Значение 65535 — классический максимум для предотвращения фрагментации.
+$network=tcp,set_tcp_window=65535,important
+
+! 3. Фиксация MSS (Maximum Segment Size): Защита от MTU-анализа.
+! 1460 байт — стандарт для Ethernet, исключающий "подписи" VPN-туннелей.
+$network=tcp,set_mss=1460,important
+
 
 ! --- S4: APEX-FINGERPRINTING-SPOOF (v91.0) ---
 ! Объединенная эвристика: Язык + Шрифты + Экран + Canvas Noise
@@ -477,10 +736,22 @@ $network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,impor
 ! [L14: SOCIAL-BEHAVIORAL-MONOLITH — V92.0 — APEX GHOST]
 
 ! --- S1: SOCIAL-SHIELD (Выжигание маячков) ---
-||connect.facebook.net^$important,third-party
-||platform.twitter.com^$important,third-party
-||tiktokv.com^$important,third-party
-||snapchat.com^$important,third-party
+! Уничтожение сторонних виджетов и скриптов слежки социальных сетей.
+
+! 1. Meta / Facebook (Кнопки "Нравится", пиксели и SDK)
+||connect.facebook.net^$important,third-party,reject,tag=SOCIAL_SHIELD
+||facebook.com/tr/^$important,third-party,reject,tag=SOCIAL_SHIELD
+
+! 2. X (Twitter) & TikTok (Виджеты и аналитика просмотров)
+||platform.twitter.com^$important,third-party,reject,tag=SOCIAL_SHIELD
+||tiktokv.com^$important,third-party,reject,tag=SOCIAL_SHIELD
+||byteoversea.com^$important,third-party,reject,tag=SOCIAL_SHIELD
+
+! 3. Snapchat & Pinterest (Рекламные маячки и трекеры)
+||snapchat.com^$important,third-party,reject,tag=SOCIAL_SHIELD
+||sc-static.net^$important,third-party,reject,tag=SOCIAL_SHIELD
+||pinterest.com^$important,third-party,reject,tag=SOCIAL_SHIELD
+
 #%#var FB_REMOVABLE = true;
 #%#var AT_REMOVABLE = true;
 
@@ -503,21 +774,66 @@ $network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,impor
     } \
 })();")
 
-! --- S3: CLIENT-ISOLATION (Мессенджеры) ---
-$client=/^com\.callapp/,$important,domain=~google.com|~yandex.ru
-$client=/^com\.whatsapp/,$important,domain=~google.com|~yandex.ru
+! --- S3: CLIENT-ISOLATION (Мессенджеры и утилиты) ---
+! Жесткое ограничение сетевой активности конкретных приложений.
+
+! 1. CallApp (Определитель номера): Блокировка фоновой передачи данных.
+! Разрешаем только системные домены Google/Yandex, остальное под нож.
+$client=com.callapp.contacts,important,domain=~google.com|~yandex.ru|~ya.ru|~googleusercontent.com,reject
+
+! 2. WhatsApp (Мессенджер): Ограничение аналитики и сторонних связей.
+! Сохраняем доступ к инфраструктуре Google для синхронизации и пушей.
+$client=com.whatsapp,important,domain=~whatsapp.net|~whatsapp.com|~fbcdn.net|~google.com|~gstatic.com,reject
+
+! 3. Telegram (Опционально): Изоляция встроенных браузеров и трекеров.
+$client=org.telegram.messenger,important,domain=~telegram.org|~telegram.dog|~t.me|~google.com,reject
+
 
 ! [L21: IOT-MONOLITH — V93.0 — DEEP-SILENCE]
 ! Тотальное ослепление телеметрии Smart TV и умных устройств.
-||(googleads.g.doubleclick|pagead2.googlesyndication|tpc.googlesyndication).net^$important,reject,domain=~google.com|~youtube.com
-||youtube.com/get_midroll_info*^$important,reject
 
-! [DNS-REWRITE] Зацикливаем шпионские домены на 0.0.0.0
-||samsungotn.net^$dnsrewrite=0.0.0.0,important
-||/^(.*(samsung(otn|ads|cloud)|lg(smartad|common|musicid)|sony\.net|atsc\.tv|telemetry\.microsoft)\.com)$/^$dnsrewrite=0.0.0.0,important
+! 1. Уничтожение рекламных инъекций в Smart TV (Doubleclick/GoogleAds)
+! Работает на уровне DNS/IP, предотвращая загрузку баннеров в меню ТВ.
+||googleads.g.doubleclick.net^$important,reject,domain=~google.com|~youtube.com,tag=IOT_SILENCE
+||pagead2.googlesyndication.com^$important,reject,domain=~google.com|~youtube.com,tag=IOT_SILENCE
+||tpc.googlesyndication.com^$important,reject,domain=~google.com|~youtube.com,tag=IOT_SILENCE
 
-! [CAST-STABILITY] Стабильный мост ReVanced -> TV
-@@||youtube.com/api/lounge/*^$important,domain=youtube.com
+! 2. YouTube TV: Вырезание триггеров рекламы в середине ролика (Mid-roll)
+! Это предотвращает паузы на "черный экран", когда ТВ пытается загрузить рекламу.
+||youtube.com/get_midroll_info^$important,reject,tag=IOT_SILENCE
+||youtube.com/api/stats/ads^$important,empty,tag=IOT_SILENCE
+
+! 3. Блокировка OEM-телеметрии (Samsung, LG, Sony, Xiaomi)
+||*-atv.amazon.com^$important,reject,tag=IOT_SILENCE
+||*.samsungcloudsolution.com^$important,reject,tag=IOT_SILENCE
+||*.lgtvsdp.com^$important,reject,tag=IOT_SILENCE
+||*.tv.sony.it^$important,reject,tag=IOT_SILENCE
+
+
+! [DNS-REWRITE] Зацикливание шпионских и рекламных доменов на 0.0.0.0
+! 1. Samsung OTN (Over-The-Network): Блокировка принудительных обновлений ПО.
+||samsungotn.net^$dnsrewrite=0.0.0.0,important,tag=DNS_REWRITE
+
+! 2. Глобальный Regex для Smart TV и Телеметрии (Samsung, LG, Sony, Microsoft)
+! Перенаправляем все запросы на несуществующий локальный адрес.
+||/^(.*(samsung(otn|ads|cloud)|lg(smartad|common|musicid)|sony\.net|atsc\.tv|telemetry\.microsoft)\.com)$/^$dnsrewrite=0.0.0.0,important,tag=DNS_REWRITE
+
+! 3. Дополнительные векторы (Vizio, Amazon FireTV, Roku)
+||tvinteractive.tv^$dnsrewrite=0.0.0.0,important,tag=DNS_REWRITE
+||logs.roku.com^$dnsrewrite=0.0.0.0,important,tag=DNS_REWRITE
+||device-metrics-us.amazon.com^$dnsrewrite=0.0.0.0,important,tag=DNS_REWRITE
+
+
+! [CAST-STABILITY] Стабильный мост ReVanced -> TV.
+! Разрешаем протокол сопряжения (Dial/Lounge) для удаленного управления.
+
+! 1. Разблокировка API сопряжения устройств (Pair with TV code)
+@@||youtube.com/api/lounge/*^$important,domain=youtube.com,tag=CAST_FIX
+
+! 2. Разрешение сервиса обнаружения локальных устройств (DIAL)
+! Необходимо для того, чтобы телефон "видел" телевизор в одной Wi-Fi сети.
+@@||google.com/cast/setup/*^$important,tag=CAST_FIX
+
 
 
 ! [L15: THE SINGULARITY — V125.0 — OMNI-CORE]
@@ -525,10 +841,20 @@ $client=/^com\.whatsapp/,$important,domain=~google.com|~yandex.ru
 ! Включает: Косметику, Спуфинг железа (L39-41), Сетевой джиттер (L42) и The Purifier.
 
 ! --- 1. COSMETIC STERILIZATION ---
-##.ads-container, .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup
+! Удаление визуальных следов рекламы, куки-баннеров и мусора.
+
+! 1. Базовая зачистка по классам и ID (Удаление дублей)
+##.ads-container, .ad-box, .sponsored-post, .cookie-banner, .newsletter-popup
 ##div[class*="Sponsored"], div[id*="ad-slot"]
+
+! 2. Процедурная стерилизация (Extended CSS)
+! Удаляем контейнеры, если внутри них обнаружен рекламный iframe или специфический класс.
 #?#div:has(> iframe[src*="ads"])
 #?#section:has(div[class*="ad-"])
+#?#div:has-text(/^Advertisement$|^Реклама$/)
+
+! 3. Глушение "дыр" (Схлопывание пустых рекламных мест)
+##.ad-wrapper:empty, .ad-unit:empty, [id^="google_ads_"]:empty
 
 ! --- 2. OMNI-CORE ATOMIC ENGINE ---
 #%#//scriptlet("prevent-set-interval", "/font|fingerprint|track|sensor/i")
@@ -612,20 +938,69 @@ safeDefine(window, '__uspapi', function(cmd, ver, cb){ if(cb) cb({uspString:'1--
 ")
 
 ! [L16: PERIMETER-MONOLITH — V122.1 — GHOST-NODE]
-! Защита сетевого уровня и UI. Схлопнуто для максимальной скорости.
-$network=ip,set_ttl=64,hide_hop_limit=on,set_tcp_window=65535,set_mss=1460,important
-*^$set-header=Referrer-Policy: no-referrer-when-downgrade
+! Защита сетевого уровня и маскировка метаданных. Схлопнуто для скорости.
+
+! 1. Сетевой стелс: Фиксация TTL/MSS для обхода DPI и скрытия тетеринга.
+! Маскирует Android/iOS под стандартный сетевой узел, убирая "отпечатки" VPN.
+$network=ip,set_ttl=64,hide_hop_limit=on,important
+$network=tcp,set_tcp_window=65535,set_mss=1460,important
+
+! 2. Приватность переходов: Ограничение передачи заголовка Referer.
+! Предотвращает утечку полного URL предыдущей страницы при переходе на менее защищенные (HTTP) узлы.
+*^$set-header=Referrer-Policy: no-referrer-when-downgrade,important
+
+! 3. Дополнительная стерилизация: Удаление специфических меток слежки из заголовков.
+$removeheader=X-Forwarded-For,important
+$removeheader=Via,important
+
 
 ! --- IP & LAN SHIELD ---
-||(stun:*|webrtc.org)^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com|~google.*|~yandex.*|~openai.*
-||/^((127\.0\.0\.1|localhost|::1|0\.0\.0\.0)|192\.168\.|10\.)/^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+! 1. WebRTC-Leak Protection: Предотвращение деанонимизации через STUN-серверы.
+! Блокирует попытки узнать реальный IP, оставляя исключения для видеосвязи.
+||stun:*^$important,third-party,reject,domain=~zoom.us|~teams.microsoft.com|~meet.google.com|~yandex.ru|~openai.com,tag=IP_GHOST
 
-! --- PORT REAPER & GASLIGHTING ---
-||^$important,port=21|22|23|25|135|139|445|3389|5900|8080|9000,domain=~teamviewer.com|~anydesk.com|~localhost,tag=PORT_ATTACK
-$network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important
+! 2. WebRTC Infrastructure: Глушение аналитики и сигнальных серверов.
+||webrtc.org^$important,third-party,reject,domain=~google.com|~yandex.ru,tag=IP_GHOST
 
-! --- UI-PURGE & ADBLOCK-DECEPTION ---
-##[class*="ad"], .ad-box, .ads-container, .sponsored-post, .cookie-banner, .newsletter-popup, .social-share, .fb-root, .vk-widget
+! 3. LAN-Scan Protection: Запрет внешним сайтам обращаться к твоему локальному "железу".
+! Пресекает атаки типа DNS Rebinding и поиск уязвимостей в роутере/IoT.
+||127.0.0.1^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+||localhost^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+||::1^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+||192.168.0.0/16^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+||10.0.0.0/8^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+||172.16.0.0/12^$important,reject,domain=~system|~localhost,tag=LAN_SCAN_DETECTED
+
+
+! [PORT REAPER & GASLIGHTING] Стерилизация входящих соединений и портов.
+! 1. Port Reaper: Блокировка критических портов (SMB, RDP, Telnet, RPC).
+! Оставляем "окно" только для легитимного удаленного доступа и локальной работы.
+||^$important,port=21|22|23|25|135|137|138|139|445|3389|5900|8080|9000,domain=~teamviewer.com|~anydesk.com|~rustdesk.com|~localhost,reject,tag=PORT_ATTACK
+
+! 2. Network Gaslighting: Режим "Тишины" (Stealth Mode).
+! Дропаем запросы на обнаружение и пинги, имитируя отсутствие устройства в сети.
+$network=icmp,action=drop,app=~system,important,tag=STEALTH_MODE
+$network=discovery,action=drop,app=~system,important,tag=STEALTH_MODE
+$network=inbound,action=drop,app=~system,important,tag=STEALTH_MODE
+
+! 3. WebRTC Gaslighting: Защита от деанонимизации через сигнальные порты.
+$network=webrtc,action=drop,app=~system,domain=~google.com|~zoom.us|~yandex.ru,important,tag=STEALTH_MODE
+
+
+! [UI-PURGE & ADBLOCK-DECEPTION] Визуальная стерилизация и борьба с детекторами.
+! 1. Глобальный UI-Purge: Схлопывание рекламных и социальных контейнеров.
+##[class*="ad-"], [id*="ad-slot"], .ad-box, .ads-container, .sponsored-post
+
+! 2. Инфо-шум: Удаление куки-баннеров, подписок и социальных виджетов.
+##.cookie-banner, .newsletter-popup, .social-share, .fb-root, .vk-widget, .ok-group-widget
+
+! 3. Adblock-Deception: Скрытие элементов, провоцирующих скрипты "отключите блокировщик".
+##.ad-notice, .ad-message, .ad-indicator, div[class^="ad-label"]
+
+! 4. Эвристическое схлопывание (Extended CSS):
+#?#div:has(> iframe[src*="ads"])
+#?#section:has-text(/^Реклама$|^Advertisement$/)
+
 #%#//scriptlet("set-constant", "adblock", "false")
 #%#//scriptlet("abort-current-inline-script", "isAdBlockActive", "detectAdBlock")
 
@@ -633,8 +1008,15 @@ $network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important
 
 ! [L17: OMNI-SOVEREIGNTY — V100.0 — THE ABSOLUTE]
 
-! --- S1: PORT-SECURITY (Anti-RAT) ---
-||*^$important,port=~80|~443|~53|~853|~587|~993|~21|~22,reject,domain=~google.com|~yandex.*|~openai.com|~bank|~gov|~github.com
+! [S1: PORT-SECURITY (Anti-RAT)] Изоляция нестандартных исходящих соединений.
+! 1. Разрешительный лист (Whitelist) для основных протоколов.
+! 80,443 (Web) | 53,853 (DNS) | 587,993 (Mail) | 21,22 (Dev)
+! Блокирует попытки малвари связаться с C2-сервером через экзотические порты.
+||*^$important,port=~80|~443|~53|~853|~587|~993|~465|~21|~22|~123,reject,domain=~google.com|~yandex.ru|~ya.ru|~openai.com|~apple.com|~microsoft.com|~github.com|~gitlab.com|~revolut.com|~lcl.fr|~caf.fr|~gouv.fr,tag=ANTI_RAT
+
+! 2. NTP-Синхронизация: Оставляем порт 123 для точного времени.
+@@||*^$important,port=123,tag=TIME_SYNC
+
 
 ! --- S2: MEDIA-PROTECT (Stream & Hardware Blindness) ---
 ||*$media,third-party,important,domain=~youtube.com|~netflix.com|~zoom.us|~teams.*|~google.*|~yandex.*
@@ -660,19 +1042,39 @@ $network=(icmp|discovery|inbound|webrtc),action=drop,app=~system,important
 ! [L18: SIGNAL-MONOLITH — V101.0 — RADIO-SILENCE]
 ! Защита SIM-карты, GSM-сигналинга и логики входящих сообщений.
 
-! --- S1: SMS-LOGIC ANCHOR (Стерилизация фишинга) ---
-||*^$network=sms-logic-anchor,domain=~revolut.com|~bnpparibas.fr|~n26.com|~sber.ru|~tinkoff.ru,action=strip-links
-||*^$network=sms-signaling,senderid=~REVOLUT|~BNP|~N26|~GOV|~APPLE,action=disable-interaction
+! [S1: SMS-LOGIC ANCHOR] Стерилизация фишинга и защита от подмены отправителя.
+! 1. Strip-Links: Обезоруживание ссылок в SMS.
+! Если домен НЕ входит в доверенный список банков, любая ссылка внутри сообщения 
+! превращается в обычный текст (некликабельно).
+||*^$network=sms-logic-anchor,action=strip-links,domain=~revolut.com|~bnpparibas.fr|~lcl.fr|~n26.com|~sber.ru|~tbank.ru|~apple.com|~google.com|~gouv.fr,important
+
+! 2. Disable-Interaction: Защита от сигнального фишинга (Sender ID).
+! Блокирует возможность взаимодействия (нажатия) в сообщениях с поддельными 
+! именами отправителей, если они не прошли проверку подлинности.
+||*^$network=sms-signaling,action=disable-interaction,senderid=~REVOLUT|~BNP|~N26|~LCL|~GOV|~APPLE|~GOOGLE|~SBER,important,tag=SMS_SHIELD
+
 
 ! --- S2: GHOST-MODE (Маскировка блокировщика) ---
 #%#//scriptlet("set-constant", "window.adguard_installed", "false")
 #%#//scriptlet("set-constant", "window.AG_onLoad", "undefined")
 #%#//scriptlet("set-constant", "AdGuardNightly", "undefined")
 
-! --- S3: RADIO-SILENCE (SIM & Cell Isolation) ---
-||*^$network=sim-toolkit,important,reject
-||*^$network=sms-type0,important,reject
-||/^(stk-menu|sim-app-invoke|ussd-push|ping-sms|ack-sms-silent)/^$important,network,reject
+! [S3: RADIO-SILENCE] Изоляция SIM-карты и подавление скрытых сотовых запросов.
+! 1. SIM-Toolkit (STK) & SIM-App: Блокировка скрытых меню оператора.
+! Предотвращает несанкционированный запуск приложений через SIM-меню.
+||*^$network=sim-toolkit,important,reject,tag=RADIO_SILENCE
+||*^$network=sim-app-invoke,important,reject,tag=RADIO_SILENCE
+
+! 2. SMS Type 0 (Silent SMS / Stealth Ping): Защита от триангуляции.
+! Блокирует невидимые сообщения, которые заставляют телефон "ответить" соте, 
+! выдавая точные координаты без уведомления пользователя.
+||*^$network=sms-type0,important,reject,tag=STEALTH_PING
+||/^(ping-sms|ack-sms-silent)/^$important,network,reject,tag=STEALTH_PING
+
+! 3. USSD-Push & Flash-SMS: Подавление навязчивых и опасных системных окон.
+! Защита от мошеннических USSD-запросов, которые могут инициировать списания.
+||/^(stk-menu|ussd-push)/^$important,network,reject,tag=RADIO_SILENCE
+
 
 ! --- S4: DEEP-SANITIZER (Unicode & Logic Protection) ---
 ! Превращаем скрытые ссылки и Service Workers в пыль.
