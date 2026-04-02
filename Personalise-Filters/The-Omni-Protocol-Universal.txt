@@ -847,13 +847,13 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 ! Оптимизировано: один Regex покрывает все домены (com/net/org).
 ||/^(.*(samsung(otn|ads|cloud)|lg(smartad|common|musicid)|sony\.tv\.(data|telemetry)|atsc\.tv|telemetry\.microsoft|events\.data\.microsoft|tvinteractive|device-metrics|roku\.com/logs|logs\.roku)\.(com|net|org))$/^$dnsrewrite=0.0.0.0,important
 
-! [L12: LAN-STEALTH] Принуждение IoT-устройств к использованию локального DNS.
+! [LAN-STEALTH] Принуждение IoT-устройств к использованию локального DNS.
 ||8.8.8.8^$important,reject
 ||8.8.4.4^$important,reject
 ||1.1.1.1^$important,reject
 ||9.9.9.9^$important,reject
 
-! [L12: CAST-STABILITY] Белый коридор для сопряжения Youtube ReVanced -> TV.
+! [CAST-STABILITY] Белый коридор для сопряжения Youtube ReVanced -> TV.
 ! Разрешаем локальный SSDP/mDNS для обнаружения устройств.
 @@||239.255.255.250^$important
 @@||224.0.0.251^$important
@@ -871,8 +871,16 @@ youtube.com,facebook.com#%#//scriptlet("prevent-window-open")
 #%#//scriptlet("set-constant", "adblock", "false")
 #%#//scriptlet("set-constant", "google_ad_status", "1")
 
-! [L12: VISUAL-NOTIFY] Эстетическое скрытие элементов.
+! [VISUAL-NOTIFY] Эстетическое скрытие элементов.
 ##.ad-layer, .overlay-ad:style(border: 1px dashed rgba(255,0,0,0.2) !important; background: transparent !important;)
+
+! [GALAXY-STORE-SPEEDUP] Ускорение обновлений Samsung Galaxy Store.
+! Пропускаем CDN и сервера обновлений без проверки (фиксит долгую загрузку).
+@@||galaxy.store^$important
+@@||samsungcloudsolution.com^$important
+@@||samsungcloudsolution.net^$important
+@@||samsungapps.com^$important
+@@||samsung.otaupdate.com^$important
 
 
 
