@@ -598,6 +598,7 @@ $header=X-Content-Type-Options: nosniff, important
 ! 1. Fingerprinting Protection: Удаление аппаратных ID устройства.
 $removeheader=/^X-(Device-ID|Machine-ID|Serial-Number|Hardware-Key|App-Instance-ID)/,important
 
+
 ! 2. Session Integrity: Очистка токенов на неавторизованных доменах.
 ! Исключения: Глобальные сервисы, Банки, Платежные системы (Stripe, PayPal).
 $removeheader=/^X-(Auth-Token|Session-ID|Access-Token)/,important,domain=~google.com|~yandex.*|~openai.com|~apple.com|~microsoft.com|~revolut.com|~lcl.fr|~github.com|~paypal.com|~stripe.com|~binance.com
@@ -800,6 +801,17 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 ! Samsung, LG, Sony, Microsoft, Vizio, Amazon FireTV, Roku.
 ! Оптимизировано: один Regex покрывает все домены (com/net/org).
 ||/^(.*(samsung(otn|ads|cloud)|lg(smartad|common|musicid)|sony\.tv\.(data|telemetry)|atsc\.tv|telemetry\.microsoft|events\.data\.microsoft|tvinteractive|device-metrics|roku\.com/logs|logs\.roku)\.(com|net|org))$/^$dnsrewrite=0.0.0.0,important
+
+! [L12: LAN-STEALTH] Принуждение IoT-устройств к использованию локального DNS.
+||8.8.8.8^$important,reject
+||8.8.4.4^$important,reject
+||1.1.1.1^$important,reject
+||9.9.9.9^$important,reject
+
+! [L12: CAST-STABILITY] Белый коридор для сопряжения Youtube ReVanced -> TV.
+! Разрешаем локальный SSDP/mDNS для обнаружения устройств.
+@@||239.255.255.250^$important
+@@||224.0.0.251^$important
 
 
 ! [CAST-STABILITY] Стабильный мост для трансляций (ReVanced/SmartTube).
