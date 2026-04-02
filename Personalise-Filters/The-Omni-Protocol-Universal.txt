@@ -604,6 +604,28 @@ $removeheader=/^X-(Device-ID|Machine-ID|Serial-Number|Hardware-Key|App-Instance-
 #%#//scriptlet("abort-current-inline-script", "cookie")
 ##.qc-cmp2-container:style(display: none !important;)
 
+! [ HEURISTIC-SMART-ANNONYANCE] Умный эвристический движок против баннеров.
+! 1. Универсальное подавление популярных CMP-движков (Didomi, Quantcast, OneTrust)
+#%#//scriptlet("abort-on-property-read", "Didomi")
+#%#//scriptlet("abort-on-property-read", "__tcfapi")
+#%#//scriptlet("abort-on-property-read", "OneTrust")
+#%#//scriptlet("abort-on-property-read", "OnetrustActiveGroups")
+
+! 2. Эвристика: Запрещаем сайтам "замораживать" прокрутку (overflow: hidden)
+##body,html:style(overflow: auto !important; position: static !important;)
+
+! 3. Универсальные маски для скрытия контейнеров согласия
+##[class*="cookie-banner"], [id*="cookie-banner"]
+##[class*="consent-layer"], [id*="consent-layer"]
+##[class*="cmp-container"], [id*="cmp-container"]
+##[id^="didomi-host"]
+##div[class^="sp_hl_inner"]
+
+! 4. Скриптлет-обманка: принудительно выставляем статус "Согласен" в памяти браузера
+#%#//scriptlet("set-constant", "google_tag_manager.allow_ad_storage", "true")
+#%#//scriptlet("set-constant", "google_tag_manager.allow_analytics_storage", "true")
+
+
 
 ! 2. Session Integrity: Очистка токенов на неавторизованных доменах.
 ! Исключения: Глобальные сервисы, Банки, Платежные системы (Stripe, PayPal).
