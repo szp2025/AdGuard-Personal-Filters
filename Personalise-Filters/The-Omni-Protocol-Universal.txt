@@ -834,7 +834,9 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! ------------------------------------------------------------
 ! [HYBRID-SCRIPTLETS] - JS Injection Engine
 ! ------------------------------------------------------------
-
+! --- [INPUT-PROTECTION: TELEPHONE] ---
+! Отключает автозаполнение и кэширование для полей ввода номера телефона
+#%#//scriptlet("set-attribute", "input[type='tel']", "autocomplete", "off")
 
 #%#//scriptlet("execute-script", "(function(){
     /** 1. ЯДРО И АДАПТИВНЫЙ ДИСПЕТЧЕР **/
@@ -936,7 +938,7 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         if (isTr(u)) return new Promise(res => setTimeout(() => res(new Response('{}', {status: 200})), rand(150, 400)));
         return oF.apply(this, arguments);
     };
-
+const oX = window.XMLHttpRequest.prototype.open; // Добавь эту строку
    window.XMLHttpRequest.prototype.open = function(m, u){ 
     this._u = u; 
     // Если это домен Google или Android — вообще не трогаем порты
