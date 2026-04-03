@@ -224,36 +224,6 @@
 ! Правила блокировки мусора через ||...^$important,reject
 
 
-
-
-
-
-! =========================================================================
-! [STAGE 3] OMNI-CORE ATOMIC ENGINE (JS-МОНОЛИТ)
-! =========================================================================
-! Наш огромный блок #%#//scriptlet("execute-script", ...)
-! Он идет после сетевых правил, чтобы работать в уже подготовленной среде.
-
-! =========================================================================
-! [STAGE 4] COSMETIC & DOMAIN SPECIFIC
-! =========================================================================
-! Эстетическая чистка (##) и специфические правила для отдельных сайтов.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ! ###########################################################
 ! # THE OMNI-PROTOCOL: ACTIVE IDS & PORT HONEYPOTS (v7.8.5) #
 
@@ -852,6 +822,15 @@ $network=webrtc,action=drop,app=~system,domain=~google.com|~zoom.us|~yandex.ru,i
 $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=~google.com|~bank|~yandex.ru
 
 
+
+
+! =========================================================================
+! [STAGE 3] OMNI-CORE ATOMIC ENGINE (JS-МОНОЛИТ)
+! =========================================================================
+! Наш огромный блок #%#//scriptlet("execute-script", ...)
+! Он идет после сетевых правил, чтобы работать в уже подготовленной среде.
+
+
 ! ------------------------------------------------------------
 ! [HYBRID-SCRIPTLETS] - JS Injection Engine
 ! ------------------------------------------------------------
@@ -984,11 +963,17 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     safeDefine(window, 'matchMedia', () => ({ matches: false, addListener: noop, removeListener: noop }));
 })();")
 
+
+
+! =========================================================================
+! [STAGE 4] COSMETIC & DOMAIN SPECIFIC
+! =========================================================================
+! Эстетическая чистка (##) и специфические правила для отдельных сайтов.
+
 ! --- ВЕРСТКА: MECHANICAL STERILIZATION ---
 ##body,html:style(overflow: auto !important; position: static !important;)
 ##.ads-container, .ad-box, .cookie-banner, .newsletter-popup, [id*="ad-slot"]
 ##[attributionreporting]:remove-attribute()
-
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
