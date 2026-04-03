@@ -851,36 +851,29 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     safeDefine(navigator, 'userActivation', { isActive: false, hasBeenActive: false });
     safeDefine(navigator, 'maxTouchPoints', 5);
 
-/** [ULTRA-GEN] Деактивация Didomi & Consent API **/
+    /** [ULTRA-GEN] Деактивация Didomi & Consent API (PC + Mobile) **/
     const killDidomi = () => {
-        // 1. Подмена API (чтобы сайт думал, что мы нажали "ОК")
+        // API Mock (без изменений)
         if (!window.Didomi || !window.Didomi.isReady) {
-            window.Didomi = { 
-                isReady: () => true, 
-                makeRequest: () => Promise.resolve(),
-                getUserConsentStatusForVendor: () => true, 
-                getRequiredPurposes: () => [],
-                on: noop 
-            };
+            window.Didomi = { isReady: () => true, makeRequest: () => Promise.resolve(), getUserConsentStatusForVendor: () => true, getRequiredPurposes: () => [], on: noop };
         }
 
-        // 2. Точечное удаление по классам и селекторам
-        const targets = [
-            '.didomi-popup-backdrop', 
-            '.didomi-notice-popup', 
-            '.didomi-popup__backdrop',
-            '[id^="didomi-host"]',
-            '#didomi-popup'
-        ];
-        
-        targets.forEach(s => {
-            document.querySelectorAll(s).forEach(el => {
-                el.remove();
-                console.log('Orbital Shield: Didomi backdrop/popup incinerated');
-            });
-        });
+        const targets = ['.didomi-screen-xlarge', '.didomi-popup-backdrop', '.didomi-notice-popup', '.didomi-popup__backdrop', '[id^="didomi-host"]', '#didomi-popup', '.didomi-popup-open'];
 
-        // 3. Снятие блокировки скролла с body и html
+        // Глубокое удаление (включая Shadow DOM для ПК)
+        const deepClean = (root) => {
+            targets.forEach(s => {
+                root.querySelectorAll(s).forEach(el => el.remove());
+            });
+            // Рекурсия по всем элементам для поиска Shadow Roots
+            root.querySelectorAll('*').forEach(el => {
+                if (el.shadowRoot) deepClean(el.shadowRoot);
+            });
+        };
+
+        deepClean(document);
+
+        // Принудительный разблок скролла (важно для десктопа)
         const fixScroll = (el) => {
             if (!el) return;
             el.style.setProperty('overflow', 'auto', 'important');
@@ -891,7 +884,6 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         fixScroll(document.documentElement);
     };
 
-    // Запуск и постоянная слежка (если сайт подгрузит Didomi позже)
     killDidomi();
     new MutationObserver(killDidomi).observe(document.documentElement, { childList: true, subtree: true });
 
