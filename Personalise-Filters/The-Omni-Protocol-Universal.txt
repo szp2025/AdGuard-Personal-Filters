@@ -834,7 +834,7 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         try { Object.defineProperty(obj, prop, { get: () => val, set: noop, configurable: true, enumerable: true }); } catch (e) {} 
     };
 
-/** 2. GHOST-MODE & ANTI-PHISHING (Орбитальный заслон и децепция) **/
+    /** 2. GHOST-MODE & ANTI-PHISHING (Орбитальный заслон и децепция) **/
     // 1. Защита от Tab-Napping (Разрыв связи с родителем)
     const oOpen = window.open;
     window.open = function(u, t, f) {
@@ -868,23 +868,7 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
             return true;
         };
     }
-
-    /** 4. ANTI-CLICKJACKING (Защита от невидимых слоев-ловушек) **/
-    const killClickjacking = () => {
-        if (TRUSTED) return;
-        document.querySelectorAll('*').forEach(el => {
-            const s = window.getComputedStyle(el);
-            // Если элемент прозрачный (opacity: 0), но активен для клика — это Clickjacking
-            if (s.opacity === '0' && s.pointerEvents !== 'none' && (el.offsetWidth > 10 || el.offsetHeight > 10)) {
-                el.style.pointerEvents = 'none';
-                el.style.zIndex = '-9999';
-                console.warn('Orbital Shield: Clickjacking layer neutralized');
-            }
-        });
-    };
-    if (!TRUSTED) setInterval(killClickjacking, 2000);
-
-    
+  
     /** 3. ORBITAL-TRACKER-DECEPTION (Canvas/GPU/Audio/Sensors) **/
     // 1. Динамическая дезинформация Canvas (2D & WebGL)
     const noise = (ctx) => {
@@ -933,7 +917,72 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     }, true);
 
 
-    /** 4. ORBITAL-COOKIE-SHREDDER & STORAGE-LOCK (Стерилизация памяти) **/
+    /** 4. ANTI-CLICKJACKING (Защита от невидимых слоев-ловушек) **/
+    const killClickjacking = () => {
+        if (TRUSTED) return;
+        document.querySelectorAll('*').forEach(el => {
+            const s = window.getComputedStyle(el);
+            // Если элемент прозрачный (opacity: 0), но активен для клика — это Clickjacking
+            if (s.opacity === '0' && s.pointerEvents !== 'none' && (el.offsetWidth > 10 || el.offsetHeight > 10)) {
+                el.style.pointerEvents = 'none';
+                el.style.zIndex = '-9999';
+                console.warn('Orbital Shield: Clickjacking layer neutralized');
+            }
+        });
+    };
+    if (!TRUSTED) setInterval(killClickjacking, 2000);
+
+
+/** 5. ORBITAL-PORT-GASLIGHTING & NET-SHIELD (Сетевой интеллект) **/
+    const MOCKS = ['ga', 'gaGlobal', 'fbq', 'Mixpanel', 'Amplitude', 'Didomi', '__tcfapi', 'OneTrust'];
+    MOCKS.forEach(m => { if (!(m in window)) window[m] = noop; });
+
+    const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|pixel|telemetry|doubleclick|adsafe|click/i);
+    const isSensitivePort = u => u && typeof u === 'string' && u.match(/:5555|:5037|:3306|:5432|:8080|:8443|:9000|:8888|localhost|127\.0\.0\.1/);
+
+    // 1. Умный перехват Fetch (Газлайтинг трекеров и портов)
+    const oF = window.fetch;
+    window.fetch = async function(u, o){
+        if (!TRUSTED && (isTr(u) || isSensitivePort(u))) {
+            // Имитируем задержку сети для правдоподобности (Gaslighting)
+            return new Promise(res => setTimeout(() => 
+                res(new Response('{"status":"success","data":[]}', {status: 200, headers: {'Content-Type': 'application/json'}})), 
+                rand(150, 400)
+            ));
+        }
+        return oF.apply(this, arguments);
+    };
+
+    // 2. Глубокий XHR-Gaslighting (Защита портов ADB/DB)
+    const oX = window.XMLHttpRequest.prototype.open;
+    window.XMLHttpRequest.prototype.open = function(m, u){ 
+        this._u = u; 
+        if (!TRUSTED && isSensitivePort(u)) {
+            // Подменяем состояние объекта XHR на "Успешно завершено", но с пустым телом
+            Object.defineProperties(this, {
+                status: { get: () => 200 },
+                readyState: { get: () => 4 },
+                responseText: { get: () => '' },
+                send: { value: function() { this.dispatchEvent(new Event('load')); } }
+            });
+            console.log('Orbital Net-Shield: Gaslighting port access:', u);
+            return; 
+        }
+        return oX.apply(this, arguments); 
+    };
+
+    // 3. WebRTC Leak Protection (Защита от утечки реального IP)
+    if (window.RTCPeerConnection && !TRUSTED) {
+        const oRTC = window.RTCPeerConnection;
+        window.RTCPeerConnection = function(cfg) {
+            if (cfg) cfg.iceServers = []; // Ослепляем WebRTC, стирая сервера обмена данными
+            return new oRTC(cfg);
+        };
+        window.RTCPeerConnection.prototype = oRTC.prototype;
+    }
+
+
+    /** 6. ORBITAL-COOKIE-SHREDDER & STORAGE-LOCK (Стерилизация памяти) **/
     // 1. Блокировка записи идентификаторов (Storage-Lock)
     if (!TRUSTED) {
         const lock = (obj) => {
@@ -1024,38 +1073,7 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         } catch(e){}
     })();
 
-    /** 9. СЕТЕВОЙ ИНТЕЛЛЕКТ, MOCKS & PORT-GASLIGHTING **/
-    const MOCKS = ['ga', 'gaGlobal', 'fbq', 'Mixpanel', 'Amplitude', 'Didomi', '__tcfapi', 'OneTrust'];
-    MOCKS.forEach(m => { if (!(m in window)) window[m] = noop; });
-
-    const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|pixel|telemetry|doubleclick/);
-    
-    // Перехват Fetch
-    const oF = window.fetch;
-    window.fetch = async function(u, o){
-        if (isTr(u)) return new Promise(res => setTimeout(() => res(new Response('{}', {status: 200})), rand(150, 400)));
-        return oF.apply(this, arguments);
-    };
-
-    // Перехват XHR (Газлайтинг портов ADB/DB)
-    const oX = window.XMLHttpRequest.prototype.open;
-    window.XMLHttpRequest.prototype.open = function(m, u){ 
-        this._u = u; 
-        
-        if (TRUSTED) return oX.apply(this, arguments); 
-
-        // [GASLIGHTING] Если ищут ADB (5555/5037) или базы данных (3306/5432)
-        if (u && typeof u === 'string' && u.match(/:5555|:5037|:3306|:5432|:8080|:8443|:9000|:8888/)) { 
-            // Мы подменяем ответ на "пустой успех", чтобы скрипт запутался
-            Object.defineProperty(this, 'status', { get: () => 200 });
-            Object.defineProperty(this, 'readyState', { get: () => 4 });
-            Object.defineProperty(this, 'responseText', { get: () => '' });
-            console.log('Gaslighting suspicious port access:', u);
-            return; 
-        }
-        return oX.apply(this, arguments); 
-    };
-
+   
 
     /** 10. DEEP PURIFIER & L10N (Гео-маскировка) **/
     safeDefine(navigator, 'userAgentData', undefined);
