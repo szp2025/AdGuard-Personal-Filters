@@ -823,16 +823,28 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! --- [INPUT-PROTECTION: TELEPHONE] ---
 
 #%#//scriptlet("execute-script", "(function(){
-    /** 1. ЯДРО И АДАПТИВНЫЙ ДИСПЕТЧЕР **/
+ /** 1. ЯДРО И АДАПТИВНЫЙ ДИСПЕТЧЕР **/
     const host = location.hostname;
-   // МАКСИМАЛЬНЫЙ СПИСОК ИСКЛЮЧЕНИЙ (TRUSTED ZONE)
+    // Твой расширенный список TRUSTED
     const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase)/.test(host);
     const noop = function(){};
     const rand = (a, b) => a + Math.random() * (b - a);
-    
+
     const safeDefine = (obj, prop, val) => { 
         try { Object.defineProperty(obj, prop, { get: () => val, set: noop, configurable: true, enumerable: true }); } catch (e) {} 
     };
+
+    // [PC-FORCE] Превентивный захват Didomi через Proxy
+    if (!TRUSTED && !window.Didomi) {
+        window.Didomi = new Proxy({}, {
+            get: (target, prop) => {
+                if (prop === 'isReady') return () => true;
+                if (prop === 'on') return noop;
+                if (prop === 'getUserConsentStatusForVendor') return () => true;
+                return noop;
+            }
+        });
+    }
 
     /** 2. GHOST-MODE & ANTI-PHISHING (Орбитальный заслон и децепция) **/
     // 1. Защита от Tab-Napping (Разрыв связи с родителем)
@@ -850,6 +862,22 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     safeDefine(navigator, 'webdriver', false); 
     safeDefine(navigator, 'userActivation', { isActive: false, hasBeenActive: false });
     safeDefine(navigator, 'maxTouchPoints', 5);
+
+    // Специфика для ПК (Cloudflare Turnstile Fix)
+    if (navigator.languages) {
+        safeDefine(navigator, 'languages', ['ru-RU', 'ru', 'en-US', 'en']);
+    }
+
+// [PC-FORCE] Живой щит через Proxy (Ставим ПЕРЕД killDidomi)
+    if (!TRUSTED && !window.Didomi) {
+        window.Didomi = new Proxy({}, {
+            get: (target, prop) => {
+                if (prop === 'isReady') return () => true;
+                if (prop === 'on') return noop;
+                return noop;
+            }
+        });
+    }
 
     /** [ULTRA-GEN] Деактивация Didomi & Consent API (PC + Mobile) **/
     const killDidomi = () => {
