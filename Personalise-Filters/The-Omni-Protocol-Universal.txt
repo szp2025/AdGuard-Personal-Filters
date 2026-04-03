@@ -834,8 +834,8 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
  /** 1. ЯДРО И АДАПТИВНЫЙ ДИСПЕТЧЕР **/
     const host = location.hostname;
     // Твой расширенный список TRUSTED
- const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi)/.test(host);
- const noop = function(){};
+    const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
+    const noop = function(){};
     const rand = (a, b) => a + Math.random() * (b - a);
 
     const safeDefine = (obj, prop, val) => { 
@@ -864,17 +864,23 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     };
 
     // 2. ДЕЦЕПЦИЯ: Скрываем наличие AdGuard и маскируем окружение
-    safeDefine(window, 'adblock', false);
-    safeDefine(window, 'google_ad_status', 1);
-    safeDefine(window, 'adguard_installed', false);
-    safeDefine(navigator, 'webdriver', false); 
-    safeDefine(navigator, 'userActivation', { isActive: false, hasBeenActive: false });
-    safeDefine(navigator, 'maxTouchPoints', 5);
 
-    // Специфика для ПК (Cloudflare Turnstile Fix)
-    if (navigator.languages) {
-        safeDefine(navigator, 'languages', ['ru-RU', 'ru', 'en-US', 'en']);
-    }
+
+    if (!TRUSTED) {
+            // Децепция: Маскируем ТОЛЬКО если сайт НЕ в белом списке
+         // Эти параметры подменяются ТОЛЬКО на обычных сайтах
+        safeDefine(window, 'adblock', false);
+        safeDefine(window, 'google_ad_status', 1);
+        safeDefine(window, 'adguard_installed', false);
+        safeDefine(navigator, 'webdriver', false); 
+        safeDefine(navigator, 'userActivation', { isActive: false, hasBeenActive: false });
+        safeDefine(navigator, 'maxTouchPoints', 5);
+            // Специфика для ПК (Cloudflare Turnstile Fix)
+            if (navigator.languages) {
+              
+                safeDefine(navigator, 'languages', ['ru-RU', 'ru', 'en-US', 'en']);
+            }
+        }   
 
   // [PC-FORCE] Живой щит через Proxy (Ставим ПЕРЕД killDidomi)
       if (!TRUSTED && !window.Didomi) {
