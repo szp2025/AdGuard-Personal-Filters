@@ -826,8 +826,8 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
  /** 1. ЯДРО И АДАПТИВНЫЙ ДИСПЕТЧЕР **/
     const host = location.hostname;
     // Твой расширенный список TRUSTED
-    const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase)/.test(host);
-    const noop = function(){};
+ const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi)/.test(host);
+ const noop = function(){};
     const rand = (a, b) => a + Math.random() * (b - a);
 
     const safeDefine = (obj, prop, val) => { 
@@ -868,69 +868,79 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         safeDefine(navigator, 'languages', ['ru-RU', 'ru', 'en-US', 'en']);
     }
 
-// [PC-FORCE] Живой щит через Proxy (Ставим ПЕРЕД killDidomi)
-    if (!TRUSTED && !window.Didomi) {
-        window.Didomi = new Proxy({}, {
-            get: (target, prop) => {
-                if (prop === 'isReady') return () => true;
-                if (prop === 'on') return noop;
-                return noop;
-            }
-        });
-    }
+  // [PC-FORCE] Живой щит через Proxy (Ставим ПЕРЕД killDidomi)
+      if (!TRUSTED && !window.Didomi) {
+          window.Didomi = new Proxy({}, {
+              get: (target, prop) => {
+                  if (prop === 'isReady') return () => true;
+                  if (prop === 'on') return noop;
+                  return noop;
+              }
+          });
+      }
 
-    /** [ULTRA-GEN] Деактивация Didomi & Consent API (PC + Mobile) **/
-    const killDidomi = () => {
-        // API Mock (без изменений)
-        if (!window.Didomi || !window.Didomi.isReady) {
-            window.Didomi = { isReady: () => true, makeRequest: () => Promise.resolve(), getUserConsentStatusForVendor: () => true, getRequiredPurposes: () => [], on: noop };
-        }
-
-        const targets = ['.didomi-screen-xlarge', '.didomi-popup-backdrop', '.didomi-notice-popup', '.didomi-popup__backdrop', '[id^="didomi-host"]', '#didomi-popup', '.didomi-popup-open'];
-
-        // Глубокое удаление (включая Shadow DOM для ПК)
-        const deepClean = (root) => {
-            targets.forEach(s => {
-                root.querySelectorAll(s).forEach(el => el.remove());
-            });
-            // Рекурсия по всем элементам для поиска Shadow Roots
-            root.querySelectorAll('*').forEach(el => {
-                if (el.shadowRoot) deepClean(el.shadowRoot);
-            });
-        };
-
-        deepClean(document);
-
-        // Принудительный разблок скролла (важно для десктопа)
-        const fixScroll = (el) => {
-            if (!el) return;
-            el.style.setProperty('overflow', 'auto', 'important');
-            el.style.setProperty('position', 'static', 'important');
-            el.classList.remove('didomi-popup-open');
-        };
-        fixScroll(document.body);
-        fixScroll(document.documentElement);
-    };
+     /** [ULTRA-GEN] Деактивация Didomi & Consent API (PC + Mobile) **/
+     const killDidomi = () => {
+         // API Mock (без изменений)
+         if (!window.Didomi || !window.Didomi.isReady) {
+             window.Didomi = { isReady: () => true, makeRequest: () => Promise.resolve(), getUserConsentStatusForVendor: () => true, getRequiredPurposes: () => [], on: noop };
+         }
+ 
+         const targets = ['.didomi-screen-xlarge', '.didomi-popup-backdrop', '.didomi-notice-popup', '.didomi-popup__backdrop', '[id^="didomi-host"]', '#didomi-popup', '.didomi-popup-open'];
+ 
+         // Глубокое удаление (включая Shadow DOM для ПК)
+         const deepClean = (root) => {
+             targets.forEach(s => {
+                 root.querySelectorAll(s).forEach(el => el.remove());
+             });
+             // Рекурсия по всем элементам для поиска Shadow Roots
+             root.querySelectorAll('*').forEach(el => {
+                 if (el.shadowRoot) deepClean(el.shadowRoot);
+             });
+         };
+ 
+         deepClean(document);
+ 
+         // Принудительный разблок скролла (важно для десктопа)
+         const fixScroll = (el) => {
+             if (!el) return;
+             el.style.setProperty('overflow', 'auto', 'important');
+             el.style.setProperty('position', 'static', 'important');
+             el.classList.remove('didomi-popup-open');
+         };
+         fixScroll(document.body);
+         fixScroll(document.documentElement);
+     };
 
     killDidomi();
     new MutationObserver(killDidomi).observe(document.documentElement, { childList: true, subtree: true });
-
-    // 3. Блокировка скрытых редиректов (Anti-Stealth-Redirect)
+// 3. Блокировка скрытых редиректов (Anti-Stealth-Redirect)
     if (!TRUSTED) {
         let lastAction = Date.now();
         ['click', 'keydown', 'touchstart'].forEach(ev => 
             document.addEventListener(ev, () => lastAction = Date.now(), {passive:true})
         );
         
-        const checkNav = (url) => {
+        // Перехват попытки ухода со страницы (для защиты от Pop-under и редиректов)
+        window.addEventListener('beforeunload', (e) => {
             const timeSinceAct = Date.now() - lastAction;
-            // Блокируем авто-увод страницы, если юзер не проявлял активности более 10 сек
-            if (timeSinceAct > 10000 && !TRUSTED) { 
-                console.error('Orbital Shield: Blocked suspicious auto-redirect');
-                return false;
+            // Если редирект происходит сам по себе (тишина > 10 сек) и это не доверенный сайт
+            if (timeSinceAct > 10000 && !TRUSTED) {
+                console.warn('Orbital Shield: Blocked auto-redirect attempt');
+                // В некоторых браузерах это вызовет окно подтверждения, что спасет вкладку
+                e.preventDefault();
+                e.returnValue = ''; 
             }
-            return true;
-        };
+        });
+
+        // Защита от навязчивого изменения location через API
+        const oAssign = window.location.assign;
+        if (typeof oAssign === 'function') {
+            window.location.assign = function(url) {
+                if (Date.now() - lastAction > 10000 && !TRUSTED) return;
+                return oAssign.apply(this, arguments);
+            };
+        }
     }
   
     /** 3. ORBITAL-TRACKER-DECEPTION (Canvas/GPU/Audio/Sensors) **/
