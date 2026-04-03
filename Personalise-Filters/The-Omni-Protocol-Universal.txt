@@ -851,6 +851,14 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     };
 
     /** 2. GHOST-MODE & ANTI-DETECTION (Deception Layer) **/
+// Защита от подмены родительской вкладки (Tab-Nabbing)
+    const oOpen = window.open;
+    window.open = function(u, t, f) {
+        const w = oOpen.apply(this, [u, t, f]);
+        if (w) safeDefine(w, 'opener', null); // Разрываем связь с оригиналом
+        return w;
+    };
+
     safeDefine(window, 'adblock', false);
     safeDefine(window, 'google_ad_status', 1);
     safeDefine(window, 'adguard_installed', false);
@@ -868,6 +876,16 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     safeDefine(window, 'WebTransport', undefined);
 
     /** 4. ANTI-MIRRORING & AI-DECEPTION (Обман тепловых карт) **/
+// Блокировка программных кликов по скрытым ссылкам (Anti-Virus)
+    const oClick = HTMLElement.prototype.click;
+    HTMLElement.prototype.click = function() {
+        if (this.tagName === 'A' && this.target === '_blank' && !TRUSTED) {
+            console.warn('Blocked suspicious auto-click');
+            return;
+        }
+        return oClick.apply(this, arguments);
+    };
+
     const permErr = () => Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));
     if (navigator.mediaDevices) {
         safeDefine(navigator.mediaDevices, 'getDisplayMedia', permErr);
@@ -882,6 +900,8 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         lastMove = now;
     }, true);
     safeDefine(window, 'IntersectionObserver', function() { return { observe: noop, unobserve: noop, disconnect: noop }; });
+
+
 
     /** 5. HARDWARE-CLOAK (Сенсоры, Батарея, Сеть) **/
     if (navigator.clipboard) safeDefine(navigator.clipboard, 'readText', () => Promise.resolve(''));
@@ -938,6 +958,15 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
             let changed = false;
             trash.forEach(p => { if(u.searchParams.has(p)){ u.searchParams.delete(p); changed = true; } });
             if (changed) window.history.replaceState({}, '', u);
+
+// Стерилизация всех ссылок на странице (Anti-Tracking)
+    document.addEventListener('mouseover', e => {
+        const a = e.target.closest('a');
+        if (a && !TRUSTED) {
+            a.removeAttribute('ping');
+            a.setAttribute('rel', 'noopener noreferrer');
+        }
+    }, {passive: true});
         } catch(e){}
     })();
 
