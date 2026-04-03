@@ -851,11 +851,9 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     safeDefine(navigator, 'userActivation', { isActive: false, hasBeenActive: false });
     safeDefine(navigator, 'maxTouchPoints', 5);
 
-  // [ULTRA-GEN] Деактивация Didomi & Consent API (Газлайтинг и вырезание)
+/** [ULTRA-GEN] Деактивация Didomi & Consent API **/
     const killDidomi = () => {
-        // 1. Подмена API
-        window.didomiOnReady = window.didomiOnReady || [];
-        window.didomiEventListeners = window.didomiEventListeners || [];
+        // 1. Подмена API (чтобы сайт думал, что мы нажали "ОК")
         if (!window.Didomi || !window.Didomi.isReady) {
             window.Didomi = { 
                 isReady: () => true, 
@@ -865,24 +863,37 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
                 on: noop 
             };
         }
-        // 2. Удаление из DOM (физическое уничтожение)
-        const selectors = ['[id^="didomi-host"]', '[class*="didomi-"]', '#didomi-popup', '.didomi-popup-open'];
-        selectors.forEach(s => {
+
+        // 2. Точечное удаление по классам и селекторам
+        const targets = [
+            '.didomi-popup-backdrop', 
+            '.didomi-notice-popup', 
+            '.didomi-popup__backdrop',
+            '[id^="didomi-host"]',
+            '#didomi-popup'
+        ];
+        
+        targets.forEach(s => {
             document.querySelectorAll(s).forEach(el => {
                 el.remove();
-                console.log('Orbital Shield: Didomi element incinerated');
+                console.log('Orbital Shield: Didomi backdrop/popup incinerated');
             });
         });
-        // 3. Принудительный разблок скролла
-        document.documentElement.style.setProperty('overflow', 'auto', 'important');
-        document.body.style.setProperty('overflow', 'auto', 'important');
-        document.body.classList.remove('didomi-popup-open');
+
+        // 3. Снятие блокировки скролла с body и html
+        const fixScroll = (el) => {
+            if (!el) return;
+            el.style.setProperty('overflow', 'auto', 'important');
+            el.style.setProperty('position', 'static', 'important');
+            el.classList.remove('didomi-popup-open');
+        };
+        fixScroll(document.body);
+        fixScroll(document.documentElement);
     };
 
-    // Запускаем немедленно и следим за появлением
+    // Запуск и постоянная слежка (если сайт подгрузит Didomi позже)
     killDidomi();
-    const didomiObserver = new MutationObserver(killDidomi);
-    didomiObserver.observe(document.documentElement, { childList: true, subtree: true });
+    new MutationObserver(killDidomi).observe(document.documentElement, { childList: true, subtree: true });
 
     // 3. Блокировка скрытых редиректов (Anti-Stealth-Redirect)
     if (!TRUSTED) {
