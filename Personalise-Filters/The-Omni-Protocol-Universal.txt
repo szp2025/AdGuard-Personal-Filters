@@ -311,10 +311,6 @@ $network=tcp,flags=ack,important,notify,tag=ANTI_SIDE_CHANNEL
 ! Сканеры будут бесконечно ждать ответа (Time Out), что замедляет атаку в 100 раз.
 ||*^$important,port=22|23|445|1433|1723|1883|3306|3389|5037|5060|5061|5432|5555|5900|5901|6379|6667|8080|8883|9000|9090|14147|27017|33434|4444|55555,domain=~localhost,notify,tag=GHOST_PORT
 
-! [L1.1: BROWSER-PORT-GASLIGHTING]
-! Если скрипт на странице пытается проверить доступность ADB или базы данных,
-! мы возвращаем "Success", но с пустым ответом, чтобы запутать логику скрипта.
-#%#//scriptlet("set-constant", "XMLHttpRequest.prototype.send", "function() { if (this._url && this._url.match(/:5555|:5037|:3306|:5432/)) return; return send.apply(this, arguments); }")
 
 ! --- [OMNI-GLOBAL-PASS] Глобальные системы и Стриминг ---
 ! Только проверенные гиганты, чтобы не создавать нагрузку на DNS-стек
@@ -957,27 +953,38 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         } catch(e){}
     })();
 
-    /** 9. СЕТЕВОЙ ИНТЕЛЛЕКТ & MOCKS **/
+/** 9. СЕТЕВОЙ ИНТЕЛЛЕКТ, MOCKS & PORT-GASLIGHTING **/
     const MOCKS = ['ga', 'gaGlobal', 'fbq', 'Mixpanel', 'Amplitude', 'Didomi', '__tcfapi', 'OneTrust'];
     MOCKS.forEach(m => { if (!(m in window)) window[m] = noop; });
 
     const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|pixel|telemetry|doubleclick/);
+    
+    // Перехват Fetch
     const oF = window.fetch;
     window.fetch = async function(u, o){
         if (isTr(u)) return new Promise(res => setTimeout(() => res(new Response('{}', {status: 200})), rand(150, 400)));
         return oF.apply(this, arguments);
     };
-const oX = window.XMLHttpRequest.prototype.open; // Добавь эту строку
-   window.XMLHttpRequest.prototype.open = function(m, u){ 
-    this._u = u; 
-    // Если это домен Google или Android — вообще не трогаем порты
-    if (TRUSTED) return oX.apply(this, arguments); 
-    
-    if (u && typeof u === 'string' && u.match(/:8080|:8443|:9000|:8888/)) { 
-        safeDefine(this, 'status', 408); return; 
-    }
-    return oX.apply(this, arguments); 
-};
+
+    // Перехват XHR (Газлайтинг портов ADB/DB)
+    const oX = window.XMLHttpRequest.prototype.open;
+    window.XMLHttpRequest.prototype.open = function(m, u){ 
+        this._u = u; 
+        
+        if (TRUSTED) return oX.apply(this, arguments); 
+
+        // [GASLIGHTING] Если ищут ADB (5555/5037) или базы данных (3306/5432)
+        if (u && typeof u === 'string' && u.match(/:5555|:5037|:3306|:5432|:8080|:8443|:9000|:8888/)) { 
+            // Мы подменяем ответ на "пустой успех", чтобы скрипт запутался
+            Object.defineProperty(this, 'status', { get: () => 200 });
+            Object.defineProperty(this, 'readyState', { get: () => 4 });
+            Object.defineProperty(this, 'responseText', { get: () => '' });
+            console.log('Gaslighting suspicious port access:', u);
+            return; 
+        }
+        return oX.apply(this, arguments); 
+    };
+
 
     /** 10. DEEP PURIFIER & L10N (Гео-маскировка) **/
     safeDefine(navigator, 'userAgentData', undefined);
