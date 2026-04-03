@@ -1165,7 +1165,7 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         return el;
     };
 
-/** 14. ORBITAL-TOTAL-SCAN & SELF-HEALING (Максимальная защита) **/
+    /** 14. ORBITAL-TOTAL-SCAN & SELF-HEALING (Максимальная защита) **/
     const sSigh = /eval\(|Function\(|atob\(|btoa\(|document\.write|innerHTML|outerHTML|indexedDB|localStorage/gi;
     
     // Эвристика: определяет, является ли код опасным
