@@ -976,6 +976,46 @@ const oX = window.XMLHttpRequest.prototype.open; // Добавь эту стро
     const s = { width: 360, height: 800 };
     [screen, window].forEach(o => { if (o) Object.keys(s).forEach(p => safeDefine(o, p, s[p])); });
     safeDefine(window, 'matchMedia', () => ({ matches: false, addListener: noop, removeListener: noop }));
+
+
+
+/** 12. COOKIE-SHREDDER (Авто-очистка следов) **/
+    const cleanStorage = () => {
+        try {
+            window.localStorage.clear();
+            window.sessionStorage.clear();
+            document.cookie.split(';').forEach(c => {
+                document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+            });
+        } catch (e) {}
+    };
+    if (!TRUSTED) window.addEventListener('beforeunload', cleanStorage);
+
+// Canvas Stealth (Подмена отпечатка холста)
+    const off = HTMLCanvasElement.prototype.getContext;
+    HTMLCanvasElement.prototype.getContext = function(t) {
+        const ctx = off.apply(this, arguments);
+        if (ctx && (t === '2d' || t === 'webgl')) {
+            const getImageData = ctx.getImageData;
+            ctx.getImageData = function() {
+                const res = getImageData.apply(this, arguments);
+                // Добавляем микро-шум в данные пикселей (незаметно для глаза, но ломает ID)
+                res.data[0] = res.data[0] + (Math.random() > 0.5 ? 1 : -1);
+                return res;
+            };
+        }
+        return ctx;
+    };
+
+// Kill Beacon (Запрет скрытой отправки при закрытии)
+    if (navigator.sendBeacon) {
+        navigator.sendBeacon = function(u, d) {
+            if (isTr(u)) return true; // Делаем вид, что отправили
+            return oF.apply(navigator, [u, {method:'POST', body:d, keepalive:true}]);
+        };
+    }
+
+
 })();")
 
 
