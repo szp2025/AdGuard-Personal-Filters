@@ -835,8 +835,6 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! [HYBRID-SCRIPTLETS] - JS Injection Engine
 ! ------------------------------------------------------------
 ! --- [INPUT-PROTECTION: TELEPHONE] ---
-! Отключает автозаполнение и кэширование для полей ввода номера телефона
-#%#//scriptlet("set-attribute", "input[type='tel']", "autocomplete", "off")
 
 #%#//scriptlet("execute-script", "(function(){
     /** 1. ЯДРО И АДАПТИВНЫЙ ДИСПЕТЧЕР **/
@@ -1044,6 +1042,41 @@ const oX = window.XMLHttpRequest.prototype.open; // Добавь эту стро
         };
     }
 
+
+/** 13. MALWARE-EXTERMINATOR (Анти-вирусный заслон) **/
+    // 1. Блокировка автоматического скачивания опасных расширений
+    const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|vbs|ps1|msi)$/i;
+    
+    // Перехват создания ссылок для скачивания (Blob/ObjectUrl)
+    const oCreateURL = URL.createObjectURL;
+    URL.createObjectURL = function(blob) {
+        if (blob && blob.type && blob.type.match(/application\/(x-msdownload|vnd\.android\.package-archive)/)) {
+            console.error('Blocked malicious file blob creation');
+            return 'javascript:void(0)';
+        }
+        return oCreateURL.apply(this, arguments);
+    };
+
+    // 2. Стерилизация атрибута 'download' (запрет скрытого сохранения)
+    document.addEventListener('click', e => {
+        const a = e.target.closest('a');
+        if (a && a.hasAttribute('download')) {
+            const file = a.getAttribute('href') || '';
+            if (illegalExt.test(file) && !TRUSTED) {
+                e.preventDefault();
+                alert('⚠️ Omni-Shield: Скачивание исполняемых файлов заблокировано для вашей безопасности.');
+            }
+        }
+    }, true);
+
+    // 3. Защита от Drive-by-Download (автоматический редирект на файл)
+    if (!TRUSTED) {
+        const oLocation = window.location.assign;
+        window.location.assign = function(url) {
+            if (illegalExt.test(url)) return;
+            return oLocation.apply(this, arguments);
+        };
+    }
 
 })();")
 
