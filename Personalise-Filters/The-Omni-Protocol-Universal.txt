@@ -550,16 +550,6 @@ $header=X-Content-Type-Options: nosniff, important
 ||reminders-pa.googleapis.com^$important,empty,tag=ADS_PURGE
 
 
-
-
-
-! [L11-S4.0: SENSOR-GHOSTING v83.0 — THE APEX]
-! Ослепление шпионских сайтов через эвристическую подмену ответов API.
-! Имитирует естественный отказ пользователя и отсутствие устройств.
-#%#//scriptlet("set-constant", "navigator.mediaDevices.enumerateDevices", "function(){return Promise.resolve([]);}")
-#%#//scriptlet("set-constant", "navigator.mediaDevices.getUserMedia", "function(){return Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));}")
-#%#//scriptlet("set-constant", "navigator.getUserMedia", "function(c,s,e){e(new DOMException('Permission denied', 'NotAllowedError'));}")
-
 ! [L11-S4.1: SEARCH-GLOBAL-RESURRECTION — V85.0]
 ! Эвристический проход для ВСЕХ значимых поисковых систем мира.
 ! Разрешаем структуру (document), стили (css) и живой поиск (xhr).
@@ -873,23 +863,21 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     safeDefine(window, 'sharedStorage', undefined);
     safeDefine(window, 'WebTransport', undefined);
 
-    /** 4. ANTI-MIRRORING & AI-DECEPTION (Обман тепловых карт) **/
-// Блокировка программных кликов по скрытым ссылкам (Anti-Virus)
-    const oClick = HTMLElement.prototype.click;
-    HTMLElement.prototype.click = function() {
-        if (this.tagName === 'A' && this.target === '_blank' && !TRUSTED) {
-            console.warn('Blocked suspicious auto-click');
-            return;
-        }
-        return oClick.apply(this, arguments);
-    };
-
+  /** 4. ANTI-MIRRORING & SENSOR-GHOSTING (Ослепление шпионских сайтов) **/
     const permErr = () => Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));
+    
     if (navigator.mediaDevices) {
+        // Имитируем естественный отказ и отсутствие оборудования
         safeDefine(navigator.mediaDevices, 'getDisplayMedia', permErr);
-        safeDefine(navigator.mediaDevices, 'getUserMedia', undefined);
+        safeDefine(navigator.mediaDevices, 'getUserMedia', permErr);
         safeDefine(navigator.mediaDevices, 'enumerateDevices', () => Promise.resolve([]));
     }
+    
+    // Старый API (для совместимости с древними сайтами-шпионами)
+    if (navigator.getUserMedia) {
+        navigator.getUserMedia = (c, s, e) => e(new DOMException('Permission denied', 'NotAllowedError'));
+    }
+
     // AI-Deception: Джиттер мыши для защиты от Heatmaps
     let lastMove = 0;
     window.addEventListener('mousemove', e => {
@@ -897,6 +885,7 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         if (now - lastMove < 60) e.stopImmediatePropagation();
         lastMove = now;
     }, true);
+    
     safeDefine(window, 'IntersectionObserver', function() { return { observe: noop, unobserve: noop, disconnect: noop }; });
 
 
