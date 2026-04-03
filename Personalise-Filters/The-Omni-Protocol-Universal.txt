@@ -851,6 +851,16 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     safeDefine(navigator, 'userActivation', { isActive: false, hasBeenActive: false });
     safeDefine(navigator, 'maxTouchPoints', 5);
 
+    // [NEW] Деактивация Didomi & Consent API (Газлайтинг согласий)
+    safeDefine(window, 'didomiOnReady', []);
+    safeDefine(window, 'didomiEventListeners', []);
+    window.Didomi = { 
+        isReady: () => true, 
+        getUserConsentStatusForVendor: () => true, 
+        getRequiredPurposes: () => [],
+        on: noop 
+    };
+
     // 3. Блокировка скрытых редиректов (Anti-Stealth-Redirect)
     if (!TRUSTED) {
         let lastAction = Date.now();
@@ -1259,6 +1269,12 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ##body,html:style(overflow: auto !important; position: static !important;)
 ##.ads-container, .ad-box, .cookie-banner, .newsletter-popup, [id*="ad-slot"]
 ##[attributionreporting]:remove-attribute()
+
+! --- [DIDOMI & CONSENT PURGE] ---
+##div[id^="didomi-host"]
+##div[class*="didomi-"]
+###didomi-popup
+##body:style(overflow: auto !important; position: static !important;)
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
