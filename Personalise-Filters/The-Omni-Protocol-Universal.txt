@@ -825,8 +825,8 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 #%#//scriptlet("execute-script", "(function(){
     /** 1. ЯДРО И АДАПТИВНЫЙ ДИСПЕТЧЕР **/
     const host = location.hostname;
-   // Добавь 'google', 'android', 'play.google' в список доверенных
-    const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|cloudflare|challenges\.cloudflare|turnstile)/.test(host); 
+   // МАКСИМАЛЬНЫЙ СПИСОК ИСКЛЮЧЕНИЙ (TRUSTED ZONE)
+    const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase)/.test(host);
     const noop = function(){};
     const rand = (a, b) => a + Math.random() * (b - a);
     
