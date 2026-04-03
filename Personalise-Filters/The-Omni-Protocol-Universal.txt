@@ -1165,6 +1165,85 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         return el;
     };
 
+/** 14. ORBITAL-TOTAL-SCAN & SELF-HEALING (Максимальная защита) **/
+    const sSigh = /eval\(|Function\(|atob\(|btoa\(|document\.write|innerHTML|outerHTML|indexedDB|localStorage/gi;
+    
+    // Эвристика: определяет, является ли код опасным
+    const isSuspicious = (code) => {
+        if (typeof code !== 'string') return false;
+        const hits = code.match(sSigh) || [];
+        // Блокируем, если слишком много системных вызовов в одном куске кода
+        return hits.length > 4 || (code.length > 500 && hits.length > 2);
+    };
+
+    // 1. ТОТАЛЬНЫЙ ПЕРЕХВАТ КОНСТРУКТОРОВ (Песочница)
+    const oEval = window.eval;
+    window.eval = function(code) {
+        if (!TRUSTED && isSuspicious(code)) {
+            console.error('Orbital Deep-Scan: Neutralized eval payload');
+            return null; // Возвращаем null, чтобы не ломать цепочку вызовов
+        }
+        try { return oEval.apply(this, arguments); } catch(e) { return null; }
+    };
+
+    const oFunc = window.Function;
+    window.Function = function() {
+        const args = Array.from(arguments);
+        const code = args[args.length - 1];
+        if (!TRUSTED && isSuspicious(code)) {
+            console.error('Orbital Deep-Scan: Neutralized Function constructor');
+            return noop; // Возвращаем пустую функцию вместо ошибки
+        }
+        return oFunc.apply(this, arguments);
+    };
+
+    // 2. КОНТРОЛЬ ВНЕДРЕНИЯ (DOM-Infection Shield)
+    const oInsert = Element.prototype.insertBefore;
+    const oAppend = Element.prototype.appendChild;
+
+    const sanitizeElement = (el) => {
+        if (!TRUSTED && el.tagName === 'SCRIPT') {
+            if (isSuspicious(el.textContent) || isSuspicious(el.src)) {
+                console.warn('Orbital Shield: Sanitized suspicious script to prevent crash');
+                el.textContent = '/* Neutralized by Orbital Shield */';
+                el.src = ''; 
+                return true;
+            }
+        }
+        return false;
+    };
+
+    Element.prototype.insertBefore = function(el) {
+        sanitizeElement(el);
+        return oInsert.apply(this, arguments);
+    };
+
+    Element.prototype.appendChild = function(el) {
+        sanitizeElement(el);
+        return oAppend.apply(this, arguments);
+    };
+
+    // 3. ИНСПЕКЦИЯ HTML-ИНЪЕКЦИЙ (innerHTML Cleaner)
+    const oSetHTML = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set;
+    Object.defineProperty(Element.prototype, 'innerHTML', {
+        set: function(val) {
+            if (!TRUSTED && typeof val === 'string' && /<script|on\w+=/i.test(val)) {
+                console.warn('Orbital Deep-Scan: Cleaning dangerous HTML');
+                // Вырезаем скрипты и обработчики событий (onerror, onload и т.д.)
+                val = val.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                         .replace(/\son\w+="[^"]*"/gi, ' data-blocked-event=""');
+            }
+            return oSetHTML.apply(this, [val]);
+        }
+    });
+
+    // 4. ЗАЩИТА ЖИЗНЕННОГО ЦИКЛА (Beforescriptexecute)
+    document.addEventListener('beforescriptexecute', (e) => {
+        if (!TRUSTED && isSuspicious(e.target.textContent)) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }, true);
 
 
 })();")
