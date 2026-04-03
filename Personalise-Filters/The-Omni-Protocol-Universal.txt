@@ -1342,5 +1342,9 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ! Убираем размытие фона, если оно есть
 ##body:style(filter: none !important; -webkit-filter: none !important;)
 
+france3-regions.franceinfo.fr##.didomi-popup-backdrop
+france3-regions.franceinfo.fr##.didomi-notice-popup
+france3-regions.franceinfo.fr##div[id^="didomi-host"]
+france3-regions.franceinfo.fr##body:style(overflow: auto !important; position: static !important; filter: none !important;)
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
