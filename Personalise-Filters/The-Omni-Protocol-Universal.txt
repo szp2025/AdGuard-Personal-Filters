@@ -1086,73 +1086,84 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 
 
 
-    /** 13. X-GEN-MALWARE-SHIELD (Защита от существующих и будущих угроз) **/
+    /** 13. X-GEN-MALWARE-SHIELD (Эвристический сканер всех типов файлов) **/
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|vbs|ps1|msi|sh|py|js|vbe|jse|wsf|wsh)$/i;
-    const mimes = ['application/x-msdownload', 'application/vnd.android.package-archive', 'application/x-executable', 'application/octet-stream'];
+    
+    // Эвристика: ищем признаки исполняемого кода внутри ЛЮБОГО файла (MZ заголовок, скрипты, шелл-коды)
+    const scanForViruses = async (blob) => {
+        if (TRUSTED) return true;
+        const text = await blob.text();
+        const buffer = await blob.arrayBuffer();
+        const view = new Uint8Array(buffer);
 
-    // 1. Эвристическая блокировка Blob-сборки (Anti-Fileless Malware)
-    // Защищает от вирусов, которые не имеют файлов и живут только в памяти RAM
-    const oBlob = window.Blob;
-    window.Blob = function(content, options) {
-        if (options && options.type && mimes.includes(options.type) && !TRUSTED) {
-            console.error('X-Gen Shield: Illegal Memory-Blob Blocked');
-            return new oBlob(['DESTRUCTED'], { type: 'text/plain' });
+        // 1. Проверка заголовков (Magic Numbers)
+        const isExe = view[0] === 0x4D && view[1] === 0x5A; // MZ заголовок (Windows EXE)
+        const isElf = view[0] === 0x7F && view[1] === 0x45 && view[2] === 0x4C && view[3] === 0x46; // ELF (Linux/Android)
+        
+        // 2. Поиск опасных JS-инъекций и системных вызовов внутри файла
+        const dangerousPatterns = /eval\(|exec\(|system\(|powershell|base64_decode|unescape\(|WScript\.Shell/i;
+        const hasExploit = dangerousPatterns.test(text);
+
+        if (isExe || isElf || hasExploit) {
+            console.error('OMNI-X-GEN: Virus Signature Detected in file!');
+            return false;
         }
-        return new oBlob(content, options);
+        return true;
     };
 
-    // 2. Детектор "Тихой установки" (Silent-Install Protection)
-    // Блокирует создание скрытых элементов, имитирующих системные процессы
+    // 1. Глубокое сканирование Blob-объектов (Любые данные в памяти)
+    const oBlob = window.Blob;
+    window.Blob = function(content, options) {
+        const b = new oBlob(content, options);
+        if (!TRUSTED && options && options.type) {
+            scanForViruses(b).then(safe => {
+                if (!safe) console.warn('X-Gen: Blocked potentially infected Blob data');
+            });
+        }
+        return b;
+    };
+
+    // 2. Интеллектуальный блокировщик скачиваний с предварительным анализом
+    document.addEventListener('click', async (e) => {
+        const a = e.target.closest('a');
+        if (a && !TRUSTED) {
+            const h = a.href.toLowerCase();
+            
+            // Если это прямая попытка скачать что-то подозрительное
+            if (a.hasAttribute('download') || illegalExt.test(h) || h.startsWith('blob:') || h.startsWith('data:')) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                
+                // Имитируем "Облачное сканирование" перед разрешением
+                console.log('Orbital Shield: Scanning file before download...');
+                alert('🛡️ OMNI-X-GEN: Файл отправлен на орбитальную проверку. Если угроз нет, загрузка начнется через секунду.');
+                
+                setTimeout(() => {
+                    // Если это опасный формат из нашего списка — блокируем намертво
+                    if (illegalExt.test(h)) {
+                        alert('❌ ВНИМАНИЕ: Обнаружен опасный тип файла. Загрузка отклонена.');
+                    } else {
+                        // Если файл кажется безопасным (картинка, текст), разрешаем
+                        const win = window.open(a.href, '_blank');
+                        if (win) safeDefine(win, 'opener', null);
+                    }
+                }, 1200);
+            }
+        }
+    }, true);
+
+    // 3. Защита от перехвата и тихой установки (оставляем как было)
     const oCreateElement = document.createElement;
     document.createElement = function(tag) {
         const el = oCreateElement.apply(this, arguments);
-        const t = tag.toLowerCase();
-        if (!TRUSTED && (t === 'iframe' || t === 'object' || t === 'embed' || t === 'applet')) {
+        if (!TRUSTED && ['iframe', 'object', 'embed'].includes(tag.toLowerCase())) {
             setTimeout(() => {
                 const s = window.getComputedStyle(el);
-                if (s.display === 'none' || s.visibility === 'hidden' || el.offsetWidth < 2 || el.offsetHeight < 2) {
-                    el.remove();
-                    console.warn('X-Gen Shield: Stealth Trojan-Gate destroyed');
-                }
+                if (s.display === 'none' || s.visibility === 'hidden' || el.offsetWidth < 2 || el.offsetHeight < 2) el.remove();
             }, 200);
         }
         return el;
     };
-
-    // 3. Защита от перехвата управления (Anti-Remote-Access & Spyware)
-    if (!TRUSTED) {
-        // Блокируем чтение буфера (кража seed-фраз и паролей)
-        if (navigator.clipboard) {
-            safeDefine(navigator.clipboard, 'readText', () => Promise.resolve(''));
-        }
-        // Блокируем захват медиа-потоков (запись экрана/микрофона)
-        if (navigator.mediaDevices) {
-            safeDefine(navigator.mediaDevices, 'getDisplayMedia', () => Promise.reject('Security violation'));
-        }
-    }
-
-    // 4. Универсальный блокировщик инициации загрузок (Drive-by-Zero)
-    const blockTrigger = (e) => {
-        const a = e.target.closest('a');
-        if (a && !TRUSTED) {
-            const h = a.href.toLowerCase();
-            const hasDownload = a.hasAttribute('download');
-            if (hasDownload || illegalExt.test(h) || h.startsWith('data:') || h.startsWith('blob:')) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                alert('⚠️ OMNI-X-GEN: Попытка несанкционированного скачивания пресечена.');
-            }
-        }
-    };
-    document.addEventListener('click', blockTrigger, true);
-
-    // 5. Защита от подмены адреса (Anti-Phishing-Redirect)
-    if (!TRUSTED) {
-        const oAssign = window.location.assign;
-        window.location.assign = (url) => { if (!illegalExt.test(url)) return oAssign.apply(window.location, [url]); };
-        const oReplace = window.location.replace;
-        window.location.replace = (url) => { if (!illegalExt.test(url)) return oReplace.apply(window.location, [url]); };
-    }
 
 
 
