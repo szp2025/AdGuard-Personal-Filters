@@ -216,14 +216,14 @@
 @@||*$scriptlet(prevent-addEventListener, deviceorientation),domain=~yandex.ru|~google.com|~youtube.com
 
 
-! --- [HARD WHITE-LIST ДЛЯ КАПЧИ И API] ---
+! --- [NUCLEAR WHITE-LIST FOR CAPTCHA] ---
 @@||challenges.cloudflare.com^$jsinject
 @@||turnstile.cloudflare.com^$jsinject
 @@||hcaptcha.com^$jsinject
 @@||recaptcha.net^$jsinject
-@@||gstatic.com/recaptcha^$jsinject
-@@||sdk.privacy-center.org^$jsinject,domain=france3-regions.franceinfo.fr|franceinfo.fr
-
+@@||dash.infinityfree.com^$jsinject
+@@||infinityfree.com^$jsinject
+@@||3.html-load.com^$jsinject
 
 ! =========================================================================
 ! [STAGE 2] BLOAT-REAPER: СИСТЕМНАЯ ЧИСТКА (BLOATWARE)
