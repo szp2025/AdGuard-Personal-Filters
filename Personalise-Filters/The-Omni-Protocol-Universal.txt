@@ -885,38 +885,52 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     if (!TRUSTED) setInterval(killClickjacking, 2000);
 
     
-    /** 3. CRYPTO & SANDBOX-KILLER (Privacy Sandbox Annihilation) **/
-    ['ethereum', 'solana', 'bitcoin', 'cardano', 'phantom'].forEach(w => safeDefine(window, w, undefined));
-    // Убиваем рекламные аукционы Google (S3 Sandbox-Killer)
-    safeDefine(document, 'browsingTopics', undefined);
-    safeDefine(navigator, 'runAdAuction', undefined);
-    safeDefine(window, 'sharedStorage', undefined);
-    safeDefine(window, 'WebTransport', undefined);
+    /** 3. ORBITAL-TRACKER-DECEPTION (Canvas/GPU/Audio/Sensors) **/
+    // 1. Динамическая дезинформация Canvas (2D & WebGL)
+    const noise = (ctx) => {
+        const oGetImageData = ctx.getImageData;
+        ctx.getImageData = function() {
+            const res = oGetImageData.apply(this, arguments);
+            if (!TRUSTED) {
+                // Микро-шум в 1 пиксель ломает хэш отпечатка, не меняя картинку
+                res.data[0] = res.data[0] + (Math.random() > 0.5 ? 1 : -1);
+            }
+            return res;
+        };
+    };
+    noise(HTMLCanvasElement.prototype.getContext('2d').__proto__); 
+    if (window.OffscreenCanvasRenderingContext2D) noise(OffscreenCanvasRenderingContext2D.prototype);
 
-  /** 4. ANTI-MIRRORING & SENSOR-GHOSTING (Ослепление шпионских сайтов) **/
-    const permErr = () => Promise.reject(new DOMException('Permission denied', 'NotAllowedError'));
-    
-    if (navigator.mediaDevices) {
-        // Имитируем естественный отказ и отсутствие оборудования
-        safeDefine(navigator.mediaDevices, 'getDisplayMedia', permErr);
-        safeDefine(navigator.mediaDevices, 'getUserMedia', permErr);
-        safeDefine(navigator.mediaDevices, 'enumerateDevices', () => Promise.resolve([]));
-    }
-    
-    // Старый API (для совместимости с древними сайтами-шпионами)
-    if (navigator.getUserMedia) {
-        navigator.getUserMedia = (c, s, e) => e(new DOMException('Permission denied', 'NotAllowedError'));
-    }
+    // 2. Спуфинг GPU: Маскировка под массовый сегмент (Intel Iris Xe)
+    const oGetParam = WebGLRenderingContext.prototype.getParameter;
+    const gpuMocks = { 37445: 'Intel Inc.', 37446: 'Intel(R) Iris(R) Xe Graphics', 7936: 'WebKit', 7937: 'WebKit WebGL' };
+    WebGLRenderingContext.prototype.getParameter = function(p) {
+        return (!TRUSTED && gpuMocks[p]) ? gpuMocks[p] : oGetParam.apply(this, arguments);
+    };
 
-    // AI-Deception: Джиттер мыши для защиты от Heatmaps
+    // 3. Audio-Fingerprint Noise (Защита аудио-контекста)
+    const oGetChannelData = AudioBuffer.prototype.getChannelData;
+    AudioBuffer.prototype.getChannelData = function() {
+        const data = oGetChannelData.apply(this, arguments);
+        if (!TRUSTED) { for (let i = 0; i < 10; i++) data[i] += (Math.random() * 0.0000001); }
+        return data;
+    };
+
+    // 4. Privacy Sandbox Annihilation (Убийца рекламных аукционов)
+    ['browsingTopics', 'runAdAuction'].forEach(p => safeDefine(navigator, p, undefined));
+    ['sharedStorage', 'WebTransport', 'InterestCohort'].forEach(w => safeDefine(window, w, undefined));
+
+    // 5. Sensor-Vacuum & Battery-Cloak (Вакуум датчиков)
+    ['DeviceMotionEvent', 'DeviceOrientationEvent', 'IdleDetector'].forEach(d => safeDefine(window, d, undefined));
+    if (navigator.getBattery) navigator.getBattery = () => Promise.resolve({ charging: true, level: 1.0, chargingTime: 0, dischargingTime: Infinity });
+
+    // AI-Deception: Джиттер мыши (Защита от Heatmaps/Анализа поведения)
     let lastMove = 0;
     window.addEventListener('mousemove', e => {
         let now = Date.now();
-        if (now - lastMove < 60) e.stopImmediatePropagation();
+        if (now - lastMove < 50) e.stopImmediatePropagation(); // Срезаем слишком частые замеры
         lastMove = now;
     }, true);
-    
-    safeDefine(window, 'IntersectionObserver', function() { return { observe: noop, unobserve: noop, disconnect: noop }; });
 
 
 
@@ -943,7 +957,7 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     };
     safeDefine(TextMetrics.prototype, 'width', Math.round);
 
-/** 7. DATA POISONING & INPUT-HARDENING **/
+    /** 7. DATA POISONING & INPUT-HARDENING **/
     safeDefine(window, 'onbeforeunload', null);
     if (!TRUSTED) safeDefine(document, 'getSelection', () => null);
 
@@ -987,7 +1001,7 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         } catch(e){}
     })();
 
-/** 9. СЕТЕВОЙ ИНТЕЛЛЕКТ, MOCKS & PORT-GASLIGHTING **/
+    /** 9. СЕТЕВОЙ ИНТЕЛЛЕКТ, MOCKS & PORT-GASLIGHTING **/
     const MOCKS = ['ga', 'gaGlobal', 'fbq', 'Mixpanel', 'Amplitude', 'Didomi', '__tcfapi', 'OneTrust'];
     MOCKS.forEach(m => { if (!(m in window)) window[m] = noop; });
 
@@ -1036,44 +1050,9 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 
 
 
-/** 12. COOKIE-SHREDDER (Авто-очистка следов) **/
-    const cleanStorage = () => {
-        try {
-            window.localStorage.clear();
-            window.sessionStorage.clear();
-            document.cookie.split(';').forEach(c => {
-                document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-            });
-        } catch (e) {}
-    };
-    if (!TRUSTED) window.addEventListener('beforeunload', cleanStorage);
+   
 
-// Canvas Stealth (Подмена отпечатка холста)
-    const off = HTMLCanvasElement.prototype.getContext;
-    HTMLCanvasElement.prototype.getContext = function(t) {
-        const ctx = off.apply(this, arguments);
-        if (ctx && (t === '2d' || t === 'webgl')) {
-            const getImageData = ctx.getImageData;
-            ctx.getImageData = function() {
-                const res = getImageData.apply(this, arguments);
-                // Добавляем микро-шум в данные пикселей (незаметно для глаза, но ломает ID)
-                res.data[0] = res.data[0] + (Math.random() > 0.5 ? 1 : -1);
-                return res;
-            };
-        }
-        return ctx;
-    };
-
-// Kill Beacon (Запрет скрытой отправки при закрытии)
-    if (navigator.sendBeacon) {
-        navigator.sendBeacon = function(u, d) {
-            if (isTr(u)) return true; // Делаем вид, что отправили
-            return oF.apply(navigator, [u, {method:'POST', body:d, keepalive:true}]);
-        };
-    }
-
-
-/** 13. X-GEN-MALWARE-SHIELD (Защита от существующих и будущих угроз) **/
+    /** 13. X-GEN-MALWARE-SHIELD (Защита от существующих и будущих угроз) **/
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|vbs|ps1|msi|sh|py|js|vbe|jse|wsf|wsh)$/i;
     const mimes = ['application/x-msdownload', 'application/vnd.android.package-archive', 'application/x-executable', 'application/octet-stream'];
 
