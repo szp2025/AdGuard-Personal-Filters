@@ -100,7 +100,7 @@
 @@||googleapis.com^$app=com.android.vending
 @@||googleusercontent.com^$app=com.android.vending
 @@||gvt1.com^$app=com.android.vending
-@@||play-fe.googleapis.com^$app=com.android.vending
+@@||play-fe.googleapis.com^$important,app=com.android.vending
 @@||googleapis.com^$app=com.android.vending
 @@||gvt1.com^$app=com.android.vending
 
