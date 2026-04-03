@@ -933,29 +933,52 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     }, true);
 
 
+/** 4. ORBITAL-COOKIE-SHREDDER & STORAGE-LOCK (Стерилизация памяти) **/
+    // 1. Блокировка записи идентификаторов (Storage-Lock)
+    if (!TRUSTED) {
+        const lock = (obj) => {
+            try {
+                const proto = Object.getPrototypeOf(obj);
+                // Заменяем методы записи на пустышки (Сайт думает, что сохранил, но нет)
+                safeDefine(proto, 'setItem', noop);
+                safeDefine(proto, 'getItem', () => null);
+                safeDefine(proto, 'removeItem', noop);
+                safeDefine(proto, 'clear', noop);
+            } catch(e) {}
+        };
+        lock(window.localStorage);
+        lock(window.sessionStorage);
+        
+        // 2. Уничтожение IndexedDB (Место хранения вечных куки)
+        if (window.indexedDB) {
+            safeDefine(window.indexedDB, 'open', () => ({ onsuccess: noop, onerror: noop }));
+        }
+    }
 
-    /** 5. HARDWARE-CLOAK (Сенсоры, Батарея, Сеть) **/
-    if (navigator.clipboard) safeDefine(navigator.clipboard, 'readText', () => Promise.resolve(''));
-    if (navigator.usb) safeDefine(navigator.usb, 'getDevices', () => Promise.resolve([]));
-    // Датчики и Батарея (S4 Hardware-Cloak)
-    ['DeviceMotionEvent', 'DeviceOrientationEvent', 'IdleDetector'].forEach(d => safeDefine(window, d, undefined));
-    if (navigator.getBattery) navigator.getBattery = () => Promise.resolve({ charging: true, level: 1.0, chargingTime: 0, dischargingTime: Infinity });
-    // Эмуляция сети 4G
-    safeDefine(navigator, 'connection', { effectiveType: '4g', rtt: 50, downlink: 10, saveData: false });
-
-    /** 6. TIMING-SHIELD & RENDER-PROTECT (Защита CPU/GPU) **/
-    // Защита от микро-замеров CPU (S5 Timing-Shield)
-    performance.now = () => Date.now();
-    safeDefine(screen, 'updateInterval', 16.67);
-    window.requestAnimationFrame = (cb) => window.setTimeout(cb, 16);
-    
-    // Нанопиксельный спуфинг GPU (S1 Engine-Stealth)
-    const getP = WebGLRenderingContext.prototype.getParameter;
-    WebGLRenderingContext.prototype.getParameter = function(p) {
-        if (p == 37445 || p == 37446) return 'Intel Inc.'; // Имитация Intel GPU
-        return getP.apply(this, arguments);
+    // 3. Авто-деструкция следов при выходе (Shredder-Trigger)
+    const purgeAll = () => {
+        if (TRUSTED) return;
+        try {
+            // Мгновенное устаревание всех куки через заголовок expires
+            document.cookie.split(';').forEach(c => {
+                document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/');
+            });
+            // Очистка кэша ServiceWorker
+            if (navigator.serviceWorker) {
+                navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
+            }
+            console.log('Orbital Shield: Storage sterilized');
+        } catch(e) {}
     };
-    safeDefine(TextMetrics.prototype, 'width', Math.round);
+
+    // Срабатывает при любой попытке закрыть или сменить страницу
+    window.addEventListener('beforeunload', purgeAll);
+    window.addEventListener('unload', purgeAll);
+
+    // 4. Запрет Beacon API (Скрытая отправка аналитики при закрытии)
+    if (navigator.sendBeacon) {
+        navigator.sendBeacon = function() { return true; }; // Имитируем успех отправки
+    }
 
     /** 7. DATA POISONING & INPUT-HARDENING **/
     safeDefine(window, 'onbeforeunload', null);
@@ -1043,14 +1066,7 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     };
     if (navigator.serviceWorker) navigator.serviceWorker.register = () => Promise.reject();
 
-    /** 11. ЦИФРОВОЙ КАМУФЛЯЖ (Экран & Скролл) **/
-    const s = { width: 360, height: 800 };
-    [screen, window].forEach(o => { if (o) Object.keys(s).forEach(p => safeDefine(o, p, s[p])); });
-    safeDefine(window, 'matchMedia', () => ({ matches: false, addListener: noop, removeListener: noop }));
 
-
-
-   
 
     /** 13. X-GEN-MALWARE-SHIELD (Защита от существующих и будущих угроз) **/
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|vbs|ps1|msi|sh|py|js|vbe|jse|wsf|wsh)$/i;
