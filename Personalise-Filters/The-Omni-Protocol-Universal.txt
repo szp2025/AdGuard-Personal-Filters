@@ -933,7 +933,7 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     if (!TRUSTED) setInterval(killClickjacking, 2000);
 
 
-/** 5. ORBITAL-PORT-GASLIGHTING & NET-SHIELD (Сетевой интеллект) **/
+    /** 5. ORBITAL-PORT-GASLIGHTING & NET-SHIELD (Сетевой интеллект) **/
     const MOCKS = ['ga', 'gaGlobal', 'fbq', 'Mixpanel', 'Amplitude', 'Didomi', '__tcfapi', 'OneTrust'];
     MOCKS.forEach(m => { if (!(m in window)) window[m] = noop; });
 
