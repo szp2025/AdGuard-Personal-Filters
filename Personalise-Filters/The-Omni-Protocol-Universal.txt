@@ -906,16 +906,29 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     };
     safeDefine(TextMetrics.prototype, 'width', Math.round);
 
-    /** 7. DATA POISONING & INPUT-HARDENING **/
+/** 7. DATA POISONING & INPUT-HARDENING **/
     safeDefine(window, 'onbeforeunload', null);
     if (!TRUSTED) safeDefine(document, 'getSelection', () => null);
-    // Авто-отключение предиктивного ввода (S2 Input-Hardening)
-    document.querySelectorAll('input').forEach(i => {
-        if (i.type === 'password' || i.type === 'tel' || i.name.includes('card')) {
-            i.setAttribute('autocomplete', 'off');
-            if (i.type === 'password') i.setAttribute('disable_predictive_text', 'true');
-        }
-    });
+
+    // Улучшенная защита ввода (S2 Input-Hardening)
+    const hardenInputs = () => {
+        document.querySelectorAll('input').forEach(i => {
+            // Добавляем 'tel' и проверку на карты
+            if (i.type === 'password' || i.type === 'tel' || i.name.includes('card') || i.id.includes('card')) {
+                if (i.getAttribute('autocomplete') !== 'off') {
+                    i.setAttribute('autocomplete', 'off');
+                    i.setAttribute('autocorrect', 'off');
+                    i.setAttribute('spellcheck', 'false');
+                }
+                if (i.type === 'password') i.setAttribute('disable_predictive_text', 'true');
+            }
+        });
+    };
+
+    // Запускаем сразу и следим за изменениями на странице
+    hardenInputs();
+    const observer = new MutationObserver(hardenInputs);
+    observer.observe(document.documentElement, { childList: true, subtree: true });
 
     /** 8. URL-LEAK CLEANER & GHOST-SEARCH **/
     (function urlPurify(){
