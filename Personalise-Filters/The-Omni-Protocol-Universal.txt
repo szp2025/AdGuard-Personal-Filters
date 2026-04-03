@@ -1039,40 +1039,75 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
     }
 
 
-/** 13. MALWARE-EXTERMINATOR (Анти-вирусный заслон) **/
-    // 1. Блокировка автоматического скачивания опасных расширений
-    const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|vbs|ps1|msi)$/i;
-    
-    // Перехват создания ссылок для скачивания (Blob/ObjectUrl)
-    const oCreateURL = URL.createObjectURL;
-    URL.createObjectURL = function(blob) {
-        if (blob && blob.type && blob.type.match(/application\/(x-msdownload|vnd\.android\.package-archive)/)) {
-            console.error('Blocked malicious file blob creation');
-            return 'javascript:void(0)';
+/** 13. X-GEN-MALWARE-SHIELD (Защита от существующих и будущих угроз) **/
+    const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|vbs|ps1|msi|sh|py|js|vbe|jse|wsf|wsh)$/i;
+    const mimes = ['application/x-msdownload', 'application/vnd.android.package-archive', 'application/x-executable', 'application/octet-stream'];
+
+    // 1. Эвристическая блокировка Blob-сборки (Anti-Fileless Malware)
+    // Защищает от вирусов, которые не имеют файлов и живут только в памяти RAM
+    const oBlob = window.Blob;
+    window.Blob = function(content, options) {
+        if (options && options.type && mimes.includes(options.type) && !TRUSTED) {
+            console.error('X-Gen Shield: Illegal Memory-Blob Blocked');
+            return new oBlob(['DESTRUCTED'], { type: 'text/plain' });
         }
-        return oCreateURL.apply(this, arguments);
+        return new oBlob(content, options);
     };
 
-    // 2. Стерилизация атрибута 'download' (запрет скрытого сохранения)
-    document.addEventListener('click', e => {
+    // 2. Детектор "Тихой установки" (Silent-Install Protection)
+    // Блокирует создание скрытых элементов, имитирующих системные процессы
+    const oCreateElement = document.createElement;
+    document.createElement = function(tag) {
+        const el = oCreateElement.apply(this, arguments);
+        const t = tag.toLowerCase();
+        if (!TRUSTED && (t === 'iframe' || t === 'object' || t === 'embed' || t === 'applet')) {
+            setTimeout(() => {
+                const s = window.getComputedStyle(el);
+                if (s.display === 'none' || s.visibility === 'hidden' || el.offsetWidth < 2 || el.offsetHeight < 2) {
+                    el.remove();
+                    console.warn('X-Gen Shield: Stealth Trojan-Gate destroyed');
+                }
+            }, 200);
+        }
+        return el;
+    };
+
+    // 3. Защита от перехвата управления (Anti-Remote-Access & Spyware)
+    if (!TRUSTED) {
+        // Блокируем чтение буфера (кража seed-фраз и паролей)
+        if (navigator.clipboard) {
+            safeDefine(navigator.clipboard, 'readText', () => Promise.resolve(''));
+        }
+        // Блокируем захват медиа-потоков (запись экрана/микрофона)
+        if (navigator.mediaDevices) {
+            safeDefine(navigator.mediaDevices, 'getDisplayMedia', () => Promise.reject('Security violation'));
+        }
+    }
+
+    // 4. Универсальный блокировщик инициации загрузок (Drive-by-Zero)
+    const blockTrigger = (e) => {
         const a = e.target.closest('a');
-        if (a && a.hasAttribute('download')) {
-            const file = a.getAttribute('href') || '';
-            if (illegalExt.test(file) && !TRUSTED) {
+        if (a && !TRUSTED) {
+            const h = a.href.toLowerCase();
+            const hasDownload = a.hasAttribute('download');
+            if (hasDownload || illegalExt.test(h) || h.startsWith('data:') || h.startsWith('blob:')) {
                 e.preventDefault();
-                alert('⚠️ Omni-Shield: Скачивание исполняемых файлов заблокировано для вашей безопасности.');
+                e.stopImmediatePropagation();
+                alert('⚠️ OMNI-X-GEN: Попытка несанкционированного скачивания пресечена.');
             }
         }
-    }, true);
+    };
+    document.addEventListener('click', blockTrigger, true);
 
-    // 3. Защита от Drive-by-Download (автоматический редирект на файл)
+    // 5. Защита от подмены адреса (Anti-Phishing-Redirect)
     if (!TRUSTED) {
-        const oLocation = window.location.assign;
-        window.location.assign = function(url) {
-            if (illegalExt.test(url)) return;
-            return oLocation.apply(this, arguments);
-        };
+        const oAssign = window.location.assign;
+        window.location.assign = (url) => { if (!illegalExt.test(url)) return oAssign.apply(window.location, [url]); };
+        const oReplace = window.location.replace;
+        window.location.replace = (url) => { if (!illegalExt.test(url)) return oReplace.apply(window.location, [url]); };
     }
+
+
 
 })();")
 
