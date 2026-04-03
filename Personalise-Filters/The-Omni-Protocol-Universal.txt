@@ -100,6 +100,9 @@
 @@||googleapis.com^$app=com.android.vending
 @@||googleusercontent.com^$app=com.android.vending
 @@||gvt1.com^$app=com.android.vending
+@@||play-fe.googleapis.com^$app=com.android.vending
+@@||googleapis.com^$app=com.android.vending
+@@||gvt1.com^$app=com.android.vending
 
 ! Исключаем сервисы Google Play (они часто качают обновления)
 @@||google.com^$app=com.google.android.gms
