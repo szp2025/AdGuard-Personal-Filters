@@ -13,7 +13,243 @@
 
 ! [MEGA-BLOCK I] GLOBAL INFRASTRUCTURE (THE "GREEN CHANNEL")
 ! =========================================================================
-! --- 0. ANTI-COMPROMISE & EXFILTRATION CONTROL (L0) ---
+! =========================================================================
+! [STAGE 1] SOVEREIGN-SHIELD: ГЛОБАЛЬНЫЙ БЕЛЫЙ СПИСОК (AUTH & FINTECH)
+! =========================================================================
+! Твой блок S1 (Google/Apple Auth), S2 (Банки/LCL/CAF), S3 (Разблокировка Play Маркета)
+! Помещаем сюда всё, что начинается на @@||
+
+! --- 5. TRUSTED EXCEPTIONS (Авторизация) ---
+! Исключения для стабильной работы критических сервисов.
+@@||accounts.google.com^$domain=google.com|youtube.com
+@@||passport.yandex.ru^$domain=yandex.ru
+@@||tf1.fr^$domain=tf1.fr
+
+! --- S1: SMART-WHITE (Стерильность) ---
+! Приоритетные исключения для системных обновлений, безопасности и GitHub.
+
+! 1. Разрешаем проверку сертификатов и подписей (критично для HTTPS/S-MIME)
+@@||*$stealth,content-type=application/(pkcs7-signature|x-x509-ca-cert),important
+
+! 2. Принудительный HSTS (защита от понижения протокола до HTTP)
+@@||*$important,header=Strict-Transport-Security
+
+! 3. Google Play Store & Services (разрешаем GVT1 для загрузки обновлений и компонентов)
+@@||gvt1.com^$important,app=com.android.vending|com.google.android.gms
+
+! 4. Локальные и государственные сервисы (Loire Habitat)
+@@||loirehabitat.fr^$important,document
+
+! 5. GitHub (Полный приоритет для девелоперской среды)
+@@||github.com^$important,document,xmlhttprequest,other
+
+! [L11: SOVEREIGN-SHIELD - FINAL v83.0]
+
+! --- S1: AUTH-EVOLUTION (Авторизация) ---
+! Гарантирует работу систем входа Google, Apple, Microsoft и Okta.
+
+! 1. Разблокировка документов и базовых скриптов на доверенных доменах
+@@||accounts.google.com^$important,document,generichide,css,extension,domain=google.com|youtube.com
+@@||appleid.apple.com^$important,document,generichide,css,extension,domain=apple.com|icloud.com
+@@||login.microsoftonline.com^$important,document,generichide,css,extension,domain=microsoft.com|office.com
+@@||okta.com^$important,document,generichide,css,extension
+
+! 2. Разрешение JS-криптографии и скриптов сессии (Stealth-режим)
+! Это необходимо для работы токенов и биометрии (FIDO/Passkey).
+@@||accounts.google.com^$stealth,content-type=application/x-javascript,important
+@@||appleid.apple.com^$stealth,content-type=application/x-javascript,important
+
+! --- S2: FINTECH-SHIELD (Банковский коридор) ---
+! Разрешаем критические запросы для оплаты, KYC и финансовых сервисов.
+
+! 1. Глобальные платежные шлюзы и KYC-провайдеры (Onfido, Jumio, Stripe)
+@@||stripe.com^$important,document,xmlhttprequest,other
+@@||paypal.com^$important,document,xmlhttprequest,other
+@@||visa.com^$important,document,xmlhttprequest,other
+@@||mastercard.com^$important,document,xmlhttprequest,other
+@@||onfido.com^$important,document,xmlhttprequest,other
+@@||jumio.com^$important,document,xmlhttprequest,other
+@@||idnow.io^$important,document,xmlhttprequest,other
+
+! 2. Французский банковский сектор (LCL, CA, BNP, CAF)
+@@||lcl.fr^$important,document,xmlhttprequest,css,font
+@@||caf.fr^$important,document,xmlhttprequest,css,font
+@@||labanquepostale.fr^$important,document,xmlhttprequest,css,font
+@@||societegenerale.fr^$important,document,xmlhttprequest,css,font
+@@||bnpparibas.fr^$important,document,xmlhttprequest,css,font
+@@||credit-agricole.fr^$important,document,xmlhttprequest,css,font
+@@||ca-moncompte.fr^$important,document,xmlhttprequest,css,font
+@@||boursobank.com^$important,document,xmlhttprequest,css,font
+
+! 3. Необанки и финтех (Revolut, N26, Wise, Payoneer)
+@@||revolut.com^$important,document,xmlhttprequest,other
+@@||n26.com^$important,document,xmlhttprequest,other
+@@||wise.com^$important,document,xmlhttprequest,other
+@@||payoneer.com^$important,document,xmlhttprequest,other
+
+! 4. AI и Сервисные платформы (OpenAI, Yandex, Dzen)
+@@||openai.com^$important,document,xmlhttprequest
+@@||chatgpt.com^$important,document,xmlhttprequest
+@@||yandex.ru^$important,document,xmlhttprequest
+@@||dzen.ru^$important,document,xmlhttprequest
+
+! --- РАЗБЛОКИРОВКА GOOGLE PLAY  ---
+! Исключаем основные домены для приложения Маркета
+@@||google.com^$app=com.android.vending
+@@||gstatic.com^$app=com.android.vending
+@@||googleapis.com^$app=com.android.vending
+@@||googleusercontent.com^$app=com.android.vending
+@@||gvt1.com^$app=com.android.vending
+
+! Исключаем сервисы Google Play (они часто качают обновления)
+@@||google.com^$app=com.google.android.gms
+@@||gstatic.com^$app=com.google.android.gms
+
+! Смягчаем агрессивную блокировку для системных процессов
+@@||google.*/ads/sponsored*^$app=com.android.vending
+
+
+! --- [OMNI-SEARCH-MASTER] Глобальное разрешение + Фикс для Dzen/Yandex ---
+! Обеспечивает работу поисковых систем и их динамических элементов.
+
+! 1. Западные и приватные поисковики (Google, Bing, DuckDuckGo, Brave, Qwant)
+@@||google.*^$important,document,xmlhttprequest,generichide,css
+@@||bing.com^$important,document,xmlhttprequest,generichide,css
+@@||duckduckgo.com^$important,document,xmlhttprequest,generichide,css
+@@||brave.com^$important,document,xmlhttprequest,generichide,css
+@@||qwant.com^$important,document,xmlhttprequest,generichide,css
+@@||ecosia.org^$important,document,xmlhttprequest,generichide,css
+@@||startpage.com^$important,document,xmlhttprequest,generichide,css
+
+! 2. RU-сегмент: Yandex, Dzen, Mail.ru (Исправление работы ленты и поиска)
+@@||yandex.ru^$important,document,xmlhttprequest,generichide,css
+@@||ya.ru^$important,document,xmlhttprequest,generichide,css
+@@||dzen.ru^$important,document,xmlhttprequest,generichide,css
+@@||mail.ru^$important,document,xmlhttprequest,generichide,css
+
+! 3. Азиатский сегмент (Baidu, Naver, Sogou)
+@@||baidu.com^$important,document,xmlhttprequest,generichide,css
+@@||naver.com^$important,document,xmlhttprequest,generichide,css
+@@||sogou.com^$important,document,xmlhttprequest,generichide,css
+
+! --- [DZEN-INFRA-PATCH] Разрешение для контента Дзена ---
+! Обеспечивает подгрузку статики и API для работы ленты и видео.
+
+! 1. Инфраструктура Дзена (API, видео-плеер, бесконечная лента)
+@@||dzeninfra.ru^$important,xmlhttprequest,script,domain=dzen.ru,tag=DZEN_FIX
+
+! 2. Статические ресурсы Яндекса (Шрифты, иконки, JS-библиотеки)
+! Ограничиваем область действия только Дзеном и Яндексом для безопасности.
+@@||yastatic.net^$important,script,domain=dzen.ru|yandex.ru|ya.ru,tag=DZEN_FIX
+
+! --- [L11-S4.2: OMNI-DNS-TURBO] ---
+! Ускорение резолвинга: исключаем избыточные типы DNS-запросов для поисковиков.
+! Оставляем только чистые A/AAAA для мгновенного отклика.
+
+@@||google.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||yandex.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||ya.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||bing.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||duckduckgo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||baidu.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||naver.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||yahoo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+@@||qwant.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
+
+! 3. Защита FTP/FTPS (Изоляция для стабильности передачи файлов).
+@@||ftp:*^$important
+@@||ftps:*^$important
+
+! Разрешаем критические узлы авторизации и синхронизации профиля Google.
+@@||accounts.google.com^$important,domain=~samsung.com|~lg.com|~sony.com
+@@||android.clients.google.com^$important
+@@||identitytoolkit.googleapis.com^$important
+@@||oauthaccountmanager.googleapis.com^$important
+
+! Разрешаем проверку интернет-соединения Samsung (чтобы ТВ не писал "Нет сети").
+@@||samsungcloudsolution.com^$important
+@@||samsungotn.net^$important,domain=~samsung.com
+! Разрешаем базовый API YouTube для работы интерфейса (плитки, поиск).
+@@||youtubei.googleapis.com^$important,domain=~samsung.com
+
+
+! [VIDEO-STREAM-STABILITY] Исключения для стабильности 4K-потока и YouTube TV.
+! Отключаем HTTPS-дешифровку для видео-сегментов (снижает нагрузку на CPU и фиксит буферизацию).
+@@||googlevideo.com^$important,domain=~samsung.com|~lg.com|~sony.com
+@@||youtube.com^$important,domain=~samsung.com|~lg.com|~sony.com
+@@||ytimg.com^$important,domain=~samsung.com|~lg.com|~sony.com
+
+! [SOCIAL-STABILITY] Исключения для Facebook и Meta-сервисов.
+! Отключаем HTTPS-дешифровку для обхода Certificate Pinning (фиксит загрузку ленты).
+@@||facebook.com^$important,domain=~samsung.com
+@@||fbcdn.net^$important,domain=~samsung.com
+@@||fbsbx.com^$important,domain=~samsung.com
+@@||messenger.com^$important,domain=~samsung.com
+
+! [CAST-STABILITY] Белый коридор для сопряжения Youtube ReVanced -> TV.
+! Разрешаем локальный SSDP/mDNS для обнаружения устройств.
+@@||239.255.255.250^$important
+@@||224.0.0.251^$important
+
+! [GALAXY-STORE-SPEEDUP] Ускорение обновлений Samsung Galaxy Store.
+! Пропускаем CDN и сервера обновлений без проверки (фиксит долгую загрузку).
+@@||galaxy.store^$important
+@@||samsungcloudsolution.com^$important
+@@||samsungcloudsolution.net^$important
+@@||samsungapps.com^$important
+@@||samsung.otaupdate.com^$important
+
+! [CAST-STABILITY] Стабильный мост для трансляций (ReVanced/SmartTube).
+! 1. Разрешаем сопряжение (Lounge API). Ограничено только для домена YouTube.
+@@||youtube.com/api/lounge/*^$important,domain=youtube.com
+
+! 2. Разрешаем обнаружение устройств (DIAL/Cast Setup).
+@@||google.com/cast/setup/*^$important
+
+! 3. Дополнение: Разрешаем поиск устройств через SSDP/mDNS (Эвристика)
+@@||239.255.255.250^$important,tag=CAST_FIX
+! --- [OMNI-SMART-BYPASS-V15.0] Динамическая адаптация для PHP/Legacy-платформ ---
+@@||*$scriptlet(abort-current-inline-script, eval),domain=~yandex.ru|~google.com|~youtube.com
+@@||*$scriptlet(prevent-addEventListener, deviceorientation),domain=~yandex.ru|~google.com|~youtube.com
+
+
+
+! =========================================================================
+! [STAGE 2] BLOAT-REAPER: СИСТЕМНАЯ ЧИСТКА (BLOATWARE)
+! =========================================================================
+! Твой блок S3 (Samsung Cloud, IronSource, Рекламные движки)
+! Правила блокировки мусора через ||...^$important,reject
+
+
+
+
+
+
+! =========================================================================
+! [STAGE 3] OMNI-CORE ATOMIC ENGINE (JS-МОНОЛИТ)
+! =========================================================================
+! Наш огромный блок #%#//scriptlet("execute-script", ...)
+! Он идет после сетевых правил, чтобы работать в уже подготовленной среде.
+
+! =========================================================================
+! [STAGE 4] COSMETIC & DOMAIN SPECIFIC
+! =========================================================================
+! Эстетическая чистка (##) и специфические правила для отдельных сайтов.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ! ###########################################################
 ! # THE OMNI-PROTOCOL: ACTIVE IDS & PORT HONEYPOTS (v7.8.5) #
@@ -76,9 +312,7 @@
 
 
 ! --- UNIVERSAL SMART BYPASS ---
-! --- [OMNI-SMART-BYPASS-V15.0] Динамическая адаптация для PHP/Legacy-платформ ---
-@@||*$scriptlet(abort-current-inline-script, eval),domain=~yandex.ru|~google.com|~youtube.com
-@@||*$scriptlet(prevent-addEventListener, deviceorientation),domain=~yandex.ru|~google.com|~youtube.com
+
 
 ! Разрешаем базовую отрисовку, если скриптлеты мешают DOM-структуре
 @@*$document,jsinject,extension,content,~third-party
@@ -148,11 +382,7 @@ $removeparam=/^(utm_[a-z]+|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb
 
 
 
-! --- 5. TRUSTED EXCEPTIONS (Авторизация) ---
-! Исключения для стабильной работы критических сервисов.
-@@||accounts.google.com^$domain=google.com|youtube.com
-@@||passport.yandex.ru^$domain=yandex.ru
-@@||tf1.fr^$domain=tf1.fr
+
 
 ! [L3: PRIVACY-SHIELD — V120.0 — THE INVISIBLE]
 ! Объединенный слой: Media-Spy Protection (L4) + DNS-Cloak Ghost (L6).
@@ -250,24 +480,6 @@ $header=X-Content-Type-Options: nosniff, important
 
 ! [L10: OMNI-MONOLITH - FINAL APEX v82.0]
 
-! --- S1: SMART-WHITE (Стерильность) ---
-! Приоритетные исключения для системных обновлений, безопасности и GitHub.
-
-! 1. Разрешаем проверку сертификатов и подписей (критично для HTTPS/S-MIME)
-@@||*$stealth,content-type=application/(pkcs7-signature|x-x509-ca-cert),important
-
-! 2. Принудительный HSTS (защита от понижения протокола до HTTP)
-@@||*$important,header=Strict-Transport-Security
-
-! 3. Google Play Store & Services (разрешаем GVT1 для загрузки обновлений и компонентов)
-@@||gvt1.com^$important,app=com.android.vending|com.google.android.gms
-
-! 4. Локальные и государственные сервисы (Loire Habitat)
-@@||loirehabitat.fr^$important,document
-
-! 5. GitHub (Полный приоритет для девелоперской среды)
-@@||github.com^$important,document,xmlhttprequest,other
-
 ! --- S2: GMS-STRANGLE (Тихое удушение: Чистые домены) ---
 ! Блокировка рекламы и телеметрии Google без использования Regex.
 
@@ -343,55 +555,7 @@ $header=X-Content-Type-Options: nosniff, important
 
 ! ###########################################################
 
-! [L11: SOVEREIGN-SHIELD - FINAL v83.0]
 
-! --- S1: AUTH-EVOLUTION (Авторизация) ---
-! Гарантирует работу систем входа Google, Apple, Microsoft и Okta.
-
-! 1. Разблокировка документов и базовых скриптов на доверенных доменах
-@@||accounts.google.com^$important,document,generichide,css,extension,domain=google.com|youtube.com
-@@||appleid.apple.com^$important,document,generichide,css,extension,domain=apple.com|icloud.com
-@@||login.microsoftonline.com^$important,document,generichide,css,extension,domain=microsoft.com|office.com
-@@||okta.com^$important,document,generichide,css,extension
-
-! 2. Разрешение JS-криптографии и скриптов сессии (Stealth-режим)
-! Это необходимо для работы токенов и биометрии (FIDO/Passkey).
-@@||accounts.google.com^$stealth,content-type=application/x-javascript,important
-@@||appleid.apple.com^$stealth,content-type=application/x-javascript,important
-
-! --- S2: FINTECH-SHIELD (Банковский коридор) ---
-! Разрешаем критические запросы для оплаты, KYC и финансовых сервисов.
-
-! 1. Глобальные платежные шлюзы и KYC-провайдеры (Onfido, Jumio, Stripe)
-@@||stripe.com^$important,document,xmlhttprequest,other
-@@||paypal.com^$important,document,xmlhttprequest,other
-@@||visa.com^$important,document,xmlhttprequest,other
-@@||mastercard.com^$important,document,xmlhttprequest,other
-@@||onfido.com^$important,document,xmlhttprequest,other
-@@||jumio.com^$important,document,xmlhttprequest,other
-@@||idnow.io^$important,document,xmlhttprequest,other
-
-! 2. Французский банковский сектор (LCL, CA, BNP, CAF)
-@@||lcl.fr^$important,document,xmlhttprequest,css,font
-@@||caf.fr^$important,document,xmlhttprequest,css,font
-@@||labanquepostale.fr^$important,document,xmlhttprequest,css,font
-@@||societegenerale.fr^$important,document,xmlhttprequest,css,font
-@@||bnpparibas.fr^$important,document,xmlhttprequest,css,font
-@@||credit-agricole.fr^$important,document,xmlhttprequest,css,font
-@@||ca-moncompte.fr^$important,document,xmlhttprequest,css,font
-@@||boursobank.com^$important,document,xmlhttprequest,css,font
-
-! 3. Необанки и финтех (Revolut, N26, Wise, Payoneer)
-@@||revolut.com^$important,document,xmlhttprequest,other
-@@||n26.com^$important,document,xmlhttprequest,other
-@@||wise.com^$important,document,xmlhttprequest,other
-@@||payoneer.com^$important,document,xmlhttprequest,other
-
-! 4. AI и Сервисные платформы (OpenAI, Yandex, Dzen)
-@@||openai.com^$important,document,xmlhttprequest
-@@||chatgpt.com^$important,document,xmlhttprequest
-@@||yandex.ru^$important,document,xmlhttprequest
-@@||dzen.ru^$important,document,xmlhttprequest
 
 
 ! --- S3: BLOAT-REAPER (Чистка системного мусора) ---
@@ -412,20 +576,7 @@ $header=X-Content-Type-Options: nosniff, important
 ||googleads.g.doubleclick.net^$important,reject,tag=ADS_PURGE
 ||reminders-pa.googleapis.com^$important,empty,tag=ADS_PURGE
 
-! --- РАЗБЛОКИРОВКА GOOGLE PLAY  ---
-! Исключаем основные домены для приложения Маркета
-@@||google.com^$app=com.android.vending
-@@||gstatic.com^$app=com.android.vending
-@@||googleapis.com^$app=com.android.vending
-@@||googleusercontent.com^$app=com.android.vending
-@@||gvt1.com^$app=com.android.vending
 
-! Исключаем сервисы Google Play (они часто качают обновления)
-@@||google.com^$app=com.google.android.gms
-@@||gstatic.com^$app=com.google.android.gms
-
-! Смягчаем агрессивную блокировку для системных процессов
-@@||google.*/ads/sponsored*^$app=com.android.vending
 
 
 
@@ -439,55 +590,6 @@ $header=X-Content-Type-Options: nosniff, important
 ! [L11-S4.1: SEARCH-GLOBAL-RESURRECTION — V85.0]
 ! Эвристический проход для ВСЕХ значимых поисковых систем мира.
 ! Разрешаем структуру (document), стили (css) и живой поиск (xhr).
-
-! --- [OMNI-SEARCH-MASTER] Глобальное разрешение + Фикс для Dzen/Yandex ---
-! Обеспечивает работу поисковых систем и их динамических элементов.
-
-! 1. Западные и приватные поисковики (Google, Bing, DuckDuckGo, Brave, Qwant)
-@@||google.*^$important,document,xmlhttprequest,generichide,css
-@@||bing.com^$important,document,xmlhttprequest,generichide,css
-@@||duckduckgo.com^$important,document,xmlhttprequest,generichide,css
-@@||brave.com^$important,document,xmlhttprequest,generichide,css
-@@||qwant.com^$important,document,xmlhttprequest,generichide,css
-@@||ecosia.org^$important,document,xmlhttprequest,generichide,css
-@@||startpage.com^$important,document,xmlhttprequest,generichide,css
-
-! 2. RU-сегмент: Yandex, Dzen, Mail.ru (Исправление работы ленты и поиска)
-@@||yandex.ru^$important,document,xmlhttprequest,generichide,css
-@@||ya.ru^$important,document,xmlhttprequest,generichide,css
-@@||dzen.ru^$important,document,xmlhttprequest,generichide,css
-@@||mail.ru^$important,document,xmlhttprequest,generichide,css
-
-! 3. Азиатский сегмент (Baidu, Naver, Sogou)
-@@||baidu.com^$important,document,xmlhttprequest,generichide,css
-@@||naver.com^$important,document,xmlhttprequest,generichide,css
-@@||sogou.com^$important,document,xmlhttprequest,generichide,css
-
-! --- [DZEN-INFRA-PATCH] Разрешение для контента Дзена ---
-! Обеспечивает подгрузку статики и API для работы ленты и видео.
-
-! 1. Инфраструктура Дзена (API, видео-плеер, бесконечная лента)
-@@||dzeninfra.ru^$important,xmlhttprequest,script,domain=dzen.ru,tag=DZEN_FIX
-
-! 2. Статические ресурсы Яндекса (Шрифты, иконки, JS-библиотеки)
-! Ограничиваем область действия только Дзеном и Яндексом для безопасности.
-@@||yastatic.net^$important,script,domain=dzen.ru|yandex.ru|ya.ru,tag=DZEN_FIX
-
-! --- [L11-S4.2: OMNI-DNS-TURBO] ---
-! Ускорение резолвинга: исключаем избыточные типы DNS-запросов для поисковиков.
-! Оставляем только чистые A/AAAA для мгновенного отклика.
-
-@@||google.*^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
-@@||yandex.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
-@@||ya.ru^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
-@@||bing.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
-@@||duckduckgo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
-@@||baidu.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
-@@||naver.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
-@@||yahoo.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
-@@||qwant.com^$dnstype=~HTTPS,dnstype=~64,dnstype=~65,important
-
-
 
 ! [L12: OMNI-SENTINEL] Высшая стерилизация сетевых пакетов и заголовков.
 
@@ -543,9 +645,6 @@ $network=tls,pqc=on,pqc_algorithm=ml-kem-1024,hybrid_pqc=on,pqc_strength=maximum
 ||^$networkaddress=quic|http3,reject,domain=~googlevideo.com|~google.com|~yandex.ru|~openai.com|~apple.com|~microsoft.com
 ||^$networkaddress=tls1.0|tls1.1|ssl3.0,reject,important
 
-! 3. Защита FTP/FTPS (Изоляция для стабильности передачи файлов).
-@@||ftp:*^$important
-@@||ftps:*^$important
 
 ! --- S3: GHOST-PACKET (DPI Bypass) ---
 ! Маскировка характеристик пакетов для обхода глубокого анализа трафика (DPI).
@@ -617,31 +716,7 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 ||*.ad.xiaomi.com^$important,reject
 
 
-! Разрешаем критические узлы авторизации и синхронизации профиля Google.
-@@||accounts.google.com^$important,domain=~samsung.com|~lg.com|~sony.com
-@@||android.clients.google.com^$important
-@@||identitytoolkit.googleapis.com^$important
-@@||oauthaccountmanager.googleapis.com^$important
 
-! Разрешаем проверку интернет-соединения Samsung (чтобы ТВ не писал "Нет сети").
-@@||samsungcloudsolution.com^$important
-@@||samsungotn.net^$important,domain=~samsung.com
-! Разрешаем базовый API YouTube для работы интерфейса (плитки, поиск).
-@@||youtubei.googleapis.com^$important,domain=~samsung.com
-
-
-! [VIDEO-STREAM-STABILITY] Исключения для стабильности 4K-потока и YouTube TV.
-! Отключаем HTTPS-дешифровку для видео-сегментов (снижает нагрузку на CPU и фиксит буферизацию).
-@@||googlevideo.com^$important,domain=~samsung.com|~lg.com|~sony.com
-@@||youtube.com^$important,domain=~samsung.com|~lg.com|~sony.com
-@@||ytimg.com^$important,domain=~samsung.com|~lg.com|~sony.com
-
-! [SOCIAL-STABILITY] Исключения для Facebook и Meta-сервисов.
-! Отключаем HTTPS-дешифровку для обхода Certificate Pinning (фиксит загрузку ленты).
-@@||facebook.com^$important,domain=~samsung.com
-@@||fbcdn.net^$important,domain=~samsung.com
-@@||fbsbx.com^$important,domain=~samsung.com
-@@||messenger.com^$important,domain=~samsung.com
 
 ! [L12: EU-FRANCE-STEALTH] Локальная оптимизация для Франции.
 ||ads.samsungads.com^$important,reject
@@ -672,29 +747,6 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 ||8.8.4.4^$important,reject
 ||1.1.1.1^$important,reject
 ||9.9.9.9^$important,reject
-
-! [CAST-STABILITY] Белый коридор для сопряжения Youtube ReVanced -> TV.
-! Разрешаем локальный SSDP/mDNS для обнаружения устройств.
-@@||239.255.255.250^$important
-@@||224.0.0.251^$important
-
-! [GALAXY-STORE-SPEEDUP] Ускорение обновлений Samsung Galaxy Store.
-! Пропускаем CDN и сервера обновлений без проверки (фиксит долгую загрузку).
-@@||galaxy.store^$important
-@@||samsungcloudsolution.com^$important
-@@||samsungcloudsolution.net^$important
-@@||samsungapps.com^$important
-@@||samsung.otaupdate.com^$important
-
-! [CAST-STABILITY] Стабильный мост для трансляций (ReVanced/SmartTube).
-! 1. Разрешаем сопряжение (Lounge API). Ограничено только для домена YouTube.
-@@||youtube.com/api/lounge/*^$important,domain=youtube.com
-
-! 2. Разрешаем обнаружение устройств (DIAL/Cast Setup).
-@@||google.com/cast/setup/*^$important
-
-! 3. Дополнение: Разрешаем поиск устройств через SSDP/mDNS (Эвристика)
-@@||239.255.255.250^$important,tag=CAST_FIX
 
 
 ! [L16: PERIMETER-MONOLITH — V122.1 — GHOST-NODE]
