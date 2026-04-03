@@ -1304,11 +1304,13 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ##.ads-container, .ad-box, .cookie-banner, .newsletter-popup, [id*="ad-slot"]
 ##[attributionreporting]:remove-attribute()
 
-! --- [DIDOMI & CONSENT PURGE] ---
-##div[id^="didomi-host"]
-##div[class*="didomi-"]
-###didomi-popup
-##body:style(overflow: auto !important; position: static !important;)
+! --- [DESKTOP DIDOMI KILLER] ---
+*#*#didomi-host
+*#*.didomi-popup-backdrop
+*#*.didomi-notice-popup
+*#*#didomi-popup
+! Убираем размытие фона, если оно есть
+##body:style(filter: none !important; -webkit-filter: none !important;)
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
