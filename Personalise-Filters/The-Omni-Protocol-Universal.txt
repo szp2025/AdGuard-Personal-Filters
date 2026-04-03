@@ -412,10 +412,22 @@ $header=X-Content-Type-Options: nosniff, important
 ||googleads.g.doubleclick.net^$important,reject,tag=ADS_PURGE
 ||reminders-pa.googleapis.com^$important,empty,tag=ADS_PURGE
 
-! 4. Эвристика спонсорского контента Google
-||google.*/ads/sponsored*^$important,reject,tag=ADS_PURGE
+! --- РАЗБЛОКИРОВКА GOOGLE PLAY  ---
+! Исключаем основные домены для приложения Маркета
 @@||google.com^$app=com.android.vending
 @@||gstatic.com^$app=com.android.vending
+@@||googleapis.com^$app=com.android.vending
+@@||googleusercontent.com^$app=com.android.vending
+@@||gvt1.com^$app=com.android.vending
+
+! Исключаем сервисы Google Play (они часто качают обновления)
+@@||google.com^$app=com.google.android.gms
+@@||gstatic.com^$app=com.google.android.gms
+
+! Смягчаем агрессивную блокировку для системных процессов
+@@||google.*/ads/sponsored*^$app=com.android.vending
+
+
 
 ! [L11-S4.0: SENSOR-GHOSTING v83.0 — THE APEX]
 ! Ослепление шпионских сайтов через эвристическую подмену ответов API.
