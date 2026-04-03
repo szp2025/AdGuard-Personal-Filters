@@ -834,22 +834,56 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         try { Object.defineProperty(obj, prop, { get: () => val, set: noop, configurable: true, enumerable: true }); } catch (e) {} 
     };
 
-    /** 2. GHOST-MODE & ANTI-DETECTION (Deception Layer) **/
-// Защита от подмены родительской вкладки (Tab-Nabbing)
+/** 2. GHOST-MODE & ANTI-PHISHING (Орбитальный заслон и децепция) **/
+    // 1. Защита от Tab-Napping (Разрыв связи с родителем)
     const oOpen = window.open;
     window.open = function(u, t, f) {
         const w = oOpen.apply(this, [u, t, f]);
-        if (w) safeDefine(w, 'opener', null); // Разрываем связь с оригиналом
+        if (w) { try { safeDefine(w, 'opener', null); } catch(e) {} }
         return w;
     };
 
+    // 2. ДЕЦЕПЦИЯ: Скрываем наличие AdGuard и маскируем окружение
     safeDefine(window, 'adblock', false);
     safeDefine(window, 'google_ad_status', 1);
     safeDefine(window, 'adguard_installed', false);
-    // Маскировка под реального пользователя (S2 Interaction-Fake)
     safeDefine(navigator, 'webdriver', false); 
     safeDefine(navigator, 'userActivation', { isActive: false, hasBeenActive: false });
     safeDefine(navigator, 'maxTouchPoints', 5);
+
+    // 3. Блокировка скрытых редиректов (Anti-Stealth-Redirect)
+    if (!TRUSTED) {
+        let lastAction = Date.now();
+        ['click', 'keydown', 'touchstart'].forEach(ev => 
+            document.addEventListener(ev, () => lastAction = Date.now(), {passive:true})
+        );
+        
+        const checkNav = (url) => {
+            const timeSinceAct = Date.now() - lastAction;
+            // Блокируем авто-увод страницы, если юзер не проявлял активности более 10 сек
+            if (timeSinceAct > 10000 && !TRUSTED) { 
+                console.error('Orbital Shield: Blocked suspicious auto-redirect');
+                return false;
+            }
+            return true;
+        };
+    }
+
+    /** 4. ANTI-CLICKJACKING (Защита от невидимых слоев-ловушек) **/
+    const killClickjacking = () => {
+        if (TRUSTED) return;
+        document.querySelectorAll('*').forEach(el => {
+            const s = window.getComputedStyle(el);
+            // Если элемент прозрачный (opacity: 0), но активен для клика — это Clickjacking
+            if (s.opacity === '0' && s.pointerEvents !== 'none' && (el.offsetWidth > 10 || el.offsetHeight > 10)) {
+                el.style.pointerEvents = 'none';
+                el.style.zIndex = '-9999';
+                console.warn('Orbital Shield: Clickjacking layer neutralized');
+            }
+        });
+    };
+    if (!TRUSTED) setInterval(killClickjacking, 2000);
+
     
     /** 3. CRYPTO & SANDBOX-KILLER (Privacy Sandbox Annihilation) **/
     ['ethereum', 'solana', 'bitcoin', 'cardano', 'phantom'].forEach(w => safeDefine(window, w, undefined));
