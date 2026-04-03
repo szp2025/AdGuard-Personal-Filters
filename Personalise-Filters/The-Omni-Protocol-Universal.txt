@@ -891,10 +891,12 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
         return oF.apply(this, arguments);
     };
 
-window.XMLHttpRequest.prototype.open = function(m, u){ 
+   window.XMLHttpRequest.prototype.open = function(m, u){ 
     this._u = u; 
-    // Блокируем порты ТОЛЬКО если сайт не в списке TRUSTED
-    if (!TRUSTED && u && typeof u === 'string' && u.match(/:8080|:8443|:9000|:8888/)) { 
+    // Если это домен Google или Android — вообще не трогаем порты
+    if (TRUSTED) return oX.apply(this, arguments); 
+    
+    if (u && typeof u === 'string' && u.match(/:8080|:8443|:9000|:8888/)) { 
         safeDefine(this, 'status', 408); return; 
     }
     return oX.apply(this, arguments); 
