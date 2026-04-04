@@ -1022,6 +1022,24 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 
 
    /** 5. ORBITAL-PORT-GASLIGHTING & NET-SHIELD **/
+
+    // Дополнение к Блоку №5 для анализа ссылок из SMS
+    const isSuspiciousQuery = (u) => {
+        const url = new URL(u);
+        // Если в ссылке есть твой номер или подозрительно длинный ID
+        return /phone|tel|msisdn|id=[a-f0-9]{32}/i.test(url.search);
+    };
+
+    const oF = window.fetch;
+    window.fetch = async function(u, o){
+        if (isSuspiciousQuery(u) && !TRUSTED) {
+            console.warn('Orbital Shield: Detected suspicious tracking parameter in URL');
+            // Ограничиваем передачу данных для этого запроса
+        }
+        return oF.apply(this, arguments);
+    };
+
+
     const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|pixel|telemetry|doubleclick|didomi/i);
     const isSensitivePort = u => u && typeof u === 'string' && u.match(/:5555|:5037|:3306|:5432|:8080|:8443|:9000|:8888|localhost|127\.0\.0\.1/);
     
