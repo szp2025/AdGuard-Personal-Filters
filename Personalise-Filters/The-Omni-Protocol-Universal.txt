@@ -1403,4 +1403,35 @@ france3-regions.franceinfo.fr##body:style(overflow: auto !important; position: s
 ! Запрещает отправку скрытых данных при заполнении форм регистрации
 $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|~youtube.com
 
+! ——————————————————————————————————————————————————————————————————————
+! DEEP TRAFFIC SANITIZATION — Глубокая очистка и анти-аналитика
+! ——————————————————————————————————————————————————————————————————————
+
+! 1. Блокировка CNAME-маскировки и скрытых алиасов трекеров
+||*.tracking.*^
+||*.analytics.*^
+||*-stats.*^
+
+! 2. Блокировка систем "записи сессий" (Session Replay)
+! Эти сервисы буквально записывают твои клики и движения мыши
+||logrocket.io^
+||sentry.io^
+||browser-intake-datadoghq.com^
+||fullstory.com^
+||hotjar.com^
+
+! 3. Блокировка API-сенсоров (чтобы не знали наклон и тряску телефона)
+||generic-sensor.googleapis.com^
+$csp=sensor-access 'none'
+
+! 4. Защита от деанонимизации через шрифты (Font Enumeration)
+! Запрещает сайтам сканировать список установленных у тебя шрифтов
+$csp=font-src 'self' data: fonts.gstatic.com;
+
+! 5. Блокировка "умных" чатов поддержки, которые следят за вводом текста
+! (Те самые чаты, которые видят, что ты пишешь, еще до нажатия Enter)
+||intercom.io^
+||intercomcdn.com^
+||drift.com^
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
