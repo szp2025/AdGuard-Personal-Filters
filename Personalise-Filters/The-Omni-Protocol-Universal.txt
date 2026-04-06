@@ -1434,4 +1434,25 @@ $csp=font-src 'self' data: fonts.gstatic.com;
 ||intercomcdn.com^
 ||drift.com^
 
+
+
+
+! ——————————————————————————————————————————————————————————————————————
+! DPI BYPASS & TRAFFIC OBFUSCATION — Обход систем анализа трафика
+! ——————————————————————————————————————————————————————————————————————
+
+! 1. Блокировка протокола QUIC (заставляет DPI работать в более сложном для него TCP)
+|quic://*
+
+! 2. Стелс-режим: удаление заголовков источника (Referer)
+! Провайдер не увидит, с какого сайта ты перешел на текущий
+$stealth,removerrefer=true
+
+! 3. Защита от инъекций провайдера и подмены контента (ISP Anti-Injection)
+$csp=script-src 'self' 'unsafe-inline' 'unsafe-eval' *;
+
+! 4. Обфускация DNS-трафика (скрытие целевых доменов на уровне запроса)
+$network,dnstype=https
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
