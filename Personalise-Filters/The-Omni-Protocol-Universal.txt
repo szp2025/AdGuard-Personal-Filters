@@ -1376,4 +1376,31 @@ france3-regions.franceinfo.fr##.didomi-notice-popup
 france3-regions.franceinfo.fr##div[id^="didomi-host"]
 france3-regions.franceinfo.fr##body:style(overflow: auto !important; position: static !important; filter: none !important;)
 
+
+
+! ——————————————————————————————————————————————————————————————————————
+! [SHADOW IDENTITY] — Секция защиты личности и почты
+! ——————————————————————————————————————————————————————————————————————
+
+! 1. Блокировка почтовых шпионов (Tracking Pixels)
+! Эти правила не дают отправителям узнать, когда и где ты открыл письмо
+||pixel.app.returnpath.net^
+||mandrillapp.com/track/*
+||email-analytics.google.com^
+||list-manage.com/track/*
+||rs6.net/rb/*
+||t.yesware.com/*
+||t.sidekickopen*.com/*
+
+! 2. Блокировка систем сбора данных для рекламы (ID matching)
+! Не дает сайтам связывать твою почту с рекламным ID
+||identity.ads.google.com^
+||idsync.rlcdn.com^
+||match.adsrvr.org^
+||pixel.rubiconproject.com^
+
+! 3. Защита от утечки метаданных при вводе форм
+! Запрещает отправку скрытых данных при заполнении форм регистрации
+$csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|~youtube.com
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
