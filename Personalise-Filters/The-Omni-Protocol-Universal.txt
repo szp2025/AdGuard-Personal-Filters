@@ -1455,4 +1455,32 @@ $csp=script-src 'self' 'unsafe-inline' 'unsafe-eval' *;
 $network,dnstype=https
 
 
+! ——————————————————————————————————————————————————————————————————————
+! HEURISTIC STEALTH & SCRIPTLETS — Эвристика и Скриптлеты
+! ——————————————————————————————————————————————————————————————————————
+
+! 1. Маскировка Fingerprint (Canvas/WebGL)
+! Подменяет ответ браузера при попытке снять "цифровой отпечаток" видеокарты
+#%#var script = document.createElement('script'); script.innerHTML = 'Object.defineProperty(HTMLCanvasElement.prototype, "toDataURL", { value: function() { return "data:image/png;base64,stub"; } });'; document.documentElement.appendChild(script);
+
+! 2. Скриптлет: Подавление поведенческого анализа
+! Запрещает сайтам "подслушивать" микро-движения и клики для профилирования
+#%#//scriptlet("remove-event-listeners", "mousemove, mousedown, mouseup")
+
+! 3. Скриптлет: Gaslighting (Обман детекторов блокировки)
+! Заставляет сайты верить, что рекламные скрипты загружены и работают
+#%#//scriptlet("set-constant", "adsAllowed", "true")
+#%#//scriptlet("set-constant", "isAdBlockActive", "false")
+
+! 4. Обфускация WebRTC (Anti-IP Leak)
+! Блокирует утечку реального IP через протоколы реального времени
+||services.googleapis.com/check_ip^$important
+||webrtc.google.com^$important
+
+! 5. Эвристическая очистка DOM (Anti-Tracking)
+! Удаляет скрытые элементы, которые используются для "простукивания" присутствия пользователя
+##.ad-server-status
+##.tracking-pixel-check
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
