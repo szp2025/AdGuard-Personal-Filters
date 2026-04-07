@@ -228,21 +228,19 @@
 
 
 ! ——————————————————————————————————————————————————————————————————————
-! PRIORITY CAPTCHA PASS — ПРИОРЕТЕТНЫЙ ПРОХОД (ПЕРЕД ВСЕМ)
+! ATOMIC CAPTCHA BYPASS — ПОЛНОЕ ИСКЛЮЧЕНИЕ ИЗ СТЕКА
 ! ——————————————————————————————————————————————————————————————————————
+@@||challenges.cloudflare.com^$important,document,subdocument,js,extension,stealth,content
+@@||cloudflare.com/cdn-cgi/challenge-platform/*$important,js,subdocument
+@@||hcaptcha.com^$important,document,subdocument,js,extension,stealth,content
+@@||google.com/recaptcha^$important,document,subdocument,js,extension,stealth,content
+@@||gstatic.com/recaptcha^$important,js,subdocument
 
-! ——————————————————————————————————————————————————————————————————————
-! [EMERGENCY CLOUDFLARE FIX — Принудительный пропуск
-! ——————————————————————————————————————————————————————————————————————
-@@||challenges.cloudflare.com^$important,document
-@@||cloudflare.com/cdn-cgi/challenge-platform/*$important,document
-@@||hcaptcha.com^$important,document
-@@||recaptcha.net^$important,document
-@@||google.com/recaptcha^$important,document
+! Запрещаем AdGuard даже касаться этих доменов (WhiteList на уровне драйвера)
+@@||challenges.cloudflare.com^
+@@||hcaptcha.com^
+@@||recaptcha.net^
 
-! Отключаем вообще все скриптлеты и фильтрацию для домена капчи
-@@||challenges.cloudflare.com^$stealth,jsinject,extension,content
-@@||hcaptcha.com^$stealth,jsinject,extension,content
 
 
 ! =========================================================================
