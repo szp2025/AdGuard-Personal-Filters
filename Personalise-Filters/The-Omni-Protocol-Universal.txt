@@ -1503,4 +1503,25 @@ $network,dnstype=https
 ##.tracking-pixel-check
 
 
+
+! ——————————————————————————————————————————————————————————————————————
+! [160] STEALTH DEFUSE — Обход детекторов блокировщиков (InfinityFree & Co)
+! ——————————————————————————————————————————————————————————————————————
+
+! 1. Удаляем саму "стену" и восстанавливаем прокрутку страницы
+infinityfree.com##.modal-backdrop
+infinityfree.com##div[class*="modal"]
+infinityfree.com##body:style(overflow: auto !important;)
+
+! 2. Скриптлет для обмана детектора (говорим сайту, что реклама "якобы" загружена)
+infinityfree.com#%#//scriptlet("set-constant", "adblock", "false")
+infinityfree.com#%#//scriptlet("set-constant", "canRunAds", "true")
+
+! 3. Нейтрализация конкретного скрипта детектора на InfinityFree
+||dash.infinityfree.com/livewire-*/update$xmlhttprequest,domain=infinityfree.com
+
+! 4. Запрещаем сайту вешать "пелену" на контент
+infinityfree.com##div[style*="fixed"][style*="z-index: 2147483647"]
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
