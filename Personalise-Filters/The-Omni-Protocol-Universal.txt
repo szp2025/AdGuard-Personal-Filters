@@ -1484,27 +1484,30 @@ $network,dnstype=https
 
 
 ! ——————————————————————————————————————————————————————————————————————
-! SMART PASS — Разрешение капчи и систем верификации (Cloudflare/reCAPTCHA)
+! CAPTCHA PASSTHROUGH — Прозрачный коридор для верификации
 ! ——————————————————————————————————————————————————————————————————————
 
-! 1. Разрешение для Cloudflare Turnstile (современная замена капчи)
-@@||challenges.cloudflare.com^$js,domain=~cloudflare.com
-@@||cloudflare.com/cdn-cgi/challenge-platform/*
+! 1. Cloudflare Turnstile (Пропускаем без шифрования и задержек)
+@@||challenges.cloudflare.com^$js,important
+@@||cloudflare.com/cdn-cgi/challenge-platform/*$js
 
-! 2. Разрешение для Google reCAPTCHA (чтобы формы входа работали)
-@@||google.com/recaptcha/*$js,important
+! 2. Google reCAPTCHA (Разрешаем стандартную работу скриптов)
+@@||www.google.com/recaptcha/*$js,important
 @@||gstatic.com/recaptcha/*$js,important
-@@||www.google.com/recaptcha/*
+@@||google.com/recaptcha/api.js
 
-! 3. Разрешение для hCaptcha
+! 3. hCaptcha (Полный доступ для скриптов проверки)
 @@||hcaptcha.com/*$js,important
-@@||newassets.hcaptcha.com/*
+@@||newassets.hcaptcha.com/*$js
+@@||imgs.hcaptcha.com/*
 
-! 4. Разрешение для Bot-Check систем (только функциональная часть)
-@@||pocheck.com^$js
-@@||bot-check.com^$js
+! 4. Arkose Labs / FunCaptcha (Часто в Outlook и Roblox)
+@@||client-api.arkoselabs.com^$js,important
 
-! 5. Скриптлет: Помощь в автоматическом прохождении (если возможно)
-#%#//scriptlet("set-constant", "captcha_allowed", "true")
+! 5. Отключение наших стелс-правил для доменов капчи
+! (Чтобы наши блоки [120-130] не мешали им видеть реальный браузер)
+@@||challenges.cloudflare.com^$stealth
+@@||hcaptcha.com^$stealth
+@@||google.com/recaptcha^$stealth
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
