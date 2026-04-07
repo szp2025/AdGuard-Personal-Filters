@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.4-APEX
+! Version: 11.1.5-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -727,11 +727,13 @@ $client=com.zhiliaoapp.musically,important,domain=~tiktok.com|~tiktokv.com|~byte
 ! Оптимизировано: один Regex покрывает все домены (com/net/org).
 ||/^(.*(samsung(otn|ads|cloud)|lg(smartad|common|musicid)|sony\.tv\.(data|telemetry)|atsc\.tv|telemetry\.microsoft|events\.data\.microsoft|tvinteractive|device-metrics|roku\.com/logs|logs\.roku)\.(com|net|org))$/^$dnsrewrite=0.0.0.0,important
 
-! [LAN-STEALTH] Принуждение IoT-устройств к использованию локального DNS.
-||8.8.8.8^$important,reject
-||8.8.4.4^$important,reject
-||1.1.1.1^$important,reject
-||9.9.9.9^$important,reject
+! [LAN-STEALTH-SMART] Принуждение IoT к локальному DNS (с исключением для ПК)
+! Мы блокируем публичные DNS, но разрешаем их для браузеров, чтобы не ломать капчу.
+
+||8.8.8.8^$important,reject,domain=~google.com|~cloudflare.com|~hcaptcha.com
+||8.8.4.4^$important,reject,domain=~google.com|~cloudflare.com|~hcaptcha.com
+||1.1.1.1^$important,reject,domain=~google.com|~cloudflare.com|~hcaptcha.com
+||9.9.9.9^$important,reject,domain=~google.com|~cloudflare.com|~hcaptcha.com
 
 
 ! [L16: PERIMETER-MONOLITH — V122.1 — GHOST-NODE]
