@@ -1505,26 +1505,27 @@ $network,dnstype=https
 
 
 ! ——————————————————————————————————————————————————————————————————————
-! [INFINITYFREE BYPASS — Взлом "Стены согласия"
+! [STEALTH DEFUSE — Исправленная навигация для InfinityFree
 ! ——————————————————————————————————————————————————————————————————————
 
-! 1. Мгновенное уничтожение окна Quantcast (Cookie Wall)
-dash.infinityfree.com##.qc-cmp2-container
-dash.infinityfree.com##.qc-cmp2-main-layer
-dash.infinityfree.com##div[id="qc-cmp2-ui"]
+! 1. Мягко скрываем модальные окна, не ломая структуру DOM
+dash.infinityfree.com##div[class*="modal"]:style(opacity: 0 !important; pointer-events: none !important;)
+dash.infinityfree.com##.modal-backdrop:style(opacity: 0 !important; pointer-events: none !important;)
 
-! 2. Разблокировка страницы (убираем заморозку скролла и пелену)
-dash.infinityfree.com##body:style(overflow: auto !important; position: static !important;)
-dash.infinityfree.com##.modal-backdrop:style(display: none !important;)
+! 2. ПРИНУДИТЕЛЬНО возвращаем клики и скролл (самое важное для работы кнопок)
+dash.infinityfree.com##body, html:style(overflow: auto !important; pointer-events: auto !important; position: static !important;)
 
-! 3. Скриптлет: Симулируем наличие согласия (Cookie "fake-consent")
-dash.infinityfree.com#%#//scriptlet("set-cookie", "euconsent-v2", "CP-v2-consent-fake")
-dash.infinityfree.com#%#//scriptlet("set-constant", "__tcfapi", "noopFunc")
+! 3. Обман детектора без блокировки запросов Livewire
+dash.infinityfree.com#%#//scriptlet("set-constant", "adblock", "false")
+dash.infinityfree.com#%#//scriptlet("set-constant", "canRunAds", "true")
+dash.infinityfree.com#%#//scriptlet("set-constant", "isAdblockActive", "false")
 
-! 4. Убиваем детектор "AdBlock Detected" (image_4f9cbc.png)
-dash.infinityfree.com##div[class*="modal"]:has-text(adblock)
-dash.infinityfree.com##.modal-dialog:has-text(Turn off your ad blocker)
-dash.infinityfree.com#%#//scriptlet("abort-on-property-read", "adblockDetected")
+! 4. Убираем невидимые слои, которые могут перекрывать кнопки
+dash.infinityfree.com##div[style*="z-index: 2147483647"]:style(display: none !important;)
+
+! 5. РАЗРЕШАЕМ прохождение системных скриптов (чтобы работали переходы)
+@@||dash.infinityfree.com/livewire/*$js,domain=infinityfree.com
+@@||dash.infinityfree.com/js/app.js$js,domain=infinityfree.com
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
