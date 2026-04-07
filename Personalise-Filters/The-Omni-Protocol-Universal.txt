@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.3-APEX
+! Version: 11.1.4-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -224,6 +224,24 @@
 @@||dash.infinityfree.com^$jsinject
 @@||infinityfree.com^$jsinject
 @@||3.html-load.com^$jsinject
+
+
+
+! ——————————————————————————————————————————————————————————————————————
+! PRIORITY CAPTCHA PASS — ПРИОРЕТЕТНЫЙ ПРОХОД (ПЕРЕД ВСЕМ)
+! ——————————————————————————————————————————————————————————————————————
+@@||challenges.cloudflare.com^$important
+@@||cloudflare.com/cdn-cgi/challenge-platform/*$important
+@@||hcaptcha.com^$important
+@@||recaptcha.net^$important
+@@||google.com/recaptcha^$important
+@@||gstatic.com/recaptcha^$important
+@@||challenges.cloudflare.com^$js,subdocument,stealth,important
+@@||hcaptcha.com^$js,subdocument,stealth,important
+@@||google.com/recaptcha^$js,subdocument,stealth,important
+
+
+
 
 ! =========================================================================
 ! [STAGE 2] BLOAT-REAPER: СИСТЕМНАЯ ЧИСТКА (BLOATWARE)
@@ -1482,35 +1500,5 @@ $network,dnstype=https
 ##.ad-server-status
 ##.tracking-pixel-check
 
-
-! ——————————————————————————————————————————————————————————————————————
-!  UNIVERSAL CAPTCHA FIX (CHROME & MOZILLA) — Финальное решение
-! ——————————————————————————————————————————————————————————————————————
-
-! 1. Cloudflare Turnstile (Полная разблокировка для Chrome)
-@@||challenges.cloudflare.com^$js,subdocument,rewrite=none,important
-@@||challenges.cloudflare.com^$content,extension,stealth,important
-@@||cloudflare.com/cdn-cgi/challenge-platform/*$js,important
-
-! 2. Google reCAPTCHA (Принудительный проход через фильтры Google)
-@@||www.google.com/recaptcha/*$js,subdocument,important
-@@||gstatic.com/recaptcha/*$js,subdocument,important
-@@||google.com/recaptcha/api.js$js,important
-@@||google.com/recaptcha/*$content,stealth,important
-
-! 3. hCaptcha (Разрешение всех элементов формы)
-@@||hcaptcha.com/*$js,subdocument,important
-@@||newassets.hcaptcha.com/*$js,important
-@@||hcaptcha.com^$content,stealth,important
-
-! 4. Разрешение Cookie для доменов верификации (Критично для Chrome!)
-@@||challenges.cloudflare.com^$cookie,important
-@@||hcaptcha.com^$cookie,important
-@@||google.com/recaptcha^$cookie,important
-
-! 5. Отключение инъекций нашего блока [130] на страницах капчи
-! (Чтобы наши скриптлеты не "пугали" Cloudflare)
-@@||challenges.cloudflare.com^$genericblock,generichide
-@@||hcaptcha.com^$genericblock,generichide
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
