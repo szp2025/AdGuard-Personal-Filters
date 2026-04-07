@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.6-APEX
+! Version: 11.1.7-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -1505,23 +1505,26 @@ $network,dnstype=https
 
 
 ! ——————————————————————————————————————————————————————————————————————
-! [160] STEALTH DEFUSE — Обход детекторов блокировщиков (InfinityFree & Co)
+! [INFINITYFREE BYPASS — Взлом "Стены согласия"
 ! ——————————————————————————————————————————————————————————————————————
 
-! 1. Удаляем саму "стену" и восстанавливаем прокрутку страницы
-infinityfree.com##.modal-backdrop
-infinityfree.com##div[class*="modal"]
-infinityfree.com##body:style(overflow: auto !important;)
+! 1. Мгновенное уничтожение окна Quantcast (Cookie Wall)
+dash.infinityfree.com##.qc-cmp2-container
+dash.infinityfree.com##.qc-cmp2-main-layer
+dash.infinityfree.com##div[id="qc-cmp2-ui"]
 
-! 2. Скриптлет для обмана детектора (говорим сайту, что реклама "якобы" загружена)
-infinityfree.com#%#//scriptlet("set-constant", "adblock", "false")
-infinityfree.com#%#//scriptlet("set-constant", "canRunAds", "true")
+! 2. Разблокировка страницы (убираем заморозку скролла и пелену)
+dash.infinityfree.com##body:style(overflow: auto !important; position: static !important;)
+dash.infinityfree.com##.modal-backdrop:style(display: none !important;)
 
-! 3. Нейтрализация конкретного скрипта детектора на InfinityFree
-||dash.infinityfree.com/livewire-*/update$xmlhttprequest,domain=infinityfree.com
+! 3. Скриптлет: Симулируем наличие согласия (Cookie "fake-consent")
+dash.infinityfree.com#%#//scriptlet("set-cookie", "euconsent-v2", "CP-v2-consent-fake")
+dash.infinityfree.com#%#//scriptlet("set-constant", "__tcfapi", "noopFunc")
 
-! 4. Запрещаем сайту вешать "пелену" на контент
-infinityfree.com##div[style*="fixed"][style*="z-index: 2147483647"]
+! 4. Убиваем детектор "AdBlock Detected" (image_4f9cbc.png)
+dash.infinityfree.com##div[class*="modal"]:has-text(adblock)
+dash.infinityfree.com##.modal-dialog:has-text(Turn off your ad blocker)
+dash.infinityfree.com#%#//scriptlet("abort-on-property-read", "adblockDetected")
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
