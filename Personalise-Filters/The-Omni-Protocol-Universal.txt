@@ -1484,25 +1484,33 @@ $network,dnstype=https
 
 
 ! ——————————————————————————————————————————————————————————————————————
-! CHROME-SPECIFIC CAPTCHA FIX — Исправление для Chrome
+!  UNIVERSAL CAPTCHA FIX (CHROME & MOZILLA) — Финальное решение
 ! ——————————————————————————————————————————————————————————————————————
 
-! 1. Принудительное разрешение скриптов Cloudflare для Chrome
+! 1. Cloudflare Turnstile (Полная разблокировка для Chrome)
 @@||challenges.cloudflare.com^$js,subdocument,rewrite=none,important
-@@||cloudflare.com/cdn-cgi/challenge-platform/*$js,rewrite=none
+@@||challenges.cloudflare.com^$content,extension,stealth,important
+@@||cloudflare.com/cdn-cgi/challenge-platform/*$js,important
 
-! 2. Исправление для reCAPTCHA (Chrome часто блокирует фреймы проверки)
+! 2. Google reCAPTCHA (Принудительный проход через фильтры Google)
 @@||www.google.com/recaptcha/*$js,subdocument,important
 @@||gstatic.com/recaptcha/*$js,subdocument,important
 @@||google.com/recaptcha/api.js$js,important
+@@||google.com/recaptcha/*$content,stealth,important
 
-! 3. Отключение блокировки контента для доменов верификации (только в Chrome)
-@@||hcaptcha.com^$content,important
-@@||challenges.cloudflare.com^$content,important
+! 3. hCaptcha (Разрешение всех элементов формы)
+@@||hcaptcha.com/*$js,subdocument,important
+@@||newassets.hcaptcha.com/*$js,important
+@@||hcaptcha.com^$content,stealth,important
 
-! 4. Разрешение передачи куки для капчи (Chrome требует этого для валидации)
+! 4. Разрешение Cookie для доменов верификации (Критично для Chrome!)
 @@||challenges.cloudflare.com^$cookie,important
 @@||hcaptcha.com^$cookie,important
 @@||google.com/recaptcha^$cookie,important
+
+! 5. Отключение инъекций нашего блока [130] на страницах капчи
+! (Чтобы наши скриптлеты не "пугали" Cloudflare)
+@@||challenges.cloudflare.com^$genericblock,generichide
+@@||hcaptcha.com^$genericblock,generichide
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
