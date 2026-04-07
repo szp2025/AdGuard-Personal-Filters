@@ -1484,30 +1484,25 @@ $network,dnstype=https
 
 
 ! ——————————————————————————————————————————————————————————————————————
-! CAPTCHA PASSTHROUGH — Прозрачный коридор для верификации
+! CHROME-SPECIFIC CAPTCHA FIX — Исправление для Chrome
 ! ——————————————————————————————————————————————————————————————————————
 
-! 1. Cloudflare Turnstile (Пропускаем без шифрования и задержек)
-@@||challenges.cloudflare.com^$js,important
-@@||cloudflare.com/cdn-cgi/challenge-platform/*$js
+! 1. Принудительное разрешение скриптов Cloudflare для Chrome
+@@||challenges.cloudflare.com^$js,subdocument,rewrite=none,important
+@@||cloudflare.com/cdn-cgi/challenge-platform/*$js,rewrite=none
 
-! 2. Google reCAPTCHA (Разрешаем стандартную работу скриптов)
-@@||www.google.com/recaptcha/*$js,important
-@@||gstatic.com/recaptcha/*$js,important
-@@||google.com/recaptcha/api.js
+! 2. Исправление для reCAPTCHA (Chrome часто блокирует фреймы проверки)
+@@||www.google.com/recaptcha/*$js,subdocument,important
+@@||gstatic.com/recaptcha/*$js,subdocument,important
+@@||google.com/recaptcha/api.js$js,important
 
-! 3. hCaptcha (Полный доступ для скриптов проверки)
-@@||hcaptcha.com/*$js,important
-@@||newassets.hcaptcha.com/*$js
-@@||imgs.hcaptcha.com/*
+! 3. Отключение блокировки контента для доменов верификации (только в Chrome)
+@@||hcaptcha.com^$content,important
+@@||challenges.cloudflare.com^$content,important
 
-! 4. Arkose Labs / FunCaptcha (Часто в Outlook и Roblox)
-@@||client-api.arkoselabs.com^$js,important
-
-! 5. Отключение наших стелс-правил для доменов капчи
-! (Чтобы наши блоки [120-130] не мешали им видеть реальный браузер)
-@@||challenges.cloudflare.com^$stealth
-@@||hcaptcha.com^$stealth
-@@||google.com/recaptcha^$stealth
+! 4. Разрешение передачи куки для капчи (Chrome требует этого для валидации)
+@@||challenges.cloudflare.com^$cookie,important
+@@||hcaptcha.com^$cookie,important
+@@||google.com/recaptcha^$cookie,important
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
