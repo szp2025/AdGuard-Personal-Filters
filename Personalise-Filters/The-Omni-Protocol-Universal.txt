@@ -1483,4 +1483,28 @@ $network,dnstype=https
 ##.tracking-pixel-check
 
 
+! ——————————————————————————————————————————————————————————————————————
+! SMART PASS — Разрешение капчи и систем верификации (Cloudflare/reCAPTCHA)
+! ——————————————————————————————————————————————————————————————————————
+
+! 1. Разрешение для Cloudflare Turnstile (современная замена капчи)
+@@||challenges.cloudflare.com^$js,domain=~cloudflare.com
+@@||cloudflare.com/cdn-cgi/challenge-platform/*
+
+! 2. Разрешение для Google reCAPTCHA (чтобы формы входа работали)
+@@||google.com/recaptcha/*$js,important
+@@||gstatic.com/recaptcha/*$js,important
+@@||www.google.com/recaptcha/*
+
+! 3. Разрешение для hCaptcha
+@@||hcaptcha.com/*$js,important
+@@||newassets.hcaptcha.com/*
+
+! 4. Разрешение для Bot-Check систем (только функциональная часть)
+@@||pocheck.com^$js
+@@||bot-check.com^$js
+
+! 5. Скриптлет: Помощь в автоматическом прохождении (если возможно)
+#%#//scriptlet("set-constant", "captcha_allowed", "true")
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
