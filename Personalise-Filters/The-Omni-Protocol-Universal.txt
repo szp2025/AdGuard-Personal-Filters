@@ -230,17 +230,19 @@
 ! ——————————————————————————————————————————————————————————————————————
 ! PRIORITY CAPTCHA PASS — ПРИОРЕТЕТНЫЙ ПРОХОД (ПЕРЕД ВСЕМ)
 ! ——————————————————————————————————————————————————————————————————————
-@@||challenges.cloudflare.com^$important
-@@||cloudflare.com/cdn-cgi/challenge-platform/*$important
-@@||hcaptcha.com^$important
-@@||recaptcha.net^$important
-@@||google.com/recaptcha^$important
-@@||gstatic.com/recaptcha^$important
-@@||challenges.cloudflare.com^$js,subdocument,stealth,important
-@@||hcaptcha.com^$js,subdocument,stealth,important
-@@||google.com/recaptcha^$js,subdocument,stealth,important
 
+! ——————————————————————————————————————————————————————————————————————
+! [EMERGENCY CLOUDFLARE FIX — Принудительный пропуск
+! ——————————————————————————————————————————————————————————————————————
+@@||challenges.cloudflare.com^$important,document
+@@||cloudflare.com/cdn-cgi/challenge-platform/*$important,document
+@@||hcaptcha.com^$important,document
+@@||recaptcha.net^$important,document
+@@||google.com/recaptcha^$important,document
 
+! Отключаем вообще все скриптлеты и фильтрацию для домена капчи
+@@||challenges.cloudflare.com^$stealth,jsinject,extension,content
+@@||hcaptcha.com^$stealth,jsinject,extension,content
 
 
 ! =========================================================================
