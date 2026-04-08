@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.13-APEX
+! Version: 11.1.14-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -987,94 +987,90 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return oF.apply(this, arguments);
     };
 
-/** * 5. SMART HEURISTIC ANNOYANCE KILLER (Diplomat Mode) 
- * @description: Эвристическое подавление модалок с выборочным авто-согласием.
- */
+/** 5. HEURISTIC ANNOYANCE KILLER (Standard Mode) **/
+    let lastAction = Date.now();
+    ['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => lastAction = Date.now(), {passive:true}));
 
-let lastAction = Date.now();
-['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => lastAction = Date.now(), {passive:true}));
-
-const globalCleaner = () => {
-    // 1. Детектор "заморозки" сайта (если скролл заблокирован)
-    const isSiteFrozen = () => {
-        const s = window.getComputedStyle(document.body);
-        const h = window.getComputedStyle(document.documentElement);
-        return s.overflow === 'hidden' || h.overflow === 'hidden' || s.position === 'fixed';
+    // Перехват попыток заблокировать скролл через JS
+    const originalSetProperty = CSSStyleDeclaration.prototype.setProperty;
+    CSSStyleDeclaration.prototype.setProperty = function(prop, val, priority) {
+        if (!TRUSTED && prop === 'overflow' && (val === 'hidden' || val === 'none')) {
+            // Если сайт пытается выключить скролл — игнорируем
+            return;
+        }
+        return originalSetProperty.apply(this, arguments);
     };
 
-    const scan = (root) => {
-        // 2. Список гарантированного мусора (Didomi, отчеты об ошибках, баннеры)
-        const hardTrash = [
-            '.didomi-screen-xlarge', '.didomi-popup-backdrop', '.didomi-notice-popup', 
-            '[id^="didomi-host"]', 'div[id*="report-error"]', '#didomi-popup',
-            '.app-banner', '.smartbanner'
-        ];
-        hardTrash.forEach(s => root.querySelectorAll(s).forEach(el => el.remove()));
+    const globalCleaner = () => {
+        // Проверка: заблокирован ли интерфейс (скролл или фиксированный body)
+        const isSiteLocked = () => {
+            const s = window.getComputedStyle(document.body);
+            const h = window.getComputedStyle(document.documentElement);
+            return s.overflow === 'hidden' || h.overflow === 'hidden' || s.position === 'fixed';
+        };
 
-        // 3. Эвристика для модальных окон
-        const modals = root.querySelectorAll('div[class*="modal"], [role="dialog"], .modal-content, [aria-modal="true"]');
-        
-        modals.forEach(modal => {
-            const frozen = isSiteFrozen();
-            const isInfinity = location.hostname.includes('infinityfree');
-            const isFrance = location.hostname.includes('franceinfo');
+        const scan = (root) => {
+            // 1. Чистим известный мусор (Didomi, баннеры, оверлеи)
+            const trash = ['.didomi-screen-xlarge', '.didomi-notice-popup', '[id^="didomi-host"]', '#didomi-popup', '.modal-backdrop'];
+            trash.forEach(s => root.querySelectorAll(s).forEach(el => el.remove()));
 
-            // Кнопки действия (авто-согласие)
-            const confirmBtn = modal.querySelector('button.btn-primary, button.btn-success, #didomi-notice-agree-button, .btn-accept, [id*="agree"]');
+            // 2. Эвристический анализ модалок
+            const modals = root.querySelectorAll('div[class*="modal"], [role="dialog"], .modal-content, [aria-modal="true"]');
+            
+            modals.forEach(modal => {
+                const locked = isSiteLocked();
+                
+                // Ищем кнопки согласия (стандартные паттерны)
+                const confirmBtn = modal.querySelector('button.btn-primary, button.btn-success, #didomi-notice-agree-button, .btn-accept, [id*="agree"], [class*="accept"]');
 
-            // Сценарий А: Сайт требует подтверждения для работы (как на ваших скриншотах)
-            if ((frozen || isInfinity || isFrance) && confirmBtn) {
-                if (!modal.querySelector('input[type="password"]')) {
-                    console.log('OMNI: Functional block detected. Triggering Stealth Consent...');
+                // ПРИНЦИП: Если сайт заблокирован и есть кнопка — жмем. Если нет — просто скрываем.
+                if (locked && confirmBtn && !modal.querySelector('input[type="password"]')) {
+                    console.log('OMNI: Site lock detected. Triggering Consent...');
                     const clickEv = new MouseEvent('click', { view: window, bubbles: true, cancelable: true });
                     confirmBtn.dispatchEvent(clickEv);
-                    
-                    // Скрываем визуально, чтобы не мерцало
                     modal.style.setProperty('display', 'none', 'important');
-                    if (modal.parentElement) modal.parentElement.style.setProperty('display', 'none', 'important');
+                } else if (!TRUSTED) {
+                    // Если сайт не "заморожен", просто убираем окно с глаз
+                    modal.style.setProperty('opacity', '0', 'important');
+                    modal.style.setProperty('pointer-events', 'none', 'important');
+                    modal.style.setProperty('visibility', 'hidden', 'important');
                 }
-            } 
-            // Сценарий Б: Окно просто мешает, но сайт не "заморожен"
-            else if (!TRUSTED) {
-                modal.style.setProperty('opacity', '0', 'important');
-                modal.style.setProperty('pointer-events', 'none', 'important');
+            });
+
+            // 3. Восстановление контроля (Scroll & Pointer Events)
+            if (root === document) {
+                const body = document.body;
+                const html = document.documentElement;
+                [body, html].forEach(el => {
+                    if (el) {
+                        el.style.setProperty('overflow', 'auto', 'important');
+                        el.style.setProperty('position', 'static', 'important');
+                        el.style.setProperty('filter', 'none', 'important');
+                        el.style.setProperty('pointer-events', 'auto', 'important');
+                    }
+                });
             }
-        });
 
-        // 4. Принудительное восстановление интерфейса (Scroll/Pointer Fix)
-        if (root === document) {
-            const fix = (el) => {
-                if (!el) return;
-                el.style.setProperty('overflow', 'auto', 'important');
-                el.style.setProperty('position', 'static', 'important');
-                el.style.setProperty('filter', 'none', 'important');
-                el.style.setProperty('pointer-events', 'auto', 'important');
-            };
-            fix(document.body);
-            fix(document.documentElement);
-        }
-
-        // 5. Поиск скрытых "ловушек" (невидимые слои с высоким z-index)
-        root.querySelectorAll('*').forEach(el => {
-            if (el.shadowRoot) scan(el.shadowRoot); // Рекурсия в Shadow DOM (для Didomi)
-            
-            const s = window.getComputedStyle(el);
-            if (parseInt(s.zIndex) > 10000 && s.position === 'fixed' && !TRUSTED) {
-                if (el.innerText.length < 100 && !el.querySelector('nav, header')) {
-                    el.style.pointerEvents = 'none';
-                    el.style.opacity = '0';
+            // 4. Поиск "невидимых стен" (прозрачные слои поверх контента)
+            root.querySelectorAll('*').forEach(el => {
+                if (el.shadowRoot) scan(el.shadowRoot); // Рекурсия в Shadow DOM
+                
+                const s = window.getComputedStyle(el);
+                if (parseInt(s.zIndex) > 5000 && s.position === 'fixed' && !TRUSTED) {
+                    // Если слой пустой или содержит мало текста — отключаем ему клики
+                    if (el.innerText.length < 150 && !el.querySelector('nav, header, form')) {
+                        el.style.setProperty('pointer-events', 'none', 'important');
+                        el.style.setProperty('opacity', '0', 'important');
+                    }
                 }
-            }
-        });
+            });
+        };
+        scan(document);
     };
 
-    scan(document);
-};
-
-// Запуск: комбинация Observer (реакция) и Interval (контроль)
-new MutationObserver(globalCleaner).observe(document.documentElement, { childList: true, subtree: true });
-setInterval(globalCleaner, 1200); 
-globalCleaner();
+    new MutationObserver(globalCleaner).observe(document.documentElement, { childList: true, subtree: true });
+    setInterval(globalCleaner, 1000); // Контрольный запуск раз в секунду
+    globalCleaner();
 
     /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|msi|sh|js)$/i;
