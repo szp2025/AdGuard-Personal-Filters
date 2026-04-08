@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         OMNI-MONOLITH [V5.5.15 FINAL]
+// @name         OMNI-MONOLITH [V5.5.18 FINAL]
 // @namespace    OmniChronos.Security
-// @version      5.5.15
+// @version      5.5.18
 // @description  Total Anonymization, YouTube Turbo, Environment Unlock & Security Layer
 // @author       Omni-Chronos
 // @match        *://*/*
@@ -12,6 +12,8 @@
 // @run-at       document-start
 // @icon         https://cdn-icons-png.flaticon.com/512/9438/9438567.png
 // @connect      *
+// @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/OmniChronos_Security.user.js
+// @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/OmniChronos_Security.user.js
 // ==/UserScript==
 
 /**
