@@ -2039,7 +2039,7 @@ const applyL150EvalBlocker = (target = document.documentElement) => {
  * L1001: HONEYPOT (Data Privacy V5.5)
  * Динамическая подмена данных в Storage при неавторизованном доступе.
  */
-const applyL10HistoryGuard = () => {
+const applyL1001HoneyPot = () => {
     const info = OMNI_Infobase();
     const conf = OMNI_Config();
 
