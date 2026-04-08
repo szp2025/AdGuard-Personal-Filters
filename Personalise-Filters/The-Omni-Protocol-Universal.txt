@@ -837,6 +837,65 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 
 
 
+! ——————————————————————————————————————————————————————————————————————
+! DEEP TRAFFIC SANITIZATION — Глубокая очистка и анти-аналитика
+! ——————————————————————————————————————————————————————————————————————
+
+! 1. Блокировка CNAME-маскировки и скрытых алиасов трекеров
+||*.tracking.*^
+||*.analytics.*^
+||*-stats.*^
+
+! 2. Блокировка систем "записи сессий" (Session Replay)
+! Эти сервисы буквально записывают твои клики и движения мыши
+||logrocket.io^
+||sentry.io^
+||browser-intake-datadoghq.com^
+||fullstory.com^
+||hotjar.com^
+
+! 3. Блокировка API-сенсоров (чтобы не знали наклон и тряску телефона)
+||generic-sensor.googleapis.com^
+$csp=sensor-access 'none'
+
+! 4. Защита от деанонимизации через шрифты (Font Enumeration)
+! Запрещает сайтам сканировать список установленных у тебя шрифтов
+$csp=font-src 'self' data: fonts.gstatic.com;
+
+! 5. Блокировка "умных" чатов поддержки, которые следят за вводом текста
+! (Те самые чаты, которые видят, что ты пишешь, еще до нажатия Enter)
+||intercom.io^
+||intercomcdn.com^
+||drift.com^
+
+
+! ——————————————————————————————————————————————————————————————————————
+! [SHADOW IDENTITY] — Секция защиты личности и почты
+! ——————————————————————————————————————————————————————————————————————
+
+! 1. Блокировка почтовых шпионов (Tracking Pixels)
+! Эти правила не дают отправителям узнать, когда и где ты открыл письмо
+||pixel.app.returnpath.net^
+||mandrillapp.com/track/*
+||email-analytics.google.com^
+||list-manage.com/track/*
+||rs6.net/rb/*
+||t.yesware.com/*
+||t.sidekickopen*.com/*
+
+! 2. Блокировка систем сбора данных для рекламы (ID matching)
+! Не дает сайтам связывать твою почту с рекламным ID
+||identity.ads.google.com^
+||idsync.rlcdn.com^
+||match.adsrvr.org^
+||pixel.rubiconproject.com^
+
+! 3. Защита от утечки метаданных при вводе форм
+! Запрещает отправку скрытых данных при заполнении форм регистрации
+$csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|~youtube.com
+
+
+
 
 ! =========================================================================
 ! [STAGE 3] OMNI-CORE ATOMIC ENGINE (JS-МОНОЛИТ)
@@ -1395,66 +1454,6 @@ france3-regions.franceinfo.fr##.didomi-popup-backdrop
 france3-regions.franceinfo.fr##.didomi-notice-popup
 france3-regions.franceinfo.fr##div[id^="didomi-host"]
 france3-regions.franceinfo.fr##body:style(overflow: auto !important; position: static !important; filter: none !important;)
-
-
-
-! ——————————————————————————————————————————————————————————————————————
-! [SHADOW IDENTITY] — Секция защиты личности и почты
-! ——————————————————————————————————————————————————————————————————————
-
-! 1. Блокировка почтовых шпионов (Tracking Pixels)
-! Эти правила не дают отправителям узнать, когда и где ты открыл письмо
-||pixel.app.returnpath.net^
-||mandrillapp.com/track/*
-||email-analytics.google.com^
-||list-manage.com/track/*
-||rs6.net/rb/*
-||t.yesware.com/*
-||t.sidekickopen*.com/*
-
-! 2. Блокировка систем сбора данных для рекламы (ID matching)
-! Не дает сайтам связывать твою почту с рекламным ID
-||identity.ads.google.com^
-||idsync.rlcdn.com^
-||match.adsrvr.org^
-||pixel.rubiconproject.com^
-
-! 3. Защита от утечки метаданных при вводе форм
-! Запрещает отправку скрытых данных при заполнении форм регистрации
-$csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|~youtube.com
-
-! ——————————————————————————————————————————————————————————————————————
-! DEEP TRAFFIC SANITIZATION — Глубокая очистка и анти-аналитика
-! ——————————————————————————————————————————————————————————————————————
-
-! 1. Блокировка CNAME-маскировки и скрытых алиасов трекеров
-||*.tracking.*^
-||*.analytics.*^
-||*-stats.*^
-
-! 2. Блокировка систем "записи сессий" (Session Replay)
-! Эти сервисы буквально записывают твои клики и движения мыши
-||logrocket.io^
-||sentry.io^
-||browser-intake-datadoghq.com^
-||fullstory.com^
-||hotjar.com^
-
-! 3. Блокировка API-сенсоров (чтобы не знали наклон и тряску телефона)
-||generic-sensor.googleapis.com^
-$csp=sensor-access 'none'
-
-! 4. Защита от деанонимизации через шрифты (Font Enumeration)
-! Запрещает сайтам сканировать список установленных у тебя шрифтов
-$csp=font-src 'self' data: fonts.gstatic.com;
-
-! 5. Блокировка "умных" чатов поддержки, которые следят за вводом текста
-! (Те самые чаты, которые видят, что ты пишешь, еще до нажатия Enter)
-||intercom.io^
-||intercomcdn.com^
-||drift.com^
-
-
 
 
 ! ——————————————————————————————————————————————————————————————————————
