@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.20-APEX
+! Version: 11.1.21-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -987,42 +987,83 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return oF.apply(this, arguments);
     };
 
-/** 5. MECHANICAL STERILIZATION: FORCE PURGE **/
+    /** 5. MECHANICAL STERILIZATION: CONSTANT PURGE **/
+    let lastAction = Date.now();
+    ['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => lastAction = Date.now(), {passive:true}));
+
     const omniPurge = () => {
-        // 1. Прямое удаление проблемных тегов
-        const badTags = ['#didomi-css', '#didomi-host', '.didomi-popup-backdrop', '.didomi-screen-xlarge', '[id^="sp_message"]'];
+        // 1. Прямое удаление Didomi и его стилей
+        const badSelectors = [
+            '#didomi-css', 
+            '#didomi-host', 
+            '.didomi-popup-backdrop', 
+            '.didomi-screen-xlarge', 
+            '.didomi-notice-popup',
+            '[id^="sp_message"]'
+        ];
         
         const clean = (root) => {
-            badTags.forEach(selector => {
-                const el = root.querySelector(selector);
-                if (el) el.remove();
+            if (!root) return;
+
+            // Удаляем по списку селекторов
+            badSelectors.forEach(selector => {
+                root.querySelectorAll(selector).forEach(el => {
+                    el.innerHTML = ''; // Очищаем содержимое перед удалением
+                    el.remove();
+                });
             });
 
-            // 2. Глубокий поиск в Shadow DOM (FranceInfo прячет всё там)
+            // 2. Рекурсивный вход в Shadow DOM (Критично для FranceInfo)
             root.querySelectorAll('*').forEach(node => {
                 if (node.shadowRoot) clean(node.shadowRoot);
-                // Если ID содержит didomi - удаляем без раздумий
+                // Удаляем любой элемент, в ID которого есть "didomi"
                 if (node.id && node.id.includes('didomi')) node.remove();
             });
 
-            // 3. Снятие блокировки скролла и блюра (Разблокировка интерфейса)
+            // 3. ЖЕСТКАЯ РАЗБЛОКИРОВКА (Перебиваем CSS сайта)
             if (root === document) {
                 const html = document.documentElement;
                 const body = document.body;
+                
                 [html, body].forEach(el => {
                     if (el) {
-                        el.style.cssText += 'overflow:auto!important;position:static!important;filter:none!important;pointer-events:auto!important;';
-                        el.classList.remove('didomi-popup-open');
+                        // Используем !important для каждой критической настройки
+                        el.style.setProperty('overflow', 'auto', 'important');
+                        el.style.setProperty('position', 'static', 'important');
+                        el.style.setProperty('filter', 'none', 'important');
+                        el.style.setProperty('pointer-events', 'auto', 'important');
+                        
+                        // Удаляем классы, которые вешает Didomi
+                        if (el.classList.contains('didomi-popup-open')) {
+                            el.classList.remove('didomi-popup-open');
+                        }
                     }
                 });
             }
         };
+
         clean(document);
     };
 
-    // Запускаем немедленно и ставим на "автомат"
-    setInterval(omniPurge, 250); 
+    // Запускаем немедленно при загрузке
     omniPurge();
+
+    // Создаем MutationObserver для мгновенной реакции на появление баннера
+    try {
+        const observer = new MutationObserver(() => omniPurge());
+        observer.observe(document.documentElement, { childList: true, subtree: true });
+    } catch (e) {
+        console.error('OMNI: Observer failed', e);
+    }
+
+    // Имитируем "ручной ввод в консоль" каждые 400мс (страховка)
+    const purgeInterval = setInterval(omniPurge, 400);
+
+    // Если через 10 секунд баннеров нет, можно замедлить проверку для экономии ресурсов
+    setTimeout(() => {
+        clearInterval(purgeInterval);
+        setInterval(omniPurge, 2000);
+    }, 10000);
 
     /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|msi|sh|js)$/i;
