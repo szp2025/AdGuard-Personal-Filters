@@ -987,67 +987,66 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return oF.apply(this, arguments);
     };
 
-/** 5. SMART FUNCTIONAL STERILIZATION (Legacy + InfinityFree Fix) **/
+/** 5. CONDITIONAL AUTO-CONSENT & MECHANICAL STERILIZATION **/
     let lastAction = Date.now();
     ['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => lastAction = Date.now(), {passive:true}));
 
     const globalCleaner = () => {
-        // Список ГАРАНТИРОВАННОГО мусора (режем безжалостно)
-        const trashTargets = [
-            '.didomi-screen-xlarge', '.didomi-popup-backdrop', '.didomi-notice-popup', 
-            '.didomi-popup__backdrop', '[id^="didomi-host"]', '.app-banner', 
-            '.smartbanner', '.modal-backdrop', '#didomi-popup', 'div[id*="report-error"]'
-        ];
+        const isBlocked = (el) => {
+            if (!el) return false;
+            const s = window.getComputedStyle(el);
+            return s.overflow === 'hidden' || s.position === 'fixed';
+        };
 
         const scan = (root) => {
-            // 1. Удаляем мусор и пустые контейнеры
-            trashTargets.forEach(s => root.querySelectorAll(s).forEach(el => el.remove()));
-            root.querySelectorAll('.ad-container:empty, .ad-slot:empty, .adsbygoogle:empty').forEach(el => el.remove());
+            // 1. Сначала пытаемся ПРОСТО СКРЫТЬ (для всех сайтов)
+            root.querySelectorAll('div[class*="modal"], [role="dialog"], .modal-content, .didomi-popup-backdrop').forEach(modal => {
+                const siteIsFrozen = isBlocked(document.body) || isBlocked(document.documentElement);
 
-            // 2. Умная обработка модалок
-            root.querySelectorAll('div[class*="modal"], [role="dialog"]').forEach(modal => {
-                if (host.includes('infinityfree')) {
-                    const btn = modal.querySelector('button.btn-primary, button[type="submit"], .btn-success');
-                    // Авто-клик по кнопкам подтверждения, если это не окно логина
-                    if (btn && !modal.querySelector('input[type="password"]')) {
-                        console.log('OMNI: Auto-confirming functional modal...');
-                        btn.click();
-                        modal.style.display = 'none'; // Скрываем, но не удаляем (для Livewire)
+                // Если сайт НЕ заморожен — просто делаем окно невидимым и проницаемым
+                if (!siteIsFrozen && !host.includes('infinityfree')) {
+                    modal.style.setProperty('opacity', '0', 'important');
+                    modal.style.setProperty('pointer-events', 'none', 'important');
+                } 
+                // Если сайт ЗАМОРОЖЕН (нельзя скроллить) — прожимаем подтверждение
+                else {
+                    const confirmBtn = modal.querySelector('button.btn-primary, button.btn-success, #didomi-notice-agree-button, .btn-accept');
+                    
+                    if (confirmBtn && !modal.querySelector('input[type="password"]')) {
+                        console.log('OMNI: Site is frozen. Executing Auto-Consent...');
+                        const clickEv = new MouseEvent('click', { view: window, bubbles: true, cancelable: true });
+                        confirmBtn.dispatchEvent(clickEv);
+                        modal.style.setProperty('display', 'none', 'important');
                     }
-                } else if (!TRUSTED) {
-                    // На других сайтах (не доверенных) — скрываем модалки эвристически
-                    modal.style.opacity = '0';
-                    modal.style.pointerEvents = 'none';
                 }
             });
 
-            // 3. Восстановление интерфейса (Scroll, Filter, Clicks)
+            // 2. Очистка гарантированного мусора (Didomi, баннеры)
+            const trash = ['.didomi-screen-xlarge', '.didomi-notice-popup', '[id^="didomi-host"]', 'div[id*="report-error"]'];
+            trash.forEach(s => root.querySelectorAll(s).forEach(el => el.remove()));
+
+            // 3. ПРИНУДИТЕЛЬНЫЙ возврат скролла (если авто-клик не помог)
             if (root === document) {
-                [document.body, document.documentElement].forEach(el => {
-                    if (el) {
-                        el.style.setProperty('overflow', 'auto', 'important');
-                        el.style.setProperty('position', 'static', 'important');
-                        el.style.setProperty('filter', 'none', 'important');
-                        el.style.setProperty('pointer-events', 'auto', 'important');
-                    }
-                });
+                const fix = (el) => {
+                    if (!el) return;
+                    el.style.setProperty('overflow', 'auto', 'important');
+                    el.style.setProperty('position', 'static', 'important');
+                    el.style.setProperty('filter', 'none', 'important');
+                    el.style.setProperty('pointer-events', 'auto', 'important');
+                };
+                fix(document.body);
+                fix(document.documentElement);
             }
 
-            // 4. Рекурсия по Shadow DOM и проверка невидимых слоев
-            root.querySelectorAll('*').forEach(el => {
-                if (el.shadowRoot) scan(el.shadowRoot);
-                
-                // Твоя старая проверка на невидимые оверлеи
-                const s = window.getComputedStyle(el);
-                if (s.opacity === '0' && s.pointerEvents !== 'none' && el.offsetWidth > 10) {
-                    el.style.pointerEvents = 'none';
-                }
-            });
+            // 4. Рекурсия (Shadow DOM)
+            root.querySelectorAll('*').forEach(el => { if (el.shadowRoot) scan(el.shadowRoot); });
         };
+
         scan(document);
     };
 
     new MutationObserver(globalCleaner).observe(document.documentElement, { childList: true, subtree: true });
+    setInterval(globalCleaner, 1000); 
     globalCleaner();
 
     /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
