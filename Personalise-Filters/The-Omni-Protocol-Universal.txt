@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.10-APEX
+! Version: 11.1.11-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -987,32 +987,66 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return oF.apply(this, arguments);
     };
 
-    /** 5. MECHANICAL STERILIZATION (DOM Cleaner + Shadow DOM) **/
+/** 5. SMART FUNCTIONAL STERILIZATION (Legacy + InfinityFree Fix) **/
     let lastAction = Date.now();
     ['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => lastAction = Date.now(), {passive:true}));
 
     const globalCleaner = () => {
-        const targets = ['.didomi-screen-xlarge', '.didomi-popup-backdrop', '.didomi-notice-popup', '.didomi-popup__backdrop', '[id^=\"didomi-host\"]', '.app-banner', '.smartbanner', '.modal-backdrop', 'div[class*=\"modal\"]', '#didomi-popup'];
-        const deepClean = (root) => {
-            targets.forEach(s => root.querySelectorAll(s).forEach(el => el.remove()));
+        // Список ГАРАНТИРОВАННОГО мусора (режем безжалостно)
+        const trashTargets = [
+            '.didomi-screen-xlarge', '.didomi-popup-backdrop', '.didomi-notice-popup', 
+            '.didomi-popup__backdrop', '[id^="didomi-host"]', '.app-banner', 
+            '.smartbanner', '.modal-backdrop', '#didomi-popup', 'div[id*="report-error"]'
+        ];
+
+        const scan = (root) => {
+            // 1. Удаляем мусор и пустые контейнеры
+            trashTargets.forEach(s => root.querySelectorAll(s).forEach(el => el.remove()));
             root.querySelectorAll('.ad-container:empty, .ad-slot:empty, .adsbygoogle:empty').forEach(el => el.remove());
+
+            // 2. Умная обработка модалок
+            root.querySelectorAll('div[class*="modal"], [role="dialog"]').forEach(modal => {
+                if (host.includes('infinityfree')) {
+                    const btn = modal.querySelector('button.btn-primary, button[type="submit"], .btn-success');
+                    // Авто-клик по кнопкам подтверждения, если это не окно логина
+                    if (btn && !modal.querySelector('input[type="password"]')) {
+                        console.log('OMNI: Auto-confirming functional modal...');
+                        btn.click();
+                        modal.style.display = 'none'; // Скрываем, но не удаляем (для Livewire)
+                    }
+                } else if (!TRUSTED) {
+                    // На других сайтах (не доверенных) — скрываем модалки эвристически
+                    modal.style.opacity = '0';
+                    modal.style.pointerEvents = 'none';
+                }
+            });
+
+            // 3. Восстановление интерфейса (Scroll, Filter, Clicks)
             if (root === document) {
                 [document.body, document.documentElement].forEach(el => {
                     if (el) {
                         el.style.setProperty('overflow', 'auto', 'important');
                         el.style.setProperty('position', 'static', 'important');
                         el.style.setProperty('filter', 'none', 'important');
+                        el.style.setProperty('pointer-events', 'auto', 'important');
                     }
                 });
             }
-            root.querySelectorAll('*').forEach(el => { 
-                if (el.shadowRoot) deepClean(el.shadowRoot);
+
+            // 4. Рекурсия по Shadow DOM и проверка невидимых слоев
+            root.querySelectorAll('*').forEach(el => {
+                if (el.shadowRoot) scan(el.shadowRoot);
+                
+                // Твоя старая проверка на невидимые оверлеи
                 const s = window.getComputedStyle(el);
-                if (s.opacity === '0' && s.pointerEvents !== 'none' && el.offsetWidth > 10) el.style.pointerEvents = 'none';
+                if (s.opacity === '0' && s.pointerEvents !== 'none' && el.offsetWidth > 10) {
+                    el.style.pointerEvents = 'none';
+                }
             });
         };
-        deepClean(document);
+        scan(document);
     };
+
     new MutationObserver(globalCleaner).observe(document.documentElement, { childList: true, subtree: true });
     globalCleaner();
 
