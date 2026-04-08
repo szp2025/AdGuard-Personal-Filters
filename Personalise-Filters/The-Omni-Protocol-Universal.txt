@@ -1528,4 +1528,38 @@ dash.infinityfree.com##div[style*="z-index: 2147483647"]:style(display: none !im
 @@||dash.infinityfree.com/js/app.js$js,domain=infinityfree.com
 
 
+
+! ——————————————————————————————————————————————————————————————————————
+! [170] ANTI-EXPLOIT & PRIVACY — Защита от скрытых угроз и утечек
+! ——————————————————————————————————————————————————————————————————————
+! Блокировка криптомайнеров (которых нет в основных списках)
+||coinhive.com^$important
+||authedmine.com^$important
+
+! Защита от утечки реального IP через WebRTC (Важно для анонимности)
+#%#//scriptlet("set-constant", "RTCPeerConnection", "undefined")
+#%#//scriptlet("set-constant", "webkitRTCPeerConnection", "undefined")
+
+! Блокировка скрытых всплывающих окон (Pop-under), которые обходят клик
+#%#//scriptlet("prevent-popads")
+
+! ——————————————————————————————————————————————————————————————————————
+! [180] CLEAN-UP — Удаление мусорных интерфейсов
+! ——————————————————————————————————————————————————————————————————————
+! Убираем раздражающие плашки "Установите наше приложение" (Smart Banners)
+##.app-banner
+##.smartbanner
+##div[class*="app-download"]
+
+! Удаление пустых контейнеров, которые остаются после блокировки рекламы
+##.ad-container:empty
+##.ad-slot:empty
+##[id^="google_ads_iframe"]:remove()
+
+! ——————————————————————————————————————————————————————————————————————
+! [190] GLOBAL COMPATIBILITY — Тонкая настройка совместимости
+! ——————————————————————————————————————————————————————————————————————
+! Если сайт пытается определить блокировщик через проверку высоты элемента
+#%#//scriptlet("set-constant", "AdBlockEnabled", "false")
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
