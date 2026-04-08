@@ -1083,49 +1083,59 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return oF.apply(this, arguments);
     };
 
-/** 5. EVIL STERILIZER (Anti-Shadow DOM & Forced Scroll) **/
+/** 5. EVIL STERILIZER (Anti-Shadow DOM & Universal Purge) **/
     const bruteForce = () => {
-        // 1. Убиваем все элементы с didomi везде (даже в Shadow DOM)
+        const badTerms = ['didomi', 'onetrust', 'cookiebot', 'consent', 'sp_message'];
+        
         const kill = (root) => {
             if (!root) return;
-            // Чистим элементы
-            root.querySelectorAll?.('[id*="didomi"], [class*="didomi"], #didomi-host, #didomi-css').forEach(el => {
-                el.innerHTML = '';
-                el.remove();
-            });
-            // Рекурсия в Shadow DOM
-            root.querySelectorAll?.('*').forEach(node => {
-                if (node.shadowRoot) kill(node.shadowRoot);
+            // 1. Поиск по ID и классам
+            root.querySelectorAll?.('*').forEach(el => {
+                const id = el.id || '';
+                const cls = typeof el.className === 'string' ? el.className : '';
+                if (badTerms.some(t => id.includes(t) || cls.includes(t))) {
+                    if (el.tagName === 'STYLE') el.innerHTML = '';
+                    el.remove();
+                }
+                if (el.shadowRoot) kill(el.shadowRoot);
             });
         };
         kill(document);
 
         // 2. ЖЕСТКАЯ РАЗБЛОКИРОВКА СКРОЛЛА
-        // Мы не просто ставим стиль, мы затираем атрибут style полностью, если там есть hidden
-        const b = document.body;
-        const h = document.documentElement;
+        const b = document.body, h = document.documentElement;
         [b, h].forEach(el => {
             if (el && (window.getComputedStyle(el).overflow === 'hidden' || el.style.overflow === 'hidden')) {
-                el.style.setProperty('overflow', 'auto', 'important');
-                el.style.setProperty('position', 'static', 'important');
-                el.style.setProperty('filter', 'none', 'important');
-                el.style.setProperty('pointer-events', 'auto', 'important');
-                el.classList.forEach(c => { if(c.includes('didomi')) el.classList.remove(c); });
+                const s = 'overflow:auto!important;position:static!important;filter:none!important;pointer-events:auto!important;';
+                el.style.cssText += s;
+                el.classList.forEach(c => { if(badTerms.some(t => c.includes(t))) el.classList.remove(c); });
             }
         });
     };
 
-    // Запускаем как сумасшедшие (каждые 100мс первые 5 секунд, потом реже)
-    let fastPurge = setInterval(bruteForce, 100);
-    setTimeout(() => {
-        clearInterval(fastPurge);
-        setInterval(bruteForce, 500);
-    }, 5000);
-
-    // Перехват API (чтобы сайт думал, что мы согласились)
-    window.__tcfapi = (c, v, cb) => { if(cb) cb({eventStatus:'useractioncomplete'}, true); };
+    setInterval(bruteForce, 400);
 
     /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
+    const heuristicScanner = () => {
+        const shadowHeuristic = (root) => {
+            if (!root) return;
+            root.querySelectorAll?.('*').forEach(el => {
+                const s = window.getComputedStyle(el);
+                // Детекция невидимых оверлеев (высокий z-index, пустой контент)
+                if (parseInt(s.zIndex) > 1000 && s.position === 'fixed' && s.pointerEvents !== 'none') {
+                    if (el.innerText.length < 50 && !el.querySelector('nav, header, img, form')) {
+                        el.style.setProperty('display', 'none', 'important');
+                        el.style.setProperty('pointer-events', 'none', 'important');
+                    }
+                }
+                if (el.shadowRoot) shadowHeuristic(el.shadowRoot);
+            });
+        };
+        shadowHeuristic(document);
+        requestAnimationFrame(heuristicScanner);
+    };
+    requestAnimationFrame(heuristicScanner);
+
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|msi|sh|js)$/i;
     const dangerousPatterns = /eval\(|exec\(|system\(|powershell|base64_decode/i;
 
