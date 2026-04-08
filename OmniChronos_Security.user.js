@@ -105,6 +105,41 @@
         } catch (e) {}
     };
 
+
+// --- [НОВЫЕ ЭШЕЛОНЫ] ---
+
+    // L3000: РАЗБЛОКИРОВКА КОНТЕКСТА (Выделение и Копирование)
+    const applyL3000Unlock = () => {
+        const events = ['contextmenu', 'copy', 'cut', 'paste', 'selectstart', 'mousedown'];
+        events.forEach(evt => {
+            document.addEventListener(evt, e => e.stopPropagation(), true);
+        });
+        const style = document.createElement('style');
+        style.innerHTML = `* { -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }`;
+        document.documentElement.appendChild(style);
+    };
+
+    // L4500: СТЕРИЛИЗАТОР URL (Чистые ссылки)
+    const applyL4500Sterilizer = () => {
+        const clean = () => {
+            const url = new URL(window.location.href);
+            const params = ['utm_source', 'utm_medium', 'utm_campaign', 'fbclid', 'gclid', 'aff_'];
+            let changed = false;
+            params.forEach(p => { if (url.searchParams.has(p)) { url.searchParams.delete(p); changed = true; } });
+            if (changed) window.history.replaceState(null, '', url.href);
+        };
+        setTimeout(clean, 1000);
+    };
+
+    // L9000: ЗАЩИТА ОТ ФИНГЕРПРИНТИНГА CANVAS
+    const applyL9000CanvasGuard = () => {
+        const orgGetImg = HTMLCanvasElement.prototype.toDataURL;
+        HTMLCanvasElement.prototype.toDataURL = function() {
+            if (OMNI_Infobase().isCritical()) return orgGetImg.apply(this, arguments);
+            return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==";
+        };
+    };
+
     // --- [2. ЭШЕЛОНЫ ЗАЩИТЫ] ---
 
     const applyL25GodSeed = () => {
@@ -195,6 +230,9 @@
         applyL150EvalBlocker,
         applyL1001HistoryGuard,
         applyL2000MediaControl
+        applyL3000Unlock();
+        applyL4500Sterilizer();
+        applyL9000CanvasGuard();
     ];
 
     const OmniChronos = {
