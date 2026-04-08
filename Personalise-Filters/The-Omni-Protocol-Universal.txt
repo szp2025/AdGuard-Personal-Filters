@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.26-APEX
+! Version: 11.1.27-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -902,26 +902,91 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
 ! =========================================================================
 ! Наш огромный блок #%#//scriptlet("execute-script", ...)
 ! Он идет после сетевых правил, чтобы работать в уже подготовленной среде.
+
+! === CMP NETWORK BLOCK (SMART) ===
+
 ||sdk.privacy-center.org^$script,third-party
 ||*.didomi.io^$script,third-party
+||consent.cookiebot.com^$script,third-party
+||cdn.cookielaw.org^$script,third-party
+||cmp.quantcast.com^$script,third-party
+||choice.quantcast.com^$script,third-party
+||*.trustarc.com^$script,third-party
+||*.onetrust.com^$script,third-party
+
+! === CMP JS HARD KILL ===
+
 #%#//scriptlet("abort-on-property-read", "Didomi")
 #%#//scriptlet("abort-on-property-read", "didomiOnReady")
 
-! --- 2.3 DOM cleanup (универсальный) ---
+#%#//scriptlet("abort-on-property-read", "__tcfapi")
+#%#//scriptlet("abort-on-property-read", "__cmp")
+
+#%#//scriptlet("abort-on-property-read", "OneTrust")
+#%#//scriptlet("abort-on-property-read", "Optanon")
+
+#%#//scriptlet("abort-on-property-read", "Cookiebot")
+
+#%#//scriptlet("abort-on-property-read", "Quantcast")
+
+
+! === CMP DOM PURGE ===
+
 ##[id^="didomi"]
 ##[class*="didomi"]
-##iframe[src*="privacy-center"]
-##iframe[src*="didomi"]
-! --- 2.4 Overlay fix (ОБЯЗАТЕЛЬНО) ---
 
-##body.didomi-popup-open
-##html.didomi-popup-open
+##[id^="onetrust"]
+##[class*="onetrust"]
+
+##[id^="qc-cmp"]
+##[class*="qc-cmp"]
+
+##[id^="cookiebot"]
+##[class*="cookiebot"]
+
+##[id^="truste"]
+##[class*="trustarc"]
+
+##iframe[src*="consent"]
+##iframe[src*="privacy"]
+##iframe[src*="cookie"]
+
+! === CMP OVERLAY FIX ===
+
+##body[class*="consent"]
+##body[class*="didomi"]
+##body[class*="onetrust"]
+
+##html[class*="consent"]
+
 ##.didomi-popup-backdrop
+##.onetrust-pc-dark-filter
+##.qc-cmp-ui
 
-! --- 2.5 Scroll unlock (критично) ---
 
-#$#body { overflow: auto !important; }
+! === SCROLL FIX ===
+
+#$#body { overflow: auto !important; position: static !important; }
 #$#html { overflow: auto !important; }
+
+! === HARD DOM KILL ===
+
+#$#div[id^="didomi"] { display: none !important; }
+#$#div[class*="didomi"] { display: none !important; }
+
+#$#div[id^="onetrust"] { display: none !important; }
+#$#div[class*="onetrust"] { display: none !important; }
+
+#$#div[id^="qc-cmp"] { display: none !important; }
+
+
+
+
+
+
+
+
+
 
 
 ! ------------------------------------------------------------
