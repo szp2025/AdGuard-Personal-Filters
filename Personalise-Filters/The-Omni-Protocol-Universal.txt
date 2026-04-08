@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.22-APEX
+! Version: 11.1.23-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -903,6 +903,20 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
 ! Наш огромный блок #%#//scriptlet("execute-script", ...)
 ! Он идет после сетевых правил, чтобы работать в уже подготовленной среде.
 
+||sdk.privacy-center.org^$script,domain=~google.com|~yandex.ru
+||didomi.io^$script
+||config.didomi.io^
+
+##[id*="didomi-host"]
+##[class*="didomi-popup"]
+##.didomi-popup-backdrop
+##.didomi-screen-xlarge
+##[id*="sp_message_container"]
+##div[id^="didomi-notice"]
+
+#$#body { overflow: auto !important; position: static !important; filter: none !important; pointer-events: auto !important; }
+#$#html { overflow: auto !important; filter: none !important; pointer-events: auto !important; }
+##style:has-text(didomi):remove()
 
 ! ------------------------------------------------------------
 ! [HYBRID-SCRIPTLETS] - JS Injection Engine
