@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         OMNI-MONOLITH [V5.5.70 QUANTUM]
 // @namespace    OmniChronos.Security
-// @version      5.5.70
+// @version      5.5.71
 // @description  Quantum-Singularity: Deception Honey-Pots, Neural Timing & Recursive Shield
 // @author       Omni-Chronos
 // @match        *://*/*
