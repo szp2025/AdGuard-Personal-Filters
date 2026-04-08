@@ -99,23 +99,29 @@
     };
 
     // --- [5. ЭШЕЛОН: АВТОНОМНЫЙ СТЕРИЛИЗАТОР] ---
-    const applySterilizer = () => {
-        const clean = () => {
-            if (QUANTUM.isCritical()) return;
-            const url = new URL(window.location.href);
-            const badParams = ['utm_', 'fbclid', 'gclid', 'aff_', 'ref', '_ga', '_gl'];
-            let changed = false;
-            
-            for (let key of Array.from(url.searchParams.keys())) {
-                if (badParams.some(p => key.startsWith(p))) {
-                    url.searchParams.delete(key);
-                    changed = true;
-                }
+
+const applySterilizer = () => {
+    const clean = () => {
+        if (QUANTUM.isCritical()) return;
+        const url = new URL(window.location.href);
+        // Не трогаем важные параметры YouTube (v, list, t)
+        const badParams = ['utm_', 'fbclid', 'gclid', 'aff_'];
+        let changed = false;
+        
+        for (let key of Array.from(url.searchParams.keys())) {
+            if (badParams.some(p => key.startsWith(p))) {
+                url.searchParams.delete(key);
+                changed = true;
             }
-            if (changed) window.history.replaceState(null, '', url.href);
-        };
-        setInterval(clean, 3000);
+        }
+        // Меняем URL только если это не сломает навигацию YouTube
+        if (changed && !window.location.hostname.includes('youtube.com')) {
+            window.history.replaceState(null, '', url.href);
+        }
     };
+    setTimeout(clean, 3000); // Даем 3 секунды форы
+};
+
 
     // --- [ЗАПУСК КВАНТОВОГО ЯДРА] ---
     const boot = () => {
