@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name         OMNI-MONOLITH [V5.5.10 FINAL]
+// @name         OMNI-MONOLITH [V5.5.15 FINAL]
 // @namespace    OmniChronos.Security
-// @version      5.5.10
+// @version      5.5.15
 // @description  Total Anonymization, YouTube Turbo, Environment Unlock & Security Layer
 // @author       Omni-Chronos
 // @match        *://*/*
@@ -15,20 +15,52 @@
 // ==/UserScript==
 
 /**
- * OMNI-MONOLITH V5.5.10 [CORE CHRONOS v3.3.9]
+ * OMNI-MONOLITH V5.5.15 [CORE CHRONOS v3.3.9]
  * Полная сборка: Маскировка, Медиа-контроль и Разблокировка среды.
+ * Оптимизировано для работы с Госструктурами и Банками (Passive Mode).
  */
 ((window, document) => {
     'use strict';
 
     // --- [0. ИНФРАСТРУКТУРА: ПАРАМЕТРЫ] ---
     const OMNI_Infobase = () => ({
-        TAG: '%c[Omni-Chronos-v5.5.10]',
+        TAG: '%c[Omni-Chronos-v5.5.15]',
         STYLE_GOLD: 'color: #D4AF37; font-weight: bold;',
         STYLE_BLUE: 'color: #00BFFF;',
         STYLE_TURBO_TAG: 'color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;',
-        // Список исключений (удалите элементы, если нужно разрешить работу ВЕЗДЕ)
-        WHITELIST: ['outlook.com', 'office.com', 'gouv.fr', 'ameli.fr', 'caf.fr', 'live.com', 'google.com', 'bank', 'paypal' ,'github'],
+        
+        // --- МАКСИМАЛЬНЫЙ WHITELIST (КРИТИЧЕСКИЕ ЗОНЫ) ---
+        WHITELIST: [
+            // Почта и Тех-гиганты
+            'outlook.com', 'office.com', 'live.com', 'google.com', 'github', 'microsoft', 'apple.com', 'icloud.com',
+            // Франция (Гос. услуги)
+            'gouv.fr', 'ameli.fr', 'caf.fr', 'impots.gouv.fr', 'loirehabitat.fr', 'pole-emploi.fr', 
+            'ants.gouv.fr', 'service-public.fr', 'diplomatie.gouv.fr', 'education.gouv.fr',
+            'assurance-maladie.fr', 'msa.fr', 'urssaf.fr', 'cafat.nc',
+            // Глобальные Финансы и Необанки
+            'bank', 'banque', 'banco', 'ebank', 'onlinebanking', 'credit-agricole', 'bnpparibas',
+            'societegenerale', 'ca-paca', 'cic.fr', 'lcl.fr', 'boursobank', 'revolut', 'n26',
+            'sparkasse', 'db.com', 'santander', 'barclays', 'hsbc', 'chase.com', 'wellsfargo',
+            'paypal', 'stripe', 'wise.com', 'payoneer', 'visa', 'mastercard', 'amex', 'klarna',
+            // Крипто и Безопасность
+            'binance.com', 'coinbase.com', 'ledger.com', 'metamask.io'
+        ],
+
+        /**
+         * Умный детектор госструктур и банков мира.
+         */
+        isCriticalZone: () => {
+            const h = window.location.hostname.toLowerCase();
+            // 1. Проверка всех правительственных доменов мира (.gov, .gouv, .mil, .edu)
+            const govPattern = /\.(gov|gouv|mil|edu|int)(\.[a-z]{2})?$/;
+            // 2. Проверка банковской эвристики (банки, оплаты, налоги)
+            const financePattern = /bank|banque|banco|banca|credit|checkout|pago|billing|tax|finance|payment/i;
+            // 3. Проверка специфических французских префиксов
+            const isFrenchGov = h.includes('.gouv.fr') || h.includes('pro-sante.fr');
+
+            return govPattern.test(h) || financePattern.test(h) || isFrenchGov;
+        },
+
         isTechHost: /localhost|127\.0\.0\.1|github|gitlab|bitbucket/.test(window.location.hostname)
     });
 
@@ -42,16 +74,12 @@
 
     // --- [1. ЯДРО РАЗБЛОКИРОВКИ И МАСКИРОВКИ] ---
 
-    // Принудительное разрешение выполнения в ограниченных средах
     const unlockEnvironment = () => {
         try {
             if (typeof unsafeWindow !== 'undefined') {
-                // Синхронизация eval с контекстом расширения для обхода CSP
                 window.eval = unsafeWindow.eval;
             }
-        } catch (e) {
-            /* Тихая обработка для предотвращения падения на жестких CSP */
-        }
+        } catch (e) {}
     };
 
     const deepMask = (fn, name) => {
@@ -171,29 +199,27 @@
     const OmniChronos = {
         boot: () => {
             const info = OMNI_Infobase();
+            const host = window.location.hostname;
 
-            // Если хост в белом списке — активируем только базовую разблокировку среды
-            if (info.WHITELIST.some(d => window.location.hostname.includes(d))) {
-                unlockEnvironment();
-                console.log(info.TAG, 'Safe Domain detected. Minimal bypass active.');
+            // ГЛОБАЛЬНАЯ ПРОВЕРКА КРИТИЧЕСКИХ ЗОН
+            if (info.WHITELIST.some(d => host.includes(d)) || info.isCriticalZone()) {
+                unlockEnvironment(); // Разрешаем среду, но не маскируем
+                console.log(info.TAG, info.STYLE_GOLD, '🛡️ PASSIVE MODE: Banking/Gov Zone detected. Safety first.');
                 return;
             }
 
-            console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, ' 🚀 BOOTING OMNI-MONOLITH V5.5.10');
+            console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, ' 🚀 BOOTING OMNI-MONOLITH V5.5.15');
 
             OMNI_Registry.forEach(deploy => {
                 try {
                     deploy();
                     console.log(`%c[Omni]%c ⚡ Active: %c${deploy.name}`, info.STYLE_TURBO_TAG, 'color: #FF4500;', 'color: #00FF41;');
-                } catch (e) {
-                    // Ошибка игнорируется для обеспечения работы остальных модулей
-                }
+                } catch (e) {}
             });
             console.log('%c[SUCCESS]%c Stealth: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
         }
     };
 
-    // Запуск
     OmniChronos.boot();
 
 })(window, document);
