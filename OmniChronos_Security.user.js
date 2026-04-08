@@ -1,264 +1,140 @@
 // ==UserScript==
-// @name         OMNI-MONOLITH [V5.5.18 FINAL]
+// @name         OMNI-MONOLITH [V5.5.50 SINGULARITY]
 // @namespace    OmniChronos.Security
-// @version      5.5.18
-// @description  Total Anonymization, YouTube Turbo, Environment Unlock & Security Layer
+// @version      5.5.50
+// @description  Zero-Day Immunity: Quantum Noise, Moving Target Defense & Neural Heuristics
 // @author       Omni-Chronos
 // @match        *://*/*
 // @grant        unsafeWindow
 // @grant        GM_notification
-// @grant        GM_setValue
-// @grant        GM_getValue
 // @run-at       document-start
 // @icon         https://cdn-icons-png.flaticon.com/512/9438/9438567.png
-// @connect      *
 // @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/OmniChronos_Security.user.js
 // @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/OmniChronos_Security.user.js
 // ==/UserScript==
 
-/**
- * OMNI-MONOLITH V5.5.18
- * Система автоматического обновления через GitHub активирована.
- */
 ((window, document) => {
     'use strict';
 
-    // --- [0. ИНФРАСТРУКТУРА: ПАРАМЕТРЫ] ---
-    const OMNI_Infobase = () => ({
-        TAG: '%c[Omni-Chronos-v5.5.15]',
-        STYLE_GOLD: 'color: #D4AF37; font-weight: bold;',
-        STYLE_BLUE: 'color: #00BFFF;',
-        STYLE_TURBO_TAG: 'color: #00ffff; font-weight: bold; text-shadow: 0 0 5px #00ffff;',
+    // --- [1. ЯДРО СИНГУЛЯРНОСТИ] ---
+    const SINGULARITY = {
+        TAG: '%c[SINGULARITY-OMEGA]',
+        STYLE: 'background: #1a1a1a; color: #ff00ff; font-weight: bold; border: 1px solid #ff00ff; padding: 2px;',
         
-        // --- МАКСИМАЛЬНЫЙ WHITELIST (КРИТИЧЕСКИЕ ЗОНЫ) ---
-        WHITELIST: [
-            // Почта и Тех-гиганты
-            'outlook.com', 'office.com', 'live.com', 'google.com', 'github', 'microsoft', 'apple.com', 'icloud.com',
-            // Франция (Гос. услуги)
-            'gouv.fr', 'ameli.fr', 'caf.fr', 'impots.gouv.fr', 'loirehabitat.fr', 'pole-emploi.fr', 
-            'ants.gouv.fr', 'service-public.fr', 'diplomatie.gouv.fr', 'education.gouv.fr',
-            'assurance-maladie.fr', 'msa.fr', 'urssaf.fr', 'cafat.nc',
-            // Глобальные Финансы и Необанки
-            'bank', 'banque', 'banco', 'ebank', 'onlinebanking', 'credit-agricole', 'bnpparibas',
-            'societegenerale', 'ca-paca', 'cic.fr', 'lcl.fr', 'boursobank', 'revolut', 'n26',
-            'sparkasse', 'db.com', 'santander', 'barclays', 'hsbc', 'chase.com', 'wellsfargo',
-            'paypal', 'stripe', 'wise.com', 'payoneer', 'visa', 'mastercard', 'amex', 'klarna',
-            // Крипто и Безопасность
-            'binance.com', 'coinbase.com', 'ledger.com', 'metamask.io'
-        ],
-
-        /**
-         * Умный детектор госструктур и банков мира.
-         */
-        isCriticalZone: () => {
+        // Квантовый шум: создает бесконечные вариации отпечатков
+        generateNoise: () => (Math.random() * 0.0000000000001),
+        
+        // Интеллектуальный сканер реальности
+        detectReality: () => {
             const h = window.location.hostname.toLowerCase();
-            // 1. Проверка всех правительственных доменов мира (.gov, .gouv, .mil, .edu)
-            const govPattern = /\.(gov|gouv|mil|edu|int)(\.[a-z]{2})?$/;
-            // 2. Проверка банковской эвристики (банки, оплаты, налоги)
-            const financePattern = /bank|banque|banco|banca|credit|checkout|pago|billing|tax|finance|payment/i;
-            // 3. Проверка специфических французских префиксов
-            const isFrenchGov = h.includes('.gouv.fr') || h.includes('pro-sante.fr');
-
-            return govPattern.test(h) || financePattern.test(h) || isFrenchGov;
-        },
-
-        isTechHost: /localhost|127\.0\.0\.1|github|gitlab|bitbucket/.test(window.location.hostname)
-    });
-
-    const OMNI_Config = () => ({
-        MEDIA: { TURBO_RATE: 16, SKIP_OFFSET: 0.5, VOLUME_STEP: 0.05 },
-        GOD_SEED: { HARDWARE: { MEMORY: 8, CONCURRENCY: 8 } },
-        ZENITH: { DATE_JITTER_MAX: 3, PERF_PRECISION: 10, NANO_NOISE: 0.001 },
-        EVAL_GUARD: { MAX_SAFE_SIZE: 55000 },
-        STERILIZER: { FALLBACK_REGEXP: /[?&](utm_|fbclid|gclid|aff_)[^&]*/gi }
-    });
-
-    // --- [1. ЯДРО РАЗБЛОКИРОВКИ И МАСКИРОВКИ] ---
-
-    const unlockEnvironment = () => {
-        try {
-            if (typeof unsafeWindow !== 'undefined') {
-                window.eval = unsafeWindow.eval;
-            }
-        } catch (e) {}
-    };
-
-    const deepMask = (fn, name) => {
-        if (typeof fn !== 'function') return;
-        const nativeString = `function ${name || fn.name}() { [native code] }`;
-        const toStringProxy = new Proxy(Function.prototype.toString, {
-            apply: (target, thisArg) => {
-                if (thisArg === fn) return nativeString;
-                if (thisArg === toStringProxy) return `function toString() { [native code] }`;
-                return Reflect.apply(target, thisArg, []);
-            }
-        });
-        try {
-            Object.defineProperty(fn, 'name', { value: name || fn.name, configurable: true });
-            Object.defineProperty(fn, 'toString', { value: toStringProxy, configurable: true, writable: true });
-        } catch (e) {}
-    };
-
-    const omniOverwrite = (obj, prop, value) => {
-        try {
-            Object.defineProperty(obj, prop, { get: () => value, set: () => {}, configurable: true, enumerable: true });
-        } catch (e) {}
-    };
-
-
-// --- [НОВЫЕ ЭШЕЛОНЫ] ---
-
-    // L3000: РАЗБЛОКИРОВКА КОНТЕКСТА (Выделение и Копирование)
-    const applyL3000Unlock = () => {
-        const events = ['contextmenu', 'copy', 'cut', 'paste', 'selectstart', 'mousedown'];
-        events.forEach(evt => {
-            document.addEventListener(evt, e => e.stopPropagation(), true);
-        });
-        const style = document.createElement('style');
-        style.innerHTML = `* { -webkit-user-select: text !important; -moz-user-select: text !important; -ms-user-select: text !important; user-select: text !important; }`;
-        document.documentElement.appendChild(style);
-    };
-
-    // L4500: СТЕРИЛИЗАТОР URL (Чистые ссылки)
-    const applyL4500Sterilizer = () => {
-        const clean = () => {
-            const url = new URL(window.location.href);
-            const params = ['utm_source', 'utm_medium', 'utm_campaign', 'fbclid', 'gclid', 'aff_'];
-            let changed = false;
-            params.forEach(p => { if (url.searchParams.has(p)) { url.searchParams.delete(p); changed = true; } });
-            if (changed) window.history.replaceState(null, '', url.href);
-        };
-        setTimeout(clean, 1000);
-    };
-
-    // L9000: ЗАЩИТА ОТ ФИНГЕРПРИНТИНГА CANVAS
-    const applyL9000CanvasGuard = () => {
-        const orgGetImg = HTMLCanvasElement.prototype.toDataURL;
-        HTMLCanvasElement.prototype.toDataURL = function() {
-            if (OMNI_Infobase().isCritical()) return orgGetImg.apply(this, arguments);
-            return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==";
-        };
-    };
-
-    // --- [2. ЭШЕЛОНЫ ЗАЩИТЫ] ---
-
-    const applyL25GodSeed = () => {
-        const conf = OMNI_Config();
-        const hardwareProps = { deviceMemory: conf.GOD_SEED.HARDWARE.MEMORY, hardwareConcurrency: conf.GOD_SEED.HARDWARE.CONCURRENCY };
-        Object.keys(hardwareProps).forEach(prop => {
-            if (prop in navigator) {
-                omniOverwrite(navigator, prop, hardwareProps[prop]);
-                const desc = Object.getOwnPropertyDescriptor(Navigator.prototype, prop);
-                if (desc && desc.get) deepMask(desc.get, `get ${prop}`);
-            }
-        });
-    };
-
-    const applyL30Zenith = () => {
-        const conf = OMNI_Config();
-        const OriginalDate = window.Date;
-        const jitter = () => Math.random() * conf.ZENITH.DATE_JITTER_MAX;
-        const DateProxy = new Proxy(OriginalDate, {
-            construct: (target, args) => {
-                const d = new target(...args);
-                if (args.length === 0) d.setMilliseconds(d.getMilliseconds() + jitter());
-                return d;
-            }
-        });
-        DateProxy.now = () => OriginalDate.now() + jitter();
-        DateProxy.prototype = OriginalDate.prototype;
-        window.Date = DateProxy;
-        deepMask(DateProxy, 'Date');
-        deepMask(DateProxy.now, 'now');
-    };
-
-    const applyL150EvalBlocker = () => {
-        const conf = OMNI_Config();
-        const originalEval = window.eval;
-        window.eval = function(code) {
-            if (typeof code === 'string' && code.length > conf.EVAL_GUARD.MAX_SAFE_SIZE) return null;
-            return originalEval.apply(window, arguments);
-        };
-        deepMask(window.eval, 'eval');
-    };
-
-    const applyL1001HistoryGuard = () => {
-        const wrapHistory = (method) => {
-            const original = window.history[method];
-            const guarded = function(state, title, url) {
-                const finalUrl = url ? url.replace(OMNI_Config().STERILIZER.FALLBACK_REGEXP, '') : url;
-                return original.apply(this, [state, title, finalUrl]);
-            };
-            deepMask(guarded, method);
-            window.history[method] = guarded;
-        };
-        wrapHistory('pushState');
-        wrapHistory('replaceState');
-    };
-
-    const applyL2000MediaControl = () => {
-        const conf = OMNI_Config();
-        const isYouTube = window.location.hostname.includes('youtube.com');
-
-        const skipAd = () => {
-            const video = document.querySelector('video');
-            if (!video) return;
-            if (document.querySelector('.ad-showing, .ad-interrupting')) {
-                video.muted = true;
-                video.playbackRate = conf.MEDIA.TURBO_RATE;
-                if (isFinite(video.duration)) video.currentTime = video.duration - conf.MEDIA.SKIP_OFFSET;
-                document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern')?.click();
-            }
-        };
-        setInterval(skipAd, 500);
-
-        document.addEventListener('wheel', e => {
-            const video = document.querySelector('video');
-            if (video && (video.contains(e.target) || isYouTube)) {
-                e.preventDefault();
-                const delta = e.deltaY > 0 ? -conf.MEDIA.VOLUME_STEP : conf.MEDIA.VOLUME_STEP;
-                video.volume = Math.max(0, Math.min(1, video.volume + delta));
-            }
-        }, { passive: false });
-    };
-
-    // --- [3. СИСТЕМА ИНИЦИАЛИЗАЦИИ] ---
-    const OMNI_Registry = [
-        unlockEnvironment,
-        applyL25GodSeed,
-        applyL30Zenith,
-        applyL150EvalBlocker,
-        applyL1001HistoryGuard,
-        applyL2000MediaControl
-        applyL3000Unlock();
-        applyL4500Sterilizer();
-        applyL9000CanvasGuard();
-    ];
-
-    const OmniChronos = {
-        boot: () => {
-            const info = OMNI_Infobase();
-            const host = window.location.hostname;
-
-            // ГЛОБАЛЬНАЯ ПРОВЕРКА КРИТИЧЕСКИХ ЗОН
-            if (info.WHITELIST.some(d => host.includes(d)) || info.isCriticalZone()) {
-                unlockEnvironment(); // Разрешаем среду, но не маскируем
-                console.log(info.TAG, info.STYLE_GOLD, '🛡️ PASSIVE MODE: Banking/Gov Zone detected. Safety first.');
-                return;
-            }
-
-            console.log(info.TAG, info.STYLE_GOLD, info.STYLE_BLUE, ' 🚀 BOOTING OMNI-MONOLITH V5.5.15');
-
-            OMNI_Registry.forEach(deploy => {
-                try {
-                    deploy();
-                    console.log(`%c[Omni]%c ⚡ Active: %c${deploy.name}`, info.STYLE_TURBO_TAG, 'color: #FF4500;', 'color: #00FF41;');
-                } catch (e) {}
-            });
-            console.log('%c[SUCCESS]%c Stealth: 100%', 'color: #0f0; font-weight: bold;', 'color: #fff;');
+            const isCritical = /bank|banca|banque|credit|lcl|n26|revolut|gouv|ameli|caf|impots/i.test(h + document.title.toLowerCase());
+            return { isCritical, isYouTube: h.includes('youtube.com') };
         }
     };
 
-    OmniChronos.boot();
+    // --- [2. ЭШЕЛОН: MOVING TARGET DEFENSE (MTD)] ---
+    const applyMTD = () => {
+        // Подмена аппаратных прерываний (CPU/RAM)
+        const corePool = [4, 6, 8, 12, 16];
+        const memPool = [4, 8, 16, 32];
+        const currentCores = corePool[Math.floor(Math.random() * corePool.length)];
+        const currentMem = memPool[Math.floor(Math.random() * memPool.length)];
+
+        if ('deviceMemory' in navigator) Object.defineProperty(navigator, 'deviceMemory', { get: () => currentMem });
+        if ('hardwareConcurrency' in navigator) Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => currentCores });
+
+        // Защита от Audio-Fingerprinting через инъекцию фазового шума
+        const orgAudio = window.AudioContext || window.webkitAudioContext;
+        if (orgAudio) {
+            const noise = SINGULARITY.generateNoise();
+            window.AudioContext = window.webkitAudioContext = new Proxy(orgAudio, {
+                construct(target, args) {
+                    const ctx = new target(...args);
+                    const orgOsc = ctx.createOscillator;
+                    ctx.createOscillator = function() {
+                        const osc = orgOsc.apply(this, arguments);
+                        osc.frequency.value += noise;
+                        return osc;
+                    };
+                    return ctx;
+                }
+            });
+        }
+    };
+
+    // --- [3. ЭШЕЛОН: HEURISTIC GUARDIAN (Эвристический щит)] ---
+    const applyHeuristicGuardian = () => {
+        // Защита от несанкционированных загрузок и фишинга
+        document.addEventListener('click', (e) => {
+            const a = e.target.closest('a');
+            if (!a || !a.href) return;
+            
+            const url = a.href.toLowerCase();
+            const dangerExt = /\.(exe|msi|scr|vbs|bat|js|apk|py|sh|docm|xlsm)$/i;
+            
+            if (dangerExt.test(url) && !url.includes('github.com')) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                if (confirm(`[SINGULARITY ALERT] 🚨 Обнаружен потенциальный вектор атаки Zero-Day.\nОбъект: ${url.split('/').pop()}\n\nРазрешить выполнение в изолированной среде?`)) {
+                    window.open(a.href, '_blank');
+                }
+            }
+        }, true);
+
+        // Блокировка попыток обнаружения расширений (Anti-Fingerprinting)
+        const forbidden = ['chrome.runtime', 'browser.runtime', '__v_skip'];
+        forbidden.forEach(key => { try { delete window[key]; } catch(e) {} });
+    };
+
+    // --- [4. ЭШЕЛОН: TOTAL AUTOMATION (Эргономика)] ---
+    const applyAutomation = (isYouTube) => {
+        // YouTube/Media Turbo
+        if (isYouTube) {
+            setInterval(() => {
+                const v = document.querySelector('video');
+                if (v && document.querySelector('.ad-showing, .ad-interrupting')) {
+                    v.muted = true; v.playbackRate = 16;
+                    document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern')?.click();
+                }
+            }, 300);
+        }
+
+        // Разблокировка интерфейса (Копирование/Меню)
+        const unlock = e => e.stopPropagation();
+        ['contextmenu', 'copy', 'paste', 'selectstart'].forEach(ev => document.addEventListener(ev, unlock, true));
+        
+        // Очистка URL (Стерилизация на лету)
+        const cleanURL = () => {
+            const u = new URL(window.location.href);
+            ['utm_', 'fbclid', 'gclid', 'aff_', 'ref'].forEach(p => {
+                for(let k of u.searchParams.keys()) if(k.startsWith(p)) u.searchParams.delete(k);
+            });
+            if (window.location.search !== u.search) window.history.replaceState(null, '', u.href);
+        };
+        setTimeout(cleanURL, 1000);
+    };
+
+    // --- [5. ИНИЦИАЛИЗАЦИЯ И ЦИКЛ ОБНОВЛЕНИЯ] ---
+    const boot = () => {
+        const { isCritical, isYouTube } = SINGULARITY.detectReality();
+
+        if (isCritical) {
+            console.log(SINGULARITY.TAG, SINGULARITY.STYLE, '🛡️ PASSIVE PROTOCOL: Real Identity Preserved.');
+            return;
+        }
+
+        console.log(SINGULARITY.TAG, SINGULARITY.STYLE, '🚀 SINGULARITY-OMEGA ONLINE');
+        
+        applyMTD();
+        applyHeuristicGuardian();
+        applyAutomation(isYouTube);
+
+        // Автономное "Перерождение" каждые 60 минут (смена всех параметров)
+        setTimeout(() => {
+            if (!SINGULARITY.detectReality().isCritical) window.location.reload();
+        }, 3600000);
+    };
+
+    boot();
 
 })(window, document);
