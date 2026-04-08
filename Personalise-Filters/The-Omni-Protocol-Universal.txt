@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.8-APEX
+! Version: 11.1.9-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -920,8 +920,25 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         try { Object.defineProperty(obj, prop, { get: () => val, set: noop, configurable: true, enumerable: true }); } catch (e) {} 
     };
 
-    /** 2. GHOST-MODE & DECEPTION (Маскировка окружения) **/
-    // Разрыв связи с родителем (Tab-Napping)
+    /** 2. СПЕЦ-ФИКСЫ (INFINITYFREE & DIDOMI FORCE) **/
+    if (host.includes('infinityfree')) {
+        window.google_ad_status = 1;
+        safeDefine(window, 'canRunAds', true);
+        safeDefine(window, 'isAdblockActive', false);
+    }
+
+    if (!window.Didomi && (!TRUSTED || host.includes('franceinfo'))) {
+        window.Didomi = new Proxy({}, {
+            get: (target, prop) => {
+                if (prop === 'isReady') return () => true;
+                if (prop === 'on') return (ev, cb) => { if(ev === 'ready') cb(); };
+                if (prop === 'getUserConsentStatusForVendor') return () => true;
+                return noop;
+            }
+        });
+    }
+
+    /** 3. GHOST-MODE & DECEPTION (170/190/PC-FORCE) **/
     const oOpen = window.open;
     window.open = function(u, t, f) {
         const w = oOpen.apply(this, [u, t, f]);
@@ -930,31 +947,16 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
     };
 
     if (!TRUSTED) {
-        // Захват Didomi API через Proxy (ПЕРЕД загрузкой сайта)
-        if (!window.Didomi) {
-            window.Didomi = new Proxy({}, {
-                get: (target, prop) => {
-                    if (prop === 'isReady') return () => true;
-                    if (prop === 'on') return noop;
-                    if (prop === 'getUserConsentStatusForVendor') return () => true;
-                    return noop;
-                }
-            });
-        }
-
-        // Харднинг личности (170/190/PC-FORCE)
         safeDefine(window, 'RTCPeerConnection', undefined);
         safeDefine(window, 'webkitRTCPeerConnection', undefined);
         safeDefine(window, 'adblock', false);
-        safeDefine(window, 'google_ad_status', 1);
-        safeDefine(window, 'adguard_installed', false);
         safeDefine(navigator, 'webdriver', false); 
-        safeDefine(navigator, 'sendBeacon', () => true); // Блокировка прощальной аналитики
+        safeDefine(navigator, 'sendBeacon', () => true);
         safeDefine(navigator, 'userActivation', { isActive: false, hasBeenActive: false });
         safeDefine(navigator, 'maxTouchPoints', 5);
         if (navigator.languages) safeDefine(navigator, 'languages', ['ru-RU', 'ru', 'en-US', 'en']);
 
-        // Спуфинг GPU и Аудио-шум
+        // Спуфинг GPU и Аудио
         const gpuMocks = { 37445: 'Intel Inc.', 37446: 'Intel(R) Iris(R) Xe Graphics', 7936: 'WebKit', 7937: 'WebKit WebGL' };
         const oGetParam = WebGLRenderingContext.prototype.getParameter;
         WebGLRenderingContext.prototype.getParameter = function(p) { return gpuMocks[p] || oGetParam.apply(this, arguments); };
@@ -966,64 +968,55 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
             return data;
         };
 
-        // Убийца Privacy Sandbox и сенсоров
         ['browsingTopics', 'runAdAuction', 'userAgentData'].forEach(p => safeDefine(navigator, p, undefined));
         ['DeviceMotionEvent', 'DeviceOrientationEvent', 'IdleDetector', 'sharedStorage'].forEach(d => safeDefine(window, d, undefined));
-        if (navigator.getBattery) navigator.getBattery = () => Promise.resolve({ charging: true, level: 1.0 });
     }
 
-    /** 3. NET-SHIELD & SMS-PROTECT (Fetch/XHR) **/
-    const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|pixel|telemetry|doubleclick|didomi|coinhive/i);
+    /** 4. NET-SHIELD & SMS-PROTECT (Fetch/XHR Gaslighting) **/
+    const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|pixel|telemetry|doubleclick|didomi|coinhive|error-report\.com/i);
     const isSensitive = u => u && typeof u === 'string' && u.match(/:5555|:5037|:3306|:5432|:8080|:8443|localhost|127\.0\.0\.1/);
     const isSuspiciousQuery = (u) => { try { return /phone|tel|msisdn|id=[a-f0-9]{32}/i.test(new URL(u, location.origin).search); } catch(e){return false;} };
 
     const oF = window.fetch;
     window.fetch = async function(u, o) {
-        if (TRUSTED || (u && typeof u === 'string' && u.match(/cloudflare|challenges|turnstile|hcaptcha|recaptcha/i))) return oF.apply(this, arguments);
-        if (isTr(u) || isSensitive(u) || isSuspiciousQuery(u)) {
+        const url = typeof u === 'string' ? u : (u?.url || '');
+        if (TRUSTED || url.match(/cloudflare|challenges|turnstile|hcaptcha|recaptcha/i)) return oF.apply(this, arguments);
+        if (isTr(url) || isSensitive(url) || isSuspiciousQuery(url)) {
             return new Response('{\"status\":\"success\",\"data\":[]}', { status: 200, headers: {'Content-Type': 'application/json'} });
         }
         return oF.apply(this, arguments);
     };
 
-    /** 4. ОПТИМИЗИРОВАННЫЙ DOM-PURIFIER (Didomi/Ads/Inputs) **/
+    /** 5. MECHANICAL STERILIZATION (DOM Cleaner + Shadow DOM) **/
     let lastAction = Date.now();
     ['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => lastAction = Date.now(), {passive:true}));
 
     const globalCleaner = () => {
-        if (TRUSTED) return;
-
-        // 1. Kill Didomi & Banners (Shadow DOM включен)
-        const targets = ['.didomi-screen-xlarge', '.didomi-popup-backdrop', '.didomi-notice-popup', '.didomi-popup__backdrop', '[id^=\"didomi-host\"]', '.app-banner', '.smartbanner'];
+        const targets = ['.didomi-screen-xlarge', '.didomi-popup-backdrop', '.didomi-notice-popup', '.didomi-popup__backdrop', '[id^=\"didomi-host\"]', '.app-banner', '.smartbanner', '.modal-backdrop', 'div[class*=\"modal\"]', '#didomi-popup'];
         const deepClean = (root) => {
             targets.forEach(s => root.querySelectorAll(s).forEach(el => el.remove()));
             root.querySelectorAll('.ad-container:empty, .ad-slot:empty, .adsbygoogle:empty').forEach(el => el.remove());
+            if (root === document) {
+                [document.body, document.documentElement].forEach(el => {
+                    if (el) {
+                        el.style.setProperty('overflow', 'auto', 'important');
+                        el.style.setProperty('position', 'static', 'important');
+                        el.style.setProperty('filter', 'none', 'important');
+                    }
+                });
+            }
             root.querySelectorAll('*').forEach(el => { 
                 if (el.shadowRoot) deepClean(el.shadowRoot);
-                // Clickjacking protect
                 const s = window.getComputedStyle(el);
                 if (s.opacity === '0' && s.pointerEvents !== 'none' && el.offsetWidth > 10) el.style.pointerEvents = 'none';
             });
         };
         deepClean(document);
-
-        // 2. Fix Scroll
-        [document.body, document.documentElement].forEach(el => {
-            if (el) { el.style.setProperty('overflow', 'auto', 'important'); el.style.setProperty('position', 'static', 'important'); }
-        });
-
-        // 3. Input Hardening
-        document.querySelectorAll('input').forEach(i => {
-            if (i.type === 'password' || i.type === 'tel' || /card|cvv/i.test(i.name + i.id)) {
-                i.setAttribute('autocomplete', 'off'); i.setAttribute('autocorrect', 'off'); i.setAttribute('spellcheck', 'false');
-            }
-        });
     };
-
     new MutationObserver(globalCleaner).observe(document.documentElement, { childList: true, subtree: true });
     globalCleaner();
 
-    /** 5. X-GEN MALWARE SHIELD & BLOB SCANNER **/
+    /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|msi|sh|js)$/i;
     const dangerousPatterns = /eval\(|exec\(|system\(|powershell|base64_decode/i;
 
@@ -1040,11 +1033,11 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         const a = e.target.closest('a');
         if (a && !TRUSTED && (a.hasAttribute('download') || illegalExt.test(a.href))) {
             e.preventDefault();
-            alert('🛡️ OMNI-X-GEN: Загрузка заблокирована. Опасный тип файла.');
+            alert('🛡️ OMNI-X-GEN: Загрузка заблокирована.');
         }
     }, true);
 
-    /** 6. СТЕРИЛИЗАЦИЯ И ХРАНИЛИЩЕ (Storage-Lock) **/
+    /** 7. STORAGE LOCK & SHREDDER **/
     if (!TRUSTED) {
         const lock = (obj) => {
             try {
@@ -1057,17 +1050,17 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
 
     const purgeAll = (e) => {
         if (TRUSTED) return;
-        if (Date.now() - lastAction > 10000) { e.preventDefault(); e.returnValue = ''; } // Anti-Redirect
+        if (Date.now() - lastAction > 10000) { e.preventDefault(); e.returnValue = ''; }
         try {
             document.cookie.split(';').forEach(c => {
                 document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/');
             });
+            localStorage.clear();
         } catch(e) {}
     };
     window.addEventListener('beforeunload', purgeAll);
 
-    /** 7. DEEP-SCAN & URL PURIFY **/
-    // URL Cleanup
+    /** 8. URL & CANVAS & L10N (Гео-маскировка) **/
     (function urlPurify(){
         try {
             const u = new URL(window.location);
@@ -1078,14 +1071,6 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         } catch(e){}
     })();
 
-    // Eval & Function Sandbox
-    const oEval = window.eval;
-    window.eval = function(code) {
-        if (!TRUSTED && typeof code === 'string' && code.match(dangerousPatterns)) return null;
-        return oEval.apply(this, arguments);
-    };
-
-    // Canvas ImageData Fingerprint Protection
     const oGetImg = HTMLCanvasElement.prototype.getContext('2d').__proto__.getImageData;
     HTMLCanvasElement.prototype.getContext('2d').__proto__.getImageData = function() {
         const res = oGetImg.apply(this, arguments);
@@ -1093,13 +1078,11 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return res;
     };
 
-    // Geo-Deception
     const oRes = Intl.DateTimeFormat.prototype.resolvedOptions;
     Intl.DateTimeFormat.prototype.resolvedOptions = function() {
         return Object.assign(oRes.apply(this), { locale: 'ru-RU', timeZone: 'Europe/Moscow' });
     };
 })();")
-
 
 
 ! =========================================================================
