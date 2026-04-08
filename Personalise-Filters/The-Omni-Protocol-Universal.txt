@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.31-APEX
+! Version: 11.1.32-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -1090,59 +1090,43 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return oF.apply(this, arguments);
     };
 
-/** 5. EVIL STERILIZER (Anti-Shadow DOM & Universal Purge) **/
-    const bruteForce = () => {
-        const badTerms = ['didomi', 'onetrust', 'cookiebot', 'consent', 'sp_message'];
-        
-        const kill = (root) => {
-            if (!root) return;
-            // 1. Поиск по ID и классам
-            root.querySelectorAll?.('*').forEach(el => {
-                const id = el.id || '';
-                const cls = typeof el.className === 'string' ? el.className : '';
-                if (badTerms.some(t => id.includes(t) || cls.includes(t))) {
-                    if (el.tagName === 'STYLE') el.innerHTML = '';
-                    el.remove();
-                }
-                if (el.shadowRoot) kill(el.shadowRoot);
-            });
-        };
-        kill(document);
-
-        // 2. ЖЕСТКАЯ РАЗБЛОКИРОВКА СКРОЛЛА
-        const b = document.body, h = document.documentElement;
-        [b, h].forEach(el => {
-            if (el && (window.getComputedStyle(el).overflow === 'hidden' || el.style.overflow === 'hidden')) {
+/** 5. EVIL STERILIZER (Core Injection Mode) **/
+    // Этот блок "впрыскивает" код прямо в страницу, имитируя ручной ввод в консоль
+    try {
+        const script = document.createElement('script');
+        script.textContent = `(function() {
+            const fastPurge = () => {
+                const bad = ['didomi', 'onetrust', 'cookiebot', 'sp_message', 'consent'];
+                const clean = (root) => {
+                    if (!root) return;
+                    root.querySelectorAll?.('*').forEach(el => {
+                        const id = el.id || '';
+                        const cls = typeof el.className === 'string' ? el.className : '';
+                        if (bad.some(t => id.includes(t) || cls.includes(t))) {
+                            el.remove();
+                        }
+                        if (el.shadowRoot) clean(el.shadowRoot);
+                    });
+                };
+                clean(document);
+                
+                // Силовая разблокировка скролла
                 const s = 'overflow:auto!important;position:static!important;filter:none!important;pointer-events:auto!important;';
-                el.style.cssText += s;
-                el.classList.forEach(c => { if(badTerms.some(t => c.includes(t))) el.classList.remove(c); });
-            }
-        });
-    };
-
-    setInterval(bruteForce, 400);
+                if (document.body && (window.getComputedStyle(document.body).overflow === 'hidden' || document.body.style.overflow === 'hidden')) {
+                    document.documentElement.style.cssText += s;
+                    document.body.style.cssText += s;
+                    document.body.classList.remove('didomi-popup-open');
+                }
+                requestAnimationFrame(fastPurge);
+            };
+            requestAnimationFrame(fastPurge);
+        })();`;
+        (document.head || document.documentElement).appendChild(script);
+        script.remove();
+    } catch (e) { console.error('OMNI: Injection failed', e); }
 
     /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
-    const heuristicScanner = () => {
-        const shadowHeuristic = (root) => {
-            if (!root) return;
-            root.querySelectorAll?.('*').forEach(el => {
-                const s = window.getComputedStyle(el);
-                // Детекция невидимых оверлеев (высокий z-index, пустой контент)
-                if (parseInt(s.zIndex) > 1000 && s.position === 'fixed' && s.pointerEvents !== 'none') {
-                    if (el.innerText.length < 50 && !el.querySelector('nav, header, img, form')) {
-                        el.style.setProperty('display', 'none', 'important');
-                        el.style.setProperty('pointer-events', 'none', 'important');
-                    }
-                }
-                if (el.shadowRoot) shadowHeuristic(el.shadowRoot);
-            });
-        };
-        shadowHeuristic(document);
-        requestAnimationFrame(heuristicScanner);
-    };
-    requestAnimationFrame(heuristicScanner);
-
+    // Твой оригинальный сканер остается для защиты от вредоносных загрузок и паттернов
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|msi|sh|js)$/i;
     const dangerousPatterns = /eval\(|exec\(|system\(|powershell|base64_decode/i;
 
@@ -1162,6 +1146,7 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
             alert('🛡️ OMNI-X-GEN: Загрузка заблокирована.');
         }
     }, true);
+
 
     /** 7. STORAGE LOCK & SHREDDER **/
     if (!TRUSTED) {
