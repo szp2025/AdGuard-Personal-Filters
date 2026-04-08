@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.19-APEX
+! Version: 11.1.20-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -987,62 +987,42 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return oF.apply(this, arguments);
     };
 
-/** 5. FINAL MECHANICAL STERILIZATION **/
-    let lastAction = Date.now();
-    ['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => lastAction = Date.now(), {passive:true}));
+/** 5. MECHANICAL STERILIZATION: FORCE PURGE **/
+    const omniPurge = () => {
+        // 1. Прямое удаление проблемных тегов
+        const badTags = ['#didomi-css', '#didomi-host', '.didomi-popup-backdrop', '.didomi-screen-xlarge', '[id^="sp_message"]'];
+        
+        const clean = (root) => {
+            badTags.forEach(selector => {
+                const el = root.querySelector(selector);
+                if (el) el.remove();
+            });
 
-    const globalCleaner = () => {
-        // Функция для жесткой очистки элемента
-        const wipe = (el) => {
-            if (!el) return;
-            el.innerHTML = '';
-            el.remove();
-        };
+            // 2. Глубокий поиск в Shadow DOM (FranceInfo прячет всё там)
+            root.querySelectorAll('*').forEach(node => {
+                if (node.shadowRoot) clean(node.shadowRoot);
+                // Если ID содержит didomi - удаляем без раздумий
+                if (node.id && node.id.includes('didomi')) node.remove();
+            });
 
-        const scan = (root) => {
-            // 1. Ищем и уничтожаем Didomi по ID и тегам стилей
-            wipe(root.querySelector('#didomi-css'));
-            wipe(root.querySelector('#didomi-host'));
-            wipe(root.querySelector('.didomi-popup-backdrop'));
-            wipe(root.querySelector('.didomi-screen-xlarge'));
-
-            // 2. Снимаем блокировку со страницы
+            // 3. Снятие блокировки скролла и блюра (Разблокировка интерфейса)
             if (root === document) {
-                const targets = [document.body, document.documentElement];
-                targets.forEach(node => {
-                    if (node) {
-                        // Очищаем инлайновые стили, которые Didomi ставит через JS
-                        node.style.setProperty('overflow', 'auto', 'important');
-                        node.style.setProperty('position', 'static', 'important');
-                        node.style.setProperty('filter', 'none', 'important');
-                        node.style.setProperty('pointer-events', 'auto', 'important');
-                        
-                        // Удаляем класс-маркер блокировки
-                        if (node.classList.contains('didomi-popup-open')) {
-                            node.classList.remove('didomi-popup-open');
-                        }
+                const html = document.documentElement;
+                const body = document.body;
+                [html, body].forEach(el => {
+                    if (el) {
+                        el.style.cssText += 'overflow:auto!important;position:static!important;filter:none!important;pointer-events:auto!important;';
+                        el.classList.remove('didomi-popup-open');
                     }
                 });
             }
-
-            // 3. Рекурсия в Shadow DOM (обязательно для FranceInfo)
-            root.querySelectorAll('*').forEach(el => {
-                if (el.shadowRoot) scan(el.shadowRoot);
-            });
         };
-
-        scan(document);
+        clean(document);
     };
 
-    // Запуск через MutationObserver + принудительный интервал
-    try {
-        new MutationObserver(globalCleaner).observe(document.documentElement, { childList: true, subtree: true });
-    } catch (e) {}
-    
-    // Каждые 300мс проверяем и чистим. Это "перебьет" скрипты сайта.
-    setInterval(globalCleaner, 300);
-    globalCleaner();
-
+    // Запускаем немедленно и ставим на "автомат"
+    setInterval(omniPurge, 250); 
+    omniPurge();
 
     /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|msi|sh|js)$/i;
