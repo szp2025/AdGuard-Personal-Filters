@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.9-APEX
+! Version: 11.1.10-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -1123,10 +1123,30 @@ $network,dnstype=https
 ! ——————————————————————————————————————————————————————————————————————
 ! [STEALTH DEFUSE — Исправленная навигация для InfinityFree
 ! ——————————————————————————————————————————————————————————————————————
+! ——————————————————————————————————————————————————————————————————————
+! [STEALTH DEFUSE — Исправленная навигация для InfinityFree
+! ——————————————————————————————————————————————————————————————————————
 
-! Разрешаем работу движка панели
+! 1. Мягко скрываем модальные окна, не ломая структуру DOM
+dash.infinityfree.com##div[class*="modal"]:style(opacity: 0 !important; pointer-events: none !important;)
+dash.infinityfree.com##.modal-backdrop:style(opacity: 0 !important; pointer-events: none !important;)
+
+! 2. ПРИНУДИТЕЛЬНО возвращаем клики и скролл (самое важное для работы кнопок)
+dash.infinityfree.com##body, html:style(overflow: auto !important; pointer-events: auto !important; position: static !important;)
+
+! 3. Обман детектора без блокировки запросов Livewire
+dash.infinityfree.com#%#//scriptlet("set-constant", "adblock", "false")
+dash.infinityfree.com#%#//scriptlet("set-constant", "canRunAds", "true")
+dash.infinityfree.com#%#//scriptlet("set-constant", "isAdblockActive", "false")
+
+! 4. Убираем невидимые слои, которые могут перекрывать кнопки
+dash.infinityfree.com##div[style*="z-index: 2147483647"]:style(display: none !important;)
+
+! 5. РАЗРЕШАЕМ прохождение системных скриптов (чтобы работали переходы)
 @@||dash.infinityfree.com/livewire/*$js,domain=infinityfree.com
 @@||dash.infinityfree.com/js/app.js$js,domain=infinityfree.com
+
+
 
 ! Если модалки всё еще бесят, оставь только это (скриптлет сделает остальное):
 dash.infinityfree.com##div[class*="modal"]:remove()
