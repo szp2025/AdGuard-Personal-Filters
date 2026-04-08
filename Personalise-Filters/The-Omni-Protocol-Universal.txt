@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.16-APEX
+! Version: 11.1.17-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -987,69 +987,67 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return oF.apply(this, arguments);
     };
 
-  /** 5. MECHANICAL STERILIZATION (DOM & Shadow Purge) **/
+  /** 5. TARGETED CSS STERILIZATION (#didomi-css) **/
     let lastAction = Date.now();
     ['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => lastAction = Date.now(), {passive:true}));
 
     const globalCleaner = () => {
-        // 1. Список "корней" Didomi (они часто находятся вне основного потока)
-        const roots = ['#didomi-host', '#sp_message_container', '.didomi-popup-backdrop', '.didomi-screen-xlarge', '.didomi-popup__backdrop'];
-        
         const scan = (root) => {
-            // Удаление по прямым селекторам
-            roots.forEach(selector => {
-                root.querySelectorAll(selector).forEach(el => {
-                    console.log('OMNI: Стерилизация источника раздражения...');
-                    el.remove();
-                });
-            });
-
-            // 2. Глубокая чистка подозрительных элементов (включая Shadow DOM)
-            root.querySelectorAll('*').forEach(el => {
-                // Если у элемента есть Shadow Root, заходим внутрь (именно там прячется Didomi)
-                if (el.shadowRoot) scan(el.shadowRoot);
-
-                // Удаление по атрибутам (надежнее, чем по классам, которые меняются)
-                if (el.hasAttribute('id') && el.id.includes('didomi')) el.remove();
-                
-                // Удаление невидимых оверлеев, которые блокируют клики
-                const s = window.getComputedStyle(el);
-                if (parseInt(s.zIndex) > 9000 && s.position === 'fixed' && !TRUSTED) {
-                    if (el.innerText.length < 200 && !el.querySelector('nav, header')) {
-                        el.style.setProperty('pointer-events', 'none', 'important');
-                        el.style.setProperty('display', 'none', 'important');
-                    }
+            // 1. СТЕРИЛИЗАЦИЯ ТЕГА #didomi-css
+            const didomiStyle = root.querySelector('#didomi-css');
+            if (didomiStyle) {
+                // Если в теге есть текст — обнуляем его, но оставляем сам тег
+                if (didomiStyle.innerHTML.length > 0) {
+                    console.log('OMNI: Очистка содержимого #didomi-css...');
+                    didomiStyle.innerHTML = ''; 
                 }
-            });
+                // Защищаем от повторной записи стилей
+                if (Object.isExtensible(didomiStyle)) {
+                    Object.defineProperty(didomiStyle, 'innerHTML', { value: '', writable: false, configurable: false });
+                    Object.defineProperty(didomiStyle, 'textContent', { value: '', writable: false, configurable: false });
+                }
+            }
 
-            // 3. ПРИНУДИТЕЛЬНОЕ восстановление механики страницы (Скролл и Клики)
+            // 2. УДАЛЕНИЕ ФИЗИЧЕСКИХ ОБЪЕКТОВ
+            const trash = root.querySelectorAll('[id*="didomi-host"], [class*="didomi-popup"], .didomi-popup-backdrop');
+            trash.forEach(el => el.remove());
+
+            // 3. СНЯТИЕ БЛОКИРОВКИ И БЛЮРА (FranceInfo Fix)
             if (root === document) {
-                const targetNodes = [document.body, document.documentElement];
-                targetNodes.forEach(node => {
+                [document.body, document.documentElement].forEach(node => {
                     if (node) {
                         node.style.setProperty('overflow', 'auto', 'important');
                         node.style.setProperty('position', 'static', 'important');
                         node.style.setProperty('filter', 'none', 'important');
                         node.style.setProperty('pointer-events', 'auto', 'important');
                         
-                        // Удаляем классы блокировки, такие как "didomi-popup-open"
-                        node.classList.forEach(cls => {
-                            if (cls.includes('didomi') || cls.includes('modal')) {
-                                node.classList.remove(cls);
-                            }
-                        });
+                        // Удаляем классы, которые Didomi вешает на body
+                        if (node.classList.contains('didomi-popup-open')) {
+                            node.classList.remove('didomi-popup-open');
+                        }
                     }
                 });
             }
-        };
 
+            // 4. РЕКУРСИЯ ПО SHADOW DOM
+            root.querySelectorAll('*').forEach(el => {
+                if (el.shadowRoot) scan(el.shadowRoot);
+            });
+        };
         scan(document);
     };
 
-    // Агрессивное исполнение: короткий интервал, чтобы победить скрипты ре-инъекции
+    // Блокировка попыток JS изменить overflow напрямую
+    const oSet = HTMLElement.prototype.setAttribute;
+    HTMLElement.prototype.setAttribute = function(n, v) {
+        if (n === 'style' && (v.includes('hidden') || v.includes('filter'))) return;
+        return oSet.apply(this, arguments);
+    };
+
     new MutationObserver(globalCleaner).observe(document.documentElement, { childList: true, subtree: true });
-    setInterval(globalCleaner, 500); 
+    setInterval(globalCleaner, 400); 
     globalCleaner();
+
 
     /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|msi|sh|js)$/i;
