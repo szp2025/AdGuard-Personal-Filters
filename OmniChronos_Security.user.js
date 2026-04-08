@@ -7,7 +7,7 @@
 // @match        *://*/*
 // @grant        unsafeWindow
 // @grant        GM_notification
-// @run-at       document-start
+// @run-at       document-end
 // @icon         https://cdn-icons-png.flaticon.com/512/9438/9438567.png
 // @updateURL    https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/OmniChronos_Security.user.js
 // @downloadURL  https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/main/OmniChronos_Security.user.js
