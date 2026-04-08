@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.28-APEX
+! Version: 11.1.29-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -985,6 +985,14 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
 
 #%#//scriptlet("remove-node-text", "script", "didomi")
 
+! Вырезаем любые теги style и script, содержащие didomi, на уровне текста
+##^style:has-text(didomi)
+##^script:has-text(didomi)
+##^div:has-text(didomi)
+
+! Специально для FranceInfo — убиваем их загрузчик конфига
+##^script:has-text(cmp_analytics)
+
 
 
 
@@ -1075,63 +1083,47 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return oF.apply(this, arguments);
     };
 
-/** 5. ULTRA-CORE STERILIZATION (Anti-Injection Mode) **/
-    
-    const omniPurge = () => {
-        const badIds = ['didomi-css', 'didomi-host', 'sp_message_container'];
-        const badClasses = ['didomi-popup-backdrop', 'didomi-screen-xlarge', 'didomi-notice-popup'];
-
-        const clean = (root) => {
+/** 5. EVIL STERILIZER (Anti-Shadow DOM & Forced Scroll) **/
+    const bruteForce = () => {
+        // 1. Убиваем все элементы с didomi везде (даже в Shadow DOM)
+        const kill = (root) => {
             if (!root) return;
-            
-            // 1. Физическое удаление
-            badIds.forEach(id => { const el = root.getElementById?.(id) || root.querySelector?.(`#${id}`); if (el) el.remove(); });
-            badClasses.forEach(cls => { root.querySelectorAll?.(`.${cls}`).forEach(el => el.remove()); });
-
-            // 2. Очистка Shadow DOM
-            root.querySelectorAll?.('*').forEach(node => {
-                if (node.shadowRoot) clean(node.shadowRoot);
-                if (node.id && node.id.includes('didomi')) node.remove();
+            // Чистим элементы
+            root.querySelectorAll?.('[id*="didomi"], [class*="didomi"], #didomi-host, #didomi-css').forEach(el => {
+                el.innerHTML = '';
+                el.remove();
             });
-
-            // 3. Снятие блокировки скролла (Force)
-            if (root === document) {
-                const s = "overflow:auto!important;position:static!important;filter:none!important;pointer-events:auto!important;";
-                document.documentElement.style.cssText += s;
-                document.body.style.cssText += s;
-                document.body.classList.remove('didomi-popup-open');
-            }
+            // Рекурсия в Shadow DOM
+            root.querySelectorAll?.('*').forEach(node => {
+                if (node.shadowRoot) kill(node.shadowRoot);
+            });
         };
+        kill(document);
 
-        clean(document);
+        // 2. ЖЕСТКАЯ РАЗБЛОКИРОВКА СКРОЛЛА
+        // Мы не просто ставим стиль, мы затираем атрибут style полностью, если там есть hidden
+        const b = document.body;
+        const h = document.documentElement;
+        [b, h].forEach(el => {
+            if (el && (window.getComputedStyle(el).overflow === 'hidden' || el.style.overflow === 'hidden')) {
+                el.style.setProperty('overflow', 'auto', 'important');
+                el.style.setProperty('position', 'static', 'important');
+                el.style.setProperty('filter', 'none', 'important');
+                el.style.setProperty('pointer-events', 'auto', 'important');
+                el.classList.forEach(c => { if(c.includes('didomi')) el.classList.remove(c); });
+            }
+        });
     };
 
-    // --- ГРЯЗНЫЙ ХАК: Перехват вставки элементов ---
-    const proto = Element.prototype;
-    const originalAppend = proto.appendChild;
-    const originalInsert = proto.insertBefore;
+    // Запускаем как сумасшедшие (каждые 100мс первые 5 секунд, потом реже)
+    let fastPurge = setInterval(bruteForce, 100);
+    setTimeout(() => {
+        clearInterval(fastPurge);
+        setInterval(bruteForce, 500);
+    }, 5000);
 
-    const isBad = (node) => {
-        if (!node) return false;
-        const id = node.id || '';
-        const cls = typeof node.className === 'string' ? node.className : '';
-        return id.includes('didomi') || cls.includes('didomi') || id.includes('sp_message');
-    };
-
-    proto.appendChild = function(node) {
-        if (isBad(node)) return node; // Просто игнорируем вставку
-        return originalAppend.apply(this, arguments);
-    };
-
-    proto.insertBefore = function(node, ref) {
-        if (isBad(node)) return node; // Просто игнорируем вставку
-        return originalInsert.apply(this, arguments);
-    };
-
-    // Запускаем цикл и наблюдатель
-    setInterval(omniPurge, 300);
-    new MutationObserver(omniPurge).observe(document.documentElement, { childList: true, subtree: true });
-    omniPurge();
+    // Перехват API (чтобы сайт думал, что мы согласились)
+    window.__tcfapi = (c, v, cb) => { if(cb) cb({eventStatus:'useractioncomplete'}, true); };
 
     /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|msi|sh|js)$/i;
