@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.32-APEX
+! Version: 11.1.33-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -1001,7 +1001,9 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
 ##^script:has-text(cmp_analytics)
 
 
-
+! === 1. NATIVE CSS OVERRIDE (Срабатывает до JS) ===
+franceinfo.fr,didomi.io##html,body:style(overflow: auto !important; position: static !important; filter: none !important; pointer-events: auto !important;)
+franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(display: none !important; opacity: 0 !important; visibility: hidden !important; z-index: -9999 !important;)
 
 
 
@@ -1090,50 +1092,57 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return oF.apply(this, arguments);
     };
 
-/** 5. EVIL STERILIZER (Core Injection Mode) **/
-    // Этот блок "впрыскивает" код прямо в страницу, имитируя ручной ввод в консоль
-    try {
-        const script = document.createElement('script');
-        script.textContent = `(function() {
-            const fastPurge = () => {
-                const bad = ['didomi', 'onetrust', 'cookiebot', 'sp_message', 'consent'];
-                const clean = (root) => {
-                    if (!root) return;
-                    root.querySelectorAll?.('*').forEach(el => {
-                        const id = el.id || '';
-                        const cls = typeof el.className === 'string' ? el.className : '';
-                        if (bad.some(t => id.includes(t) || cls.includes(t))) {
-                            el.remove();
-                        }
-                        if (el.shadowRoot) clean(el.shadowRoot);
-                    });
-                };
-                clean(document);
-                
-                // Силовая разблокировка скролла
-                const s = 'overflow:auto!important;position:static!important;filter:none!important;pointer-events:auto!important;';
-                if (document.body && (window.getComputedStyle(document.body).overflow === 'hidden' || document.body.style.overflow === 'hidden')) {
-                    document.documentElement.style.cssText += s;
-                    document.body.style.cssText += s;
-                    document.body.classList.remove('didomi-popup-open');
-                }
-                requestAnimationFrame(fastPurge);
-            };
-            requestAnimationFrame(fastPurge);
-        })();`;
-        (document.head || document.documentElement).appendChild(script);
-        script.remove();
-    } catch (e) { console.error('OMNI: Injection failed', e); }
+/** 5. ATOMIC STERILIZER (Property Freeze & Main World Proxy) **/
+    const freezeInterface = () => {
+        const reset = (el) => {
+            if (!el) return;
+            // Блокируем изменение overflow на уровне прототипа
+            if (!el._locked) {
+                try {
+                    Object.defineProperty(el.style, 'overflow', { value: 'auto', writable: false, configurable: false });
+                    Object.defineProperty(el.style, 'position', { value: 'static', writable: false, configurable: false });
+                    el._locked = true;
+                } catch(e) {}
+            }
+            el.style.setProperty('overflow', 'auto', 'important');
+            el.style.setProperty('position', 'static', 'important');
+        };
+
+        const purge = (root) => {
+            if (!root) return;
+            // Ищем Didomi везде, включая Shadow DOM
+            root.querySelectorAll?.('[id*="didomi"], [class*="didomi"], #didomi-host').forEach(el => {
+                el.remove();
+            });
+            // Рекурсия по теням
+            root.querySelectorAll?.('*').forEach(el => el.shadowRoot && purge(el.shadowRoot));
+        };
+
+        reset(document.body);
+        reset(document.documentElement);
+        purge(document);
+        
+        if (document.body) document.body.classList.remove('didomi-popup-open');
+    };
+
+    // Запуск: MutationObserver для изменений + requestAnimationFrame для скорости
+    const obs = new MutationObserver(freezeInterface);
+    obs.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
+    
+    // Имитация "ручного ввода" 60 раз в секунду
+    requestAnimationFrame(function loop() {
+        freezeInterface();
+        requestAnimationFrame(loop);
+    });
 
     /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
-    // Твой оригинальный сканер остается для защиты от вредоносных загрузок и паттернов
     const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|msi|sh|js)$/i;
     const dangerousPatterns = /eval\(|exec\(|system\(|powershell|base64_decode/i;
 
     const oBlob = window.Blob;
     window.Blob = function(content, options) {
         const b = new oBlob(content, options);
-        if (!TRUSTED && options?.type) {
+        if (options?.type) {
             b.text().then(t => { if (dangerousPatterns.test(t)) console.warn('X-Gen: Blocked suspicious payload'); });
         }
         return b;
@@ -1141,11 +1150,15 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
 
     document.addEventListener('click', (e) => {
         const a = e.target.closest('a');
-        if (a && !TRUSTED && (a.hasAttribute('download') || illegalExt.test(a.href))) {
+        if (a && (a.hasAttribute('download') || illegalExt.test(a.href))) {
             e.preventDefault();
             alert('🛡️ OMNI-X-GEN: Загрузка заблокирована.');
         }
     }, true);
+
+    // Нейтрализация API
+    window.__tcfapi = (c, v, cb) => { if(cb) cb({eventStatus:'useractioncomplete', gdprApplies: false}, true); };
+    window.didomiConfig = { notice: { show: false } };
 
 
     /** 7. STORAGE LOCK & SHREDDER **/
