@@ -907,22 +907,21 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
 #%#//scriptlet("abort-on-property-read", "Didomi")
 #%#//scriptlet("abort-on-property-read", "didomiOnReady")
 
+! --- 2.3 DOM cleanup (универсальный) ---
+##[id^="didomi"]
+##[class*="didomi"]
+##iframe[src*="privacy-center"]
+##iframe[src*="didomi"]
+! --- 2.4 Overlay fix (ОБЯЗАТЕЛЬНО) ---
 
-##div#didomi-host
-##div#didomi-popup
-##.didomi-popup-container
-##.didomi-popup-view
-##.didomi-popup-backdrop
-##.didomi-exterior-border
 ##body.didomi-popup-open
+##html.didomi-popup-open
+##.didomi-popup-backdrop
+
+! --- 2.5 Scroll unlock (критично) ---
+
 #$#body { overflow: auto !important; }
 #$#html { overflow: auto !important; }
-##[class*="didomi"]
-##[id^="didomi"]
-#%#//scriptlet("abort-on-property-read", "Didomi")
-#%#//scriptlet("abort-on-property-read", "didomiOnReady")
-
-#$#div#didomi-host { display: none !important; }
 
 
 ! ------------------------------------------------------------
