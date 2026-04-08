@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.18-APEX
+! Version: 11.1.19-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -987,85 +987,61 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
         return oF.apply(this, arguments);
     };
 
- /** 5. TARGETED CSS STERILIZATION (#didomi-css) + LOGGING **/
+/** 5. FINAL MECHANICAL STERILIZATION **/
     let lastAction = Date.now();
     ['click', 'keydown', 'touchstart'].forEach(ev => document.addEventListener(ev, () => lastAction = Date.now(), {passive:true}));
 
     const globalCleaner = () => {
+        // Функция для жесткой очистки элемента
+        const wipe = (el) => {
+            if (!el) return;
+            el.innerHTML = '';
+            el.remove();
+        };
+
         const scan = (root) => {
-            // 1. СТЕРИЛИЗАЦИЯ ТЕГА #didomi-css
-            const didomiStyle = root.querySelector('#didomi-css');
-            if (didomiStyle) {
-                if (didomiStyle.innerHTML.length > 0) {
-                    console.log('%cOMNI: Найдено содержимое в #didomi-css. Обнуляю...', 'color: #ff0055; font-weight: bold;');
-                    didomiStyle.innerHTML = ''; 
-                }
-                // Замораживаем объект, чтобы скрипты сайта не могли записать в него стили снова
-                if (Object.isExtensible(didomiStyle)) {
-                    try {
-                        Object.defineProperty(didomiStyle, 'innerHTML', { value: '', writable: false, configurable: false });
-                        Object.defineProperty(didomiStyle, 'textContent', { value: '', writable: false, configurable: false });
-                        console.log('%cOMNI: Тег #didomi-css успешно заблокирован на запись.', 'color: #00ffaa;');
-                    } catch (e) {
-                        console.warn('OMNI: Не удалось заморозить #didomi-css (возможно, уже заблокирован).');
-                    }
-                }
-            }
+            // 1. Ищем и уничтожаем Didomi по ID и тегам стилей
+            wipe(root.querySelector('#didomi-css'));
+            wipe(root.querySelector('#didomi-host'));
+            wipe(root.querySelector('.didomi-popup-backdrop'));
+            wipe(root.querySelector('.didomi-screen-xlarge'));
 
-            // 2. УДАЛЕНИЕ ФИЗИЧЕСКИХ ОБЪЕКТОВ
-            const trashSelectors = ['[id*="didomi-host"]', '[class*="didomi-popup"]', '.didomi-popup-backdrop', '.didomi-popup__backdrop', '#sp_message_container'];
-            trashSelectors.forEach(s => {
-                const elements = root.querySelectorAll(s);
-                elements.forEach(el => {
-                    console.log(`%cOMNI: Удален объект раздражения: ${s}`, 'color: #ffa500;');
-                    el.remove();
-                });
-            });
-
-            // 3. СНЯТИЕ БЛОКИРОВКИ И БЛЮРА
+            // 2. Снимаем блокировку со страницы
             if (root === document) {
-                [document.body, document.documentElement].forEach(node => {
+                const targets = [document.body, document.documentElement];
+                targets.forEach(node => {
                     if (node) {
-                        const s = window.getComputedStyle(node);
-                        if (s.overflow === 'hidden' || s.filter !== 'none') {
-                            console.log('%cOMNI: Восстановление скролла и фильтров...', 'color: #00ccff;');
-                            node.style.setProperty('overflow', 'auto', 'important');
-                            node.style.setProperty('position', 'static', 'important');
-                            node.style.setProperty('filter', 'none', 'important');
-                            node.style.setProperty('pointer-events', 'auto', 'important');
-                        }
+                        // Очищаем инлайновые стили, которые Didomi ставит через JS
+                        node.style.setProperty('overflow', 'auto', 'important');
+                        node.style.setProperty('position', 'static', 'important');
+                        node.style.setProperty('filter', 'none', 'important');
+                        node.style.setProperty('pointer-events', 'auto', 'important');
                         
+                        // Удаляем класс-маркер блокировки
                         if (node.classList.contains('didomi-popup-open')) {
-                            console.log('%cOMNI: Удален класс блокировки didomi-popup-open', 'color: #00ccff;');
                             node.classList.remove('didomi-popup-open');
                         }
                     }
                 });
             }
 
-            // 4. РЕКУРСИЯ ПО SHADOW DOM
+            // 3. Рекурсия в Shadow DOM (обязательно для FranceInfo)
             root.querySelectorAll('*').forEach(el => {
                 if (el.shadowRoot) scan(el.shadowRoot);
             });
         };
+
         scan(document);
     };
 
-    // ПЕРЕХВАТ ПОПЫТОК ИЗМЕНИТЬ АТРИБУТЫ (Ловим блокировку скролла)
-    const oSet = HTMLElement.prototype.setAttribute;
-    HTMLElement.prototype.setAttribute = function(n, v) {
-        if (n === 'style' && (v.includes('hidden') || v.includes('filter'))) {
-            console.log('%cOMNI: Заблокирована попытка сайта скрыть скролл через setAttribute!', 'color: #ff0000; font-weight: bold;');
-            return;
-        }
-        return oSet.apply(this, arguments);
-    };
-
-    // Запуск через MutationObserver и Интервал
-    new MutationObserver(globalCleaner).observe(document.documentElement, { childList: true, subtree: true });
-    setInterval(globalCleaner, 400); 
+    // Запуск через MutationObserver + принудительный интервал
+    try {
+        new MutationObserver(globalCleaner).observe(document.documentElement, { childList: true, subtree: true });
+    } catch (e) {}
+    
+    // Каждые 300мс проверяем и чистим. Это "перебьет" скрипты сайта.
+    setInterval(globalCleaner, 300);
     globalCleaner();
-    console.log('%cOMNI: Система стерилизации Didomi запущена (v.2.1)', 'background: #222; color: #bada55; padding: 5px;');
 
 
     /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
@@ -1171,10 +1147,6 @@ $network,dnstype=https
 ||webrtc.google.com^$important
 
 
-
-! ——————————————————————————————————————————————————————————————————————
-! [STEALTH DEFUSE — Исправленная навигация для InfinityFree
-! ——————————————————————————————————————————————————————————————————————
 ! ——————————————————————————————————————————————————————————————————————
 ! [STEALTH DEFUSE — Исправленная навигация для InfinityFree
 ! ——————————————————————————————————————————————————————————————————————
