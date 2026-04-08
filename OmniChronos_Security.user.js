@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         OMNI-MONOLITH [V5.5.50 SINGULARITY]
+// @name         OMNI-MONOLITH [V5.5.70 QUANTUM]
 // @namespace    OmniChronos.Security
-// @version      5.5.50
-// @description  Zero-Day Immunity: Quantum Noise, Moving Target Defense & Neural Heuristics
+// @version      5.5.70
+// @description  Quantum-Singularity: Deception Honey-Pots, Neural Timing & Recursive Shield
 // @author       Omni-Chronos
 // @match        *://*/*
 // @grant        unsafeWindow
@@ -16,123 +16,128 @@
 ((window, document) => {
     'use strict';
 
-    // --- [1. ЯДРО СИНГУЛЯРНОСТИ] ---
-    const SINGULARITY = {
-        TAG: '%c[SINGULARITY-OMEGA]',
-        STYLE: 'background: #1a1a1a; color: #ff00ff; font-weight: bold; border: 1px solid #ff00ff; padding: 2px;',
+    const QUANTUM = {
+        TAG: '%c[OMNI-QUANTUM]',
+        STYLE: 'background: linear-gradient(90deg, #000, #4b0082); color: #00ffff; padding: 2px 5px; border-radius: 4px; font-weight: bold;',
         
-        // Квантовый шум: создает бесконечные вариации отпечатков
-        generateNoise: () => (Math.random() * 0.0000000000001),
-        
-        // Интеллектуальный сканер реальности
-        detectReality: () => {
-            const h = window.location.hostname.toLowerCase();
-            const isCritical = /bank|banca|banque|credit|lcl|n26|revolut|gouv|ameli|caf|impots/i.test(h + document.title.toLowerCase());
-            return { isCritical, isYouTube: h.includes('youtube.com') };
+        // Анализатор реальности (Эвристика)
+        isCritical: () => {
+            const h = window.location.hostname;
+            return /lcl\.fr|n26|revolut|gouv|ameli|caf|impots|bank|checkout/i.test(h + document.title);
         }
     };
 
-    // --- [2. ЭШЕЛОН: MOVING TARGET DEFENSE (MTD)] ---
-    const applyMTD = () => {
-        // Подмена аппаратных прерываний (CPU/RAM)
-        const corePool = [4, 6, 8, 12, 16];
-        const memPool = [4, 8, 16, 32];
-        const currentCores = corePool[Math.floor(Math.random() * corePool.length)];
-        const currentMem = memPool[Math.floor(Math.random() * memPool.length)];
+    // --- [1. ЭШЕЛОН: NEURAL TIMING (Защита по времени)] ---
+    const applyNeuralTiming = () => {
+        const orgNow = performance.now;
+        const noise = () => Math.random() * 0.005; // Микро-шум для производительности
+        performance.now = function() {
+            return orgNow.apply(this) + noise();
+        };
+        
+        const orgDate = Date.now;
+        Date.now = () => orgDate() + Math.floor(Math.random() * 2);
+    };
 
-        if ('deviceMemory' in navigator) Object.defineProperty(navigator, 'deviceMemory', { get: () => currentMem });
-        if ('hardwareConcurrency' in navigator) Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => currentCores });
-
-        // Защита от Audio-Fingerprinting через инъекцию фазового шума
-        const orgAudio = window.AudioContext || window.webkitAudioContext;
-        if (orgAudio) {
-            const noise = SINGULARITY.generateNoise();
-            window.AudioContext = window.webkitAudioContext = new Proxy(orgAudio, {
-                construct(target, args) {
-                    const ctx = new target(...args);
-                    const orgOsc = ctx.createOscillator;
-                    ctx.createOscillator = function() {
-                        const osc = orgOsc.apply(this, arguments);
-                        osc.frequency.value += noise;
-                        return osc;
-                    };
-                    return ctx;
-                }
+    // --- [2. ЭШЕЛОН: DECEPTION HONEY-POTS (Ловушки для ботов)] ---
+    const applyDeception = () => {
+        // Создаем фальшивые переменные окружения, которые обычно ищут трекеры
+        const honeyPots = ['_phantom', '__webdriver_evaluate', 'callPhantom', '__selenium_evaluate'];
+        honeyPots.forEach(prop => {
+            Object.defineProperty(window, prop, {
+                get: () => undefined,
+                set: () => { console.warn(QUANTUM.TAG, '🚨 Попытка детекции через HoneyPot пресечена.'); },
+                configurable: false
             });
-        }
+        });
     };
 
-    // --- [3. ЭШЕЛОН: HEURISTIC GUARDIAN (Эвристический щит)] ---
-    const applyHeuristicGuardian = () => {
-        // Защита от несанкционированных загрузок и фишинга
-        document.addEventListener('click', (e) => {
-            const a = e.target.closest('a');
-            if (!a || !a.href) return;
+    // --- [3. ЭШЕЛОН: RECURSIVE SHIELD (Защита от зависаний)] ---
+    const applyRecursiveShield = () => {
+        const maxDepth = 100;
+        let depth = 0;
+        
+        const orgEval = window.eval;
+        window.eval = function(code) {
+            depth++;
+            if (depth > maxDepth) {
+                depth = 0;
+                return null; 
+            }
+            const result = orgEval.apply(this, arguments);
+            depth--;
+            return result;
+        };
+    };
+
+    // --- [4. ЭШЕЛОН: СУПЕР-ЭРГОНОМИКА (YouTube + UI)] ---
+    const applySuperUI = () => {
+        // YouTube Turbo V3
+        setInterval(() => {
+            const v = document.querySelector('video');
+            if (v && document.querySelector('.ad-showing, .ad-interrupting')) {
+                v.muted = true;
+                v.playbackRate = 16;
+                v.currentTime = v.duration - 0.1;
+                const skipBtn = document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern');
+                if (skipBtn) skipBtn.click();
+            }
+        }, 300);
+
+        // Разблокировка всего (Текст, Меню, Драг-н-дроп)
+        const kill = e => {
+            e.stopImmediatePropagation();
+            return true;
+        };
+        ['contextmenu', 'copy', 'paste', 'selectstart', 'dragstart'].forEach(ev => {
+            document.addEventListener(ev, kill, true);
+        });
+
+        const style = document.createElement('style');
+        style.innerHTML = `* { -webkit-user-select: text !important; user-select: text !important; pointer-events: auto !important; }`;
+        document.documentElement.appendChild(style);
+    };
+
+    // --- [5. ЭШЕЛОН: АВТОНОМНЫЙ СТЕРИЛИЗАТОР] ---
+    const applySterilizer = () => {
+        const clean = () => {
+            if (QUANTUM.isCritical()) return;
+            const url = new URL(window.location.href);
+            const badParams = ['utm_', 'fbclid', 'gclid', 'aff_', 'ref', '_ga', '_gl'];
+            let changed = false;
             
-            const url = a.href.toLowerCase();
-            const dangerExt = /\.(exe|msi|scr|vbs|bat|js|apk|py|sh|docm|xlsm)$/i;
-            
-            if (dangerExt.test(url) && !url.includes('github.com')) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                if (confirm(`[SINGULARITY ALERT] 🚨 Обнаружен потенциальный вектор атаки Zero-Day.\nОбъект: ${url.split('/').pop()}\n\nРазрешить выполнение в изолированной среде?`)) {
-                    window.open(a.href, '_blank');
+            for (let key of Array.from(url.searchParams.keys())) {
+                if (badParams.some(p => key.startsWith(p))) {
+                    url.searchParams.delete(key);
+                    changed = true;
                 }
             }
-        }, true);
-
-        // Блокировка попыток обнаружения расширений (Anti-Fingerprinting)
-        const forbidden = ['chrome.runtime', 'browser.runtime', '__v_skip'];
-        forbidden.forEach(key => { try { delete window[key]; } catch(e) {} });
-    };
-
-    // --- [4. ЭШЕЛОН: TOTAL AUTOMATION (Эргономика)] ---
-    const applyAutomation = (isYouTube) => {
-        // YouTube/Media Turbo
-        if (isYouTube) {
-            setInterval(() => {
-                const v = document.querySelector('video');
-                if (v && document.querySelector('.ad-showing, .ad-interrupting')) {
-                    v.muted = true; v.playbackRate = 16;
-                    document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern')?.click();
-                }
-            }, 300);
-        }
-
-        // Разблокировка интерфейса (Копирование/Меню)
-        const unlock = e => e.stopPropagation();
-        ['contextmenu', 'copy', 'paste', 'selectstart'].forEach(ev => document.addEventListener(ev, unlock, true));
-        
-        // Очистка URL (Стерилизация на лету)
-        const cleanURL = () => {
-            const u = new URL(window.location.href);
-            ['utm_', 'fbclid', 'gclid', 'aff_', 'ref'].forEach(p => {
-                for(let k of u.searchParams.keys()) if(k.startsWith(p)) u.searchParams.delete(k);
-            });
-            if (window.location.search !== u.search) window.history.replaceState(null, '', u.href);
+            if (changed) window.history.replaceState(null, '', url.href);
         };
-        setTimeout(cleanURL, 1000);
+        setInterval(clean, 3000);
     };
 
-    // --- [5. ИНИЦИАЛИЗАЦИЯ И ЦИКЛ ОБНОВЛЕНИЯ] ---
+    // --- [ЗАПУСК КВАНТОВОГО ЯДРА] ---
     const boot = () => {
-        const { isCritical, isYouTube } = SINGULARITY.detectReality();
-
-        if (isCritical) {
-            console.log(SINGULARITY.TAG, SINGULARITY.STYLE, '🛡️ PASSIVE PROTOCOL: Real Identity Preserved.');
+        if (QUANTUM.isCritical()) {
+            console.log(QUANTUM.TAG, '🛡️ QUANTUM PASSIVE: Safety First.');
             return;
         }
 
-        console.log(SINGULARITY.TAG, SINGULARITY.STYLE, '🚀 SINGULARITY-OMEGA ONLINE');
-        
-        applyMTD();
-        applyHeuristicGuardian();
-        applyAutomation(isYouTube);
+        console.log(QUANTUM.TAG, '🌌 QUANTUM-SINGULARITY V5.5.70 INITIALIZED');
 
-        // Автономное "Перерождение" каждые 60 минут (смена всех параметров)
-        setTimeout(() => {
-            if (!SINGULARITY.detectReality().isCritical) window.location.reload();
-        }, 3600000);
+        applyNeuralTiming();
+        applyDeception();
+        applyRecursiveShield();
+        applySuperUI();
+        applySterilizer();
+        
+        // Маскировка железа (Moving Target)
+        const mem = [8, 16, 32][Math.floor(Math.random() * 3)];
+        if ('deviceMemory' in navigator) Object.defineProperty(navigator, 'deviceMemory', { get: () => mem });
+
+        // Авто-перерождение (1 час)
+        setTimeout(() => { if(!QUANTUM.isCritical()) window.location.reload(); }, 3600000);
     };
 
     boot();
