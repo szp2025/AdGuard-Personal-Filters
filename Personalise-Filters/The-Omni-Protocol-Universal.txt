@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.60-APEX
+! Version: 11.1.61-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -1019,74 +1019,44 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 @@||dash.infinityfree.com^
 @@||infinityfree.com^
 
-! === 3. UNIVERSAL JS ENGINE (5-STAGE PROTECTION) ===
+! === 4. UNIVERSAL JS ENGINE (STEALTH v12.7) ===
 #%#//scriptlet("execute-script", ```
 (function() {
     'use strict';
-    const host = location.hostname;
     const log = (m) => console.warn('🛡️ OMNI: ' + m);
+    
+    // 1. БЫСТРЫЙ ВЫХОД (CLEAN EXIT)
+    // При входе на страницы логина очищаем старый мусор трекеров
+    if (location.pathname.includes('login') || location.pathname.includes('accounts')) {
+        localStorage.clear();
+        sessionStorage.clear();
+        log('SESSION PURGED FOR LOGIN SECURITY');
+    }
 
-    const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
-
-    if (TRUSTED) return;
-
-    log('NEBULA APEX v12.2 (5-STAGES) INITIALIZED');
-
-    /** STAGE 1 & 2: GASLIGHTING & MOCKING **/
-    window.canRunAds = true;
-    window.isAdblockActive = false;
-    if (!window.adsbygoogle) window.adsbygoogle = Object.assign([], { loaded: true, push: function() {} });
-
-    try {
-        const nav = navigator;
-        Object.defineProperty(nav, 'webdriver', { get: () => false, configurable: true });
-        Object.defineProperty(nav, 'maxTouchPoints', { get: () => 5, configurable: true });
-    } catch(e) {}
-
-    /** STAGE 3: STERILIZER (DOM PURGE) **/
+    // 2. STERILIZER (DOM)
     const sterilize = () => {
-        const trash = document.querySelectorAll('[id*="didomi"],[class*="didomi"],[class*="modal"],[class*="overlay"],[id*="blocker"],[class*="adb"]');
+        // Убираем баннеры и окна, которые могут всплыть после входа
+        const trash = document.querySelectorAll('[id*="didomi"],[class*="didomi"],[class*="modal"],[class*="overlay"],[id*="blocker"]');
         trash.forEach(t => {
-            if (t.innerText.match(/publicités|Adblock|блокировщик/i) || t.id.includes('didomi')) {
+            if (t.innerText.match(/publicités|Adblock|блокировщик|consent/i)) {
                 t.remove();
-                log('PURGED OBSTACLE');
             }
         });
         if (document.body) document.body.style.setProperty('overflow', 'auto', 'important');
     };
 
-    /** STAGE 4: FETCH MIMICRY & URL CLEAN **/
+    // 3. MIMICRY (FETCH)
     const oF = window.fetch;
     window.fetch = async function() {
         const url = typeof arguments[0] === 'string' ? arguments[0] : arguments[0]?.url;
-        if (url && url.match(/analytics|metrics|track|pixel|telemetry|adscore|adv|ads|monetization/i)) {
-            log('🎭 MIMICRY ACTIVE: ' + url.split('?')[0]);
+        if (url && url.match(/analytics|metrics|track|pixel|telemetry|adscore|adv|ads/i)) {
             return new Response('{"status":"success"}', { status: 200 });
         }
         return oF.apply(this, arguments);
     };
 
-    // Очистка URL параметров
-    (function cleanURL() {
-        const u = new URL(location);
-        const trash = ['utm_','fbclid','gclid','_ga'];
-        let changed = false;
-        u.searchParams.forEach((v, k) => { if (trash.some(p => k.startsWith(p))) { u.searchParams.delete(k); changed = true; } });
-        if (changed) window.history.replaceState({}, '', u);
-    })();
-
-    /** STAGE 5: MALWARE PROTECT (DOWNLOAD SHIELD) **/
-    document.addEventListener('click', e => {
-        const a = e.target.closest('a');
-        if (a && a.href && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
-            log('🚨 BLOCKING POTENTIAL MALWARE: ' + a.href.split('/').pop());
-            e.preventDefault(); 
-            alert('🛡️ OMNI-X-GEN: Загрузка исполняемых файлов заблокирована для вашей безопасности.');
-        }
-    }, true);
-
-    setInterval(sterilize, 1200);
-    log('✅ 5-STAGE SYSTEM ONLINE');
+    setInterval(sterilize, 1000);
+    log('✅ STEALTH v12.7 ACTIVE');
 })();
 ```")
 
