@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.45-APEX
+! Version: 11.1.46-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -1018,13 +1018,17 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 
 *#%#//scriptlet("execute-script", "(function(){
     const host = location.hostname, 
-          TAG = '%c[OMNI-LOG]', 
-          STYLE = 'color:#00ffff;font-weight:bold;background:#000;padding:0 4px;';
+     const TAG = '%c OMNI-PROTOCOL ';
+    const STYLE = 'background:#00ffff;color:#000;font-weight:bold;border-radius:3px;padding:0 5px;';
     
     const TRUSTED = /google|gstatic|android|youtube|bank|openai|chatgpt|cloudflare|microsoft|apple|github|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|binance|didomi|infinityfree/.test(host);
     const noop = () => {}, log = (...a) => console.log(TAG, STYLE, ...a);
 
-    log(`🚀 Shield Active: ${host}`);
+    const log = (msg, style = 'color:#00ffff') => console.log(TAG + ` %c${msg}`, STYLE, style);
+
+    console.group('%c 🛡️ NEBULA APEX v11.1 ACTIVE ', 'background:#000;color:#00ffff;font-weight:bold;padding:5px;border:1px solid #00ffff;');
+    log('🚀 SHIELD ACTIVE: ' + host, 'color:#fff;font-weight:bold;');
+    log('📡 SYSTEM: HYBRID-SCRIPTLETS ONLINE');
 
     const setProp = (o, p, v) => {
         try { Object.defineProperty(o, p, { get: () => v, set: noop, configurable: true }); } catch(e){}
@@ -1050,7 +1054,7 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
     window.fetch = async function(u, o) {
         const url = typeof u === 'string' ? u : u?.url;
         if (!TRUSTED && url?.match(/analytics|metrics|track|pixel|telemetry|doubleclick|didomi/i)) {
-            log('🛑 Blocked:', url.split('?')[0]);
+          log('🛑 BLOCKED: ' + url.split('?')[0], 'color:#ff4444');
             return new Response('{\"status\":\"success\"}', {status: 200, headers:{'Content-Type':'application/json'}});
         }
         return oF.apply(this, arguments);
@@ -1066,7 +1070,8 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
         const scan = (node) => {
             const trash = node.querySelectorAll?.('[id*="didomi"],[class*="didomi"],#didomi-host');
             if (trash?.length) {
-                log(`🧹 Purged: ${trash.length} items`);
+                log(`🧹 STERILIZED: ${trash.length} items`, 'color:#ffcc00');
+
                 trash.forEach(t => t.remove());
             }
             node.querySelectorAll?.('*').forEach(n => n.shadowRoot && scan(n.shadowRoot));
@@ -1088,12 +1093,12 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
         });
         if (changed) {
             window.history.replaceState({}, '', u);
-            log('✨ URL Sterilized');
+            log('✨ URL STERILIZED', 'color:#00ff00');
         }
         
         if (!TRUSTED) {
             window.addEventListener('beforeunload', () => {
-                log('🪓 Shredding session...');
+                log('🪓 SHREDDING SESSION...', 'color:#ff4444');
                 document.cookie.split(';').forEach(c => document.cookie = c.replace(/^ +/,'').replace(/=.*/,'=;expires='+new Date(0).toUTCString()+';path=/'));
                 localStorage.clear();
             });
@@ -1104,12 +1109,13 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
     document.addEventListener('click', e => {
         const a = e.target.closest('a');
         if (a && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
-            log('🚨 Blocked Download:', a.href);
+           log('🚨 BLOCKED MALWARE: ' + a.href, 'color:#ff0000');
             e.preventDefault(); alert('🛡️ OMNI-X-GEN: Blocked.');
         }
     }, true);
 
-    log('✅ System Online');
+     log('✅ SYSTEM ONLINE');
+    console.groupEnd();
 })();", "priority=high")
 
 
