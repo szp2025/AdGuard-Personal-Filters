@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.65-APEX
+! Version: 11.1.66-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -1010,52 +1010,52 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 
 ! === 4. UNIVERSAL JS ENGINE (5-STAGE) ===
 ! ДОБАВЛЕНА ЗВЕЗДОЧКА В НАЧАЛО ДЛЯ ГЛОБАЛЬНОГО ЗАПУСКА
-#%#//scriptlet("execute-script", ```
-(function() {
+! Используем метод //script для обхода ограничений парсера
+#%#//script(```(function() {
     'use strict';
-    const host = location.hostname;
+    
+    // Прямой вывод в консоль для мгновенной проверки
     const log = (m, c = '#00ffff') => console.warn('%c🛡️ OMNI:%c ' + m, 'color:#00ffff;font-weight:bold;', 'color:' + c + ';');
+    log('SYSTEM V13.5 INITIATED', '#ffffff');
 
-    const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
+    const host = window.location.hostname;
+    const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|binance|kraken|coinbase|franceinfo|didomi|infinityfree)/.test(host);
 
-    if (TRUSTED) return;
+    if (TRUSTED) {
+        log('STANDBY MODE (TRUSTED HOST)');
+        return;
+    }
 
-    log('NEBULA APEX v12.9 ONLINE ON ' + host);
-
-    // STAGE 1 & 2: MOCKING
+    // STAGES 1 & 2: GASLIGHTING & MOCKING
     window.canRunAds = true;
     window.isAdblockActive = false;
-    try {
-        const nav = navigator;
-        Object.defineProperty(nav, 'webdriver', { get: () => false, configurable: true });
-        Object.defineProperty(nav, 'maxTouchPoints', { get: () => 5, configurable: true });
-    } catch(e) {}
+    if (!window.adsbygoogle) window.adsbygoogle = Object.assign([], { loaded: true, push: function() {} });
 
-    // STAGE 3: STERILIZER
+    // STAGE 3: STERILIZER (DOM PURGE)
     const sterilize = () => {
         const trash = document.querySelectorAll('[id*="didomi"],[class*="didomi"],[class*="modal"],[class*="overlay"],[id*="blocker"],[class*="adb"]');
         trash.forEach(t => {
             if (t.innerText.match(/publicités|Adblock|блокировщик|consent/i) || t.id.includes('didomi')) {
-                log('🧹 PURGED: ' + (t.className || t.id), '#ffcc00');
+                log('🧹 STERILIZED: ' + (t.className || t.id), '#ffcc00');
                 t.remove();
             }
         });
         if (document.body) document.body.style.setProperty('overflow', 'auto', 'important');
     };
 
-    // STAGE 5: MALWARE PROTECT
+    // STAGE 5: MALWARE PROTECT (DOWNLOAD SHIELD)
     document.addEventListener('click', e => {
         const a = e.target.closest('a');
         if (a && a.href && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
-            log('🚨 BLOCKED: ' + a.href, '#ff0000');
+            log('🚨 BLOCKED DANGEROUS FILE: ' + a.href.split('/').pop(), '#ff0000');
             e.preventDefault(); 
             alert('🛡️ OMNI-X-GEN: Загрузка заблокирована.');
         }
     }, true);
 
-    setInterval(sterilize, 1200);
-})();
-```")
+    setInterval(sterilize, 1000);
+    log('✅ FULL 5-STAGE PROTECTION ACTIVE ON ' + host);
+})();```)
 
 ! =========================================================================
 ! [STAGE 4] COSMETIC & DOMAIN SPECIFIC
