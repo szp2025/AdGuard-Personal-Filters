@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.59-APEX
+! Version: 11.1.60-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -849,10 +849,6 @@ $removeparam=/^(ms|click_id|t_id|timestamp|nav_data|trace_id|_v|nonce)$/,domain=
 ||generic-sensor.googleapis.com^
 $csp=sensor-access 'none'
 
-! 4. Защита от деанонимизации через шрифты (Font Enumeration)
-! Запрещает сайтам сканировать список установленных у тебя шрифтов
-$csp=font-src 'self' data: fonts.gstatic.com;
-
 ! 5. Блокировка "умных" чатов поддержки, которые следят за вводом текста
 ! (Те самые чаты, которые видят, что ты пишешь, еще до нажатия Enter)
 ||intercom.io^
@@ -880,12 +876,6 @@ $csp=font-src 'self' data: fonts.gstatic.com;
 ||idsync.rlcdn.com^
 ||match.adsrvr.org^
 ||pixel.rubiconproject.com^
-
-! 3. Защита от утечки метаданных при вводе форм
-! Запрещает отправку скрытых данных при заполнении форм регистрации
-$csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|~youtube.com
-
-
 
 
 ! =========================================================================
@@ -1005,6 +995,21 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 ! === 1. ГЛОБАЛЬНЫЙ CSS OVERRIDE ===
 *##html,body:style(overflow: auto !important; position: static !important; filter: none !important; pointer-events: auto !important;)
 *##div[class*="modal"], div[class*="overlay"], [id*="blocker"]:style(display: none !important; visibility: hidden !important; opacity: 0 !important;)
+
+
+! === 2. СЕТЕВАЯ И АППАРАТНАЯ ЗАЩИТА (CSP) ===
+! Блокировка сенсоров (гироскоп, акселерометр)
+||generic-sensor.googleapis.com^$csp=sensor-access 'none'
+
+! Защита от Font Fingerprinting
+*#%#$csp=font-src 'self' data: fonts.gstatic.com;
+
+! ISP Anti-Injection: Запрет на вставку скриптов сторонними узлами
+*#%#$csp=script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.google.com https://*.gstatic.com https://*.cloudflare.com https://*.hcaptcha.com;
+
+! Защита форм: Запрет отправки данных на левые аналитические домены
+*#%#$csp=connect-src 'self' *.google.com *.google-analytics.com *.cloudflare.com; domain=~google.com|~youtube.com
+
 
 ! === 2. ЯДЕРНЫЙ БЕЛЫЙ СПИСОК (ИСКЛЮЧЕНИЯ ДЛЯ КАПЧИ) ===
 @@||challenges.cloudflare.com^$jsinject
