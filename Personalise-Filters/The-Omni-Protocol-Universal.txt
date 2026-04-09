@@ -227,7 +227,7 @@
 
 ! Для InfinityFree убираем $jsinject, чтобы скриптлет мог запуститься!
 @@||dash.infinityfree.com^
- @@||infinityfree.com^
+@@||infinityfree.com^
 @@||3.html-load.com^
 
 
