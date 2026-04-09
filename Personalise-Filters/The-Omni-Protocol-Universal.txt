@@ -982,21 +982,24 @@ franceinfo.fr,didomi.io##html,body:style(overflow: auto !important; position: st
 franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(display: none !important; opacity: 0 !important; visibility: hidden !important; z-index: -9999 !important;)
 
 ! ------------------------------------------------------------
-! [THE OMNI-PROTOCOL] - UNIVERSAL HYBRID v19.0 (PROACTIVE)
+! [THE OMNI-PROTOCOL] - UNIVERSAL HYBRID v19.1 (VISUAL PURGE)
 ! ------------------------------------------------------------
 
-! === 1. ГЛОБАЛЬНЫЙ CSS ===
+! === 1. ГЛОБАЛЬНЫЙ CSS & INFINITYFREE FIX ===
 *##html,body:style(overflow: auto !important; position: static !important;)
 *##div[class*="modal"], [id*="blocker"], [class*="didomi"]:style(display: none !important; visibility: hidden !important;)
+! Убиваем баннер внизу (как на скриншоте 1000052102.jpg)
+infinityfree.com##div[style*="position: fixed"][style*="bottom: 0"]
+infinityfree.com##div[class*="ads"], div[id*="ads"]
+dash.infinityfree.com##.footer-ads, #footer-ads
 
-! === 2. ANTI-TRACKING & LINK CLEAN (MBAM+ LOGIC) ===
-! Очистка URL от трекеров и блокировка слежки через сенсоры
+! === 2. ANTI-TRACKING & URL CLEAN ===
 ||generic-sensor.googleapis.com^$csp=sensor-access 'none'
 *#%#//scriptlet("remove-attr", "a[href*='utm_'], a[href*='fbclid']", "href")
 *#%#$csp=script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.google.com https://*.gstatic.com https://*.cloudflare.com https://*.hcaptcha.com;
 
-! === 3. JS ENGINE (STAGE 1-5 + PRIVACY SHIELD) ===
-#%#//scriptlet("execute-script", "const log=(m,c='#00ffff')=>console.warn('%c🛡️ OMNI:%c '+m,'color:#00ffff;font-weight:bold;','color:'+c+';'); const host=window.location.hostname; const TRUSTED=/(google|gstatic|youtube|bank|openai|cloudflare|hcaptcha|microsoft|apple|github|tinkoff|sberbank|vtb|paypal|mwbsys|malwarebytes)/.test(host); if(!TRUSTED){ log('SYSTEM v19.0 ACTIVE'); window.canRunAds=true; window.isAdblockActive=false; /* ANTI-FINGERPRINT */ Object.defineProperty(navigator, 'battery', { get: () => ({}) }); /* STERILIZER */ setInterval(()=>{document.querySelectorAll('[id*=\"didomi\"],[id*=\"blocker\"]').forEach(t=>{if(t.innerText.match(/Adblock|consent/i)||t.id.includes('didomi')){t.remove();}});},2000); /* MALWARE SHIELD */ document.addEventListener('click',e=>{const a=e.target.closest('a');if(a&&/\\.(apk|exe|bat|sh)$/i.test(a.href)){e.preventDefault();alert('🛡️ OMNI: Blocked.');}},true); }")
+! === 3. JS ENGINE (STAGE 1-5 + PROACTIVE SHIELD) ===
+#%#//scriptlet("execute-script", "const log=(m,c='#00ffff')=>console.warn('%c🛡️ OMNI:%c '+m,'color:#00ffff;font-weight:bold;','color:'+c+';'); const host=window.location.hostname; const TRUSTED=/(google|gstatic|youtube|bank|openai|cloudflare|hcaptcha|microsoft|apple|github|tinkoff|sberbank|vtb|paypal|mwbsys|malwarebytes)/.test(host); if(!TRUSTED){ log('SYSTEM v19.1 ACTIVE'); window.canRunAds=true; window.isAdblockActive=false; /* STERILIZER */ setInterval(()=>{document.querySelectorAll('[id*=\"didomi\"],[id*=\"blocker\"],[style*=\"bottom: 0\"]').forEach(t=>{if(t.innerText.match(/Adblock|consent|publicités/i)||t.id.includes('didomi')||(t.offsetHeight < 100 && t.style.position === 'fixed')){t.remove();}});},1500); /* DOWNLOAD PROTECT */ document.addEventListener('click',e=>{const a=e.target.closest('a');if(a&&/\\.(apk|exe|bat|sh)$/i.test(a.href)){e.preventDefault();alert('🛡️ OMNI: Blocked.');}},true); }")
 
 ! === 4. ДИПЛОМАТИЧЕСКИЙ ПРОТОКОЛ ===
 @@||mwbsys.com^$important
