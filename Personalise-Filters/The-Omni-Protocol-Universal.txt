@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.62-APEX
+! Version: 11.1.63-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -987,27 +987,20 @@ franceinfo.fr,didomi.io##html,body:style(overflow: auto !important; position: st
 franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(display: none !important; opacity: 0 !important; visibility: hidden !important; z-index: -9999 !important;)
 
 ! ------------------------------------------------------------
-! [THE OMNI-PROTOCOL] - UNIVERSAL HYBRID ENGINE v12.8
+! [THE OMNI-PROTOCOL] - UNIVERSAL HYBRID ENGINE v12.9
 ! ------------------------------------------------------------
 
-! === 1. ГЛОБАЛЬНЫЙ CSS OVERRIDE ===
+! === 1. ГЛОБАЛЬНЫЙ CSS ===
 *##html,body:style(overflow: auto !important; position: static !important; filter: none !important; pointer-events: auto !important;)
 *##div[class*="modal"], div[class*="overlay"], [id*="blocker"]:style(display: none !important; visibility: hidden !important; opacity: 0 !important;)
 
-! === 2. СЕТЕВАЯ, АППАРАТНАЯ И ШРИФТОВАЯ ЗАЩИТА (CSP) ===
-! Блокировка сенсоров (API-уровень)
+! === 2. CSP ЗАЩИТА (СЕТЕВАЯ И АППАРАТНАЯ) ===
 ||generic-sensor.googleapis.com^$csp=sensor-access 'none'
-
-! Защита от Font Fingerprinting (Универсально)
 *#%#$csp=font-src 'self' data: fonts.gstatic.com;
-
-! ISP Anti-Injection & Content Integrity
 *#%#$csp=script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.google.com https://*.gstatic.com https://*.cloudflare.com https://*.hcaptcha.com;
-
-! Защита от утечки метаданных форм
 *#%#$csp=connect-src 'self' *.google.com *.google-analytics.com *.cloudflare.com; domain=~google.com|~youtube.com
 
-! === 3. ЯДЕРНЫЙ БЕЛЫЙ СПИСОК (ИСКЛЮЧЕНИЯ) ===
+! === 3. ЯДЕРНЫЙ БЕЛЫЙ СПИСОК ===
 @@||challenges.cloudflare.com^$jsinject
 @@||ctturnstile.cloudflare.com^$jsinject
 @@||hcaptcha.com^$jsinject
@@ -1015,71 +1008,52 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 @@||dash.infinityfree.com^
 @@||infinityfree.com^
 
-! === 4. UNIVERSAL JS ENGINE (5-STAGE STEALTH) ===
-#%#//scriptlet("execute-script", ```
+! === 4. UNIVERSAL JS ENGINE (5-STAGE) ===
+! ДОБАВЛЕНА ЗВЕЗДОЧКА В НАЧАЛО ДЛЯ ГЛОБАЛЬНОГО ЗАПУСКА
+*#%#//scriptlet("execute-script", ```
 (function() {
     'use strict';
-    const log = (m) => console.warn('🛡️ OMNI: ' + m);
     const host = location.hostname;
+    const log = (m, c = '#00ffff') => console.warn('%c🛡️ OMNI:%c ' + m, 'color:#00ffff;font-weight:bold;', 'color:' + c + ';');
 
     const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
 
     if (TRUSTED) return;
 
-    log('NEBULA APEX v12.8 (5-STAGES) INITIALIZED');
+    log('NEBULA APEX v12.9 ONLINE ON ' + host);
 
-    /** STAGE 1 & 2: MOCKING & GASLIGHTING **/
+    // STAGE 1 & 2: MOCKING
     window.canRunAds = true;
     window.isAdblockActive = false;
-    if (!window.adsbygoogle) window.adsbygoogle = Object.assign([], { loaded: true, push: function() {} });
-
     try {
         const nav = navigator;
         Object.defineProperty(nav, 'webdriver', { get: () => false, configurable: true });
         Object.defineProperty(nav, 'maxTouchPoints', { get: () => 5, configurable: true });
     } catch(e) {}
 
-    /** STAGE 3: STERILIZER (DOM) **/
+    // STAGE 3: STERILIZER
     const sterilize = () => {
         const trash = document.querySelectorAll('[id*="didomi"],[class*="didomi"],[class*="modal"],[class*="overlay"],[id*="blocker"],[class*="adb"]');
         trash.forEach(t => {
             if (t.innerText.match(/publicités|Adblock|блокировщик|consent/i) || t.id.includes('didomi')) {
+                log('🧹 PURGED: ' + (t.className || t.id), '#ffcc00');
                 t.remove();
             }
         });
         if (document.body) document.body.style.setProperty('overflow', 'auto', 'important');
     };
 
-    /** STAGE 4: MIMICRY & URL CLEAN **/
-    const oF = window.fetch;
-    window.fetch = async function() {
-        const url = typeof arguments[0] === 'string' ? arguments[0] : arguments[0]?.url;
-        if (url && url.match(/analytics|metrics|track|pixel|telemetry|adscore|adv|ads/i)) {
-            return new Response('{"status":"success"}', { status: 200 });
-        }
-        return oF.apply(this, arguments);
-    };
-
-    (function cleanURL() {
-        const u = new URL(location);
-        const trash = ['utm_','fbclid','gclid','_ga'];
-        let changed = false;
-        u.searchParams.forEach((v, k) => { if (trash.some(p => k.startsWith(p))) { u.searchParams.delete(k); changed = true; } });
-        if (changed) window.history.replaceState({}, '', u);
-    })();
-
-    /** STAGE 5: MALWARE PROTECT (DOWNLOAD SHIELD) **/
+    // STAGE 5: MALWARE PROTECT
     document.addEventListener('click', e => {
         const a = e.target.closest('a');
         if (a && a.href && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
-            log('🚨 BLOCKED DANGEROUS DOWNLOAD: ' + a.href.split('/').pop());
+            log('🚨 BLOCKED: ' + a.href, '#ff0000');
             e.preventDefault(); 
-            alert('🛡️ OMNI-X-GEN: Загрузка исполняемых файлов заблокирована для вашей безопасности.');
+            alert('🛡️ OMNI-X-GEN: Загрузка заблокирована.');
         }
     }, true);
 
     setInterval(sterilize, 1200);
-    log('✅ FULL 5-STAGE SYSTEM ONLINE');
 })();
 ```")
 
