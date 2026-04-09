@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.49-APEX
+! Version: 11.1.50-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -1016,528 +1016,127 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 ! ------------------------------------------------------------
 ! --- [INPUT-PROTECTION: STEALTH & SPEED] ---
 
-*#%#//scriptlet("execute-script", "(function(){
- /** 1. ЯДРО И АДАПТИВНЫЙ ДИСПЕТЧЕР **/
+! ------------------------------------------------------------
+! [HYBRID-SCRIPTLETS] - JS Injection Engine
+! ------------------------------------------------------------
+! --- [INPUT-PROTECTION: STEALTH & SPEED] ---
+
+*#%#//scriptlet("execute-script", ```
+(function() {
     const host = location.hostname;
-    // Твой расширенный список TRUSTED
-    const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
-    const noop = function(){};
-    const rand = (a, b) => a + Math.random() * (b - a);
-
-    const safeDefine = (obj, prop, val) => { 
-        try { Object.defineProperty(obj, prop, { get: () => val, set: noop, configurable: true, enumerable: true }); } catch (e) {} 
-    };
-
-    // [PC-FORCE] Превентивный захват Didomi через Proxy
-    if (!TRUSTED && !window.Didomi) {
-        window.Didomi = new Proxy({}, {
-            get: (target, prop) => {
-                if (prop === 'isReady') return () => true;
-                if (prop === 'on') return noop;
-                if (prop === 'getUserConsentStatusForVendor') return () => true;
-                return noop;
-            }
-        });
-    }
-
-    /** 2. GHOST-MODE & ANTI-PHISHING (Орбитальный заслон и децепция) **/
-    // 1. Защита от Tab-Napping (Разрыв связи с родителем)
-    const oOpen = window.open;
-    window.open = function(u, t, f) {
-        const w = oOpen.apply(this, [u, t, f]);
-        if (w) { try { safeDefine(w, 'opener', null); } catch(e) {} }
-        return w;
-    };
-
-    // 2. ДЕЦЕПЦИЯ: Скрываем наличие AdGuard и маскируем окружение
-
-
-    if (!TRUSTED) {
-            // Децепция: Маскируем ТОЛЬКО если сайт НЕ в белом списке
-         // Эти параметры подменяются ТОЛЬКО на обычных сайтах
-        safeDefine(window, 'adblock', false);
-        safeDefine(window, 'google_ad_status', 1);
-        safeDefine(window, 'adguard_installed', false);
-        safeDefine(navigator, 'webdriver', false); 
-        safeDefine(navigator, 'userActivation', { isActive: false, hasBeenActive: false });
-        safeDefine(navigator, 'maxTouchPoints', 5);
-            // Специфика для ПК (Cloudflare Turnstile Fix)
-            if (navigator.languages) {
-              
-                safeDefine(navigator, 'languages', ['ru-RU', 'ru', 'en-US', 'en']);
-            }
-        }   
-
-  // [PC-FORCE] Живой щит через Proxy (Ставим ПЕРЕД killDidomi)
-      if (!TRUSTED && !window.Didomi) {
-          window.Didomi = new Proxy({}, {
-              get: (target, prop) => {
-                  if (prop === 'isReady') return () => true;
-                  if (prop === 'on') return noop;
-                  return noop;
-              }
-          });
-      }
-
-     /** [ULTRA-GEN] Деактивация Didomi & Consent API (PC + Mobile) **/
-     const killDidomi = () => {
-         // API Mock (без изменений)
-         if (!window.Didomi || !window.Didomi.isReady) {
-             window.Didomi = { isReady: () => true, makeRequest: () => Promise.resolve(), getUserConsentStatusForVendor: () => true, getRequiredPurposes: () => [], on: noop };
-         }
- 
-         const targets = ['.didomi-screen-xlarge', '.didomi-popup-backdrop', '.didomi-notice-popup', '.didomi-popup__backdrop', '[id^="didomi-host"]', '#didomi-popup', '.didomi-popup-open'];
- 
-         // Глубокое удаление (включая Shadow DOM для ПК)
-         const deepClean = (root) => {
-             targets.forEach(s => {
-                 root.querySelectorAll(s).forEach(el => el.remove());
-             });
-             // Рекурсия по всем элементам для поиска Shadow Roots
-             root.querySelectorAll('*').forEach(el => {
-                 if (el.shadowRoot) deepClean(el.shadowRoot);
-             });
-         };
- 
-         deepClean(document);
- 
-         // Принудительный разблок скролла (важно для десктопа)
-         const fixScroll = (el) => {
-             if (!el) return;
-             el.style.setProperty('overflow', 'auto', 'important');
-             el.style.setProperty('position', 'static', 'important');
-             el.classList.remove('didomi-popup-open');
-         };
-         fixScroll(document.body);
-         fixScroll(document.documentElement);
-     };
-
-    killDidomi();
-    new MutationObserver(killDidomi).observe(document.documentElement, { childList: true, subtree: true });
-// 3. Блокировка скрытых редиректов (Anti-Stealth-Redirect)
-    if (!TRUSTED) {
-        let lastAction = Date.now();
-        ['click', 'keydown', 'touchstart'].forEach(ev => 
-            document.addEventListener(ev, () => lastAction = Date.now(), {passive:true})
-        );
-        
-        // Перехват попытки ухода со страницы (для защиты от Pop-under и редиректов)
-        window.addEventListener('beforeunload', (e) => {
-            const timeSinceAct = Date.now() - lastAction;
-            // Если редирект происходит сам по себе (тишина > 10 сек) и это не доверенный сайт
-            if (timeSinceAct > 10000 && !TRUSTED) {
-                console.warn('Orbital Shield: Blocked auto-redirect attempt');
-                // В некоторых браузерах это вызовет окно подтверждения, что спасет вкладку
-                e.preventDefault();
-                e.returnValue = ''; 
-            }
-        });
-
-        // Защита от навязчивого изменения location через API
-        const oAssign = window.location.assign;
-        if (typeof oAssign === 'function') {
-            window.location.assign = function(url) {
-                if (Date.now() - lastAction > 10000 && !TRUSTED) return;
-                return oAssign.apply(this, arguments);
-            };
-        }
-    }
-  
-    /** 3. ORBITAL-TRACKER-DECEPTION (Canvas/GPU/Audio/Sensors) **/
-    // 1. Динамическая дезинформация Canvas (2D & WebGL)
-    const noise = (ctx) => {
-        const oGetImageData = ctx.getImageData;
-        ctx.getImageData = function() {
-            const res = oGetImageData.apply(this, arguments);
-            if (!TRUSTED) {
-                // Микро-шум в 1 пиксель ломает хэш отпечатка, не меняя картинку
-                res.data[0] = res.data[0] + (Math.random() > 0.5 ? 1 : -1);
-            }
-            return res;
-        };
-    };
-    noise(HTMLCanvasElement.prototype.getContext('2d').__proto__); 
-    if (window.OffscreenCanvasRenderingContext2D) noise(OffscreenCanvasRenderingContext2D.prototype);
-
-    // 2. Спуфинг GPU: Маскировка под массовый сегмент (Intel Iris Xe)
-    const oGetParam = WebGLRenderingContext.prototype.getParameter;
-    const gpuMocks = { 37445: 'Intel Inc.', 37446: 'Intel(R) Iris(R) Xe Graphics', 7936: 'WebKit', 7937: 'WebKit WebGL' };
-    WebGLRenderingContext.prototype.getParameter = function(p) {
-        return (!TRUSTED && gpuMocks[p]) ? gpuMocks[p] : oGetParam.apply(this, arguments);
-    };
-
-    // 3. Audio-Fingerprint Noise (Защита аудио-контекста)
-    const oGetChannelData = AudioBuffer.prototype.getChannelData;
-    AudioBuffer.prototype.getChannelData = function() {
-        const data = oGetChannelData.apply(this, arguments);
-        if (!TRUSTED) { for (let i = 0; i < 10; i++) data[i] += (Math.random() * 0.0000001); }
-        return data;
-    };
-
-    // 4. Privacy Sandbox Annihilation (Убийца рекламных аукционов)
-    ['browsingTopics', 'runAdAuction'].forEach(p => safeDefine(navigator, p, undefined));
-    ['sharedStorage', 'WebTransport', 'InterestCohort'].forEach(w => safeDefine(window, w, undefined));
-
-    // 5. Sensor-Vacuum & Battery-Cloak (Вакуум датчиков)
-    ['DeviceMotionEvent', 'DeviceOrientationEvent', 'IdleDetector'].forEach(d => safeDefine(window, d, undefined));
-    if (navigator.getBattery) navigator.getBattery = () => Promise.resolve({ charging: true, level: 1.0, chargingTime: 0, dischargingTime: Infinity });
-
-    // AI-Deception: Джиттер мыши (Защита от Heatmaps/Анализа поведения)
-    let lastMove = 0;
-    window.addEventListener('mousemove', e => {
-        let now = Date.now();
-        if (now - lastMove < 50) e.stopImmediatePropagation(); // Срезаем слишком частые замеры
-        lastMove = now;
-    }, true);
-
-
-    /** 4. ANTI-CLICKJACKING (Защита от невидимых слоев-ловушек) **/
-    const killClickjacking = () => {
-        if (TRUSTED) return;
-        document.querySelectorAll('*').forEach(el => {
-            const s = window.getComputedStyle(el);
-            // Если элемент прозрачный (opacity: 0), но активен для клика — это Clickjacking
-            if (s.opacity === '0' && s.pointerEvents !== 'none' && (el.offsetWidth > 10 || el.offsetHeight > 10)) {
-                el.style.pointerEvents = 'none';
-                el.style.zIndex = '-9999';
-                console.warn('Orbital Shield: Clickjacking layer neutralized');
-            }
-        });
-    };
-    if (!TRUSTED) setInterval(killClickjacking, 2000);
-
-
-       /** 5. ORBITAL-PORT-GASLIGHTING & NET-SHIELD (SMS-Protect Edition) **/
-
-    // Вспомогательные функции проверки
-    const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|pixel|telemetry|doubleclick|didomi/i);
-    const isSensitivePort = u => u && typeof u === 'string' && u.match(/:5555|:5037|:3306|:5432|:8080|:8443|:9000|:8888|localhost|127\.0\.0\.1/);
-    const isCloudflare = u => u && typeof u === 'string' && u.match(/cloudflare|challenges|turnstile|hcaptcha|recaptcha/i);
     
-    // Проверка подозрительных ссылок из SMS (фишинг/трекинг)
-    const isSuspiciousQuery = (u) => {
-        try {
-            const url = new URL(u, location.origin);
-            return /phone|tel|msisdn|id=[a-f0-9]{32}/i.test(url.search);
-        } catch (e) { return false; }
+    // --- [CONFIG: VISUAL TELEMETRY] ---
+    const T = '%c OMNI-PROTOCOL ';
+    const S = 'background:#00ffff;color:#000;font-weight:bold;border-radius:4px;padding:2px 6px;';
+    const log = (m, c = '#00ffff') => console.log(T + `%c ${m}`, S, `color:${c};font-weight:bold;`);
+
+    // Начало лога в стиле Nebula Apex
+    console.group('%c 🛡️ NEBULA APEX v11.1 ACTIVE ', 'background:#000;color:#00ffff;font-weight:bold;padding:10px;border:2px solid #00ffff;border-radius:5px;');
+    log('🚀 SHIELD INITIALIZED: ' + host, '#fff');
+    log('📊 STRATEGY: BANKING GAMBIT (S1-S5)', '#ffcc00');
+
+  const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
+  const noop = () => {};
+
+    const setProp = (o, p, v) => {
+        try { Object.defineProperty(o, p, { get: () => v, set: noop, configurable: true }); } catch(e){}
     };
 
-    // 1. Единый перехват Fetch
+    /** 1. МАСКИРОВКА & ANTI-TRACKING **/
+    if (!TRUSTED) {
+        log('👤 MASKING: FINGERPRINT PROTECTION ACTIVE', '#00ff00');
+        const nav = navigator;
+        const mocks = { webdriver: false, maxTouchPoints: 5, sendBeacon: () => true };
+        Object.keys(mocks).forEach(k => setProp(nav, k, mocks[k]));
+        
+        if (nav.languages) setProp(nav, 'languages', ['ru-RU', 'ru', 'en-US']);
+        ['RTCPeerConnection', 'webkitRTCPeerConnection', 'DeviceMotionEvent', 'IdleDetector'].forEach(p => setProp(window, p, undefined));
+
+        const oGP = WebGLRenderingContext.prototype.getParameter;
+        WebGLRenderingContext.prototype.getParameter = function(p) {
+            return {37445:'Intel Inc.', 37446:'Intel(R) Iris(R) Xe Graphics'}[p] || oGP.apply(this, arguments);
+        };
+    }
+
+    /** 2. СЕТЕВОЙ ФИЛЬТР (GASLIGHTING) **/
     const oF = window.fetch;
     window.fetch = async function(u, o) {
-        // А) Безусловный пропуск для капчи и доверенных сайтов
-        if (isCloudflare(u) || TRUSTED) {
-            return oF.apply(this, arguments);
+        const url = typeof u === 'string' ? u : u?.url;
+        if (!TRUSTED && url?.match(/analytics|metrics|track|pixel|telemetry|doubleclick|didomi/i)) {
+            log('🛑 BLOCKED TRACKER: ' + url.split('?')[0], '#ff4444');
+            return new Response('{"status":"success"}', {status: 200, headers:{'Content-Type':'application/json'}});
         }
-
-        // Б) Защита от SMS-трекинга (Gaslighting параметров)
-        if (isSuspiciousQuery(u)) {
-            console.warn('Orbital Shield: SMS Tracking Detected');
-            // Здесь мы просто позволяем запросу идти под общей маской (Блок 2)
-        }
-        
-        // В) Блокировка телеметрии и сканирования портов
-        if (isTr(u) || isSensitivePort(u)) {
-            return new Promise(res => setTimeout(() => 
-                res(new Response('{"status":"success","data":[]}', {
-                    status: 200, 
-                    headers: {'Content-Type': 'application/json'}
-                })), 
-                rand(150, 400)
-            ));
-        }
-
         return oF.apply(this, arguments);
     };
 
-    // 2. Глубокий XHR-Gaslighting
-    const oX = window.XMLHttpRequest.prototype.open;
-    window.XMLHttpRequest.prototype.open = function(m, u) { 
-        this._u = u; 
+   /** 3. СТЕРИЛИЗАТОР (ANTI-ADBLOCK & OVERFLOW FIX) **/
+    const sterilize = () => {
+        const root = document.documentElement, body = document.body;
         
-        if (isCloudflare(u) || TRUSTED) {
-            return oX.apply(this, arguments);
-        }
-        
-        if (isSensitivePort(u)) {
-            Object.defineProperties(this, {
-                status: { get: () => 200 },
-                readyState: { get: () => 4 },
-                responseText: { get: () => '' },
-                send: { value: function() { this.dispatchEvent(new Event('load')); } }
-            });
-            return; 
-        }
-        return oX.apply(this, arguments); 
-    };
-
-    /** 6. ORBITAL-COOKIE-SHREDDER & STORAGE-LOCK (Стерилизация памяти) **/
-    // 1. Блокировка записи идентификаторов (Storage-Lock)
-    if (!TRUSTED) {
-        const lock = (obj) => {
-            try {
-                const proto = Object.getPrototypeOf(obj);
-                // Заменяем методы записи на пустышки (Сайт думает, что сохранил, но нет)
-                safeDefine(proto, 'setItem', noop);
-                safeDefine(proto, 'getItem', () => null);
-                safeDefine(proto, 'removeItem', noop);
-                safeDefine(proto, 'clear', noop);
-            } catch(e) {}
-        };
-        lock(window.localStorage);
-        lock(window.sessionStorage);
-        
-        // 2. Уничтожение IndexedDB (Место хранения вечных куки)
-        if (window.indexedDB) {
-            safeDefine(window.indexedDB, 'open', () => ({ onsuccess: noop, onerror: noop }));
-        }
-    }
-
-    // 3. Авто-деструкция следов при выходе (Shredder-Trigger)
-    const purgeAll = () => {
-        if (TRUSTED) return;
-        try {
-            // Мгновенное устаревание всех куки через заголовок expires
-            document.cookie.split(';').forEach(c => {
-                document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/');
-            });
-            // Очистка кэша ServiceWorker
-            if (navigator.serviceWorker) {
-                navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.unregister()));
-            }
-            console.log('Orbital Shield: Storage sterilized');
-        } catch(e) {}
-    };
-
-    // Срабатывает при любой попытке закрыть или сменить страницу
-    window.addEventListener('beforeunload', purgeAll);
-    window.addEventListener('unload', purgeAll);
-
-    // 4. Запрет Beacon API (Скрытая отправка аналитики при закрытии)
-    if (navigator.sendBeacon) {
-        navigator.sendBeacon = function() { return true; }; // Имитируем успех отправки
-    }
-
-    /** 7. DATA POISONING & INPUT-HARDENING **/
-    safeDefine(window, 'onbeforeunload', null);
-    if (!TRUSTED) safeDefine(document, 'getSelection', () => null);
-
-    // Улучшенная защита ввода (S2 Input-Hardening)
-    const hardenInputs = () => {
-        document.querySelectorAll('input').forEach(i => {
-            // Добавляем 'tel' и проверку на карты
-            if (i.type === 'password' || i.type === 'tel' || i.name.includes('card') || i.id.includes('card')) {
-                if (i.getAttribute('autocomplete') !== 'off') {
-                    i.setAttribute('autocomplete', 'off');
-                    i.setAttribute('autocorrect', 'off');
-                    i.setAttribute('spellcheck', 'false');
+        // Снимаем блокировку прокрутки, которую мы видим на скриншоте dash.infinityfree.com
+        if (root && !root._L) {
+            [root, body].forEach(el => {
+                if (el) {
+                    el.style.setProperty('overflow', 'auto', 'important');
+                    el.style.setProperty('position', 'static', 'important');
                 }
-                if (i.type === 'password') i.setAttribute('disable_predictive_text', 'true');
+            });
+            root._L = true;
+        }
+
+        const scan = (node) => {
+            // Удаляем не только Didomi, но и блокирующие оверлеи infinityfree
+            const trash = node.querySelectorAll?.('[id*="didomi"],[class*="didomi"],#didomi-host, [class*="modal"], [class*="overlay"]');
+            if (trash?.length) {
+                log(`🧹 PURGED: ${trash.length} OBSTACLES`, '#ffcc00');
+                trash.forEach(t => {
+                    // Если элемент содержит текст про рекламу (как на скриншоте), удаляем его
+                    if (t.innerText?.includes('autoriser les publicités')) {
+                        t.remove();
+                    }
+                });
             }
-        });
+            node.querySelectorAll?.('*').forEach(n => n.shadowRoot && scan(n.shadowRoot));
+        };
+        scan(document);
     };
 
-    // Запускаем сразу и следим за изменениями на странице
-    hardenInputs();
-    const observer = new MutationObserver(hardenInputs);
-    observer.observe(document.documentElement, { childList: true, subtree: true });
-
-    /** 8. URL-LEAK CLEANER & GHOST-SEARCH **/
-    (function urlPurify(){
-        try {
-            const u = new URL(window.location);
-            const trash = ['fbclid', 'gclid', 'utm_source', 'utm_campaign', 'utm_medium', 'utm_content', '_ga', '_gl'];
-            let changed = false;
-            trash.forEach(p => { if(u.searchParams.has(p)){ u.searchParams.delete(p); changed = true; } });
-            if (changed) window.history.replaceState({}, '', u);
-
-// Стерилизация всех ссылок на странице (Anti-Tracking)
-    document.addEventListener('mouseover', e => {
-        const a = e.target.closest('a');
-        if (a && !TRUSTED) {
-            a.removeAttribute('ping');
-            a.setAttribute('rel', 'noopener noreferrer');
+    /** 4. ОЧИСТКА URL & STORAGE **/
+    (function clean() {
+        const u = new URL(location);
+        const trash = ['utm_','fbclid','gclid','_ga'];
+        let changed = false;
+        u.searchParams.forEach((v, k) => {
+            if (trash.some(p => k.startsWith(p))) { u.searchParams.delete(k); changed = true; }
+        });
+        if (changed) {
+            window.history.replaceState({}, '', u);
+            log('✨ URL STERILIZED: IDS REMOVED', '#00ff00');
         }
-    }, {passive: true});
-        } catch(e){}
+        
+        if (!TRUSTED) {
+            window.addEventListener('beforeunload', () => {
+                log('🪓 SHREDDING SESSION DATA...', '#ff4444');
+                document.cookie.split(';').forEach(c => document.cookie = c.replace(/^ +/,'').replace(/=.*/,'=;expires='+new Date(0).toUTCString()+';path=/'));
+                localStorage.clear();
+            });
+        }
     })();
 
-   
-
-    /** 10. DEEP PURIFIER & L10N (Гео-маскировка) **/
-    safeDefine(navigator, 'userAgentData', undefined);
-    // Маскировка локали и часового пояса (S1 Engine-Stealth)
-    const oRes = Intl.DateTimeFormat.prototype.resolvedOptions;
-    Intl.DateTimeFormat.prototype.resolvedOptions = function() {
-        return Object.assign(oRes.apply(this), { locale: 'ru-RU', timeZone: 'Europe/Moscow' });
-    };
-    if (navigator.serviceWorker) navigator.serviceWorker.register = () => Promise.reject();
-
-
-
-    /** 13. X-GEN-MALWARE-SHIELD (Эвристический сканер всех типов файлов) **/
-    const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|vbs|ps1|msi|sh|py|js|vbe|jse|wsf|wsh)$/i;
-    
-    // Эвристика: ищем признаки исполняемого кода внутри ЛЮБОГО файла (MZ заголовок, скрипты, шелл-коды)
-    const scanForViruses = async (blob) => {
-        if (TRUSTED) return true;
-        const text = await blob.text();
-        const buffer = await blob.arrayBuffer();
-        const view = new Uint8Array(buffer);
-
-        // 1. Проверка заголовков (Magic Numbers)
-        const isExe = view[0] === 0x4D && view[1] === 0x5A; // MZ заголовок (Windows EXE)
-        const isElf = view[0] === 0x7F && view[1] === 0x45 && view[2] === 0x4C && view[3] === 0x46; // ELF (Linux/Android)
-        
-        // 2. Поиск опасных JS-инъекций и системных вызовов внутри файла
-        const dangerousPatterns = /eval\(|exec\(|system\(|powershell|base64_decode|unescape\(|WScript\.Shell/i;
-        const hasExploit = dangerousPatterns.test(text);
-
-        if (isExe || isElf || hasExploit) {
-            console.error('OMNI-X-GEN: Virus Signature Detected in file!');
-            return false;
-        }
-        return true;
-    };
-
-    // 1. Глубокое сканирование Blob-объектов (Любые данные в памяти)
-    const oBlob = window.Blob;
-    window.Blob = function(content, options) {
-        const b = new oBlob(content, options);
-        if (!TRUSTED && options && options.type) {
-            scanForViruses(b).then(safe => {
-                if (!safe) console.warn('X-Gen: Blocked potentially infected Blob data');
-            });
-        }
-        return b;
-    };
-
-    // 2. Интеллектуальный блокировщик скачиваний с предварительным анализом
-    document.addEventListener('click', async (e) => {
+    /** 5. MALWARE PROTECT **/
+    document.addEventListener('click', e => {
         const a = e.target.closest('a');
-        if (a && !TRUSTED) {
-            const h = a.href.toLowerCase();
-            
-            // Если это прямая попытка скачать что-то подозрительное
-            if (a.hasAttribute('download') || illegalExt.test(h) || h.startsWith('blob:') || h.startsWith('data:')) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                
-                // Имитируем "Облачное сканирование" перед разрешением
-                console.log('Orbital Shield: Scanning file before download...');
-                alert('🛡️ OMNI-X-GEN: Файл отправлен на орбитальную проверку. Если угроз нет, загрузка начнется через секунду.');
-                
-                setTimeout(() => {
-                    // Если это опасный формат из нашего списка — блокируем намертво
-                    if (illegalExt.test(h)) {
-                        alert('❌ ВНИМАНИЕ: Обнаружен опасный тип файла. Загрузка отклонена.');
-                    } else {
-                        // Если файл кажется безопасным (картинка, текст), разрешаем
-                        const win = window.open(a.href, '_blank');
-                        if (win) safeDefine(win, 'opener', null);
-                    }
-                }, 1200);
-            }
+        if (a && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
+            log('🚨 MALWARE ATTEMPT BLOCKED: ' + a.href, '#ff0000');
+            e.preventDefault(); 
+            alert('🛡️ OMNI-X-GEN: Blocked.');
         }
     }, true);
 
-    // 3. Защита от перехвата и тихой установки (оставляем как было)
-    const oCreateElement = document.createElement;
-    document.createElement = function(tag) {
-        const el = oCreateElement.apply(this, arguments);
-        if (!TRUSTED && ['iframe', 'object', 'embed'].includes(tag.toLowerCase())) {
-            setTimeout(() => {
-                const s = window.getComputedStyle(el);
-                if (s.display === 'none' || s.visibility === 'hidden' || el.offsetWidth < 2 || el.offsetHeight < 2) el.remove();
-            }, 200);
-        }
-        return el;
-    };
-
-    /** 14. ORBITAL-TOTAL-SCAN & SELF-HEALING (Максимальная защита) **/
-    const sSigh = /eval\(|Function\(|atob\(|btoa\(|document\.write|innerHTML|outerHTML|indexedDB|localStorage/gi;
-    
-    // Эвристика: определяет, является ли код опасным
-    const isSuspicious = (code) => {
-        if (typeof code !== 'string') return false;
-        const hits = code.match(sSigh) || [];
-        // Блокируем, если слишком много системных вызовов в одном куске кода
-        return hits.length > 4 || (code.length > 500 && hits.length > 2);
-    };
-
-    // 1. ТОТАЛЬНЫЙ ПЕРЕХВАТ КОНСТРУКТОРОВ (Песочница)
-    const oEval = window.eval;
-    window.eval = function(code) {
-        if (!TRUSTED && isSuspicious(code)) {
-            console.error('Orbital Deep-Scan: Neutralized eval payload');
-            return null; // Возвращаем null, чтобы не ломать цепочку вызовов
-        }
-        try { return oEval.apply(this, arguments); } catch(e) { return null; }
-    };
-
-    const oFunc = window.Function;
-    window.Function = function() {
-        const args = Array.from(arguments);
-        const code = args[args.length - 1];
-        if (!TRUSTED && isSuspicious(code)) {
-            console.error('Orbital Deep-Scan: Neutralized Function constructor');
-            return noop; // Возвращаем пустую функцию вместо ошибки
-        }
-        return oFunc.apply(this, arguments);
-    };
-
-    // 2. КОНТРОЛЬ ВНЕДРЕНИЯ (DOM-Infection Shield)
-    const oInsert = Element.prototype.insertBefore;
-    const oAppend = Element.prototype.appendChild;
-
-    const sanitizeElement = (el) => {
-        if (!TRUSTED && el.tagName === 'SCRIPT') {
-            if (isSuspicious(el.textContent) || isSuspicious(el.src)) {
-                console.warn('Orbital Shield: Sanitized suspicious script to prevent crash');
-                el.textContent = '/* Neutralized by Orbital Shield */';
-                el.src = ''; 
-                return true;
-            }
-        }
-        return false;
-    };
-
-    Element.prototype.insertBefore = function(el) {
-        sanitizeElement(el);
-        return oInsert.apply(this, arguments);
-    };
-
-    Element.prototype.appendChild = function(el) {
-        sanitizeElement(el);
-        return oAppend.apply(this, arguments);
-    };
-
-    // 3. ИНСПЕКЦИЯ HTML-ИНЪЕКЦИЙ (innerHTML Cleaner)
-    const oSetHTML = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML').set;
-    Object.defineProperty(Element.prototype, 'innerHTML', {
-        set: function(val) {
-            if (!TRUSTED && typeof val === 'string' && /<script|on\w+=/i.test(val)) {
-                console.warn('Orbital Deep-Scan: Cleaning dangerous HTML');
-                // Вырезаем скрипты и обработчики событий (onerror, onload и т.д.)
-                val = val.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-                         .replace(/\son\w+="[^"]*"/gi, ' data-blocked-event=""');
-            }
-            return oSetHTML.apply(this, [val]);
-        }
-    });
-
-    // 4. ЗАЩИТА ЖИЗНЕННОГО ЦИКЛА (Beforescriptexecute)
-    document.addEventListener('beforescriptexecute', (e) => {
-        if (!TRUSTED && isSuspicious(e.target.textContent)) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-    }, true);
-
-
-})();")
-
-
+    log('✅ SYSTEM ONLINE', '#00ffff');
+    console.groupEnd();
+})();
+```")
 
 
 
