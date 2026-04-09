@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.47-APEX
+! Version: 11.1.48-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -1021,7 +1021,7 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
      const TAG = '%c OMNI-PROTOCOL ';
     const STYLE = 'background:#00ffff;color:#000;font-weight:bold;border-radius:3px;padding:0 5px;';
     
-    const TRUSTED = /google|gstatic|android|youtube|bank|openai|chatgpt|cloudflare|microsoft|apple|github|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|binance|didomi|infinityfree/.test(host);
+  const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
     const noop = () => {}, log = (...a) => console.log(TAG, STYLE, ...a);
 
     const log = (msg, style = 'color:#00ffff') => console.log(TAG + ` %c${msg}`, STYLE, style);
