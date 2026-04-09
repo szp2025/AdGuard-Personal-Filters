@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.35-APEX
+! Version: 11.1.36-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -1017,10 +1017,14 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 #%#//scriptlet("execute-script", "(function(){
     /** 1. ЯДРО И БЕЛЫЙ СПИСОК **/
     const host = location.hostname;
+    const TAG = '%c[OMNI-LOG]';
+    const STYLE = 'color: #00ffff; font-weight: bold; background: #000;';
+
     const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|didomi|infinityfree|html-load)/.test(host);
     const noop = function(){};
     const rand = (a, b) => a + Math.random() * (b - a);
 
+    console.log(TAG, STYLE, `🛸 Запуск на ${host}. Доверенная зона: ${TRUSTED}`);
     const safeDefine = (obj, prop, val) => { 
         try { Object.defineProperty(obj, prop, { get: () => val, set: noop, configurable: true, enumerable: true }); } catch (e) {} 
     };
@@ -1028,11 +1032,14 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
     /** 2. СПЕЦ-ФИКСЫ (INFINITYFREE & DIDOMI FORCE) **/
     if (host.includes('infinityfree')) {
         window.google_ad_status = 1;
+        console.log(TAG, STYLE, '🛠️ Применение фикса InfinityFree');
+
         safeDefine(window, 'canRunAds', true);
         safeDefine(window, 'isAdblockActive', false);
     }
 
     if (!window.Didomi && (!TRUSTED || host.includes('franceinfo'))) {
+        console.log(TAG, STYLE, '🚫 Нейтрализация Didomi / Consent Manager');
         window.Didomi = new Proxy({}, {
             get: (target, prop) => {
                 if (prop === 'isReady') return () => true;
@@ -1046,12 +1053,14 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
     /** 3. GHOST-MODE & DECEPTION (170/190/PC-FORCE) **/
     const oOpen = window.open;
     window.open = function(u, t, f) {
+        console.log(TAG, STYLE, '🔗 Перехват открытия окна:', u);
         const w = oOpen.apply(this, [u, t, f]);
         if (w) { try { safeDefine(w, 'opener', null); } catch(e) {} }
         return w;
     };
 
     if (!TRUSTED) {
+        console.log(TAG, STYLE, '🎭 Активация маскировки (Fingerprint Shield)');
         safeDefine(window, 'RTCPeerConnection', undefined);
         safeDefine(window, 'webkitRTCPeerConnection', undefined);
         safeDefine(window, 'adblock', false);
@@ -1087,8 +1096,10 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
         const url = typeof u === 'string' ? u : (u?.url || '');
         if (TRUSTED || url.match(/cloudflare|challenges|turnstile|hcaptcha|recaptcha/i)) return oF.apply(this, arguments);
         if (isTr(url) || isSensitive(url) || isSuspiciousQuery(url)) {
+
             return new Response('{\"status\":\"success\",\"data\":[]}', { status: 200, headers: {'Content-Type': 'application/json'} });
         }
+        console.log(TAG, STYLE, '🛑 Запрос аналитики заблокирован:', url);
         return oF.apply(this, arguments);
     };
 
@@ -1107,7 +1118,7 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
             el.style.setProperty('overflow', 'auto', 'important');
             el.style.setProperty('position', 'static', 'important');
         };
-
+        console.log(TAG, STYLE, `🧹 Удалено элементов Didomi: ${elements.length}`);
         const purge = (root) => {
             if (!root) return;
             // Ищем Didomi везде, включая Shadow DOM
@@ -1151,6 +1162,7 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
     document.addEventListener('click', (e) => {
         const a = e.target.closest('a');
         if (a && (a.hasAttribute('download') || illegalExt.test(a.href))) {
+            console.log(TAG, STYLE, '🚨 Блокировка загрузки опасного файла:', a.href);
             e.preventDefault();
             alert('🛡️ OMNI-X-GEN: Загрузка заблокирована.');
         }
@@ -1174,6 +1186,7 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 
     const purgeAll = (e) => {
         if (TRUSTED) return;
+        console.log(TAG, STYLE, '🪓 Уничтожение сессионных данных (Storage Shredder)');
         if (Date.now() - lastAction > 10000) { e.preventDefault(); e.returnValue = ''; }
         try {
             document.cookie.split(';').forEach(c => {
@@ -1192,6 +1205,7 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
             let changed = false;
             trash.forEach(p => { if(u.searchParams.has(p)){ u.searchParams.delete(p); changed = true; } });
             if (changed) window.history.replaceState({}, '', u);
+            console.log(TAG, STYLE, '✨ URL очищен от трекеров');
         } catch(e){}
     })();
 
@@ -1206,6 +1220,8 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
     Intl.DateTimeFormat.prototype.resolvedOptions = function() {
         return Object.assign(oRes.apply(this), { locale: 'ru-RU', timeZone: 'Europe/Moscow' });
     };
+
+        console.log(TAG, STYLE, '✅ Система полностью развернута.');
 })();")
 
 
