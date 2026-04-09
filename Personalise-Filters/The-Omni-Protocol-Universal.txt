@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.56-APEX
+! Version: 11.1.57-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -1013,8 +1013,8 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 ! Разблокировка прокрутки везде, где есть блокировщики (универсально)
 *##html,body:style(overflow: auto !important; position: static !important; filter: none !important; pointer-events: auto !important;)
 
-! --- [OMNI-PROTOCOL: UNIVERSAL ENGINE v12.0] ---
-*#%#//scriptlet("execute-script", ```
+! --- [OMNI-PROTOCOL: UNIVERSAL ENGINE v12.1] ---
+#%#//scriptlet("execute-script", ```
 (function() {
     'use strict';
     const host = location.hostname;
@@ -1022,25 +1022,25 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
     const S = 'background:#00ffff;color:#000;font-weight:bold;border-radius:4px;padding:2px 6px;';
     const log = (m, c = '#00ffff') => console.info(T + `%c ${m}`, S, `color:${c};font-weight:bold;`);
 
-    // Список исключений, где маскировка НЕ НУЖНА (банки, капчи, важные сервисы)
     const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
 
-    console.group('%c 🛡️ NEBULA APEX v12.0 UNIVERSAL ', 'background:#000;color:#00ffff;font-weight:bold;padding:10px;border:2px solid #00ffff;border-radius:5px;');
+    console.group('%c 🛡️ NEBULA APEX v12.1 UNIVERSAL ', 'background:#000;color:#00ffff;font-weight:bold;padding:10px;border:2px solid #00ffff;border-radius:5px;');
     log('🚀 ENGINE START: ' + host, '#fff');
 
     const setProp = (o, p, v) => {
         try { Object.defineProperty(o, p, { get: () => v, set: () => {}, configurable: true }); } catch(e){}
     };
 
-    /** 1. МАСКИРОВКА (Только для не доверенных сайтов) **/
+    /** 1. МАСКИРОВКА **/
     if (!TRUSTED) {
         log('👤 CLOAKING ENGAGED', '#00ff00');
         const nav = navigator;
         const mocks = { webdriver: false, maxTouchPoints: 5, sendBeacon: () => true };
         Object.keys(mocks).forEach(k => setProp(nav, k, mocks[k]));
+        if (nav.languages) setProp(nav, 'languages', ['ru-RU', 'ru', 'en-US']);
     }
 
-    /** 2. СЕТЕВАЯ МИМИКРИЯ (Универсальный Gaslighting) **/
+    /** 2. СЕТЕВАЯ МИМИКРИЯ (Gaslighting) **/
     const oF = window.fetch;
     window.fetch = async function(u, o) {
         const url = typeof u === 'string' ? u : u?.url;
@@ -1051,46 +1051,43 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
         return oF.apply(this, arguments);
     };
 
-    /** 3. УНИВЕРСАЛЬНЫЙ СТЕРИЛИЗАТОР (ОБХОД ANTI-AD) **/
+    /** 3. УНИВЕРСАЛЬНЫЙ СТЕРИЛИЗАТОР (Обход детекции) **/
     const sterilize = () => {
-        // Подмена флагов для всех систем детекции
+        // Подмена глобальных флагов
         window.canRunAds = true;
         window.isAdblockActive = false;
         
         const scan = (node) => {
-            // Ищем любые окна, которые перекрывают экран (z-index) или содержат слова-триггеры
+            // Удаляем блокирующие окна (z-index и текст)
             const trash = node.querySelectorAll?.('[id*="didomi"],[class*="didomi"],[class*="modal"],[class*="overlay"],[id*="blocker"],[class*="adb"]');
             trash?.forEach(t => {
                 const text = t.innerText || '';
+                // Проверка на французский (InfinityFree) и русский языки
                 if (text.includes('publicités') || text.includes('Adblock') || text.includes('блокировщик') || t.id.includes('didomi')) {
                     log('🧹 PURGED OBSTACLE', '#ffcc00');
                     t.remove();
-                    document.body.style.setProperty('overflow', 'auto', 'important');
+                    if (document.body) document.body.style.setProperty('overflow', 'auto', 'important');
                 }
             });
+            // Проверка Shadow DOM
+            node.querySelectorAll?.('*').forEach(n => n.shadowRoot && scan(n.shadowRoot));
         };
         scan(document);
     };
 
+    // Запуск через интервал для динамических окон
     setInterval(sterilize, 1000);
 
-    /** 4. ОЧИСТКА СЛЕДОВ (URL & Cookies) **/
+    /** 4. ОЧИСТКА URL **/
     (function clean() {
         const u = new URL(location);
         const trash = ['utm_','fbclid','gclid','_ga'];
         let changed = false;
         u.searchParams.forEach((v, k) => { if (trash.some(p => k.startsWith(p))) { u.searchParams.delete(k); changed = true; } });
         if (changed) window.history.replaceState({}, '', u);
-        
-        if (!TRUSTED) {
-            window.addEventListener('beforeunload', () => {
-                document.cookie.split(';').forEach(c => document.cookie = c.replace(/^ +/,'').replace(/=.*/,'=;expires='+new Date(0).toUTCString()+';path=/'));
-                localStorage.clear();
-            });
-        }
     })();
 
-    /** 5. ЗАЩИТА ОТ MALWARE (Универсальная) **/
+    /** 5. ЗАЩИТА ОТ MALWARE **/
     document.addEventListener('click', e => {
         const a = e.target.closest('a');
         if (a && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
