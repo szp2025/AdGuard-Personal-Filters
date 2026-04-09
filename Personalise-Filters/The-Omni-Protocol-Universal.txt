@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.53-APEX
+! Version: 11.1.54-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -218,18 +218,14 @@
 @@||*$scriptlet(prevent-addEventListener, deviceorientation),domain=~yandex.ru|~google.com|~youtube.com
 
 
-! ------------------------------------------------------------
-! [NUCLEAR WHITE-LIST FOR CAPTCHA & CORE]
-! ------------------------------------------------------------
-! Разрешаем сетевые запросы, но НЕ блокируем jsinject, 
-! иначе наш [HYBRID-SCRIPTLETS] не запустится.
-
+! --- [NUCLEAR WHITE-LIST: CORRECTED] ---
+! Оставляем jsinject только для капчи, где маскировка вредит.
 @@||challenges.cloudflare.com^$jsinject
 @@||ctturnstile.cloudflare.com^$jsinject
 @@||hcaptcha.com^$jsinject
 @@||recaptcha.net^$jsinject
 
-! Для этих сайтов убираем $jsinject, чтобы наш протокол мог работать
+! Для InfinityFree убираем $jsinject, чтобы скриптлет мог запуститься!
 @@||dash.infinityfree.com^
 @@||infinityfree.com^
 @@||3.html-load.com^
