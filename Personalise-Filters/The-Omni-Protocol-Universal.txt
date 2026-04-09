@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.58-APEX
+! Version: 11.1.59-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -216,19 +216,6 @@
 ! --- [OMNI-SMART-BYPASS-V15.0] Динамическая адаптация для PHP/Legacy-платформ ---
 @@||*$scriptlet(abort-current-inline-script, eval),domain=~yandex.ru|~google.com|~youtube.com
 @@||*$scriptlet(prevent-addEventListener, deviceorientation),domain=~yandex.ru|~google.com|~youtube.com
-
-
-! --- [NUCLEAR WHITE-LIST: CORRECTED] ---
-! Оставляем jsinject только для капчи, где маскировка вредит.
-@@||challenges.cloudflare.com^$jsinject
-@@||ctturnstile.cloudflare.com^$jsinject
-@@||hcaptcha.com^$jsinject
-@@||recaptcha.net^$jsinject
-
-! Для InfinityFree убираем $jsinject, чтобы скриптлет мог запуститься!
-@@||dash.infinityfree.com^
-@@||infinityfree.com^
-@@||3.html-load.com^
 
 
 ! ——————————————————————————————————————————————————————————————————————
@@ -1009,77 +996,73 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
 franceinfo.fr,didomi.io##html,body:style(overflow: auto !important; position: static !important; filter: none !important; pointer-events: auto !important;)
 franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(display: none !important; opacity: 0 !important; visibility: hidden !important; z-index: -9999 !important;)
 
-! --- [OMNI-PROTOCOL: GLOBAL CSS FIX] ---
-! Разблокировка прокрутки везде, где есть блокировщики (универсально)
-*##html,body:style(overflow: auto !important; position: static !important; filter: none !important; pointer-events: auto !important;)
+! ------------------------------------------------------------
+! [THE OMNI-PROTOCOL] - UNIVERSAL HYBRID ENGINE v12.2
+! ------------------------------------------------------------
+! Stages: Masking, Mimicry, Sterilizer, URL Clean, Malware Protect
+! ------------------------------------------------------------
 
-! --- [OMNI-PROTOCOL: UNIVERSAL ENGINE v12.1] ---
-*#%#//scriptlet("execute-script", ```
+! === 1. ГЛОБАЛЬНЫЙ CSS OVERRIDE ===
+*##html,body:style(overflow: auto !important; position: static !important; filter: none !important; pointer-events: auto !important;)
+*##div[class*="modal"], div[class*="overlay"], [id*="blocker"]:style(display: none !important; visibility: hidden !important; opacity: 0 !important;)
+
+! === 2. ЯДЕРНЫЙ БЕЛЫЙ СПИСОК (ИСКЛЮЧЕНИЯ ДЛЯ КАПЧИ) ===
+@@||challenges.cloudflare.com^$jsinject
+@@||ctturnstile.cloudflare.com^$jsinject
+@@||hcaptcha.com^$jsinject
+@@||recaptcha.net^$jsinject
+@@||dash.infinityfree.com^
+@@||infinityfree.com^
+
+! === 3. UNIVERSAL JS ENGINE (5-STAGE PROTECTION) ===
+#%#//scriptlet("execute-script", ```
 (function() {
     'use strict';
     const host = location.hostname;
-    const T = '%c OMNI-PROTOCOL ';
-    const S = 'background:#00ffff;color:#000;font-weight:bold;border-radius:4px;padding:2px 6px;';
-    const log = (m, c = '#00ffff') => console.info(T + `%c ${m}`, S, `color:${c};font-weight:bold;`);
+    const log = (m) => console.warn('🛡️ OMNI: ' + m);
 
     const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
 
-    console.group('%c 🛡️ NEBULA APEX v12.1 UNIVERSAL ', 'background:#000;color:#00ffff;font-weight:bold;padding:10px;border:2px solid #00ffff;border-radius:5px;');
-    log('🚀 ENGINE START: ' + host, '#fff');
+    if (TRUSTED) return;
 
-    const setProp = (o, p, v) => {
-        try { Object.defineProperty(o, p, { get: () => v, set: () => {}, configurable: true }); } catch(e){}
+    log('NEBULA APEX v12.2 (5-STAGES) INITIALIZED');
+
+    /** STAGE 1 & 2: GASLIGHTING & MOCKING **/
+    window.canRunAds = true;
+    window.isAdblockActive = false;
+    if (!window.adsbygoogle) window.adsbygoogle = Object.assign([], { loaded: true, push: function() {} });
+
+    try {
+        const nav = navigator;
+        Object.defineProperty(nav, 'webdriver', { get: () => false, configurable: true });
+        Object.defineProperty(nav, 'maxTouchPoints', { get: () => 5, configurable: true });
+    } catch(e) {}
+
+    /** STAGE 3: STERILIZER (DOM PURGE) **/
+    const sterilize = () => {
+        const trash = document.querySelectorAll('[id*="didomi"],[class*="didomi"],[class*="modal"],[class*="overlay"],[id*="blocker"],[class*="adb"]');
+        trash.forEach(t => {
+            if (t.innerText.match(/publicités|Adblock|блокировщик/i) || t.id.includes('didomi')) {
+                t.remove();
+                log('PURGED OBSTACLE');
+            }
+        });
+        if (document.body) document.body.style.setProperty('overflow', 'auto', 'important');
     };
 
-    /** 1. МАСКИРОВКА **/
-    if (!TRUSTED) {
-        log('👤 CLOAKING ENGAGED', '#00ff00');
-        const nav = navigator;
-        const mocks = { webdriver: false, maxTouchPoints: 5, sendBeacon: () => true };
-        Object.keys(mocks).forEach(k => setProp(nav, k, mocks[k]));
-        if (nav.languages) setProp(nav, 'languages', ['ru-RU', 'ru', 'en-US']);
-    }
-
-    /** 2. СЕТЕВАЯ МИМИКРИЯ (Gaslighting) **/
+    /** STAGE 4: FETCH MIMICRY & URL CLEAN **/
     const oF = window.fetch;
-    window.fetch = async function(u, o) {
-        const url = typeof u === 'string' ? u : u?.url;
-        if (!TRUSTED && url?.match(/analytics|metrics|track|pixel|telemetry|doubleclick|adscore|adv|ads|monetization|detector/i)) {
-            log('🎭 MIMICRY: Suppressed ' + url.split('?')[0], '#00ff00');
-            return new Response('{"status":"success","ads":true,"enabled":true}', { status: 200, headers: { 'Content-Type': 'application/json' } });
+    window.fetch = async function() {
+        const url = typeof arguments[0] === 'string' ? arguments[0] : arguments[0]?.url;
+        if (url && url.match(/analytics|metrics|track|pixel|telemetry|adscore|adv|ads|monetization/i)) {
+            log('🎭 MIMICRY ACTIVE: ' + url.split('?')[0]);
+            return new Response('{"status":"success"}', { status: 200 });
         }
         return oF.apply(this, arguments);
     };
 
-    /** 3. УНИВЕРСАЛЬНЫЙ СТЕРИЛИЗАТОР (Обход детекции) **/
-    const sterilize = () => {
-        // Подмена глобальных флагов
-        window.canRunAds = true;
-        window.isAdblockActive = false;
-        
-        const scan = (node) => {
-            // Удаляем блокирующие окна (z-index и текст)
-            const trash = node.querySelectorAll?.('[id*="didomi"],[class*="didomi"],[class*="modal"],[class*="overlay"],[id*="blocker"],[class*="adb"]');
-            trash?.forEach(t => {
-                const text = t.innerText || '';
-                // Проверка на французский (InfinityFree) и русский языки
-                if (text.includes('publicités') || text.includes('Adblock') || text.includes('блокировщик') || t.id.includes('didomi')) {
-                    log('🧹 PURGED OBSTACLE', '#ffcc00');
-                    t.remove();
-                    if (document.body) document.body.style.setProperty('overflow', 'auto', 'important');
-                }
-            });
-            // Проверка Shadow DOM
-            node.querySelectorAll?.('*').forEach(n => n.shadowRoot && scan(n.shadowRoot));
-        };
-        scan(document);
-    };
-
-    // Запуск через интервал для динамических окон
-    setInterval(sterilize, 1000);
-
-    /** 4. ОЧИСТКА URL **/
-    (function clean() {
+    // Очистка URL параметров
+    (function cleanURL() {
         const u = new URL(location);
         const trash = ['utm_','fbclid','gclid','_ga'];
         let changed = false;
@@ -1087,17 +1070,18 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
         if (changed) window.history.replaceState({}, '', u);
     })();
 
-    /** 5. ЗАЩИТА ОТ MALWARE **/
+    /** STAGE 5: MALWARE PROTECT (DOWNLOAD SHIELD) **/
     document.addEventListener('click', e => {
         const a = e.target.closest('a');
-        if (a && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
-            log('🚨 DOWNLOAD BLOCKED', '#ff0000');
-            e.preventDefault(); alert('🛡️ OMNI-X-GEN: Dangerous file execution blocked.');
+        if (a && a.href && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
+            log('🚨 BLOCKING POTENTIAL MALWARE: ' + a.href.split('/').pop());
+            e.preventDefault(); 
+            alert('🛡️ OMNI-X-GEN: Загрузка исполняемых файлов заблокирована для вашей безопасности.');
         }
     }, true);
 
-    log('✅ SYSTEM ONLINE', '#00ffff');
-    console.groupEnd();
+    setInterval(sterilize, 1200);
+    log('✅ 5-STAGE SYSTEM ONLINE');
 })();
 ```")
 
