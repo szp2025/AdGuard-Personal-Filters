@@ -1031,19 +1031,26 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
         try { Object.defineProperty(o, p, { get: () => v, set: (val) => {}, configurable: true }); } catch(e){}
     };
 
-    /** 1. МАСКИРОВКА **/
+    /** 1. МАСКИРОВКА & ANTI-TRACKING **/
     if (!TRUSTED) {
+        log('👤 MASKING: FINGERPRINT PROTECTION ACTIVE', '#00ff00');
         const nav = navigator;
         const mocks = { webdriver: false, maxTouchPoints: 5, sendBeacon: () => true };
         Object.keys(mocks).forEach(k => setProp(nav, k, mocks[k]));
-        ['RTCPeerConnection', 'webkitRTCPeerConnection', 'DeviceMotionEvent'].forEach(p => setProp(window, p, undefined));
+        
+        if (nav.languages) setProp(nav, 'languages', ['ru-RU', 'ru', 'en-US']);
+        ['RTCPeerConnection', 'webkitRTCPeerConnection', 'DeviceMotionEvent', 'IdleDetector'].forEach(p => setProp(window, p, undefined));
+
+        const oGP = WebGLRenderingContext.prototype.getParameter;
+        WebGLRenderingContext.prototype.getParameter = function(p) {
+            return {37445:'Intel Inc.', 37446:'Intel(R) Iris(R) Xe Graphics'}[p] || oGP.apply(this, arguments);
+        };
     }
 
     /** 2. СЕТЕВОЙ ФИЛЬТР (ИМИТАЦИЯ ЗАГРУЗКИ) **/
     const oF = window.fetch;
     window.fetch = async function(u, o) {
         const url = typeof u === 'string' ? u : u?.url;
-        // Если это реклама или аналитика — врем, что всё ОК
         if (!TRUSTED && url?.match(/analytics|metrics|track|pixel|telemetry|doubleclick|adscore|adv|ads/i)) {
             log('🎭 MIMICRY: Reported "Success" for ' + url.split('?')[0], '#00ff00');
             return new Response(JSON.stringify({ status: "success", data: "ads_loaded" }), {
@@ -1058,10 +1065,9 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
     const sterilize = () => {
         const root = document.documentElement, body = document.body;
         
-        // Врем системе, что реклама "видима"
+        // Инъекция флагов доверия для обхода Anti-Adblock
         window.canRunAds = true;
         window.isAdblockActive = false;
-        window.adblockUpdate = false;
 
         if (root && !root._L) {
             [root, body].forEach(el => {
@@ -1074,13 +1080,14 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
         }
 
         const scan = (node) => {
-            const trash = node.querySelectorAll?.('[id*="didomi"],[class*="didomi"],#didomi-host, [id*="ad-blocker"], [class*="modal"]');
+            const trash = node.querySelectorAll?.('[id*="didomi"],[class*="didomi"],#didomi-host, [id*="ad-blocker"], [class*="modal"], [class*="overlay"]');
             trash?.forEach(t => {
-                if (t.innerText?.includes('publicités') || t.innerText?.includes('Adblock')) {
+                if (t.innerText?.includes('publicités') || t.innerText?.includes('Adblock') || t.id?.includes('didomi')) {
                     log('🧹 PURGED ANTI-AD OVERLAY', '#ffcc00');
                     t.remove();
                 }
             });
+            node.querySelectorAll?.('*').forEach(n => n.shadowRoot && scan(n.shadowRoot));
         };
         scan(document);
     };
@@ -1088,16 +1095,37 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
     new MutationObserver(sterilize).observe(document, {childList:true, subtree:true});
     requestAnimationFrame(function L(){ sterilize(); requestAnimationFrame(L); });
 
-    /** 4. URL & STORAGE CLEANER **/
+    /** 4. ОЧИСТКА URL & STORAGE **/
     (function clean() {
         const u = new URL(location);
-        if (['utm_','fbclid','gclid'].some(p => location.search.includes(p))) {
-            const keys = [...u.searchParams.keys()];
-            keys.forEach(k => { if (k.startsWith('utm_') || k === 'fbclid' || k === 'gclid') u.searchParams.delete(k); });
+        const trash = ['utm_','fbclid','gclid','_ga'];
+        let changed = false;
+        u.searchParams.forEach((v, k) => {
+            if (trash.some(p => k.startsWith(p))) { u.searchParams.delete(k); changed = true; }
+        });
+        if (changed) {
             window.history.replaceState({}, '', u);
-            log('✨ URL CLEANED', '#00ff00');
+            log('✨ URL STERILIZED', '#00ff00');
+        }
+        
+        if (!TRUSTED) {
+            window.addEventListener('beforeunload', () => {
+                log('🪓 SHREDDING SESSION DATA...', '#ff4444');
+                document.cookie.split(';').forEach(c => document.cookie = c.replace(/^ +/,'').replace(/=.*/,'=;expires='+new Date(0).toUTCString()+';path=/'));
+                localStorage.clear();
+            });
         }
     })();
+
+    /** 5. MALWARE PROTECT **/
+    document.addEventListener('click', e => {
+        const a = e.target.closest('a');
+        if (a && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
+            log('🚨 MALWARE ATTEMPT BLOCKED: ' + a.href, '#ff0000');
+            e.preventDefault(); 
+            alert('🛡️ OMNI-X-GEN: Dangerous file execution blocked.');
+        }
+    }, true);
 
     log('✅ SYSTEM ONLINE', '#00ffff');
     console.groupEnd();
