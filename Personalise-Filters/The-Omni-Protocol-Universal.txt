@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.46-APEX
+! Version: 11.1.47-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -1016,7 +1016,7 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 ! ------------------------------------------------------------
 ! --- [INPUT-PROTECTION: STEALTH & SPEED] ---
 
-*#%#//scriptlet("execute-script", "(function(){
+*#%#//scriptlet("execute-script", ```(function(){
     const host = location.hostname, 
      const TAG = '%c OMNI-PROTOCOL ';
     const STYLE = 'background:#00ffff;color:#000;font-weight:bold;border-radius:3px;padding:0 5px;';
@@ -1116,7 +1116,7 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 
      log('✅ SYSTEM ONLINE');
     console.groupEnd();
-})();", "priority=high")
+})();```, "priority=high")
 
 
 ! =========================================================================
