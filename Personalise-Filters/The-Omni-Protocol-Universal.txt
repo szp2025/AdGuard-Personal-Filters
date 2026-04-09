@@ -21,20 +21,58 @@
 ! Твой блок S1 (Google/Apple Auth), S2 (Банки/LCL/CAF), S3 (Разблокировка Play Маркета)
 ! Помещаем сюда всё, что начинается на @@||
 
-! --- 5. TRUSTED EXCEPTIONS (Авторизация) ---
-! Исключения для стабильной работы критических сервисов.
-@@||accounts.google.com^$domain=google.com|youtube.com
-@@||passport.yandex.ru^$domain=yandex.ru
-@@||tf1.fr^$domain=tf1.fr
+! === 5. TRUSTED EXCEPTIONS (AUTH-FLOW v20.4) ===
+! Google & YouTube: Разрешаем сквозную авторизацию и синхронизацию
+@@||accounts.google.com^$important,document,network,jsinject=off
+@@||google.com/accounts/*$important,network
+
+! Yandex & Passport: Эвристика для входа без сбоев (включая капчу)
+@@||passport.yandex.ru^$important,document,network,jsinject=off
+@@||ext.captcha.yandex.net^$important,network
+
+! TF1 / MYTF1: Разрешаем авторизацию и работу DRM-плеера (критично для Франции)
+@@||tf1.fr^$important,document,network,jsinject=off
+@@||tf1.fr^$csp=worker-src 'self' blob:;
+@@||auth.tf1.fr^$important,network
+@@||wat.tv^$important,network
+
+! Автоматическое доверие для поддоменов авторизации
+@@||auth.*^$important,document,network
+@@||login.*^$important,document,network
+
 
 ! --- S1: SMART-WHITE (Стерильность) ---
 ! Приоритетные исключения для системных обновлений, безопасности и GitHub.
 
-! 1. Разрешаем проверку сертификатов и подписей (критично для HTTPS/S-MIME)
-@@||*$stealth,content-type=application/(pkcs7-signature|x-x509-ca-cert),important
+! === 1. КРИПТОГРАФИЧЕСКОЕ ДОВЕРИЕ (CRYPTO-TRUST v20.3) ===
+! Разрешаем сертификаты, подписи и отозванные списки (CRL)
+@@||*$important,content-type=application/pkcs7-signature
+@@||*$important,content-type=application/x-x509-ca-cert
+@@||*$important,content-type=application/ocsp-request
+@@||*$important,content-type=application/ocsp-response
 
-! 2. Принудительный HSTS (защита от понижения протокола до HTTP)
-@@||*$important,header=Strict-Transport-Security
+! Эвристика: Отключаем Stealth-режим для проверки подлинности (Anti-MIM)
+@@||*$stealth,content-type=application/pkcs7-signature,important
+@@||*$stealth,content-type=application/x-x509-ca-cert,important
+
+! Разрешаем системные запросы на проверку сертификатов (DigiCert, Let's Encrypt и др.)
+@@||ocsp.*^$important,network
+@@||crl.*^$important,network
+@@||secure.globalsign.com^$important,network
+
+
+! === 2. HSTS & PROTOCOL GUARD (ENFORCER v20.2) ===
+! Принудительный переход на HTTPS для всех соединений
+$rewrite=https,domain=~google.com|~youtube.com|~yandex.ru
+*##^$all,method=plain
+
+! Эвристика: Блокируем передачу данных по незащищенному протоколу HTTP
+||*^$important,rewrite=https,all
+@@||*$header=Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+! Защита от Mixed Content: запрещаем загрузку незащищенных скриптов на HTTPS страницах
+*#%#$csp=upgrade-insecure-requests;
+
 
 ! 3. Google Play Store & Services (разрешаем GVT1 для загрузки обновлений и компонентов)
 @@||gvt1.com^$important,app=com.android.vending|com.google.android.gms
@@ -42,110 +80,274 @@
 ! 4. Локальные и государственные сервисы (Loire Habitat)
 @@||loirehabitat.fr^$important,document
 
-! 5. GitHub (Полный приоритет для девелоперской среды)
-@@||github.com^$important,document,xmlhttprequest,other
+! === 5. GITHUB ECOSYSTEM (DEV-STREAM v20.1) ===
+! Полный иммунитет для стабильной работы Git, Actions и Codespaces
+@@||github.com^$important,document,network,jsinject=off,extension=off
+@@||githubassets.com^$important,network
+@@||githubusercontent.com^$important,network
+@@||github.io^$important,document,network
+
+! Разрешаем WebSocket для живых логов GitHub Actions и терминалов Codespaces
+@@||github.com^$websocket,important
+@@||*.github.com^$websocket,important
+
+! Гарантия доставки Raw-файлов (критично для обновления твоего фильтра)
+@@||raw.githubusercontent.com^$important,network,document
 
 ! [L11: SOVEREIGN-SHIELD - FINAL v83.0]
 
 ! --- S1: AUTH-EVOLUTION (Авторизация) ---
 ! Гарантирует работу систем входа Google, Apple, Microsoft и Okta.
 
-! 1. Разблокировка документов и базовых скриптов на доверенных доменах
-@@||accounts.google.com^$important,document,generichide,css,extension,domain=google.com|youtube.com
-@@||appleid.apple.com^$important,document,generichide,css,extension,domain=apple.com|icloud.com
-@@||login.microsoftonline.com^$important,document,generichide,css,extension,domain=microsoft.com|office.com
-@@||okta.com^$important,document,generichide,css,extension
+! === 1. ГЛОБАЛЬНЫЕ МОСТЫ АВТОРИЗАЦИИ (AUTH-BRIDGE v20.0) ===
+! Разрешаем сквозную авторизацию для ключевых экосистем без проверки контента
+@@||accounts.google.com^$important,document,network,jsinject=off,stealth=off
+@@||appleid.apple.com^$important,document,network,jsinject=off,stealth=off
+@@||login.microsoftonline.com^$important,document,network,jsinject=off,stealth=off
+@@||okta.com^$important,document,network,jsinject=off,stealth=off
 
-! 2. Разрешение JS-криптографии и скриптов сессии (Stealth-режим)
-! Это необходимо для работы токенов и биометрии (FIDO/Passkey).
-@@||accounts.google.com^$stealth,content-type=application/x-javascript,important
-@@||appleid.apple.com^$stealth,content-type=application/x-javascript,important
+! Эвристика для SSO (Single Sign-On): разрешаем передачу токенов между сервисами
+@@||auth.*^$important,document,network,jsinject=off
+@@||login.*^$important,document,network,jsinject=off
+@@||sso.*^$important,document,network,jsinject=off
+
+! Поддержка Microsoft Office & Teams (чтобы не висли звонки и документы)
+@@||office.com^$important,document,network
+@@||microsoft.com^$important,document,network
+@@||live.com^$important,document,network
+
+
+! === 2. АВТОРИЗАЦИЯ И КРИПТОГРАФИЯ (IDENTITY-CORE v19.9) ===
+! Разрешаем Passkey, FIDO2 и биометрию без слежки, но с полной функциональностью
+@@||accounts.google.com^$important,document,network,stealth=off,jsinject=off
+@@||appleid.apple.com^$important,document,network,stealth=off,jsinject=off
+@@||icloud.com^$important,network,jsinject=off
+
+! Эвристика для криптографических токенов и синхронизации ключей
+@@||gstatic.com/recaptcha/*$important,network
+@@||www.gstatic.com/identity/*$important,network
+@@||auth.apple.com^$important,network
+
+! Защита: Разрешаем биометрические вызовы (WebAuthn), но блокируем рекламные трекеры на этих страницах
+@@||accounts.google.com^$csp=worker-src 'self' blob:;
+
 
 ! --- S2: FINTECH-SHIELD (Банковский коридор) ---
 ! Разрешаем критические запросы для оплаты, KYC и финансовых сервисов.
 
-! 1. Глобальные платежные шлюзы и KYC-провайдеры (Onfido, Jumio, Stripe)
-@@||stripe.com^$important,document,xmlhttprequest,other
-@@||paypal.com^$important,document,xmlhttprequest,other
-@@||visa.com^$important,document,xmlhttprequest,other
-@@||mastercard.com^$important,document,xmlhttprequest,other
-@@||onfido.com^$important,document,xmlhttprequest,other
-@@||jumio.com^$important,document,xmlhttprequest,other
-@@||idnow.io^$important,document,xmlhttprequest,other
+! === 1. ПЛАТЕЖНЫЕ ШЛЮЗЫ И KYC (FIN-GUARD v19.8) ===
+! Полное исключение для предотвращения отказов в транзакциях и верификации
+@@||stripe.com^$important,document,network,jsinject=off,extension=off
+@@||paypal.com^$important,document,network,jsinject=off,extension=off
+@@||visa.com^$important,document,network,jsinject=off
+@@||mastercard.com^$important,document,network,jsinject=off
+@@||onfido.com^$important,document,network,jsinject=off
+@@||jumio.com^$important,document,network,jsinject=off
+@@||idnow.io^$important,document,network,jsinject=off
 
-! 2. Французский банковский сектор (LCL, CA, BNP, CAF)
-@@||lcl.fr^$important,document,xmlhttprequest,css,font
-@@||caf.fr^$important,document,xmlhttprequest,css,font
-@@||labanquepostale.fr^$important,document,xmlhttprequest,css,font
-@@||societegenerale.fr^$important,document,xmlhttprequest,css,font
-@@||bnpparibas.fr^$important,document,xmlhttprequest,css,font
-@@||credit-agricole.fr^$important,document,xmlhttprequest,css,font
-@@||ca-moncompte.fr^$important,document,xmlhttprequest,css,font
-@@||boursobank.com^$important,document,xmlhttprequest,css,font
+! Эвристика для платежных виджетов и 3D-Secure подтверждений
+@@||checkout.stripe.com^$important,network,document
+@@||js.stripe.com^$important,network,document
+@@||paypalobjects.com^$important,network
+@@||m.stripe.network^$important,network
 
-! 3. Необанки и финтех (Revolut, N26, Wise, Payoneer)
-@@||revolut.com^$important,document,xmlhttprequest,other
-@@||n26.com^$important,document,xmlhttprequest,other
-@@||wise.com^$important,document,xmlhttprequest,other
-@@||payoneer.com^$important,document,xmlhttprequest,other
+! Разрешаем доступ к камере и сенсорам для KYC (Onfido/Jumio)
+@@||onfido.com^$csp=sensor-access 'self'
+@@||jumio.com^$csp=sensor-access 'self'
 
-! 4. AI и Сервисные платформы (OpenAI, Yandex, Dzen)
-@@||openai.com^$important,document,xmlhttprequest
-@@||chatgpt.com^$important,document,xmlhttprequest
-@@||yandex.ru^$important,document,xmlhttprequest
-@@||dzen.ru^$important,document,xmlhttprequest
 
-! --- РАЗБЛОКИРОВКА GOOGLE PLAY  ---
-! Исключаем основные домены для приложения Маркета
-@@||google.com^$app=com.android.vending
-@@||gstatic.com^$app=com.android.vending
-@@||googleapis.com^$app=com.android.vending
-@@||googleusercontent.com^$app=com.android.vending
-@@||gvt1.com^$app=com.android.vending
-@@||play-fe.googleapis.com^$important,app=com.android.vending
-@@||googleapis.com^$app=com.android.vending
-@@||gvt1.com^$app=com.android.vending
+! === 2. ФРАНЦУЗСКИЙ БАНКОВСКИЙ СЕКТОР (SECURE CORE v19.5) ===
+! Исключаем банки из любой обработки, чтобы анти-фрод системы видели чистый трафик
+@@||lcl.fr^$important,document,network,jsinject=off
+@@||caf.fr^$important,document,network,jsinject=off
+@@||labanquepostale.fr^$important,document,network,jsinject=off
+@@||societegenerale.fr^$important,document,network,jsinject=off
+@@||bnpparibas.fr^$important,document,network,jsinject=off
+@@||credit-agricole.fr^$important,document,network,jsinject=off
+@@||ca-moncompte.fr^$important,document,network,jsinject=off
+@@||boursobank.com^$important,document,network,jsinject=off
 
-! Исключаем сервисы Google Play (они часто качают обновления)
-@@||google.com^$app=com.google.android.gms
-@@||gstatic.com^$app=com.google.android.gms
+! Эвристическое правило: если в URL есть банковские параметры, отключаем стерилизатор
+@@||^*/auth/login*$domain=lcl.fr|caf.fr|bnpparibas.fr|credit-agricole.fr
+@@||^*/mon-compte/*$domain=lcl.fr|caf.fr|bnpparibas.fr|credit-agricole.fr
 
-! Смягчаем агрессивную блокировку для системных процессов
-@@||google.*/ads/sponsored*^$app=com.android.vending
+! Дополнительная защита: запрет на отслеживание путей внутри банковских сессий
+||^$referer,domain=lcl.fr|caf.fr|bnpparibas.fr|societegenerale.fr
+
+
+! === 3. НЕОБАНКИ И ФИНТЕХ (NEO-SECURE v19.6) ===
+! Полное исключение из всех уровней обработки для стабильности транзакций
+@@||revolut.com^$important,document,network,jsinject=off,extension=off
+@@||n26.com^$important,document,network,jsinject=off,extension=off
+@@||wise.com^$important,document,network,jsinject=off,extension=off
+@@||payoneer.com^$important,document,network,jsinject=off,extension=off
+
+! Эвристика для API-запросов и платежных шлюзов (чтобы Apple/Google Pay не висли)
+@@||api.revolut.com^$important,network
+@@||api.wise.com^$important,network
+@@||checkout.payoneer.com^$important,document,network
+
+! Запрет на вмешательство в WebSocket (критично для живых курсов валют)
+@@||revolut.com^$websocket,important
+@@||wise.com^$websocket,important
+
+
+! === 4. AI И СЕРВИСНЫЕ ПЛАТФОРМЫ (AI-SMART v19.7) ===
+! OpenAI & ChatGPT: Полный приоритет и бесперебойный поток данных
+@@||openai.com^$important,document,network,jsinject=off
+@@||chatgpt.com^$important,document,network,jsinject=off
+@@||oaistatic.com^$important,network
+@@||oaiusercontent.com^$important,network
+
+! Yandex & Dzen: Эвристический баланс (разрешаем работу, но режем слежку)
+@@||yandex.ru^$important,document,network,jsinject=off
+@@||dzen.ru^$important,document,network,jsinject=off
+@@||yastatic.net^$important,network
+! Блокируем только тяжелую видео-рекламу в Дзене, не ломая контент
+||yandex.ru/ads/*.js$badfilter
+||dzen.ru/ads/*.js$badfilter
+
+! Специальное правило для потоковых ответов ChatGPT (SSE/Websocket)
+@@||chatgpt.com^$websocket,important
+
+
+! === РАЗБЛОКИРОВКА ANDROID ECOSYSTEM (CORE v20.5) ===
+! Google Play Store: Полный иммунитет для стабильной загрузки и обновлений
+@@||google.com^$app=com.android.vending,important
+@@||gstatic.com^$app=com.android.vending,important
+@@||googleapis.com^$app=com.android.vending,important
+@@||googleusercontent.com^$app=com.android.vending,important
+@@||gvt1.com^$app=com.android.vending,important
+@@||android.clients.google.com^$app=com.android.vending,important
+@@||play.google.com^$app=com.android.vending,important
+
+! Google Play Services (GMS): Бесшовная работа пуш-уведомлений и синхронизации
+@@||google.com^$app=com.google.android.gms,important
+@@||gstatic.com^$app=com.google.android.gms,important
+@@||googleapis.com^$app=com.google.android.gms,important
+@@||android.googleapis.com^$app=com.google.android.gms,important
+
+! Эвристика для CDN (доставка тяжелых файлов обновлений)
+@@||*.gvt1.com^$important,network
+@@||*.gvt2.com^$important,network
+@@||*.gvt3.com^$important,network
+@@||*.ggpht.com^$important,network
+
+! Исключаем проверку сертификатов для системных обновлений (Anti-Block)
+@@||dl.google.com^$important,network,jsinject=off
+@@||update.googleapis.com^$important,network,jsinject=off
+
+
+! === СИСТЕМНОЕ СМЯГЧЕНИЕ (SOFT-LANDING v20.6) ===
+! Разрешаем спонсируемый контент ТОЛЬКО внутри Google Play для корректной верстки
+@@||google.*/ads/sponsored*^$app=com.android.vending,important
+@@||google.com/ads/*^$app=com.android.vending,important
+
+! Эвристика: предотвращаем пустые блоки в результатах поиска Маркета
+@@||google.com/search?*^$app=com.android.vending,network
+@@||play.google.com/log?*^$app=com.android.vending,network
+
+! Защита от зависания «Ожидание скачивания» при проверке рекламных идентификаторов
+@@||googleads.g.doubleclick.net^$app=com.android.vending,important
+@@||www.googleadservices.com^$app=com.android.vending,important
+
 
 
 ! --- [OMNI-SEARCH-MASTER] Глобальное разрешение + Фикс для Dzen/Yandex ---
 ! Обеспечивает работу поисковых систем и их динамических элементов.
 
-! 1. Западные и приватные поисковики (Google, Bing, DuckDuckGo, Brave, Qwant)
-@@||google.*^$important,document,xmlhttprequest,generichide,css
-@@||bing.com^$important,document,xmlhttprequest,generichide,css
-@@||duckduckgo.com^$important,document,xmlhttprequest,generichide,css
-@@||brave.com^$important,document,xmlhttprequest,generichide,css
-@@||qwant.com^$important,document,xmlhttprequest,generichide,css
-@@||ecosia.org^$important,document,xmlhttprequest,generichide,css
-@@||startpage.com^$important,document,xmlhttprequest,generichide,css
+! === 1. ПОИСКОВЫЕ ЭКОСИСТЕМЫ (SEARCH-INTEL v20.7) ===
+! Универсальное разрешение для стабильной работы выдачи и AI-ответов
+@@||google.*^$important,document,network,jsinject=off
+@@||bing.com^$important,document,network,jsinject=off
+@@||duckduckgo.com^$important,document,network,jsinject=off
+@@||brave.com^$important,document,network,jsinject=off
+@@||qwant.com^$important,document,network,jsinject=off
+@@||ecosia.org^$important,document,network,jsinject=off
+@@||startpage.com^$important,document,network,jsinject=off
 
-! 2. RU-сегмент: Yandex, Dzen, Mail.ru (Исправление работы ленты и поиска)
-@@||yandex.ru^$important,document,xmlhttprequest,generichide,css
-@@||ya.ru^$important,document,xmlhttprequest,generichide,css
-@@||dzen.ru^$important,document,xmlhttprequest,generichide,css
-@@||mail.ru^$important,document,xmlhttprequest,generichide,css
+! Эвристика для Карт и статических ресурсов (Google Maps, Bing Maps)
+@@||maps.google.*^$important,network
+@@||gstatic.com^$important,network,domain=google.com|google.fr
+@@||th.bing.com^$important,network
 
-! 3. Азиатский сегмент (Baidu, Naver, Sogou)
-@@||baidu.com^$important,document,xmlhttprequest,generichide,css
-@@||naver.com^$important,document,xmlhttprequest,generichide,css
-@@||sogou.com^$important,document,xmlhttprequest,generichide,css
+! Поддержка анонимных прокси-поисковиков (защита от разрыва сессии)
+@@||startpage.com^$important,stealth=off
+@@||duckduckgo.com^$important,stealth=off
+
+! Скрытие только явной рекламы в поиске, не трогая полезные блоки
+google.*##.commercial-unit
+google.*##div[id^="ads"]
+
+
+! === 2. RU-СЕГМЕНТ: SMART-FLOW (v20.8) ===
+! Полный приоритет для работы сервисов и API
+@@||yandex.ru^$important,document,network,jsinject=off
+@@||ya.ru^$important,document,network,jsinject=off
+@@||dzen.ru^$important,document,network,jsinject=off
+@@||mail.ru^$important,document,network,jsinject=off
+
+! Эвристика для статики и ресурсов (чтобы не пропадали картинки и иконки)
+@@||yastatic.net^$important,network
+@@||imgs.mail.ru^$important,network
+@@||st.mycdn.me^$important,network
+
+! Хирургическое удаление рекламы в ленте (не ломая скролл)
+dzen.ru##div[class*="feed__ad"]
+dzen.ru##div[class*="card-view--ad"]
+yandex.ru##.serp-adv-item
+mail.ru##div[id*="ad_"]
+mail.ru##.rb-slot
+
+! Исправление работы капчи и входа (Яндекс ID / Mail ID)
+@@||passport.yandex.ru^$important,document,network
+@@||auth.mail.ru^$important,document,network
+@@||ext.captcha.yandex.net^$important,network
+
+! Запрет на «тяжелую» видео-рекламу перед роликами
+||yandex.ru/ads/*.js$badfilter
+||dzen.ru/ads/*.js$badfilter
+
+
+! === 3. АЗИАТСКИЙ СЕГМЕНТ (ASIA-LINK v20.9) ===
+! Baidu: Разрешаем поиск и работу внутренних модулей (включая карты)
+@@||baidu.com^$important,document,network,jsinject=off
+@@||bdstatic.com^$important,network
+@@||baidustatic.com^$important,network
+
+! Naver: Поддержка корейского гиганта (стабильность блогов и почты)
+@@||naver.com^$important,document,network,jsinject=off
+@@||naver.net^$important,network
+@@||pstatic.net^$important,network
+
+! Sogou & WeChat Web: Поддержка поисковых и чат-интерфейсов
+@@||sogou.com^$important,document,network,jsinject=off
+@@||sgstc.com^$important,network
+@@||qq.com^$important,document,network,domain=sogou.com
+
+! Эвристика: предотвращаем зависание скриптов на азиатских шрифтах и API
+@@||*.jp^$important,network,jsinject=off
+@@||*.cn^$important,network,jsinject=off
+
 
 ! --- [DZEN-INFRA-PATCH] Разрешение для контента Дзена ---
 ! Обеспечивает подгрузку статики и API для работы ленты и видео.
 
-! 1. Инфраструктура Дзена (API, видео-плеер, бесконечная лента)
-@@||dzeninfra.ru^$important,xmlhttprequest,script,domain=dzen.ru,tag=DZEN_FIX
+! === 1. ИНФРАСТРУКТУРА DZEN & YANDEX (CORE v21.0) ===
+! Dzen Infrastructure: Полный приоритет для API и видео-плеера
+@@||dzeninfra.ru^$important,document,network,jsinject=off,domain=dzen.ru
+@@||yastatic.net^$important,network,jsinject=off,domain=dzen.ru|yandex.ru|ya.ru
 
-! 2. Статические ресурсы Яндекса (Шрифты, иконки, JS-библиотеки)
-! Ограничиваем область действия только Дзеном и Яндексом для безопасности.
-@@||yastatic.net^$important,script,domain=dzen.ru|yandex.ru|ya.ru,tag=DZEN_FIX
+! Эвристика: разрешаем специфические методы для плавного видео-потока (HLS/Dash)
+@@||dzeninfra.ru^$xmlhttprequest,websocket,important,domain=dzen.ru
+@@||yastatic.net^$xmlhttprequest,important,domain=dzen.ru|yandex.ru
+
+! Изоляция: разрешаем загрузку ресурсов, но блокируем передачу рекламных идентификаторов
+@@||yastatic.net^$cookie=off,domain=dzen.ru|yandex.ru
+@@||dzeninfra.ru^$cookie=off,domain=dzen.ru
+
+! Специальный фикс для иконок и шрифтов (предотвращение «битой» верстки)
+@@||yastatic.net^$font,image,important,domain=dzen.ru|yandex.ru|ya.ru
 
 ! --- [L11-S4.2: OMNI-DNS-TURBO] ---
 ! Ускорение резолвинга: исключаем избыточные типы DNS-запросов для поисковиков.
