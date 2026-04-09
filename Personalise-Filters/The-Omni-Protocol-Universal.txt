@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.36-APEX
+! Version: 11.1.37-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:00:00Z
 ! Expires: 1 hour
@@ -1012,34 +1012,33 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 ! ------------------------------------------------------------
 ! [HYBRID-SCRIPTLETS] - JS Injection Engine
 ! ------------------------------------------------------------
-! --- [INPUT-PROTECTION: TELEPHONE] ---
+! --- [INPUT-PROTECTION: TELEPHONE & DEBUG] ---
 
 #%#//scriptlet("execute-script", "(function(){
     /** 1. ЯДРО И БЕЛЫЙ СПИСОК **/
     const host = location.hostname;
     const TAG = '%c[OMNI-LOG]';
-    const STYLE = 'color: #00ffff; font-weight: bold; background: #000;';
+    const STYLE = 'color: #00ffff; font-weight: bold; background: #000; padding: 2px 5px; border-radius: 3px;';
 
     const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|didomi|infinityfree|html-load)/.test(host);
     const noop = function(){};
-    const rand = (a, b) => a + Math.random() * (b - a);
-
+    
     console.log(TAG, STYLE, `🛸 Запуск на ${host}. Доверенная зона: ${TRUSTED}`);
+
     const safeDefine = (obj, prop, val) => { 
         try { Object.defineProperty(obj, prop, { get: () => val, set: noop, configurable: true, enumerable: true }); } catch (e) {} 
     };
 
     /** 2. СПЕЦ-ФИКСЫ (INFINITYFREE & DIDOMI FORCE) **/
     if (host.includes('infinityfree')) {
-        window.google_ad_status = 1;
         console.log(TAG, STYLE, '🛠️ Применение фикса InfinityFree');
-
+        window.google_ad_status = 1;
         safeDefine(window, 'canRunAds', true);
         safeDefine(window, 'isAdblockActive', false);
     }
 
     if (!window.Didomi && (!TRUSTED || host.includes('franceinfo'))) {
-        console.log(TAG, STYLE, '🚫 Нейтрализация Didomi / Consent Manager');
+        console.log(TAG, STYLE, '🚫 Нейтрализация Didomi Proxy');
         window.Didomi = new Proxy({}, {
             get: (target, prop) => {
                 if (prop === 'isReady') return () => true;
@@ -1050,15 +1049,7 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
         });
     }
 
-    /** 3. GHOST-MODE & DECEPTION (170/190/PC-FORCE) **/
-    const oOpen = window.open;
-    window.open = function(u, t, f) {
-        console.log(TAG, STYLE, '🔗 Перехват открытия окна:', u);
-        const w = oOpen.apply(this, [u, t, f]);
-        if (w) { try { safeDefine(w, 'opener', null); } catch(e) {} }
-        return w;
-    };
-
+    /** 3. GHOST-MODE & DECEPTION **/
     if (!TRUSTED) {
         console.log(TAG, STYLE, '🎭 Активация маскировки (Fingerprint Shield)');
         safeDefine(window, 'RTCPeerConnection', undefined);
@@ -1070,158 +1061,92 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
         safeDefine(navigator, 'maxTouchPoints', 5);
         if (navigator.languages) safeDefine(navigator, 'languages', ['ru-RU', 'ru', 'en-US', 'en']);
 
-        // Спуфинг GPU и Аудио
+        // Спуфинг GPU
         const gpuMocks = { 37445: 'Intel Inc.', 37446: 'Intel(R) Iris(R) Xe Graphics', 7936: 'WebKit', 7937: 'WebKit WebGL' };
         const oGetParam = WebGLRenderingContext.prototype.getParameter;
         WebGLRenderingContext.prototype.getParameter = function(p) { return gpuMocks[p] || oGetParam.apply(this, arguments); };
-
-        const oGetChannelData = AudioBuffer.prototype.getChannelData;
-        AudioBuffer.prototype.getChannelData = function() {
-            const data = oGetChannelData.apply(this, arguments);
-            for (let i = 0; i < 10; i++) data[i] += (Math.random() * 0.0000001);
-            return data;
-        };
-
-        ['browsingTopics', 'runAdAuction', 'userAgentData'].forEach(p => safeDefine(navigator, p, undefined));
-        ['DeviceMotionEvent', 'DeviceOrientationEvent', 'IdleDetector', 'sharedStorage'].forEach(d => safeDefine(window, d, undefined));
     }
 
-    /** 4. NET-SHIELD & SMS-PROTECT (Fetch/XHR Gaslighting) **/
-    const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|pixel|telemetry|doubleclick|didomi|coinhive|error-report\.com/i);
-    const isSensitive = u => u && typeof u === 'string' && u.match(/:5555|:5037|:3306|:5432|:8080|:8443|localhost|127\.0\.0\.1/);
-    const isSuspiciousQuery = (u) => { try { return /phone|tel|msisdn|id=[a-f0-9]{32}/i.test(new URL(u, location.origin).search); } catch(e){return false;} };
-
+    /** 4. NET-SHIELD (Fetch Gaslighting) **/
+    const isTr = u => u && typeof u === 'string' && u.match(/analytics|metrics|track|pixel|telemetry|doubleclick|didomi|coinhive/i);
     const oF = window.fetch;
     window.fetch = async function(u, o) {
         const url = typeof u === 'string' ? u : (u?.url || '');
-        if (TRUSTED || url.match(/cloudflare|challenges|turnstile|hcaptcha|recaptcha/i)) return oF.apply(this, arguments);
-        if (isTr(url) || isSensitive(url) || isSuspiciousQuery(url)) {
-
-            return new Response('{\"status\":\"success\",\"data\":[]}', { status: 200, headers: {'Content-Type': 'application/json'} });
+        if (!TRUSTED && isTr(url)) {
+            console.log(TAG, STYLE, '🛑 Запрос аналитики заблокирован:', url.split('?')[0]);
+            return new Response('{"status":"success","data":[]}', { status: 200, headers: {'Content-Type': 'application/json'} });
         }
-        console.log(TAG, STYLE, '🛑 Запрос аналитики заблокирован:', url);
         return oF.apply(this, arguments);
     };
 
-/** 5. ATOMIC STERILIZER (Property Freeze & Main World Proxy) **/
+    /** 5. ATOMIC STERILIZER **/
     const freezeInterface = () => {
         const reset = (el) => {
-            if (!el) return;
-            // Блокируем изменение overflow на уровне прототипа
-            if (!el._locked) {
-                try {
-                    Object.defineProperty(el.style, 'overflow', { value: 'auto', writable: false, configurable: false });
-                    Object.defineProperty(el.style, 'position', { value: 'static', writable: false, configurable: false });
-                    el._locked = true;
-                } catch(e) {}
-            }
-            el.style.setProperty('overflow', 'auto', 'important');
-            el.style.setProperty('position', 'static', 'important');
+            if (!el || el._locked) return;
+            try {
+                Object.defineProperty(el.style, 'overflow', { value: 'auto', writable: false, configurable: false });
+                Object.defineProperty(el.style, 'position', { value: 'static', writable: false, configurable: false });
+                el._locked = true;
+            } catch(e) {}
         };
-        console.log(TAG, STYLE, `🧹 Удалено элементов Didomi: ${elements.length}`);
+
         const purge = (root) => {
             if (!root) return;
-            // Ищем Didomi везде, включая Shadow DOM
-            root.querySelectorAll?.('[id*="didomi"], [class*="didomi"], #didomi-host').forEach(el => {
-                el.remove();
-            });
-            // Рекурсия по теням
+            const elements = root.querySelectorAll?.('[id*="didomi"], [class*="didomi"], #didomi-host');
+            if (elements && elements.length > 0) {
+                console.log(TAG, STYLE, `🧹 Удалено элементов Didomi: ${elements.length}`);
+                elements.forEach(el => el.remove());
+            }
             root.querySelectorAll?.('*').forEach(el => el.shadowRoot && purge(el.shadowRoot));
         };
 
         reset(document.body);
         reset(document.documentElement);
         purge(document);
-        
-        if (document.body) document.body.classList.remove('didomi-popup-open');
     };
 
-    // Запуск: MutationObserver для изменений + requestAnimationFrame для скорости
     const obs = new MutationObserver(freezeInterface);
     obs.observe(document.documentElement, { childList: true, subtree: true, attributes: true });
-    
-    // Имитация "ручного ввода" 60 раз в секунду
-    requestAnimationFrame(function loop() {
-        freezeInterface();
-        requestAnimationFrame(loop);
-    });
+    requestAnimationFrame(function loop() { freezeInterface(); requestAnimationFrame(loop); });
 
-    /** 6. X-GEN MALWARE SHIELD (Heuristic Scanner) **/
-    const illegalExt = /\.(apk|exe|dmg|iso|bat|cmd|msi|sh|js)$/i;
-    const dangerousPatterns = /eval\(|exec\(|system\(|powershell|base64_decode/i;
-
-    const oBlob = window.Blob;
-    window.Blob = function(content, options) {
-        const b = new oBlob(content, options);
-        if (options?.type) {
-            b.text().then(t => { if (dangerousPatterns.test(t)) console.warn('X-Gen: Blocked suspicious payload'); });
-        }
-        return b;
-    };
-
+    /** 6. MALWARE SHIELD **/
     document.addEventListener('click', (e) => {
         const a = e.target.closest('a');
-        if (a && (a.hasAttribute('download') || illegalExt.test(a.href))) {
-            console.log(TAG, STYLE, '🚨 Блокировка загрузки опасного файла:', a.href);
+        if (a && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
+            console.log(TAG, STYLE, '🚨 Блокировка загрузки файла:', a.href);
             e.preventDefault();
             alert('🛡️ OMNI-X-GEN: Загрузка заблокирована.');
         }
     }, true);
 
-    // Нейтрализация API
-    window.__tcfapi = (c, v, cb) => { if(cb) cb({eventStatus:'useractioncomplete', gdprApplies: false}, true); };
-    window.didomiConfig = { notice: { show: false } };
-
-
-    /** 7. STORAGE LOCK & SHREDDER **/
+    /** 7. STORAGE SHREDDER **/
     if (!TRUSTED) {
-        const lock = (obj) => {
+        window.addEventListener('beforeunload', () => {
+            console.log(TAG, STYLE, '🪓 Уничтожение данных сессии (Storage Shredder)');
             try {
-                const p = Object.getPrototypeOf(obj);
-                safeDefine(p, 'setItem', noop); safeDefine(p, 'getItem', () => null);
-            } catch(e){}
-        };
-        lock(window.localStorage); lock(window.sessionStorage);
+                document.cookie.split(';').forEach(c => {
+                    document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/');
+                });
+                localStorage.clear();
+            } catch(e) {}
+        });
     }
 
-    const purgeAll = (e) => {
-        if (TRUSTED) return;
-        console.log(TAG, STYLE, '🪓 Уничтожение сессионных данных (Storage Shredder)');
-        if (Date.now() - lastAction > 10000) { e.preventDefault(); e.returnValue = ''; }
-        try {
-            document.cookie.split(';').forEach(c => {
-                document.cookie = c.replace(/^ +/, '').replace(/=.*/, '=;expires=' + new Date(0).toUTCString() + ';path=/');
-            });
-            localStorage.clear();
-        } catch(e) {}
-    };
-    window.addEventListener('beforeunload', purgeAll);
-
-    /** 8. URL & CANVAS & L10N (Гео-маскировка) **/
+    /** 8. URL PURIFY **/
     (function urlPurify(){
         try {
             const u = new URL(window.location);
             const trash = ['fbclid', 'gclid', 'utm_source', 'utm_medium', '_ga'];
             let changed = false;
             trash.forEach(p => { if(u.searchParams.has(p)){ u.searchParams.delete(p); changed = true; } });
-            if (changed) window.history.replaceState({}, '', u);
-            console.log(TAG, STYLE, '✨ URL очищен от трекеров');
+            if (changed) {
+                window.history.replaceState({}, '', u);
+                console.log(TAG, STYLE, '✨ URL очищен от трекеров');
+            }
         } catch(e){}
     })();
 
-    const oGetImg = HTMLCanvasElement.prototype.getContext('2d').__proto__.getImageData;
-    HTMLCanvasElement.prototype.getContext('2d').__proto__.getImageData = function() {
-        const res = oGetImg.apply(this, arguments);
-        if (!TRUSTED) res.data[0] += (Math.random() > 0.5 ? 1 : -1);
-        return res;
-    };
-
-    const oRes = Intl.DateTimeFormat.prototype.resolvedOptions;
-    Intl.DateTimeFormat.prototype.resolvedOptions = function() {
-        return Object.assign(oRes.apply(this), { locale: 'ru-RU', timeZone: 'Europe/Moscow' });
-    };
-
-        console.log(TAG, STYLE, '✅ Система полностью развернута.');
+    console.log(TAG, STYLE, '✅ Система полностью развернута.');
 })();")
 
 
