@@ -420,27 +420,52 @@ mail.ru##.rb-slot
 @@||*$scriptlet(prevent-addEventListener, deviceorientation),domain=~yandex.ru|~google.com|~youtube.com
 
 
-! ——————————————————————————————————————————————————————————————————————
-! ATOMIC CAPTCHA BYPASS — ПОЛНОЕ ИСКЛЮЧЕНИЕ ИЗ СТЕКА
-! ——————————————————————————————————————————————————————————————————————
-@@||challenges.cloudflare.com^$important,document,subdocument,js,extension,stealth,content
-@@||cloudflare.com/cdn-cgi/challenge-platform/*$important,js,subdocument
-@@||hcaptcha.com^$important,document,subdocument,js,extension,stealth,content
-@@||google.com/recaptcha^$important,document,subdocument,js,extension,stealth,content
-@@||gstatic.com/recaptcha^$important,js,subdocument
+! === ATOMIC CAPTCHA BYPASS (BYPASS v21.1) ===
+! Cloudflare Turnstile: Полный иммунитет (защита от бесконечного цикла)
+@@||challenges.cloudflare.com^$important,document,network,jsinject=off,stealth=off
+@@||cloudflare.com/cdn-cgi/challenge-platform/*$important,network,jsinject=off
 
-! Запрещаем AdGuard даже касаться этих доменов (WhiteList на уровне драйвера)
-@@||challenges.cloudflare.com^
-@@||hcaptcha.com^
-@@||recaptcha.net^
+! hCaptcha & reCAPTCHA: Сквозной проход без проверки контента
+@@||hcaptcha.com^$important,document,network,jsinject=off,stealth=off
+@@||newassets.hcaptcha.com^$important,network
+@@||google.com/recaptcha/*$important,document,network,jsinject=off,stealth=off
+@@||gstatic.com/recaptcha/*$important,network
+@@||recaptcha.net^$important,document,network,jsinject=off
+
+! Эвристика: Разрешаем специфические iframe-запросы для рендеринга виджетов
+@@||challenges.cloudflare.com^$subdocument,important
+@@||hcaptcha.com^$subdocument,important
+@@||google.com/recaptcha^$subdocument,important
+
+! Гарантированный WhiteList на уровне сетевых запросов (Total Bypass)
+@@||challenges.cloudflare.com^$extension=off
+@@||hcaptcha.com^$extension=off
+@@||recaptcha.net^$extension=off
 
 
 
-! =========================================================================
-! [STAGE 2] BLOAT-REAPER: СИСТЕМНАЯ ЧИСТКА (BLOATWARE)
-! =========================================================================
-! Твой блок S3 (Samsung Cloud, IronSource, Рекламные движки)
-! Правила блокировки мусора через ||...^$important,reject
+! === [STAGE 2] BLOAT-REAPER (SYSTEM PURGE v21.2) ===
+! IronSource: Блокировка рекламных движков внутри системных утилит и игр
+||ironsrc.com^$important,reject
+||supersonicads.com^$important,reject
+||is.com^$important,reject
+
+! Samsung Bloatware: Отключаем фоновую аналитику и «рекламные предложения»
+||samsungcloud.com^$important,reject,app=~com.samsung.android.scloud
+||samsungads.com^$important,reject
+||samsungcloud.cn^$important,reject
+||samsung-com.112.2o7.net^$important,reject
+
+! Фоновые трекеры и сборщики метрик (аналитика производительности)
+||metrics.samsung.com^$important,reject
+||samsung-api.com^$important,reject
+||s.p-samsung.com^$important,reject
+
+! Эвристика: Блокируем рекламные SDK, которые «просыпаются» при выключенном экране
+||app-measurement.com^$important,reject
+||firebaseinstallations.googleapis.com^$important,reject
+||adjust.com^$important,reject
+||appsflyer.com^$important,reject
 
 
 ! ###########################################################
@@ -455,23 +480,87 @@ mail.ru##.rb-slot
 
 ! [OMNI-V5] MICROSOFT CORE STABILITY: OFFICE 365 & OUTLOOK
 ! ----------------------------------------------------------------
-! 1. Эвристика для облачных сервисов MS (Office, Outlook, Live, Auth)
-@@/^https?:\/\/([^\/]+\.)?(microsoft|office|office365|live|outlook|msauth|msftauth|microsoftonline)\.(com|net)(\/.*)?$/$important,document,jsinject,extension
+! === 1. MS-CLOUD INFRASTRUCTURE (v21.3) ===
+! Исключаем всю экосистему Microsoft из обработки для стабильности Office/Teams
+@@||microsoft.com^$important,document,network,jsinject=off,stealth=off
+@@||office.com^$important,document,network,jsinject=off,stealth=off
+@@||office365.com^$important,document,network,jsinject=off
+@@||live.com^$important,document,network,jsinject=off
+@@||outlook.com^$important,document,network,jsinject=off
+@@||microsoftonline.com^$important,document,network,jsinject=off
 
-! 2. Реактивный байпас для системных узлов (Graph, Autodiscover, CDN)
-@@/^https?:\/\/([^\/]+\.)*(graph\.microsoft\.com|autodiscover\.[a-z0-9-.]+|res\.cdn\.office\.net|static\.sharepointonline\.com)(\/.*)?$/$important,network
+! Эвристика для модулей авторизации и синхронизации (Auth & Tokens)
+@@||msauth.net^$important,network,jsinject=off
+@@||msftauth.net^$important,network,jsinject=off
+@@||msauthimages.net^$important,network
+@@||logincdn.msauth.net^$important,network
 
-! 3. Глобальный байпас Stealth для предотвращения циклов авторизации
-@@/^https?:\/\/([^\/]+\.)?(microsoftonline|msauth|msftauth)\.(com|net)(\/.*)?$/$stealth,important,document,xmlhttprequest,subdocument,script,other
+! Разрешаем WebSocket для мгновенных уведомлений Outlook и звонков Teams
+@@||outlook.office365.com^$websocket,important
+@@||teams.microsoft.com^$websocket,important
+
+! Поддержка статических ресурсов (CDN), чтобы интерфейс не «рассыпался»
+@@||res.office.microsoft.com^$important,network
+@@||static.ak.connect.facebook.net^$domain=microsoft.com,important,badfilter
 
 
-! [OMNI-HEURISTIC-WORK] Автоматическое определение тех-ресурсов
-! ----------------------------------------------------------------
-! 1. Эвристика по структуре (HTTP + IP/Тех-домены/Celeo)
-@@/^https?:\/\/(([0-9]{1,3}\.){3}[0-9]{1,3}|localhost|[^\/]+\.local|[^\/]+\.celeo\.net|[^\/]+hdx[^\/]+)(\/.*)?$/$stealth,important,document,xmlhttprequest
+! === 2. СИСТЕМНЫЕ УЗЛЫ MICROSOFT (REACTIVE v21.4) ===
+! Microsoft Graph API: Разрешаем синхронизацию данных (почта, календарь, файлы)
+@@||graph.microsoft.com^$important,network,jsinject=off
 
-! 2. Эвристика по путям (Админки), исключая глобальные сервисы
-@@/^https?:\/\/[^\/]+(\/myadmin\/|\/sql\/|\/config\/|\/setup\/)(\/.*)?$/$stealth,important,document,xmlhttprequest,domain=~google.com|~youtube.com|~facebook.com|~yandex.ru
+! Autodiscover: Критично для настройки и работы почтовых аккаунтов Outlook
+@@||autodiscover.*^$important,network,jsinject=off
+
+! Office CDN & SharePoint: Ускоряем загрузку ресурсов и документов
+@@||res.cdn.office.net^$important,network
+@@||static.sharepointonline.com^$important,network
+@@||sharepointonline.com^$important,document,network
+
+! Эвристика для корпоративных порталов (Office Home & MyApps)
+@@||portal.office.com^$important,document,network
+@@||myapps.microsoft.com^$important,document,network
+
+! Поддержка фоновой передачи данных (Background Sync)
+@@||*.manage.microsoft.com^$important,network
+
+
+! === 3. STEALTH-IMMUNITY (AUTH-FLOW v21.5) ===
+! Полное отключение Stealth для узлов авторизации (защита от циклов перезагрузки)
+@@||microsoftonline.com^$important,stealth=off,jsinject=off,network
+@@||msauth.net^$important,stealth=off,jsinject=off,network
+@@||msftauth.net^$important,stealth=off,jsinject=off,network
+@@||msauthimages.net^$important,stealth=off,network
+
+! Разрешаем передачу метаданных устройства для двухфакторной аутентификации (2FA)
+@@||login.microsoftonline.com^$important,document,subdocument,xmlhttprequest,stealth=off
+@@||logincdn.msauth.net^$important,subdocument,network
+
+! Эвристика для входа через сторонние приложения (Webview / MS Authenticator)
+@@||login.live.com^$important,stealth=off,jsinject=off
+
+
+
+! === [OMNI-HEURISTIC-WORK] TECH-BRIDGE v21.6 ===
+! 1. Эвристика по структуре: Локальные хосты, IP-адреса и Celeo/HDX
+@@||localhost^$important,stealth=off,network
+@@||*.local^$important,stealth=off,network
+@@||*.celeo.net^$important,stealth=off,network
+@@||*hdx*^$important,stealth=off,network,domain=~google.com|~youtube.com
+
+! Разрешаем прямой доступ по IP-адресам (админки роутеров, NAS, сервера)
+@@/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/$important,stealth=off,network
+
+! 2. Эвристика по путям: Инструменты управления (DB/Config/Setup)
+! Отключаем вмешательство для админок, исключая рекламные платформы
+@@/*/myadmin/*$important,stealth=off,network,domain=~google.com|~facebook.com
+@@/*/sql/*$important,stealth=off,network,domain=~google.com|~yandex.ru
+@@/*/config/*$important,stealth=off,network,domain=~doubleclick.net
+@@/*/setup/*$important,stealth=off,network,domain=~google.com
+
+! Эвристика для Docker/Kubernetes и Dev-окружений
+@@||*.internal^$important,stealth=off
+@@||*.test^$important,stealth=off
+@@||*.example^$important,stealth=off
 
 
 ! [OMNI-V4] REAKTIV PROTECTION: CRYPTO, PHISHING & SESSION-HIJACK
