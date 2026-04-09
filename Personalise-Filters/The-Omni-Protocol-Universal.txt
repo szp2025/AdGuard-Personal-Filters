@@ -1015,7 +1015,6 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 ! [HYBRID-SCRIPTLETS] - JS Injection Engine
 ! ------------------------------------------------------------
 ! --- [INPUT-PROTECTION: STEALTH & SPEED] ---
-google.com#%#//scriptlet("execute-script", "alert('OMNI-TEST-OK')")
 
 #%#//scriptlet("execute-script", "(function(){
     const host = location.hostname, 
