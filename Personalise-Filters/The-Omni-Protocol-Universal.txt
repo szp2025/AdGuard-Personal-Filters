@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.66-APEX
+! Version: 11.1.67-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -367,17 +367,12 @@ $removeparam=/^(utm_[a-z]+|fbclid|gclid|yclid|_openstat|msclkid|igshid|mc_eid|rb
 ||/^https?:\/\/([^\/]+\.)?(dns\.google|dns\.cloudflare\.com|doh\.opendns\.com|dns\.quad9\.net|dns\.adguard-dns\.com|doh\.cleanbrowsing\.org|1\.1\.1\.1|8\.8\.8\.8|9\.9\.9\.9)(\/dns-query|\/v1\?dns=)?.*$/$important,third-party,tag=DNS_FORCE_FALLBACK,xmlhttprequest,other,reject
 
 
-
-
-
 ! [L3: PRIVACY-SHIELD — V120.0 — THE INVISIBLE]
 ! Объединенный слой: Media-Spy Protection (L4) + DNS-Cloak Ghost (L6).
 
 ! --- 1. MEDIA-SPY-SILENCE (Защита от прослушки и захвата) ---
 ! Блокируем сторонние медиа-запросы везде, кроме доверенных видео-сервисов.
 ||*$media,third-party,important,reject,xmlhttprequest,other,domain=~youtube.com|~netflix.com|~zoom.us|~teams.microsoft.com|~google.com|~apple.com|~spotify.com|~twitch.tv,tag=MEDIA_SPY_SILENCE
-
-
 
 ! --- 3. DNS-CLOAK-GHOST (Защита от утечек WebRTC и DNS-IP) ---
 ! Предотвращает определение реального IP и системного DNS через WebRTC-пиры.
@@ -987,75 +982,26 @@ franceinfo.fr,didomi.io##html,body:style(overflow: auto !important; position: st
 franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(display: none !important; opacity: 0 !important; visibility: hidden !important; z-index: -9999 !important;)
 
 ! ------------------------------------------------------------
-! [THE OMNI-PROTOCOL] - UNIVERSAL HYBRID ENGINE v12.9
+! [THE OMNI-PROTOCOL] - UNIVERSAL HYBRID v18.0
 ! ------------------------------------------------------------
 
-! === 1. ГЛОБАЛЬНЫЙ CSS ===
-*##html,body:style(overflow: auto !important; position: static !important; filter: none !important; pointer-events: auto !important;)
+! === 1. ГЛОБАЛЬНЫЙ CSS (БАЗА) ===
+*##html,body:style(overflow: auto !important; position: static !important; pointer-events: auto !important;)
 *##div[class*="modal"], div[class*="overlay"], [id*="blocker"]:style(display: none !important; visibility: hidden !important; opacity: 0 !important;)
 
-! === 2. CSP ЗАЩИТА (СЕТЕВАЯ И АППАРАТНАЯ) ===
+! === 2. CSP & MALWARE BYTES REPLACE ===
 ||generic-sensor.googleapis.com^$csp=sensor-access 'none'
-*#%#$csp=font-src 'self' data: fonts.gstatic.com;
-*#%#$csp=script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.google.com https://*.gstatic.com https://*.cloudflare.com https://*.hcaptcha.com;
-*#%#$csp=connect-src 'self' *.google.com *.google-analytics.com *.cloudflare.com; domain=~google.com|~youtube.com
+*#%#$csp=font-src 'self' data: fonts.gstatic.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.google.com https://*.gstatic.com https://*.cloudflare.com https://*.hcaptcha.com;
 
-! === 3. ЯДЕРНЫЙ БЕЛЫЙ СПИСОК ===
+! === 3. ЯДЕРНЫЙ БЕЛЫЙ СПИСОК (WHITELIST) ===
 @@||challenges.cloudflare.com^$jsinject
-@@||ctturnstile.cloudflare.com^$jsinject
 @@||hcaptcha.com^$jsinject
-@@||recaptcha.net^$jsinject
-@@||dash.infinityfree.com^
 @@||infinityfree.com^
+@@||recaptcha.net^$jsinject
 
-! === 4. UNIVERSAL JS ENGINE (5-STAGE) ===
-! ДОБАВЛЕНА ЗВЕЗДОЧКА В НАЧАЛО ДЛЯ ГЛОБАЛЬНОГО ЗАПУСКА
-! Используем метод //script для обхода ограничений парсера
-#%#//script(```(function() {
-    'use strict';
-    
-    // Прямой вывод в консоль для мгновенной проверки
-    const log = (m, c = '#00ffff') => console.warn('%c🛡️ OMNI:%c ' + m, 'color:#00ffff;font-weight:bold;', 'color:' + c + ';');
-    log('SYSTEM V13.5 INITIATED', '#ffffff');
+! === 4. UNIVERSAL JS ENGINE (SINGLE-LINE STABLE) ===
+#%#//scriptlet("execute-script", "const log=(m,c='#00ffff')=>console.warn('%c🛡️ OMNI:%c '+m,'color:#00ffff;font-weight:bold;','color:'+c+';'); const host=window.location.hostname; const TRUSTED=/(google|gstatic|youtube|bank|openai|chatgpt|cloudflare|hcaptcha|microsoft|apple|github|yandex|vk|mail\\.ru|tinkoff|sberbank|vtb|paypal|binance|infinityfree)/.test(host); if(!TRUSTED){ log('SYSTEM v18.0 ACTIVE'); window.canRunAds=true; window.isAdblockActive=false; setInterval(()=>{document.querySelectorAll('[id*=\"didomi\"],[class*=\"didomi\"],[id*=\"blocker\"],[class*=\"modal\"]').forEach(t=>{if(t.innerText.match(/Adblock|блокировщик|consent/i)||t.id.includes('didomi')){log('🧹 STERILIZED','#ffcc00'); t.remove();}}); if(document.body)document.body.style.setProperty('overflow','auto','important');},1500); document.addEventListener('click',e=>{const a=e.target.closest('a');if(a&&a.href&&/\\.(apk|exe|bat|sh|msi)$/i.test(a.href)){log('🚨 BLOCKED MALWARE','#ff0000'); e.preventDefault(); alert('🛡️ OMNI-X: Загрузка заблокирована.');}},true); }else{ log('STANDBY (TRUSTED)'); }")
 
-    const host = window.location.hostname;
-    const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|binance|kraken|coinbase|franceinfo|didomi|infinityfree)/.test(host);
-
-    if (TRUSTED) {
-        log('STANDBY MODE (TRUSTED HOST)');
-        return;
-    }
-
-    // STAGES 1 & 2: GASLIGHTING & MOCKING
-    window.canRunAds = true;
-    window.isAdblockActive = false;
-    if (!window.adsbygoogle) window.adsbygoogle = Object.assign([], { loaded: true, push: function() {} });
-
-    // STAGE 3: STERILIZER (DOM PURGE)
-    const sterilize = () => {
-        const trash = document.querySelectorAll('[id*="didomi"],[class*="didomi"],[class*="modal"],[class*="overlay"],[id*="blocker"],[class*="adb"]');
-        trash.forEach(t => {
-            if (t.innerText.match(/publicités|Adblock|блокировщик|consent/i) || t.id.includes('didomi')) {
-                log('🧹 STERILIZED: ' + (t.className || t.id), '#ffcc00');
-                t.remove();
-            }
-        });
-        if (document.body) document.body.style.setProperty('overflow', 'auto', 'important');
-    };
-
-    // STAGE 5: MALWARE PROTECT (DOWNLOAD SHIELD)
-    document.addEventListener('click', e => {
-        const a = e.target.closest('a');
-        if (a && a.href && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
-            log('🚨 BLOCKED DANGEROUS FILE: ' + a.href.split('/').pop(), '#ff0000');
-            e.preventDefault(); 
-            alert('🛡️ OMNI-X-GEN: Загрузка заблокирована.');
-        }
-    }, true);
-
-    setInterval(sterilize, 1000);
-    log('✅ FULL 5-STAGE PROTECTION ACTIVE ON ' + host);
-})();```)
 
 ! =========================================================================
 ! [STAGE 4] COSMETIC & DOMAIN SPECIFIC
