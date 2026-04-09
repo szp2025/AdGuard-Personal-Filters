@@ -982,33 +982,37 @@ franceinfo.fr,didomi.io##html,body:style(overflow: auto !important; position: st
 franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(display: none !important; opacity: 0 !important; visibility: hidden !important; z-index: -9999 !important;)
 
 ! ------------------------------------------------------------
-! [THE OMNI-PROTOCOL] - UNIVERSAL HYBRID v19.1 (VISUAL PURGE)
+! [THE OMNI-PROTOCOL] - UNIVERSAL HYBRID v19.2 (SLAYER)
 ! ------------------------------------------------------------
 
-! === 1. ГЛОБАЛЬНЫЙ CSS & INFINITYFREE FIX ===
-*##html,body:style(overflow: auto !important; position: static !important;)
-*##div[class*="modal"], [id*="blocker"], [class*="didomi"]:style(display: none !important; visibility: hidden !important;)
-! Убиваем баннер внизу (как на скриншоте 1000052102.jpg)
-infinityfree.com##div[style*="position: fixed"][style*="bottom: 0"]
-infinityfree.com##div[class*="ads"], div[id*="ads"]
-dash.infinityfree.com##.footer-ads, #footer-ads
+! === 1. ТАРГЕТИРОВАННАЯ ЗАЧИСТКА (INFINITYFREE & STICKY ADS) ===
+! Убиваем конкретные скрипты и контейнеры для InfinityFree
+||rf.gd^$subdocument
+||infinityfree.com^$subdocument
+infinityfree.com##div[style*="position: fixed"]
+infinityfree.com##div[style*="z-index: 2147483647"]
+infinityfree.com##.footer, #footer, div[class*="ads"]
+! Форсированное скрытие любого блока внизу экрана
+*##div[style*="bottom: 0"][style*="position: fixed"]:not(nav):not(header)
+*##div[style*="bottom:0"][style*="position:fixed"]:not(nav):not(header)
 
-! === 2. ANTI-TRACKING & URL CLEAN ===
+! === 2. CSP & АНТИ-ТРЕКИНГ ===
 ||generic-sensor.googleapis.com^$csp=sensor-access 'none'
 *#%#//scriptlet("remove-attr", "a[href*='utm_'], a[href*='fbclid']", "href")
 *#%#$csp=script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.google.com https://*.gstatic.com https://*.cloudflare.com https://*.hcaptcha.com;
 
-! === 3. JS ENGINE (STAGE 1-5 + PROACTIVE SHIELD) ===
-#%#//scriptlet("execute-script", "const log=(m,c='#00ffff')=>console.warn('%c🛡️ OMNI:%c '+m,'color:#00ffff;font-weight:bold;','color:'+c+';'); const host=window.location.hostname; const TRUSTED=/(google|gstatic|youtube|bank|openai|cloudflare|hcaptcha|microsoft|apple|github|tinkoff|sberbank|vtb|paypal|mwbsys|malwarebytes)/.test(host); if(!TRUSTED){ log('SYSTEM v19.1 ACTIVE'); window.canRunAds=true; window.isAdblockActive=false; /* STERILIZER */ setInterval(()=>{document.querySelectorAll('[id*=\"didomi\"],[id*=\"blocker\"],[style*=\"bottom: 0\"]').forEach(t=>{if(t.innerText.match(/Adblock|consent|publicités/i)||t.id.includes('didomi')||(t.offsetHeight < 100 && t.style.position === 'fixed')){t.remove();}});},1500); /* DOWNLOAD PROTECT */ document.addEventListener('click',e=>{const a=e.target.closest('a');if(a&&/\\.(apk|exe|bat|sh)$/i.test(a.href)){e.preventDefault();alert('🛡️ OMNI: Blocked.');}},true); }")
+! === 3. JS ENGINE (STAGE 1-5 + TOTAL PURGE) ===
+#%#//scriptlet("execute-script", "const log=(m,c='#00ffff')=>console.warn('%c🛡️ OMNI:%c '+m,'color:#00ffff;font-weight:bold;','color:'+c+';'); const host=window.location.hostname; if(!/(google|youtube|bank|openai|cloudflare|hcaptcha|microsoft|apple|github|tinkoff|sberbank|paypal|mwbsys)/.test(host)){ log('SYSTEM v19.2 ACTIVE'); window.canRunAds=true; window.isAdblockActive=false; /* ГЛУБОКАЯ ЗАЧИСТКА */ setInterval(()=>{document.querySelectorAll('div[style*=\"fixed\"], div[style*=\"absolute\"]').forEach(t=>{if(t.innerText.match(/Adblock|consent|publicités|advertisement/i)||t.id.includes('didomi')||(t.style.bottom === '0px' && t.offsetHeight < 120)){t.remove();}});},1000); /* BLOCK DOWNLOADS */ document.addEventListener('click',e=>{const a=e.target.closest('a');if(a&&/\\.(apk|exe|bat|sh)$/i.test(a.href)){e.preventDefault();alert('🛡️ OMNI: Blocked.');}},true); }")
 
-! === 4. ДИПЛОМАТИЧЕСКИЙ ПРОТОКОЛ ===
+! === 4. ДИПЛОМАТИЧЕСКИЙ ПРОТОКОЛ (MBAM) ===
 @@||mwbsys.com^$important
 @@||malwarebytes.com^$important
 
-! === 5. WHITELIST ===
+! === 5. WHITELIST (ДЛЯ РАБОТЫ DASHBOARD) ===
 @@||challenges.cloudflare.com^$jsinject
 @@||hcaptcha.com^$jsinject
-@@||infinityfree.com^
+@@||infinityfree.com^$jsinject
+
 
 
 ! =========================================================================
