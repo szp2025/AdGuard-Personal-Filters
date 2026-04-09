@@ -1016,11 +1016,6 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
 ! ------------------------------------------------------------
 ! --- [INPUT-PROTECTION: STEALTH & SPEED] ---
 
-! ------------------------------------------------------------
-! [HYBRID-SCRIPTLETS] - JS Injection Engine
-! ------------------------------------------------------------
-! --- [INPUT-PROTECTION: STEALTH & SPEED] ---
-
 *#%#//scriptlet("execute-script", ```
 (function() {
     const host = location.hostname;
@@ -1030,13 +1025,14 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
     const S = 'background:#00ffff;color:#000;font-weight:bold;border-radius:4px;padding:2px 6px;';
     const log = (m, c = '#00ffff') => console.log(T + `%c ${m}`, S, `color:${c};font-weight:bold;`);
 
-    // Начало лога в стиле Nebula Apex
     console.group('%c 🛡️ NEBULA APEX v11.1 ACTIVE ', 'background:#000;color:#00ffff;font-weight:bold;padding:10px;border:2px solid #00ffff;border-radius:5px;');
-    log('🚀 SHIELD INITIALIZED: ' + host, '#fff');
-    log('📊 STRATEGY: BANKING GAMBIT (S1-S5)', '#ffcc00');
+    
+    // Твой обновленный список TRUSTED
+    const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
+    const noop = () => {};
 
-  const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
-  const noop = () => {};
+    log('🚀 SHIELD INITIALIZED: ' + host, '#fff');
+    log('🔐 TRUSTED STATUS: ' + (TRUSTED ? 'CORE DOMAIN (BYPASS ACTIVE)' : 'EXTERNAL (FULL PROTECTION)'), TRUSTED ? '#00ff00' : '#ffcc00');
 
     const setProp = (o, p, v) => {
         try { Object.defineProperty(o, p, { get: () => v, set: noop, configurable: true }); } catch(e){}
@@ -1069,11 +1065,9 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
         return oF.apply(this, arguments);
     };
 
-   /** 3. СТЕРИЛИЗАТОР (ANTI-ADBLOCK & OVERFLOW FIX) **/
+    /** 3. СТЕРИЛИЗАТОР (ANTI-ADBLOCK & OVERFLOW FIX) **/
     const sterilize = () => {
         const root = document.documentElement, body = document.body;
-        
-        // Снимаем блокировку прокрутки, которую мы видим на скриншоте dash.infinityfree.com
         if (root && !root._L) {
             [root, body].forEach(el => {
                 if (el) {
@@ -1083,15 +1077,12 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
             });
             root._L = true;
         }
-
         const scan = (node) => {
-            // Удаляем не только Didomi, но и блокирующие оверлеи infinityfree
             const trash = node.querySelectorAll?.('[id*="didomi"],[class*="didomi"],#didomi-host, [class*="modal"], [class*="overlay"]');
             if (trash?.length) {
-                log(`🧹 PURGED: ${trash.length} OBSTACLES`, '#ffcc00');
                 trash.forEach(t => {
-                    // Если элемент содержит текст про рекламу (как на скриншоте), удаляем его
-                    if (t.innerText?.includes('autoriser les publicités')) {
+                    if (t.innerText?.includes('publicités') || t.id?.includes('didomi')) {
+                        log('🧹 PURGED OBSTACLE', '#ffcc00');
                         t.remove();
                     }
                 });
@@ -1101,17 +1092,20 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
         scan(document);
     };
 
+    new MutationObserver(sterilize).observe(document, {childList:true, subtree:true});
+    requestAnimationFrame(function L(){ sterilize(); requestAnimationFrame(L); });
+
     /** 4. ОЧИСТКА URL & STORAGE **/
     (function clean() {
         const u = new URL(location);
-        const trash = ['utm_','fbclid','gclid','_ga'];
+        const trash = ['utm_','fbclid','gclid','_ga','yclid'];
         let changed = false;
         u.searchParams.forEach((v, k) => {
             if (trash.some(p => k.startsWith(p))) { u.searchParams.delete(k); changed = true; }
         });
         if (changed) {
             window.history.replaceState({}, '', u);
-            log('✨ URL STERILIZED: IDS REMOVED', '#00ff00');
+            log('✨ URL STERILIZED', '#00ff00');
         }
         
         if (!TRUSTED) {
@@ -1127,7 +1121,7 @@ franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(d
     document.addEventListener('click', e => {
         const a = e.target.closest('a');
         if (a && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
-            log('🚨 MALWARE ATTEMPT BLOCKED: ' + a.href, '#ff0000');
+            log('🚨 MALWARE ATTEMPT BLOCKED', '#ff0000');
             e.preventDefault(); 
             alert('🛡️ OMNI-X-GEN: Blocked.');
         }
