@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.54-APEX
+! Version: 11.1.55-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-03-27T16:30:00Z
 ! Expires: 1 hour
@@ -227,7 +227,7 @@
 
 ! Для InfinityFree убираем $jsinject, чтобы скриптлет мог запуститься!
 @@||dash.infinityfree.com^
-@@||infinityfree.com^
+ @@||infinityfree.com^
 @@||3.html-load.com^
 
 
@@ -1009,120 +1009,93 @@ $csp=connect-src 'self' *.google.com *.google-analytics.com; domain=~google.com|
 franceinfo.fr,didomi.io##html,body:style(overflow: auto !important; position: static !important; filter: none !important; pointer-events: auto !important;)
 franceinfo.fr,didomi.io##[id*="didomi"], [class*="didomi"], #didomi-host:style(display: none !important; opacity: 0 !important; visibility: hidden !important; z-index: -9999 !important;)
 
+! --- [OMNI-PROTOCOL: GLOBAL CSS FIX] ---
+! Разблокировка прокрутки везде, где есть блокировщики (универсально)
+*##html,body:style(overflow: auto !important; position: static !important; filter: none !important; pointer-events: auto !important;)
 
-! ------------------------------------------------------------
-! [HYBRID-SCRIPTLETS] - JS Injection Engine (Evolution)
-! ------------------------------------------------------------
-! --- [INPUT-PROTECTION: STEALTH & SPEED] ---
-
+! --- [OMNI-PROTOCOL: UNIVERSAL ENGINE v12.0] ---
 *#%#//scriptlet("execute-script", ```
 (function() {
+    'use strict';
     const host = location.hostname;
     const T = '%c OMNI-PROTOCOL ';
     const S = 'background:#00ffff;color:#000;font-weight:bold;border-radius:4px;padding:2px 6px;';
-    const log = (m, c = '#00ffff') => console.log(T + `%c ${m}`, S, `color:${c};font-weight:bold;`);
+    const log = (m, c = '#00ffff') => console.info(T + `%c ${m}`, S, `color:${c};font-weight:bold;`);
 
-    console.group('%c 🛡️ NEBULA APEX v11.2 ACTIVE ', 'background:#000;color:#00ffff;font-weight:bold;padding:10px;border:2px solid #00ffff;border-radius:5px;');
-    
+    // Список исключений, где маскировка НЕ НУЖНА (банки, капчи, важные сервисы)
     const TRUSTED = /(google|gstatic|android|play\.google|youtube|bank|openai|chatgpt|cloudflare|turnstile|hcaptcha|recaptcha|challenges|live|microsoft|outlook|apple|icloud|github|gitlab|bitbucket|yandex|vk|mail\.ru|gosuslugi|tinkoff|sberbank|vtb|alfabank|paypal|stripe|visa|mastercard|amex|interac|binance|kraken|coinbase|franceinfo|didomi|infinityfree|html-load)/.test(host);
-    
-    log('🚀 SHIELD INITIALIZED: ' + host, '#fff');
-    log('🎭 MODE: DEEP MIMICRY (AD-OBFUSCATION)');
+
+    console.group('%c 🛡️ NEBULA APEX v12.0 UNIVERSAL ', 'background:#000;color:#00ffff;font-weight:bold;padding:10px;border:2px solid #00ffff;border-radius:5px;');
+    log('🚀 ENGINE START: ' + host, '#fff');
 
     const setProp = (o, p, v) => {
-        try { Object.defineProperty(o, p, { get: () => v, set: (val) => {}, configurable: true }); } catch(e){}
+        try { Object.defineProperty(o, p, { get: () => v, set: () => {}, configurable: true }); } catch(e){}
     };
 
-    /** 1. МАСКИРОВКА **/
+    /** 1. МАСКИРОВКА (Только для не доверенных сайтов) **/
     if (!TRUSTED) {
-        log('👤 MASKING: FINGERPRINT PROTECTION ACTIVE', '#00ff00');
+        log('👤 CLOAKING ENGAGED', '#00ff00');
         const nav = navigator;
         const mocks = { webdriver: false, maxTouchPoints: 5, sendBeacon: () => true };
         Object.keys(mocks).forEach(k => setProp(nav, k, mocks[k]));
-        if (nav.languages) setProp(nav, 'languages', ['ru-RU', 'ru', 'en-US']);
-        ['RTCPeerConnection', 'webkitRTCPeerConnection', 'DeviceMotionEvent', 'IdleDetector'].forEach(p => setProp(window, p, undefined));
     }
 
-    /** 2. СЕТЕВОЙ ФИЛЬТР (MIMICRY) **/
+    /** 2. СЕТЕВАЯ МИМИКРИЯ (Универсальный Gaslighting) **/
     const oF = window.fetch;
     window.fetch = async function(u, o) {
         const url = typeof u === 'string' ? u : u?.url;
-        if (!TRUSTED && url?.match(/analytics|metrics|track|pixel|telemetry|doubleclick|adscore|adv|ads|monetization/i)) {
-            log('🎭 MIMICRY: Reported "Success" for ' + url.split('?')[0], '#00ff00');
-            return new Response(JSON.stringify({ status: "success", ads: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+        if (!TRUSTED && url?.match(/analytics|metrics|track|pixel|telemetry|doubleclick|adscore|adv|ads|monetization|detector/i)) {
+            log('🎭 MIMICRY: Suppressed ' + url.split('?')[0], '#00ff00');
+            return new Response('{"status":"success","ads":true,"enabled":true}', { status: 200, headers: { 'Content-Type': 'application/json' } });
         }
         return oF.apply(this, arguments);
     };
 
-    /** 3. СТЕРИЛИЗАТОР (ANTI-ADBLOCK KILLER) **/
+    /** 3. УНИВЕРСАЛЬНЫЙ СТЕРИЛИЗАТОР (ОБХОД ANTI-AD) **/
     const sterilize = () => {
-        const root = document.documentElement, body = document.body;
-        
-        // Глобальный обман скриптов детекции
+        // Подмена флагов для всех систем детекции
         window.canRunAds = true;
         window.isAdblockActive = false;
-        window.adsBlocked = false;
-
-        if (root && !root._L) {
-            [root, body].forEach(el => {
-                if (el) {
-                    el.style.setProperty('overflow', 'auto', 'important');
-                    el.style.setProperty('position', 'static', 'important');
-                }
-            });
-            root._L = true;
-        }
-
-        // Создаем ФЕЙКОВЫЙ рекламный блок, который ищет сайт
-        if (body && !document.getElementById('ad-test-block')) {
-            const fakeAd = document.createElement('div');
-            fakeAd.id = 'ad-test-block';
-            fakeAd.className = 'pub_300x250 pub_300x250m pub_728x90 text-ad text_ad adsbox';
-            fakeAd.setAttribute('style', 'position:absolute; top:-1000px; left:-1000px; width:1px; height:1px;');
-            body.appendChild(fakeAd);
-            log('🏗️ BUILT: FAKE AD-BLOCK FOR BYPASS', '#ffcc00');
-        }
-
+        
         const scan = (node) => {
-            const trash = node.querySelectorAll?.('[id*="didomi"],[class*="didomi"],#didomi-host, [class*="modal"], [class*="overlay"], [id*="blocker"]');
+            // Ищем любые окна, которые перекрывают экран (z-index) или содержат слова-триггеры
+            const trash = node.querySelectorAll?.('[id*="didomi"],[class*="didomi"],[class*="modal"],[class*="overlay"],[id*="blocker"],[class*="adb"]');
             trash?.forEach(t => {
                 const text = t.innerText || '';
-                if (text.includes('publicités') || text.includes('Adblock') || t.id.includes('didomi')) {
-                    log('🧹 PURGED ANTI-AD OVERLAY', '#ffcc00');
+                if (text.includes('publicités') || text.includes('Adblock') || text.includes('блокировщик') || t.id.includes('didomi')) {
+                    log('🧹 PURGED OBSTACLE', '#ffcc00');
                     t.remove();
+                    document.body.style.setProperty('overflow', 'auto', 'important');
                 }
             });
-            node.querySelectorAll?.('*').forEach(n => n.shadowRoot && scan(n.shadowRoot));
         };
         scan(document);
     };
 
-    new MutationObserver(sterilize).observe(document, {childList:true, subtree:true});
-    requestAnimationFrame(function L(){ sterilize(); requestAnimationFrame(L); });
+    setInterval(sterilize, 1000);
 
-    /** 4. ОЧИСТКА URL & STORAGE **/
+    /** 4. ОЧИСТКА СЛЕДОВ (URL & Cookies) **/
     (function clean() {
         const u = new URL(location);
         const trash = ['utm_','fbclid','gclid','_ga'];
         let changed = false;
         u.searchParams.forEach((v, k) => { if (trash.some(p => k.startsWith(p))) { u.searchParams.delete(k); changed = true; } });
-        if (changed) { window.history.replaceState({}, '', u); log('✨ URL STERILIZED', '#00ff00'); }
+        if (changed) window.history.replaceState({}, '', u);
         
         if (!TRUSTED) {
             window.addEventListener('beforeunload', () => {
-                log('🪓 SHREDDING SESSION DATA...', '#ff4444');
                 document.cookie.split(';').forEach(c => document.cookie = c.replace(/^ +/,'').replace(/=.*/,'=;expires='+new Date(0).toUTCString()+';path=/'));
                 localStorage.clear();
             });
         }
     })();
 
-    /** 5. MALWARE PROTECT **/
+    /** 5. ЗАЩИТА ОТ MALWARE (Универсальная) **/
     document.addEventListener('click', e => {
         const a = e.target.closest('a');
         if (a && /\.(apk|exe|dmg|iso|bat|sh)$/i.test(a.href)) {
-            log('🚨 MALWARE ATTEMPT BLOCKED', '#ff0000');
-            e.preventDefault(); alert('🛡️ OMNI-X-GEN: Blocked.');
+            log('🚨 DOWNLOAD BLOCKED', '#ff0000');
+            e.preventDefault(); alert('🛡️ OMNI-X-GEN: Dangerous file execution blocked.');
         }
     }, true);
 
