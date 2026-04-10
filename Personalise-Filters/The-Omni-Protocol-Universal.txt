@@ -2127,4 +2127,42 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 ! 5. Принудительная политика безопасности для защиты от XSS атак
 @@||*^$header=Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' *;
 
+
+! === [L42: THE-ULTIMATE-SILENCE] v158.0 ===
+! Финальная полировка: Сенсоры, Буфер обмена и Вибрация.
+
+! 1. Изоляция сенсоров (Акселерометр/Гироскоп)
+! Защита от отслеживания походки и вибраций при наборе текста.
+#%#//scriptlet("abort-on-property-read", "DeviceMotionEvent")
+#%#//scriptlet("abort-on-property-read", "DeviceOrientationEvent")
+
+! 2. Защита буфера обмена (Anti-Clipboard Hijacking)
+! Запрещает сайтам тайно менять то, что ты скопировал.
+#%#//scriptlet("prevent-window-open", "Clipboard.writeText")
+
+! 3. Блокировка Vibration API
+! Чтобы сайты не могли использовать вибрацию смартфона.
+#%#//scriptlet("abort-on-property-read", "navigator.vibrate")
+
+
+! === [L43: HUMAN-PARITY] v159.0 ===
+! Защита от поведенческого анализа (Mouse & Touch Tracking).
+
+! 1. Ограничение отслеживания точности движений мыши
+! (Сайт не сможет записывать микро-движения курсора для фингерпринтинга)
+#%#//scriptlet("abort-on-property-read", "MouseEvent.prototype.screenX")
+#%#//scriptlet("abort-on-property-read", "MouseEvent.prototype.screenY")
+
+! 2. Защита от анализа скорости печати (Keyboard Fingerprinting)
+! (Мешает сайтам замерять время между нажатиями клавиш)
+#%#//scriptlet("abort-on-property-read", "KeyboardEvent.prototype.timeStamp")
+
+! 3. Блокировка отслеживания касаний (на сенсорных экранах)
+#%#//scriptlet("abort-on-property-read", "TouchEvent.prototype.radiusX")
+#%#//scriptlet("abort-on-property-read", "TouchEvent.prototype.radiusY")
+
+! 4. Запрет на передачу данных о состоянии "Видимости" (Visibility API)
+! (Сайт не узнает, что ты переключился на другую вкладку и перестал на него смотреть)
+#%#//scriptlet("abort-on-property-read", "document.visibilityState")
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
