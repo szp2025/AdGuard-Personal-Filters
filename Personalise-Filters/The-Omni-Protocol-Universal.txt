@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.72-APEX
+! Version: 11.1.74-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2025,6 +2025,42 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 #%#//scriptlet("execute-script", "const OMNI_SCAN=(()=>{const detect=(m)=>console.warn('%c🛡️ OMNI-AV:%c '+m,'color:red;font-weight:bold;','color:#fff;'); /* Мониторинг расшифровки данных */ window.atob=new Proxy(window.atob,{apply:(t,g,a)=>{if(a[0].length>5000){detect('Payload Blocked');return '';}return Reflect.apply(t,g,a)}}); /* Защита от зависания (Anti-Freeze) */ let s=Date.now(); setInterval(()=>{if(Date.now()-s>3000){detect('Throttling heavy script');s=Date.now();}},1000);})();")
 
 
+! === [L37: PROXIMITY-SHIELD] v145.0 ===
+! Защита от бесконтактного взлома и деанонимизации через NFC/Bluetooth.
 
+! 1. Web-Bluetooth Kill-Switch
+! Блокирует попытки сайтов сканировать ближайшие Bluetooth-устройства.
+#%#//scriptlet("abort-on-property-read", "navigator.bluetooth")
+
+! 2. Web-NFC Hard-Block
+! Запрещает сайтам через браузер взаимодействовать с NFC-чипом (защита карт и меток).
+#%#//scriptlet("abort-on-property-read", "NDEFReader")
+#%#//scriptlet("abort-on-property-read", "navigator.nfc")
+
+! 3. Beacon-Protection (Anti-Tracking)
+! Блокирует запросы к сервисам, которые сопоставляют Bluetooth-маяки с твоей локацией.
+||proximity.googleapis.com^$important,tag=PROXIMITY
+||nearby-messages.googleapis.com^$important,tag=PROXIMITY
+
+! 4. Beacon-Stellation (Anti-Triangulation)
+! Блокирует сетевые запросы от систем "умного города", пытающихся сопоставить твой ID.
+||*.bluetooth.com^$important,tag=PROXIMITY
+||*.nfc-forum.org^$important,tag=PROXIMITY
+
+
+! === [L38: WORK-RELIEF] v146.0 ===
+! Исключения для рабочих панелей и технических ресурсов.
+
+! 1. Разблокировка phpMyAdmin и технических доменов celeo.net
+! Отключаем стерилизацию URL и фильтрацию заголовков, чтобы избежать Error 400.
+@@||celeo.net^$stealth,badfilter
+@@||celeo.net^$document,extension,js,subdocument
+
+! 2. Специфическое разрешение для передачи параметров (Fix for Bad Request)
+! Позволяет браузеру передавать все необходимые куки и рефереры внутри домена.
+@@||hdx6190.celeo.net^$important,header=Cookie,header=Referer
+
+! 3. Отключаем эвристику скриптлетов для админки (чтобы не блокировать JS-логику БД)
+@@||hdx6190.celeo.net^$generichide,genericblock
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
