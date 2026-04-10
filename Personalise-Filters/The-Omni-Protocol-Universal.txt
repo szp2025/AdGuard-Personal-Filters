@@ -2057,5 +2057,16 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 
 
 
+! === [L38-39: CELEO-TOTAL-RELEASE] v148.1 ===
+! Полная разблокировка инфраструктуры celeo.net: Сеть, CSS, Заголовки.
+
+! 1. Разблокировка сетевого уровня и стелс-режима
+@@||celeo.net^$document,subdocument,xmlhttprequest,stylesheet,script,image,font,other,stealth,important
+
+! 2. Разблокировка интерфейса (CSS/Косметика) и расширений
+@@||celeo.net^$generichide,elemhide,jsinject,extension,genericblock
+
+! 3. Прямой проброс технических заголовков (Cookie, Referer, Auth)
+@@||celeo.net^$header=Cookie,header=Referer,header=User-Agent,header=Authorization
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
