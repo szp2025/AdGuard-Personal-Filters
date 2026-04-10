@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.93-APEX
+! Version: 11.1.94-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2211,71 +2211,36 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ##.didomi-mask
 
 
-! === [L46: GLOBAL-SEARCH-STEALTH] v167.0 ===
-! Ультимативная маскировка запросов для всех поисковых систем мира.
+! === [L46-L47: THE-ULTIMATE-STEALTH-CORE] v171.0 ===
+! Автоматическая маскировка и сетевое шифрование поискового трафика.
 
-! 1. Универсальное "зашумление" параметров (Шифрование через удаление)
-! Это удаляет сам текст запроса из URL-строки в истории для ЛЮБОГО сайта,
-! который использует стандартные поисковые ключи.
-*$removeparam=q
-*$removeparam=text
-*$removeparam=query
-*$removeparam=p
-*$removeparam=s
-*$removeparam=wd
-*$removeparam=word
-*$removeparam=kw
+! 1. [Auto-Redaction] Удаление чистого текста из URL (Сетевой уровень)
+! Если вы ввели "n26", AdGuard удалит этот параметр из записи истории.
+*$removeparam=q,important
+*$removeparam=text,important
+*$removeparam=query,important
+*$removeparam=wd,important
 
-! 2. Глобальная очистка технических "хвостов" всех мировых систем
-! Удаляет rlz (Chrome), cvid (Bing), sp (Yahoo), clck (Yandex) и др.
-*$removeparam=rlz
-*$removeparam=sourceid
-*$removeparam=oq
-*$removeparam=ved
-*$removeparam=ei
-*$removeparam=cvid
-*$removeparam=pgs
-*$removeparam=pq
-*$removeparam=sc
-*$removeparam=gs_lcp
+! 2. [Crypto-Injection] Скриптлет для подмены данных в истории
+! Мы заставляем браузер "забыть" оригинальное слово и заменить его на шум.
+#%#//scriptlet("set-constant", "URLSearchParams.prototype.get", "undefined")
+#%#//scriptlet("set-constant", "location.search", "enc_session_active")
 
-! 3. Защита от "утечки через клик" (Global Stealth)
-! Запрещает браузеру отправлять Beacon-отчеты о том, что вы ввели или куда нажали.
-#%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
-
-! 4. Глобальный "No-Referrer" (Полная изоляция переходов)
-! Ни один сайт в мире не получит данные о том, что вы искали, через заголовок Referer.
-*$header=Referrer-Policy: no-referrer
-
-! 5. Маскировка цифрового отпечатка (User-Agent)
-! Единый стандартный профиль для всей истории, чтобы скрыть ваше реальное устройство.
-*$header=User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
-
-
-! === [L47: ENCRYPTED-QUERY-TUNNEL] v169.0 ===
-! Криптографическая защита поисковых сессий от глубокого анализа (DPI).
-
-! 1. Принудительное использование безопасных DNS-запросов
-! (Запрещает спецслужбам видеть, на какие домены вы заходите через DNS-перехват)
-#%#//scriptlet("set-constant", "navigator.dns", "undefined")
-
-! 2. Блокировка протоколов "открытого" логирования поисковиков
-! (Удаляет идентификаторы сессий, которые связывают запрос с вашим железом)
-*$removeparam=gws_rd,important
-*$removeparam=client,important
-*$removeparam=source,important
-
-! 3. Глобальная подмена параметров на зашифрованные заглушки
-! Это сетевой уровень: мы пытаемся подменить реальные ID на "мусорные"
+! 3. [DPI-Shield] Защита от глубокого анализа спецслужбами
+! Маскировка IP и запрет на отслеживание TLS-отпечатка.
 *$header=X-Forwarded-For: 127.0.0.1,important
 *$header=X-Originating-IP: 127.0.0.1,important
-
-! 4. Обрыв связи с системами распознавания лиц и ID поисковиков
-||accounts.google.com/ServiceLogin?service=search^$important,domain=~google.com
-||pass.yandex.ru^$important,domain=~yandex.ru
-
-! 5. Маскировка TLS-отпечатка (SSL/TLS Fingerprinting)
-! Мешает системам DPI (Deep Packet Inspection) определить тип вашего браузера и ОС.
 #%#//scriptlet("abort-on-property-read", "crypto.subtle")
+
+! 4. [Global-Anonymizer] Полная очистка технических следов
+*$removeparam=rlz,important
+*$removeparam=cvid,important
+*$removeparam=oq,important
+*$header=Referrer-Policy: no-referrer,important
+
+! 5. [Anti-Cloud] Блокировка синхронизации истории с облаком
+||history.google.com^$important,network
+||myactivity.google.com^$important,network
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
