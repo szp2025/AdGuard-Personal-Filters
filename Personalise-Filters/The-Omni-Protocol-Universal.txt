@@ -1,8 +1,8 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.69-APEX
+! Version: 11.1.70-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
-! Last Modified: 2026-03-27T16:30:00Z
+! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
 ! Homepage: https://github.com/szp2025/AdGuard-Personal-Filters
 ! Update-URL: https://raw.githubusercontent.com/szp2025/AdGuard-Personal-Filters/refs/heads/main/Personalise-Filters/The-Omni-Protocol-Universal.txt
@@ -1919,6 +1919,76 @@ dash.infinityfree.com#%#//scriptlet("click-element", "button[class*='btn-success
 ! 4. Эвристика: Блокировка майнинга через Proxy-шлюзы
 ||*proxy.minergate.com^$important,reject,tag=CRYPTO_MINER
 ||*ws.monerominer.rocks^$important,reject,tag=CRYPTO_MINER
+
+
+
+! === [L32: DISK-INTEGRITY] v140.0 ===
+! Защита от прямой загрузки исполняемых файлов с сомнительных ресурсов.
+
+! 1. Блокировка загрузки по MIME-типам (Application Executables)
+! Запрещает скачивание бинарных файлов со всех сайтов, кроме доверенных.
+$type=other,domain=~google.com|~github.com|~microsoft.com|~apple.com|~yandex.ru|~sberbank.ru|~tinkoff.ru|~malwarebytes.com,content-type=application/octet-stream,tag=MALWARE_BLOCK
+$type=other,content-type=application/x-msdownload,tag=MALWARE_BLOCK
+
+! 2. Блокировка скрытых расширений (Double Extension Attack)
+! Защита от файлов вида "document.pdf.exe"
+||*\.pdf\.exe^$important,tag=MALWARE_BLOCK
+||*\.jpg\.exe^$important,tag=MALWARE_BLOCK
+||*\.doc\.exe^$important,tag=MALWARE_BLOCK
+
+! 3. Защита от скачивания конфигураций VPN/Proxy (Anti-Hijack)
+! Чтобы вредоносный сайт не подменил твои сетевые настройки.
+||*\.ovpn^$important,domain=~your-vpn-provider.com,tag=MALWARE_BLOCK
+
+! === [L33: ADVANCED-FILE-GENOCIDE] v141.0 ===
+! Защита от маскировки файлов и опасных форматов.
+
+! 1. ANTI-MASQUERADE: Блокировка двойных расширений (Double Extension)
+! Мошенники часто присылают вирусы вида "invoice.pdf.exe" или "photo.jpg.scr"
+||*\.pdf\.exe^$important,tag=MALWARE_BLOCK
+||*\.pdf\.js^$important,tag=MALWARE_BLOCK
+||*\.pdf\.vbs^$important,tag=MALWARE_BLOCK
+||*\.jpg\.exe^$important,tag=MALWARE_BLOCK
+||*\.png\.exe^$important,tag=MALWARE_BLOCK
+||*\.zip\.exe^$important,tag=MALWARE_BLOCK
+||*\.txt\.exe^$important,tag=MALWARE_BLOCK
+
+! 2. SCRIPT-KILLER: Блокировка форматов автоматизации
+! Эти файлы почти никогда не нужны обычному пользователю в браузере.
+||*\.vbs^$important,domain=~microsoft.com,tag=MALWARE_BLOCK
+||*\.scr^$important,tag=MALWARE_BLOCK
+||*\.cmd^$important,tag=MALWARE_BLOCK
+||*\.ps1^$important,tag=MALWARE_BLOCK
+
+! 3. OFFICE-EXPLOIT: Защита от документов с макросами (старые форматы)
+! Блокируем .doc, .xls, .ppt (старые форматы часто несут эксплойты).
+! Оставляем .docx, .xlsx (современные форматы безопаснее).
+||*\.doc^$important,domain=~google.com|~microsoft.com|~gouv.fr,tag=MALWARE_BLOCK
+||*\.xls^$important,domain=~google.com|~microsoft.com|~gouv.fr,tag=MALWARE_BLOCK
+
+! 4. Эвристика: Блокировка загрузки с IP-адресов напрямую (No Hostname)
+! Легитимные файлы всегда качаются с домена. Вирусы часто — напрямую с IP.
+||^$network=ip-direct,content-type=application/*,important,tag=MALWARE_BLOCK
+
+! === [L34: GHOST-FINANCE & GLOBAL-STRIKE] v142.0 ===
+! Финальная настройка для банков и мирового серфинга.
+
+! 1. BANKING STERILIZATION (Абсолютная чистота сессии)
+! Удаляем любые следы аналитики при обращении к банковским API.
+||*^$domain=revolut.com|bnpparibas.fr|lcl.fr|n26.com|sber.ru|tbank.ru|vtb.ru,stealth,removerrefer=true,removeparam=/^(_v|trace_id|click_id|sid)$/,important
+
+! 2. GLOBAL SURFING (Обход блокировок и анти-фишинг)
+! Защита от "отравленных" DNS-записей в публичных сетях по всему миру.
+$network,dnstype=https,domain=~google.com|~youtube.com|~netflix.com,important
+$network,tls_ech=on,important
+
+! 3. ANTI-HIJACK (Защита сессии)
+! Блокирует возможность перехвата сессии (Session Hijacking) через сторонние скрипты.
+$csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sberbank.ru *.tbank.ru;
+
+! 4. Эвристика: Блокировка Punycode (Защита от сайтов-двойников)
+! Блокирует ссылки вида "apple.com" (написано кириллицей), которые ведут на фишинг.
+||xn--*^$important,tag=PHISHING_SHIELD
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
