@@ -2165,4 +2165,20 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 ! (Сайт не узнает, что ты переключился на другую вкладку и перестал на него смотреть)
 #%#//scriptlet("abort-on-property-read", "document.visibilityState")
 
+
+! === [L44: THE-ARCHITECT-SHIELD] v160.0 ===
+! Сингулярность: Защита от микро-тайминговых атак и утечек ресурсов.
+
+! 1. Защита от Performance-фингерпринтинга
+! (Сайт не сможет замерить точную скорость работы твоего железа)
+#%#//scriptlet("abort-on-property-read", "performance.mark")
+#%#//scriptlet("abort-on-property-read", "performance.measure")
+
+! 2. Блокировка Memory Statistics (утечка данных об оперативной памяти)
+#%#//scriptlet("abort-on-property-read", "performance.memory")
+
+! 3. Запрет на проверку количества ядер процессора (Hardware Concurrency)
+! (Чтобы сайт не знал, мощный у тебя ПК или нет)
+#%#//scriptlet("abort-on-property-read", "navigator.hardwareConcurrency")
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
