@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.80-APEX
+! Version: 11.1.81-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -544,14 +544,14 @@ mail.ru##.rb-slot
 ! 1. Эвристика по структуре: Локальные хосты, IP-адреса и Celeo/HDX
 ! Добавлено: отключение stealth, разрешение всех типов контента и CSS.
 
-@@||localhost^$important,stealth,document,xmlhttprequest,stylesheet,script,other
-@@||*.local^$important,stealth,document,xmlhttprequest,stylesheet,script,other
-@@||*.celeo.net^$important,stealth,document,xmlhttprequest,stylesheet,script,other
-@@||*hdx*^$important,stealth,document,xmlhttprequest,stylesheet,script,other,domain=~google.com|~youtube.com
+! [OMNI-HEURISTIC-WORK] Автоматическое определение тех-ресурсов
+! ----------------------------------------------------------------
+! 1. Эвристика по структуре (HTTP + IP/Тех-домены/Celeo)
+@@/^https?:\/\/(([0-9]{1,3}\.){3}[0-9]{1,3}|localhost|[^\/]+\.local|[^\/]+\.celeo\.net|[^\/]+hdx[^\/]+)(\/.*)?$/$stealth,important,document,xmlhttprequest
 
-! 2. Отключение косметической фильтрации (чтобы CSS не резался)
-@@||celeo.net^$generichide,elemhide,jsinject,genericblock
-@@||*hdx*^$generichide,elemhide,jsinject,genericblock,domain=~google.com|~youtube.com
+! 2. Эвристика по путям (Админки), исключая глобальные сервисы
+@@/^https?:\/\/[^\/]+(\/myadmin\/|\/sql\/|\/config\/|\/setup\/)(\/.*)?$/$stealth,important,document,xmlhttprequest,domain=~google.com|~youtube.com|~facebook.com|~yandex.ru
+
 
 
 ! Разрешаем прямой доступ по IP-адресам (админки роутеров, NAS, сервера)
