@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.91-APEX
+! Version: 11.1.92-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2209,4 +2209,47 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ! 5. Очистка визуальных оверлеев
 ##.didomi-popup-container
 ##.didomi-mask
+
+
+! === [L46: GLOBAL-SEARCH-STEALTH] v167.0 ===
+! Ультимативная маскировка запросов для всех поисковых систем мира.
+
+! 1. Универсальное "зашумление" параметров (Шифрование через удаление)
+! Это удаляет сам текст запроса из URL-строки в истории для ЛЮБОГО сайта,
+! который использует стандартные поисковые ключи.
+*$removeparam=q
+*$removeparam=text
+*$removeparam=query
+*$removeparam=p
+*$removeparam=s
+*$removeparam=wd
+*$removeparam=word
+*$removeparam=kw
+
+! 2. Глобальная очистка технических "хвостов" всех мировых систем
+! Удаляет rlz (Chrome), cvid (Bing), sp (Yahoo), clck (Yandex) и др.
+*$removeparam=rlz
+*$removeparam=sourceid
+*$removeparam=oq
+*$removeparam=ved
+*$removeparam=ei
+*$removeparam=cvid
+*$removeparam=pgs
+*$removeparam=pq
+*$removeparam=sc
+*$removeparam=gs_lcp
+
+! 3. Защита от "утечки через клик" (Global Stealth)
+! Запрещает браузеру отправлять Beacon-отчеты о том, что вы ввели или куда нажали.
+#%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
+
+! 4. Глобальный "No-Referrer" (Полная изоляция переходов)
+! Ни один сайт в мире не получит данные о том, что вы искали, через заголовок Referer.
+*$header=Referrer-Policy: no-referrer
+
+! 5. Маскировка цифрового отпечатка (User-Agent)
+! Единый стандартный профиль для всей истории, чтобы скрыть ваше реальное устройство.
+*$header=User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
