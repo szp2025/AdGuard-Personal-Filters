@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.76-APEX
+! Version: 11.1.77-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2078,7 +2078,7 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 
 ! 3. Запрещаем AdGuard скрывать любые элементы на странице (Anti-Cosmetic)
 ! Это гарантирует, что кнопки и таблицы не исчезнут.
-@@||hdx6190.celeo.net^$generichide
+@@||hdx6190.celeo.net^$generichide,css
 @@||hdx6190.celeo.net^$elemhide
 @@||hdx6190.celeo.net^$jsinject
 
