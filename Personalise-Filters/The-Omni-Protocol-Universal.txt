@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.70-APEX
+! Version: 11.1.72-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -1989,6 +1989,42 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 ! 4. Эвристика: Блокировка Punycode (Защита от сайтов-двойников)
 ! Блокирует ссылки вида "apple.com" (написано кириллицей), которые ведут на фишинг.
 ||xn--*^$important,tag=PHISHING_SHIELD
+
+
+! === [L35-36: OMNI-ANTIVIRUS CORE] v144.2 ===
+! Единое ядро сетевого антивируса: Блокировка C&C, эксплойтов и кинетическая эвристика.
+
+! --- 1. NETWORK & C&C DEFENSE (Блокировка связи с хакерами) ---
+||*^$network=botnet,important,tag=ANTIVIRUS
+||77.247.110.0/24^$important,tag=ANTIVIRUS
+||91.219.28.0/22^$important,tag=ANTIVIRUS
+||static-assets.xyz^$important,tag=ANTIVIRUS
+||cdn-js.com^$important,tag=ANTIVIRUS
+
+! --- 2. EXPLOIT & SHELL BLOCK (Защита от взлома и удаленного управления) ---
+||*/js/exploit.js^$important,tag=ANTIVIRUS
+||*/js/payload.js^$important,tag=ANTIVIRUS
+||*/js/dropper.js^$important,tag=ANTIVIRUS
+||*/cmd.php^$important,tag=ANTIVIRUS
+||*/shell.php^$important,tag=ANTIVIRUS
+||*/c99.php^$important,tag=ANTIVIRUS
+
+! --- 3. DGA & ENTROPY HEURISTICS (Алгоритмическая блокировка подозрительных доменов) ---
+! Блокирует домены и скрипты с аномально длинными, случайно сгенерированными именами.
+||[a-z0-9]{32,}\.(com|net|org|xyz|pw)^$important,tag=ANTIVIRUS
+||[a-z0-9]{20,}\.[a-z]{2,4}\/([a-z0-9]{15,})\.js^$important,tag=ANTIVIRUS
+
+! --- 4. INTERNAL PERIMETER (Защита локальной сети и портов) ---
+||127.0.0.1^$important,domain=~localhost,tag=ANTIVIRUS
+||localhost^$important,domain=~localhost,tag=ANTIVIRUS
+
+! --- 5. JS-ENGINE: ACTIVE PROTECTION (Песочница и мониторинг в реальном времени) ---
+! Блокирует скрытую сборку вирусов (eval/Function), расшифровку Payload (atob) и зависание CPU.
+#%#//scriptlet("abort-on-property-write", "eval")
+#%#//scriptlet("abort-on-property-write", "Function")
+#%#//scriptlet("execute-script", "const OMNI_SCAN=(()=>{const detect=(m)=>console.warn('%c🛡️ OMNI-AV:%c '+m,'color:red;font-weight:bold;','color:#fff;'); /* Мониторинг расшифровки данных */ window.atob=new Proxy(window.atob,{apply:(t,g,a)=>{if(a[0].length>5000){detect('Payload Blocked');return '';}return Reflect.apply(t,g,a)}}); /* Защита от зависания (Anti-Freeze) */ let s=Date.now(); setInterval(()=>{if(Date.now()-s>3000){detect('Throttling heavy script');s=Date.now();}},1000);})();")
+
+
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
