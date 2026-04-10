@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.94-APEX
+! Version: 11.1.95-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2211,36 +2211,30 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ##.didomi-mask
 
 
-! === [L46-L47: THE-ULTIMATE-STEALTH-CORE] v171.0 ===
-! Автоматическая маскировка и сетевое шифрование поискового трафика.
+! === [L46-L47: THE-ULTIMATE-STEALTH-CORE] v172.0 ===
+! Глубокая очистка мобильных запросов (Android/Samsung/Chrome).
 
-! 1. [Auto-Redaction] Удаление чистого текста из URL (Сетевой уровень)
-! Если вы ввели "n26", AdGuard удалит этот параметр из записи истории.
+! 1. Удаление самого запроса и его "оригинала" (Скрывает n26 из истории)
 *$removeparam=q,important
-*$removeparam=text,important
-*$removeparam=query,important
-*$removeparam=wd,important
-
-! 2. [Crypto-Injection] Скриптлет для подмены данных в истории
-! Мы заставляем браузер "забыть" оригинальное слово и заменить его на шум.
-#%#//scriptlet("set-constant", "URLSearchParams.prototype.get", "undefined")
-#%#//scriptlet("set-constant", "location.search", "enc_session_active")
-
-! 3. [DPI-Shield] Защита от глубокого анализа спецслужбами
-! Маскировка IP и запрет на отслеживание TLS-отпечатка.
-*$header=X-Forwarded-For: 127.0.0.1,important
-*$header=X-Originating-IP: 127.0.0.1,important
-#%#//scriptlet("abort-on-property-read", "crypto.subtle")
-
-! 4. [Global-Anonymizer] Полная очистка технических следов
-*$removeparam=rlz,important
-*$removeparam=cvid,important
 *$removeparam=oq,important
-*$header=Referrer-Policy: no-referrer,important
 
-! 5. [Anti-Cloud] Блокировка синхронизации истории с облаком
-||history.google.com^$important,network
-||myactivity.google.com^$important,network
+! 2. Аннигиляция мобильных идентификаторов (Samsung/Android)
+! Удаляет данные о модели телефона и источнике запроса.
+*$removeparam=client,important
+*$removeparam=sourceid,important
+*$removeparam=ie,important
+
+! 3. Удаление гигантских трекинг-токенов (gs_lcrp)
+! Это обрезает тот самый длинный код, который ты видишь в ссылке.
+*$removeparam=gs_lcrp,important
+
+! 4. Сетевой "Header-Masking" (Скрывает, что ты с Samsung)
+! Мы заменяем твой специфический мобильный User-Agent на общий,
+! чтобы для спецслужб ты выглядел как "случайный пользователь интернета".
+*$header=User-Agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36,important
+
+! 5. Принудительный сброс параметров IP (X-Forwarded-For)
+*$header=X-Forwarded-For: 127.0.0.1,important
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
