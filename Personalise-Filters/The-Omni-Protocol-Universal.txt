@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.82-APEX
+! Version: 11.1.84-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -540,34 +540,28 @@ mail.ru##.rb-slot
 @@||login.live.com^$important,stealth=off,jsinject=off
 
 
-! === [OMNI-HEURISTIC-WORK] TECH-BRIDGE v22.0 ===
-! 1. Эвристика по структуре: Локальные хосты, IP-адреса и Celeo/HDX
-! Добавлено: отключение stealth, разрешение всех типов контента и CSS.
+! === [OMNI-HEURISTIC-WORK] TECH-BRIDGE v21.6 ===
 
-! [OMNI-HEURISTIC-WORK] Автоматическое определение тех-ресурсов
-! ----------------------------------------------------------------
-! 1. Эвристика по структуре (HTTP + IP/Тех-домены/Celeo)
-@@/^https?:\/\/(([0-9]{1,3}\.){3}[0-9]{1,3}|localhost|[^\/]+\.local|[^\/]+\.celeo\.net|[^\/]+hdx[^\/]+)(\/.*)?$/$stealth,important,document,xmlhttprequest
+! --- 1. ТОТАЛЬНАЯ РАЗБЛОКИРОВКА CELEO (Fix CSS & Error 400) ---
+! Это правило отключает ВСЁ для celeo.net, чтобы стили и логин работали идеально.
+@@||celeo.net^$important,document,subdocument,xmlhttprequest,stylesheet,script,image,font,other,stealth,badfilter
+@@||celeo.net^$generichide,elemhide,jsinject,extension,genericblock,content
+@@||celeo.net^$header=Cookie,header=Referer,header=User-Agent,header=Sec-Fetch-Mode,header=Sec-Fetch-Site,header=Upgrade-Insecure-Requests
 
-! 2. Эвристика по путям (Админки), исключая глобальные сервисы
-@@/^https?:\/\/[^\/]+(\/myadmin\/|\/sql\/|\/config\/|\/setup\/)(\/.*)?$/$stealth,important,document,xmlhttprequest,domain=~google.com|~youtube.com|~facebook.com|~yandex.ru
+! --- 2. ЭВРИСТИКА ДЛЯ IP И ЛОКАЛЬНЫХ ХОСТОВ ---
+! Разблокировка админок роутеров, NAS и Docker по структуре адреса.
+@@||localhost^$important,document,stylesheet,script,xmlhttprequest,stealth
+@@||*.local^$important,document,stylesheet,script,xmlhttprequest,stealth
+@@||*.internal^$important,document,stylesheet,stealth
+@@||*.test^$important,document,stylesheet,stealth
+@@/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/$important,document,stylesheet,script,xmlhttprequest,stealth
 
-
-
-! Разрешаем прямой доступ по IP-адресам (админки роутеров, NAS, сервера)
-@@/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/$important,stealth=off,network
-
-! 2. Эвристика по путям: Инструменты управления (DB/Config/Setup)
-! Отключаем вмешательство для админок, исключая рекламные платформы
-@@/*/myadmin/*$important,stealth=off,network,domain=~google.com|~facebook.com
-@@/*/sql/*$important,stealth=off,network,domain=~google.com|~yandex.ru
-@@/*/config/*$important,stealth=off,network,domain=~doubleclick.net
-@@/*/setup/*$important,stealth=off,network,domain=~google.com
-
-! Эвристика для Docker/Kubernetes и Dev-окружений
-@@||*.internal^$important,stealth=off
-@@||*.test^$important,stealth=off
-@@||*.example^$important,stealth=off
+! --- 3. ЭВРИСТИКА ПО ПУТЯМ (MyAdmin, SQL, Setup) ---
+! Авто-детекция панелей управления на любых других доменах.
+@@/*/myadmin/*$important,document,stylesheet,script,xmlhttprequest,stealth,domain=~google.com|~facebook.com
+@@/*/sql/*$important,document,stylesheet,script,xmlhttprequest,stealth,domain=~google.com|~yandex.ru
+@@/*/config/*$important,document,stylesheet,script,xmlhttprequest,stealth,domain=~doubleclick.net
+@@/*/setup/*$important,document,stylesheet,script,xmlhttprequest,stealth,domain=~google.com
 
 
 ! [OMNI-V4] REAKTIV PROTECTION: CRYPTO, PHISHING & SESSION-HIJACK
@@ -2054,18 +2048,5 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 ! Блокирует сетевые запросы от систем "умного города", пытающихся сопоставить твой ID.
 ||*.bluetooth.com^$important,tag=PROXIMITY
 ||*.nfc-forum.org^$important,tag=PROXIMITY
-
-
-! === [L38: TOTAL-WHITELIST-CELEO] v150.0 ===
-! Полное исключение домена celeo.net из всех систем фильтрации и защиты.
-
-! 1. Тотальная разблокировка всех сетевых запросов и контента
-@@||celeo.net^$important,document,subdocument,xmlhttprequest,stylesheet,script,image,font,obj-whitelisted,other,stealth,content,jsinject,extension
-
-! 2. Полное отключение косметической фильтрации (Anti-Hide)
-@@||celeo.net^$generichide,elemhide,genericblock
-
-! 3. Принудительное разрешение всех технических заголовков (Fix Error 400)
-@@||celeo.net^$header=Cookie,header=Referer,header=User-Agent,header=Sec-Fetch-Mode,header=Sec-Fetch-Site,header=Upgrade-Insecure-Requests,header=Authorization
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
