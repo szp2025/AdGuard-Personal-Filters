@@ -566,23 +566,152 @@ mail.ru##.rb-slot
 ! [OMNI-V4] REAKTIV PROTECTION: CRYPTO, PHISHING & SESSION-HIJACK
 ! ----------------------------------------------------------------
 
-! 1. [REACTIVE-CRYPTO] Блокировка майнеров через JS, WebAssembly и WebSocket
-/^https?:\/\/([^\/]+\.)?(miner|monero|coinhive|cryptoloot|webminer|authedmine|coin-hive|shasta|deepminer|cryptonight|wasm|hashing|pool)\.(js|wasm|mem)(\/.*)?$/$important,third-party,script,websocket,xmlhttprequest
+! === [REACTIVE-CRYPTO] CRYPTO-REAPER v21.7 ===
+! Блокировка известных майнинг-сервисов и их инфраструктуры
+||coinhive.com^$important,reject
+||coin-hive.com^$important,reject
+||cryptoloot.pro^$important,reject
+||authedmine.com^$important,reject
+||webminerpool.com^$important,reject
+||miner.js^$important,script,third-party
+||monero.js^$important,script,third-party
 
-! 2. [ELITE-PHISHING] Эвристика мусорных зон (TLD) с защитой от двойных расширений
-/^https?:\/\/([^\/]+\.)*([a-z0-9-]{18,}|[a-z0-9-]+\.(top|xyz|click|gdn|wf|loan|men|bid|kim|vip|work|icu|monster|beauty|casa|buzz|today|cyou|bond|best|fit))(\.[a-z]{2,3})?\/.*$/$important,third-party,document,subdocument
+! Эвристика: Блокируем WASM-майнеры по ключевым словам в путях
+@@||*$important,wasm,domain=~google.com|~youtube.com|~github.com
+||*/cryptonight.wasm^$important,wasm,reject
+||*/miner.wasm^$important,wasm,reject
+||*/hashing.wasm^$important,wasm,reject
+||*/shasta.wasm^$important,wasm,reject
 
-! 3. [SESSION-GUARD] Пресечение кражи Cookie и Fingerprinting-векторов
-/^https?:\/\/([^\/]+\.)?(track|umid|collect|log|analytics|pixel|hit|event|stat|beacon|telemetry|fingerprint|capture)\.(uc\.cn|amap\.com|[a-z0-9-]+\.(cn|xyz|pw|ru|site))(\/.*)?$/$important,script,xmlhttprequest,image,ping,third-party
+! Пресекаем передачу данных на пулы через WebSocket и XHR
+||*/pool^$websocket,important,third-party,domain=~binance.com|~revolut.com
+||*/ws-miner^$websocket,important,third-party
+||*/proxy-miner^$xmlhttprequest,important,third-party
 
-! 4. [FAST-REDIRECT] Реактивная блокировка коротких ссылок-ловушек (5-10 символов)
-/^https?:\/\/(bit\.ly|goo\.gl|t\.co|tinyurl\.com|is\.gd|buff\.ly|t2m\.io|rebrand\.ly)\/[a-zA-Z0-9]{5,10}$/$important,third-party,document,subdocument,domain=~google.com|~youtube.com|~facebook.com|~github.com|~linkedin.com
+! Защита от «фишинговых» майнеров, маскирующихся под обновления
+||*/web-miner.js^$important,script,third-party
 
-! 5. [VOID-XHR] Блокировка скрытых запросов к подозрительным API (API-Phishing)
-/^https?:\/\/([^\/]+\.)?api\.[a-z0-9-]+\.(top|xyz|pw|click|icu|site|online|space)(\/.*)?$/$important,xmlhttprequest,third-party,other
 
-! --- [OMNI-YANDEX-V15.0] Тотальная разблокировка (Unified Core) ---
-@@/^https?:\/\/([^\/]+\.)?(yandex|ya|dzen|yastatic|dzeninfra)\.(ru|net|fr|by|kz|com|com\.tr|az|uz|tj|tm|kg|md|ee|lv|lt|ua)(\/.*)?$/$important,document,xmlhttprequest,subdocument,image,stylesheet,script,other
+! === [ELITE-PHISHING] PHISHING-REAPER v21.8 ===
+! Блокировка дешевых TLD зон (основные источники фишинга и спама)
+||*.top^$important,third-party,document,reject
+||*.xyz^$important,third-party,document,reject,domain=~google.com|~abc.xyz
+||*.click^$important,third-party,document,reject
+||*.monster^$important,third-party,document,reject
+||*.icu^$important,third-party,document,reject
+||*.cyou^$important,third-party,document,reject
+||*.casa^$important,third-party,document,reject
+||*.today^$important,third-party,document,reject
+
+! Эвристика: Блокировка подозрительно длинных доменов (DGA-алгоритмы)
+! Заменяем тяжелый Regex на проверку паттернов
+||*-*-*-*.*^$important,third-party,reject
+||*xxxxxxxxxx*^$important,third-party,reject
+
+! Защита от двойных расширений (маскировка под документы)
+/^https?:\/\/.*(\.pdf|\.doc|\.zip|\.exe)\.(top|xyz|work|biz|info|click)/$important,reject
+
+! Исключения для стабильности (доверенные ресурсы в «плохих» зонах)
+@@||abc.xyz^$important,network
+@@||t.me^$important,network
+@@||bit.ly^$important,network
+
+
+! === [SESSION-GUARD] FINGERPRINT-SHIELD v21.9 ===
+! Блокировка векторов сбора данных (Telemetry & Beacon)
+||*track*^$important,third-party,ping,xmlhttprequest,domain=~google.com|~github.com
+||*analytics*^$important,third-party,ping,xmlhttprequest,domain=~google.com|~yandex.ru
+||*telemetry*^$important,third-party,ping,xmlhttprequest
+||*fingerprint*^$important,third-party,script,xmlhttprequest
+
+! Защита от китайских систем идентификации (UC Browser / Amap / Alibaba)
+||uc.cn^$important,third-party,script,xmlhttprequest,reject
+||amap.com^$important,third-party,script,xmlhttprequest,reject
+||*umid*^$important,third-party,script,xmlhttprequest,reject
+
+! Пресечение кражи куки через пиксели и маяки в мусорных зонах
+||*pixel*^$image,third-party,domain=*.xyz|*.pw|*.site|*.online
+||*collect*^$xmlhttprequest,third-party,domain=*.xyz|*.pw|*.site
+||*beacon*^$ping,important,third-party
+
+! Эвристика: Блокировка Event-логгеров на подозрительных доменах
+||*log*^$xmlhttprequest,third-party,domain=*.pw|*.site|*.top
+||*stat*^$xmlhttprequest,third-party,domain=*.pw|*.site|*.top
+
+! Исключения для стабильности (чтобы не ломать логин в банках и Google)
+@@||google-analytics.com^$important,xmlhttprequest,domain=google.com
+@@||yandex.ru/clck/*$important,xmlhttprequest,domain=yandex.ru
+
+
+! === [FAST-REDIRECT] ENFORCER v22.0 ===
+! Разрешаем короткие ссылки ТОЛЬКО на доверенных платформах (White-Bridge)
+@@||bit.ly^$important,domain=twitter.com|linkedin.com|github.com|t.me
+@@||t.co^$important,domain=twitter.com|x.com
+@@||tinyurl.com^$important,domain=github.com|linkedin.com
+
+! Эвристика: Блокируем короткие ссылки-ловушки в рекламных сетях и на мусорных сайтах
+||bit.ly^$important,third-party,document,subdocument,domain=~twitter.com|~github.com
+||goo.gl^$important,third-party,document,subdocument,domain=~google.com
+||t2m.io^$important,third-party,document,subdocument
+||rebrand.ly^$important,third-party,document,subdocument
+||is.gd^$important,third-party,document,subdocument
+
+! Защита от «скрытых» редиректов через пиксели
+||bit.ly^$image,third-party,reject
+||tinyurl.com^$image,third-party,reject
+
+! Исключение для системных сокращателей (Google/YouTube)
+@@||goo.gl^$important,domain=google.com|youtube.com
+@@||youtu.be^$important,network
+
+! === [VOID-XHR] API-VOID REAPER v21.1 ===
+! Блокировка API-запросов к мусорным TLD (защита от кражи данных через Fetch)
+||api.*.top^$important,xmlhttprequest,third-party,reject
+||api.*.xyz^$important,xmlhttprequest,third-party,reject
+||api.*.pw^$important,xmlhttprequest,third-party,reject
+||api.*.site^$important,xmlhttprequest,third-party,reject
+||api.*.online^$important,xmlhttprequest,third-party,reject
+||api.*.space^$important,xmlhttprequest,third-party,reject
+||api.*.icu^$important,xmlhttprequest,third-party,reject
+
+! Эвристика: Пресекаем обращение к «техническим» API в дешевых зонах
+||*/v1/api/*$important,xmlhttprequest,third-party,domain=*.top|*.xyz|*.pw|*.click
+||*/v2/api/*$important,xmlhttprequest,third-party,domain=*.top|*.xyz|*.pw|*.click
+||*/auth/login$important,xmlhttprequest,third-party,domain=*.site|*.online|*.top
+
+! Защита от скрытых JSON-инъекций
+||*.json^$important,xmlhttprequest,third-party,domain=*.top|*.xyz|*.pw|*.icu
+
+! Исключения для популярных легитимных API (если они в этих зонах)
+@@||api.*^$important,xmlhttprequest,domain=google.com|github.com|yandex.ru
+
+
+! === [OMNI-YANDEX-V22.2] UNIFIED-BRIDGE ===
+! Тотальный WhiteList для всех ключевых доменов экосистемы
+@@||yandex.*^$important,document,network,jsinject=off
+@@||ya.ru^$important,document,network,jsinject=off
+@@||dzen.ru^$important,document,network,jsinject=off
+@@||yastatic.net^$important,network
+@@||dzeninfra.ru^$important,network
+
+! Географический охват (СНГ, Турция, Европа)
+@@||yandex.net^$important,network
+@@||yandex.com^$important,network
+@@||yandex.com.tr^$important,network
+@@||yandex.by^$important,network
+@@||yandex.kz^$important,network
+@@||yandex.uz^$important,network
+@@||yandex.fr^$important,network
+
+! Поддержка критических поддоменов (Почта, Диск, Карты, ID)
+@@||passport.yandex.*^$important,document,network
+@@||mail.yandex.*^$important,document,network
+@@||disk.yandex.*^$important,document,network
+@@||captcha.yandex.*^$important,network
+
+! Эвристика для CDN и статики (Ускорение загрузки изображений и скриптов)
+@@||*.yandex.net^$important,network
+@@||*.yastatic.net^$important,network
 
 
 ! --- [OMNI-GLOBAL-CORE] Всё остальное через Regex ---
