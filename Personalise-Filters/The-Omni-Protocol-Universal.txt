@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.74-APEX
+! Version: 11.1.75-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -40,6 +40,7 @@
 @@||auth.*^$important,document,network
 @@||login.*^$important,document,network
 
+@@||celeo.net^$important,network
 
 ! --- S1: SMART-WHITE (Стерильность) ---
 ! Приоритетные исключения для системных обновлений, безопасности и GitHub.
@@ -2048,19 +2049,20 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 ||*.nfc-forum.org^$important,tag=PROXIMITY
 
 
-! === [L38: WORK-RELIEF] v146.0 ===
-! Исключения для рабочих панелей и технических ресурсов.
+! === [L38: TECH-DOMAIN-UNLOCKED] v146.2 ===
+! Полная разблокировка для HTTP-панелей Celeo (Без шифрования).
 
-! 1. Разблокировка phpMyAdmin и технических доменов celeo.net
-! Отключаем стерилизацию URL и фильтрацию заголовков, чтобы избежать Error 400.
-@@||celeo.net^$stealth,badfilter
-@@||celeo.net^$document,extension,js,subdocument
+! 1. Исключаем домен из всех проверок безопасности и стерилизации
+@@||hdx6190.celeo.net^$stealth,document,subdocument,xmlhttprequest,other,important
 
-! 2. Специфическое разрешение для передачи параметров (Fix for Bad Request)
-! Позволяет браузеру передавать все необходимые куки и рефереры внутри домена.
-@@||hdx6190.celeo.net^$important,header=Cookie,header=Referer
+! 2. Отключаем принудительный редирект на HTTPS (если он включен в AdGuard)
+! Это позволит сайту работать по обычному http://
+@@||hdx6190.celeo.net^$rewrite=abp-resource:blank-js,badfilter
 
-! 3. Отключаем эвристику скриптлетов для админки (чтобы не блокировать JS-логику БД)
-@@||hdx6190.celeo.net^$generichide,genericblock
+! 3. Разрешаем незащищенную передачу данных и куков для этого хоста
+@@||hdx6190.celeo.net^$header=Cookie,header=Referer,header=User-Agent,header=Authorization
+
+! 4. Убираем косметическую и скриптлет-фильтрацию (чтобы не ломать старый интерфейс)
+@@||hdx6190.celeo.net^$generichide,genericblock,js,extension,elemhide
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
