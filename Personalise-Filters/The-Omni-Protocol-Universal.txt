@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.81-APEX
+! Version: 11.1.82-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2056,18 +2056,16 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 ||*.nfc-forum.org^$important,tag=PROXIMITY
 
 
+! === [L38: TOTAL-WHITELIST-CELEO] v150.0 ===
+! Полное исключение домена celeo.net из всех систем фильтрации и защиты.
 
-! === [L38: OMNI-ANTIVIRUS-WORK] v149.1 ===
-! Автоматическое определение тех-ресурсов. Исправление Error 400 и HTTPS Discordance.
+! 1. Тотальная разблокировка всех сетевых запросов и контента
+@@||celeo.net^$important,document,subdocument,xmlhttprequest,stylesheet,script,image,font,obj-whitelisted,other,stealth,content,jsinject,extension
 
-! 1. Сетевая разблокировка + Отключение принудительного HTTPS для Celeo/IP
-@@/^https?:\/\/(([0-9]{1,3}\.){3}[0-9]{1,3}|localhost|[^\/]+\.local|[^\/]+\.celeo\.net|[^\/]+hdx[^\/]+)(\/.*)?$/$stealth,document,xmlhttprequest,stylesheet,other,important,badfilter
+! 2. Полное отключение косметической фильтрации (Anti-Hide)
+@@||celeo.net^$generichide,elemhide,genericblock
 
-! 2. Отключение косметики и JS-инъекций (полный доступ к интерфейсу)
-@@/^https?:\/\/(([0-9]{1,3}\.){3}[0-9]{1,3}|localhost|[^\/]+\.local|[^\/]+\.celeo\.net|[^\/]+hdx[^\/]+)(\/.*)?$/$generichide,elemhide,jsinject,extension,genericblock
-
-! 3. Глубокая разблокировка заголовков (убирает Error 400 и Discordance)
-! Добавлены Sec-Fetch и Upgrade-Insecure-Requests в исключения.
-@@/^https?:\/\/(([0-9]{1,3}\.){3}[0-9]{1,3}|localhost|[^\/]+\.local|[^\/]+\.celeo\.net|[^\/]+hdx[^\/]+)(\/.*)?$/$header=Cookie,header=Referer,header=User-Agent,header=Sec-Fetch-Mode,header=Sec-Fetch-Site,header=Upgrade-Insecure-Requests
+! 3. Принудительное разрешение всех технических заголовков (Fix Error 400)
+@@||celeo.net^$header=Cookie,header=Referer,header=User-Agent,header=Sec-Fetch-Mode,header=Sec-Fetch-Site,header=Upgrade-Insecure-Requests,header=Authorization
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
