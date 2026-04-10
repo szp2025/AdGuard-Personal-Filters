@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.90-APEX
+! Version: 11.1.91-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2181,4 +2181,32 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 ! (Чтобы сайт не знал, мощный у тебя ПК или нет)
 #%#//scriptlet("abort-on-property-read", "navigator.hardwareConcurrency")
 
+
+! === [L45: DIDOMI-EXTERMINATOR] v162.0 ===
+! Тотальное удаление Didomi Host и разблокировка скролла
+
+! 1. Удаление контейнера и стилей Didomi (по твоим скриншотам)
+##div#didomi-host
+##style#didomi-css
+##div[id^="didomi-host"]
+##div[class^="didomi-"]
+
+! 2. Принудительная разблокировка скролла (убирает блокировку страницы)
+! Мы заставляем body и html всегда иметь прокрутку, игнорируя команды Didomi
+*##html,body:style(overflow: auto !important; position: static !important; height: auto !important;)
+! Специальный фикс для France Info / France TV
+france3-regions.franceinfo.fr##html,body:style(overflow: auto !important; position: static !important;)
+france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !important;)
+
+! 3. Сетевой бан (чтобы скрипт даже не пытался запуститься)
+||didomi.io^$important
+||sdk.didomi.io^$important
+
+! 4. Эмуляция согласия (чтобы сайт не ждал клика по кнопке)
+#%#//scriptlet("set-constant", "didomi.isReady", "true")
+#%#//scriptlet("set-constant", "Didomi.setUserConsentStatus", "true")
+
+! 5. Очистка визуальных оверлеев
+##.didomi-popup-container
+##.didomi-mask
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
