@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.75-APEX
+! Version: 11.1.76-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2064,5 +2064,26 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 
 ! 4. Убираем косметическую и скриптлет-фильтрацию (чтобы не ломать старый интерфейс)
 @@||hdx6190.celeo.net^$generichide,genericblock,js,extension,elemhide
+
+
+! === [L39: TECH-VISUAL-RESTORE] v147.0 ===
+! Полное восстановление стилей и интерфейса для Celeo.
+
+! 1. Разрешаем загрузку любых таблиц стилей (CSS)
+@@||hdx6190.celeo.net^$stylesheet,important
+@@||celeo.net^$stylesheet,important
+
+! 2. Отключаем инъекции пользовательских скриптов, которые могут менять верстку
+@@||hdx6190.celeo.net^$content,extension,warn,important
+
+! 3. Запрещаем AdGuard скрывать любые элементы на странице (Anti-Cosmetic)
+! Это гарантирует, что кнопки и таблицы не исчезнут.
+@@||hdx6190.celeo.net^$generichide
+@@||hdx6190.celeo.net^$elemhide
+@@||hdx6190.celeo.net^$jsinject
+
+! 4. Исправление для работы шрифтов и иконок
+@@||hdx6190.celeo.net^$font,image,important
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
