@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.85-APEX
+! Version: 11.1.87-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2037,6 +2037,26 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 #%#//scriptlet("abort-on-property-write", "eval")
 #%#//scriptlet("abort-on-property-write", "Function")
 #%#//scriptlet("execute-script", "const OMNI_SCAN=(()=>{const detect=(m)=>console.warn('%c🛡️ OMNI-AV:%c '+m,'color:red;font-weight:bold;','color:#fff;'); /* Мониторинг расшифровки данных */ window.atob=new Proxy(window.atob,{apply:(t,g,a)=>{if(a[0].length>5000){detect('Payload Blocked');return '';}return Reflect.apply(t,g,a)}}); /* Защита от зависания (Anti-Freeze) */ let s=Date.now(); setInterval(()=>{if(Date.now()-s>3000){detect('Throttling heavy script');s=Date.now();}},1000);})();")
+
+
+! === Сетевой заслон для NFC и Bluetooth (Без скриптлетов) ===
+
+! 1. Блокировка сетевых интерфейсов Web-Bluetooth
+||bluetooth.com^$important
+||webbluetoothcg.github.io^$important
+
+! 2. Блокировка систем позиционирования и "Nearby" (NFC/BT Beaconing)
+||proximity.googleapis.com^$important
+||nearby-messages.googleapis.com^$important
+||proximitybeacon.googleapis.com^$important
+
+! 3. Блокировка доступа к портам локальных демонов (часто используется для взлома)
+! Запрещаем запросы к локальным портам, через которые софт общается с железом
+||127.0.0.1:9222^$important
+||localhost:9222^$important
+
+! 4. Защита от утечки метаданных об устройствах
+||device-specs.io^$important
 
 
 ! === [L37: PROXIMITY-SHIELD] v145.0 ===
