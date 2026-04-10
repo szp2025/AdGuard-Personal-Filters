@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.77-APEX
+! Version: 11.1.78-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2049,41 +2049,16 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 ||*.nfc-forum.org^$important,tag=PROXIMITY
 
 
-! === [L38: TECH-DOMAIN-UNLOCKED] v146.2 ===
-! Полная разблокировка для HTTP-панелей Celeo (Без шифрования).
+! === [L38-39: CELEO-TOTAL-RELEASE] v148.0 ===
+! Полная и упрощенная разблокировка всей инфраструктуры celeo.net
 
-! 1. Исключаем домен из всех проверок безопасности и стерилизации
-@@||hdx6190.celeo.net^$stealth,document,subdocument,xmlhttprequest,other,important
+! 1. Глобальное исключение для всего домена (все типы запросов + CSS + Скрипты)
+@@||celeo.net^$document,subdocument,xmlhttprequest,stylesheet,script,image,font,other,stealth,important
 
-! 2. Отключаем принудительный редирект на HTTPS (если он включен в AdGuard)
-! Это позволит сайту работать по обычному http://
-@@||hdx6190.celeo.net^$rewrite=abp-resource:blank-js,badfilter
+! 2. Отключение всех косметических и скриптлет-фильтров (интерфейс и логика)
+@@||celeo.net^$generichide,elemhide,jsinject,extension,genericblock
 
-! 3. Разрешаем незащищенную передачу данных и куков для этого хоста
-@@||hdx6190.celeo.net^$header=Cookie,header=Referer,header=User-Agent,header=Authorization
-
-! 4. Убираем косметическую и скриптлет-фильтрацию (чтобы не ломать старый интерфейс)
-@@||hdx6190.celeo.net^$generichide,genericblock,js,extension,elemhide
-
-
-! === [L39: TECH-VISUAL-RESTORE] v147.0 ===
-! Полное восстановление стилей и интерфейса для Celeo.
-
-! 1. Разрешаем загрузку любых таблиц стилей (CSS)
-@@||hdx6190.celeo.net^$stylesheet,important
-@@||celeo.net^$stylesheet,important
-
-! 2. Отключаем инъекции пользовательских скриптов, которые могут менять верстку
-@@||hdx6190.celeo.net^$content,extension,warn,important
-
-! 3. Запрещаем AdGuard скрывать любые элементы на странице (Anti-Cosmetic)
-! Это гарантирует, что кнопки и таблицы не исчезнут.
-@@||hdx6190.celeo.net^$generichide,css
-@@||hdx6190.celeo.net^$elemhide
-@@||hdx6190.celeo.net^$jsinject
-
-! 4. Исправление для работы шрифтов и иконок
-@@||hdx6190.celeo.net^$font,image,important
-
+! 3. Разрешение на передачу заголовков (исправляет Error 400 на HTTP)
+@@||celeo.net^$header=Cookie,header=Referer,header=User-Agent
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
