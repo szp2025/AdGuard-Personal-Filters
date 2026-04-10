@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.87-APEX
+! Version: 11.1.89-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2080,5 +2080,25 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 ! Блокирует сетевые запросы от систем "умного города", пытающихся сопоставить твой ID.
 ||*.bluetooth.com^$important,tag=PROXIMITY
 ||*.nfc-forum.org^$important,tag=PROXIMITY
+
+
+
+! === [L40: THE-SILENT-VOID] v156.0 ===
+! Защита от скрытого слежения через железо и сенсоры.
+
+! 1. Анти-Ультразвук и защита Микрофона (Acoustic Tracking)
+@@||*^$stealth,header=Feature-Policy: microphone 'none'; megaphone 'none'; camera 'none'
+! (Этот заголовок говорит сайтам, что доступа к звуку нет по умолчанию)
+
+! 2. Блокировка детектора батареи (Battery Fingerprinting)
+#%#//scriptlet("abort-on-property-read", "navigator.getBattery")
+
+! 3. Защита от сенсоров (Акселерометр, Гироскоп) — чтобы сайты не знали, как ты держишь телефон
+#%#//scriptlet("abort-on-property-read", "DeviceMotionEvent")
+#%#//scriptlet("abort-on-property-read", "DeviceOrientationEvent")
+
+! 4. Блокировка отслеживания по состоянию сети (Network Information API)
+#%#//scriptlet("abort-on-property-read", "navigator.connection")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
