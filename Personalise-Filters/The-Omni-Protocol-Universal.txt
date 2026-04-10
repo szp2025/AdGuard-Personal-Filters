@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.78-APEX
+! Version: 11.1.79-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -540,12 +540,19 @@ mail.ru##.rb-slot
 @@||login.live.com^$important,stealth=off,jsinject=off
 
 
-! === [OMNI-HEURISTIC-WORK] TECH-BRIDGE v21.6 ===
+! === [OMNI-HEURISTIC-WORK] TECH-BRIDGE v22.0 ===
 ! 1. Эвристика по структуре: Локальные хосты, IP-адреса и Celeo/HDX
-@@||localhost^$important,stealth=off,network
-@@||*.local^$important,stealth=off,network
-@@||*.celeo.net^$important,stealth=off,network
-@@||*hdx*^$important,stealth=off,network,domain=~google.com|~youtube.com
+! Добавлено: отключение stealth, разрешение всех типов контента и CSS.
+
+@@||localhost^$important,stealth,document,xmlhttprequest,stylesheet,script,other
+@@||*.local^$important,stealth,document,xmlhttprequest,stylesheet,script,other
+@@||*.celeo.net^$important,stealth,document,xmlhttprequest,stylesheet,script,other
+@@||*hdx*^$important,stealth,document,xmlhttprequest,stylesheet,script,other,domain=~google.com|~youtube.com
+
+! 2. Отключение косметической фильтрации (чтобы CSS не резался)
+@@||celeo.net^$generichide,elemhide,jsinject,genericblock
+@@||*hdx*^$generichide,elemhide,jsinject,genericblock,domain=~google.com|~youtube.com
+
 
 ! Разрешаем прямой доступ по IP-адресам (админки роутеров, NAS, сервера)
 @@/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/$important,stealth=off,network
@@ -2049,16 +2056,6 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 ||*.nfc-forum.org^$important,tag=PROXIMITY
 
 
-! === [L38-39: CELEO-TOTAL-RELEASE] v148.0 ===
-! Полная и упрощенная разблокировка всей инфраструктуры celeo.net
 
-! 1. Глобальное исключение для всего домена (все типы запросов + CSS + Скрипты)
-@@||celeo.net^$document,subdocument,xmlhttprequest,stylesheet,script,image,font,other,stealth,important
-
-! 2. Отключение всех косметических и скриптлет-фильтров (интерфейс и логика)
-@@||celeo.net^$generichide,elemhide,jsinject,extension,genericblock
-
-! 3. Разрешение на передачу заголовков (исправляет Error 400 на HTTP)
-@@||celeo.net^$header=Cookie,header=Referer,header=User-Agent
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
