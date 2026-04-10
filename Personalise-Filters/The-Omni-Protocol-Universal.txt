@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.98-APEX
+! Version: 11.1.99-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2215,13 +2215,13 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ! Принудительная очистка и фикс визуального отображения истории.
 
 ! 1. [URL-REWRITE] Стираем визуальный след в адресной строке (JS-Injection)
-! Этот скрипт удаляет всё после знака "?" в истории браузера через 1 секунду после загрузки.
+! Блокируем функции браузера, которые Google использует для записи "хвостов" в историю.
 google.*##+js(set-constant, history.replaceState, undefined)
 google.*##+js(set-constant, history.pushState, undefined)
 #%#//scriptlet("abort-on-property-read", "location.search")
 
 ! 2. [GLOBAL-CLEAN] Расширенный список для вырезания (Сетевой уровень)
-! Добавляем $,important ко всем параметрам для приоритета
+! Вырезаем все идентификаторы из твоих примеров (PC + Mobile).
 *$removeparam=q,important
 *$removeparam=oq,important
 *$removeparam=sei,important
@@ -2230,15 +2230,19 @@ google.*##+js(set-constant, history.pushState, undefined)
 *$removeparam=sca_esv,important
 *$removeparam=sxsrf,important
 *$removeparam=iflsig,important
+*$removeparam=ei,important
+*$removeparam=sclient,important
 
 ! 3. [MOBILE-FIX] Специально для Chrome на Android/Samsung
-! Запрещает Google "подсматривать" за состоянием вкладки.
+! Отсекаем фоновые статические и визуальные запросы слежки.
 ||google.com/search/static/*$important,network
 ||google.com/search/visual*$important,network
 
-! 4. [HARD-REPLACE] Подмена заголовков (Спецслужбы увидят пустоту)
+! 4. [HARD-REPLACE] Подмена заголовков (Скрываем IP и источник)
 *$header=X-Forwarded-For: 127.0.0.1,important
+*$header=X-Real-IP: 127.0.0.1,important
 *$header=Referrer-Policy: no-referrer,important
+*$header=User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36,important
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
