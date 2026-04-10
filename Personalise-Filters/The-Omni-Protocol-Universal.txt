@@ -1,6 +1,6 @@
 [Adblock Plus 2.0]
 ! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
-! Version: 11.1.89-APEX
+! Version: 11.1.90-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
 ! Expires: 1 hour
@@ -2100,5 +2100,31 @@ $csp=frame-ancestors 'none'; form-action 'self' *.google.com *.revolut.com *.sbe
 ! 4. Блокировка отслеживания по состоянию сети (Network Information API)
 #%#//scriptlet("abort-on-property-read", "navigator.connection")
 
+
+! === [L41: GHOST-IN-THE-SHELL] v157.1 ===
+! Финальный слой: Полная изоляция локальной сети, WebRTC и системного фингерпринтинга.
+
+! 1. Бронирование локальной сети (LAN Isolation)
+! Запрещает внешним сайтам сканировать твой роутер и домашние гаджеты.
+||192.168.0.0/16^$important,domain=~celeo.net|~localhost|~127.0.0.1
+||10.0.0.0/8^$important,domain=~celeo.net|~localhost|~127.0.0.1
+||172.16.0.0/12^$important,domain=~celeo.net|~localhost|~127.0.0.1
+
+! 2. Уничтожение утечек IP через WebRTC
+! Теперь твой реальный IP не "выскочит" через протоколы видеосвязи.
+#%#//scriptlet("abort-on-property-read", "RTCPeerConnection")
+#%#//scriptlet("abort-on-property-read", "webkitRTCPeerConnection")
+
+! 3. Защита от шрифтового и системного сканирования
+! Сайт больше не видит твой список шрифтов и установленное ПО.
+#%#//scriptlet("prevent-window-open", "FontFace")
+#%#//scriptlet("abort-on-property-read", "navigator.plugins")
+#%#//scriptlet("abort-on-property-read", "navigator.mimeTypes")
+
+! 4. Блокировка Idle Detection (Сайт не знает, когда ты отошел от экрана)
+#%#//scriptlet("abort-on-property-read", "IdleDetector")
+
+! 5. Принудительная политика безопасности для защиты от XSS атак
+@@||*^$header=Content-Security-Policy: default-src 'self' 'unsafe-inline' 'unsafe-eval' *;
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
