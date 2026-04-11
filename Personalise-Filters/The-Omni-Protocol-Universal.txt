@@ -2345,5 +2345,30 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 *$header=Sec-CH-UA-Model: ,important
 *$header=Sec-CH-UA-Platform-Version: ,important
 
+! === [L52: IDENTITY-SILENCER-CORE] v182.0 ===
+! Блокировка систем автоматической идентификации и скрытых запросов профиля.
+
+! 1. Аннигиляция Google One Tap (Запрет всплывающих окон "Войти с помощью Google")
+! Не дает Google предлагать авторизацию на сторонних сайтах, связывая их с твоим аккаунтом.
+||smartlock.google.com^$important
+||accounts.google.com/gsi/*$important
+
+! 2. Запрет API проверки авторизации (IsLoggedIn API)
+! Сайты не смогут тайно проверить, залогинен ли ты сейчас в Gmail или соцсетях.
+#%#//scriptlet("set-constant", "navigator.login", "undefined")
+
+! 3. Блокировка Federated Learning of Cohorts (FLoC / Topics API)
+! Уничтожает попытку Google сгруппировать тебя по интересам без использования кук.
+#%#//scriptlet("set-constant", "document.browsingTopics", "undefined")
+*$header=Sec-Browsing-Topics: ,important
+
+! 4. CSP: Запрет на установку соединений с "доверенными" рекламными доменами
+! Финальная блокировка путей для обмена данными между рекламными сетями.
+*$csp=connect-src 'self' *.google.com *.googleapis.com *.gstatic.com; upgrade-insecure-requests,important
+
+! 5. Запрет на доступ к списку установленных шрифтов через JS
+! Усиливаем блокировку отпечатков, если CSP font-src где-то игнорируется.
+#%#//scriptlet("set-constant", "document.fonts", "undefined")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
