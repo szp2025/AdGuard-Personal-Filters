@@ -2269,5 +2269,30 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ! Запрещает встраивать твои страницы (Gmail, Поиск) в чужие сайты для кражи кликов.
 *$csp=frame-ancestors 'none',important
 
+! === [L49: CONTENT-DEEP-ISOLATION] v179.0 ===
+! Глубокая дезинфекция: Отключение аппаратных отпечатков и фоновой активности.
+
+! 1. Аннигиляция Battery Status API (Защита от идентификации по заряду)
+#%#//scriptlet("set-constant", "navigator.getBattery", "undefined")
+
+! 2. Блокировка Canvas и WebGL Fingerprinting (Защита видеокарты)
+! Делает твой графический отпечаток стандартным и нечитаемым.
+#%#//scriptlet("set-constant", "HTMLCanvasElement.prototype.getContext", "undefined")
+#%#//scriptlet("abort-on-property-read", "WebGLRenderingContext")
+
+! 3. CSP: Запрет фоновой предзагрузки контента (Anti-Speculation)
+! Экономит трафик и не дает сайтам знать, на что ты можешь нажать.
+*$csp=prefetch-src 'none',important
+
+! 4. CSP: Полный запрет плагинов и объектов (Anti-Exploit)
+*$csp=object-src 'none',important
+
+! 5. Сетевой запрет на Beacon и Ping (Скрытие активности после закрытия вкладки)
+! Не дает Google отправить отчет о том, что ты закончил просмотр.
+*$header=Ping-From: ,important
+*$header=Ping-To: ,important
+#%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
+
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
