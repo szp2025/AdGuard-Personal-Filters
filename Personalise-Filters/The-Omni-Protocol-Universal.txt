@@ -2245,4 +2245,29 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 @@||gemini.google.com^$jsinject
 @@||google.com/search/static/*$xmlhttprequest
 
+
+! === [L48: CSP-HARD-QUARANTINE] v178.0 ===
+! Ультра-защита: Изоляция шрифтов, скриптов и соединений.
+
+! 1. Блокировка утечек через шрифты (Font-Fingerprinting)
+! Скрывает уникальность твоей системы, запрещая сайтам подгружать сторонние шрифты.
+*$csp=font-src 'none',important
+
+! 2. Ограничение фоновых соединений (WebSockets / EventSource)
+! Запрещает скрытую передачу данных на посторонние серверы.
+*$csp=connect-src 'self' *.google.com *.googleapis.com *.gstatic.com *.google-analytics.com,important
+
+! 3. Строгая политика скриптов и стилей
+! Минимизирует риск XSS-атак и скрытого изменения интерфейса.
+*$csp=script-src 'self' 'unsafe-eval' *.google.com *.gstatic.com; style-src 'self' 'unsafe-inline' *.google.com,important
+
+! 4. Песочница (Sandbox)
+! Изолирует выполнение страницы, запрещая доступ к плагинам и несанкционированным всплывающим окнам.
+*$csp=sandbox allow-forms allow-scripts allow-same-origin allow-popups,important
+
+! 5. Защита от Clickjacking (frame-ancestors)
+! Запрещает встраивать твои страницы (Gmail, Поиск) в чужие сайты для кражи кликов.
+*$csp=frame-ancestors 'none',important
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
