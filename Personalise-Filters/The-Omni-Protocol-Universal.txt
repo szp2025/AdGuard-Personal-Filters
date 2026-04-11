@@ -2319,4 +2319,31 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 *$csp=connect-src 'self' *.google.com *.googleapis.com *.gstatic.com,important
 
 
+! === [L51: LOGICAL-CONTEXT-ISOLATION] v181.0 ===
+! Изоляция контекста выполнения и блокировка межсайтовых утечек.
+
+! 1. Запрет на доступ к общему буферу памяти (Anti-Spectre/Meltdown)
+! Не дает скриптам читать данные, которые "случайно" остались от других вкладок.
+#%#//scriptlet("set-constant", "SharedArrayBuffer", "undefined")
+
+! 2. Блокировка Storage Access API
+! Запрещает сайтам запрашивать доступ к кукам других сервисов.
+#%#//scriptlet("set-constant", "document.requestStorageAccess", "undefined")
+
+! 3. CSP: Запрет на встраивание внешних манифестов
+! Скрывает иконки и параметры приложения, по которым можно вычислить ОС.
+*$csp=manifest-src 'none',important
+
+! 4. Блокировка API обнаружения устройств (WebUSB / WebHID)
+! Ни один сайт не узнает, какие аксессуары или флешки подключены к телефону.
+#%#//scriptlet("set-constant", "navigator.usb", "undefined")
+#%#//scriptlet("set-constant", "navigator.hid", "undefined")
+
+! 5. Финализация запрета на передачу метаданных (Client Hints)
+! Удаляет заголовки, которые сообщают точную версию архитектуры процессора.
+*$header=Sec-CH-UA-Arch: ,important
+*$header=Sec-CH-UA-Model: ,important
+*$header=Sec-CH-UA-Platform-Version: ,important
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
