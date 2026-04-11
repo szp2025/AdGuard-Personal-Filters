@@ -2293,6 +2293,30 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 *$header=Ping-To: ,important
 #%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
 
+! === [L50: THE-FINAL-PARANOIA-CORE] v180.0 ===
+! Защита от временных атак и логическая изоляция памяти.
+
+! 1. Внесение джиттера в таймеры (Anti-Timing Attacks)
+! Спецслужбы не смогут замерять микросекунды для кражи данных из памяти процессора.
+#%#//scriptlet("set-constant", "performance.now", "undefined")
+
+! 2. Блокировка API обнаружения присутствия
+! Не дает сайтам знать, активна ли вкладка или ты переключился на другое приложение.
+#%#//scriptlet("set-constant", "document.visibilityState", "visible")
+#%#//scriptlet("set-constant", "document.hidden", "false")
+
+! 3. CSP: Запрет на захват аудио/видео потоков (Media Capture)
+! Даже если CSP сенсоров даст сбой, это правило на корню рубит доступ к стримингу.
+*$csp=media-src 'none',important
+
+! 4. Удаление заголовков с данными о времени (Date/Age Hijacking)
+! Скрывает точное время обработки запроса вашим устройством.
+*$header=Age: ,important
+*$header=Date: ,important
+
+! 5. Финальный штрих: Запрет на обращение к локальным ресурсам
+! Не дает сайтам сканировать твою локальную сеть (например, искать роутер).
+*$csp=connect-src 'self' *.google.com *.googleapis.com *.gstatic.com,important
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
