@@ -2348,36 +2348,6 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ! 5. Смягчение Trusted Types для доменов ИИ
 @@||gemini.google.com^$csp=require-trusted-types-for 'script'
 
-! === [L66: SAFE-ZEN-LIMIT] v196.0 ===
-! Сбалансированная защита без блокировки критических приложений.
-
-! 1. Принудительный белый список для приложений Google (Android Integrity)
-! Гарантирует, что AdGuard не будет трогать трафик самого Gemini и Ассистента.
-@@||google.com^$app=com.google.android.apps.googleassistant
-@@||googleapis.com^$app=com.google.android.apps.googleassistant
-@@||gstatic.com^$app=com.google.android.apps.googleassistant
-
-! 2. Возвращаем блокировку $ping и $other, но СТРОГО с исключениями
-! Защищает от скрытого отслеживания на всех сайтах, кроме жизненно важных.
-*$ping,important,domain=~google.com|~gstatic.com|~googleapis.com
-||*^$other,important,domain=~google.com|~gstatic.com|~googleapis.com
-
-! 3. Защита буфера обмена и Trusted Types (только для сторонних сайтов)
-! Не дает сайтам читать твой буфер, но не мешает Gemini.
-*$csp=require-trusted-types-for 'script',domain=~gemini.google.com,important
-#%#//scriptlet("set-constant", "navigator.clipboard", "undefined", "~gemini.google.com")
-
-! 4. Изоляция Client-Hints (защита от идентификации железа)
-! Эти правила безопасны и не ломают приложения.
-*$header=Sec-CH-UA-Arch: ,important
-*$header=Sec-CH-UA-Model: ,important
-*$header=Sec-CH-UA-Platform-Version: ,important
-
-! 5. Блокировка фонового сканирования Bluetooth и HID
-! Полная приватность без ущерба для работы чата.
-#%#//scriptlet("set-constant", "navigator.bluetooth", "undefined")
-#%#//scriptlet("set-constant", "navigator.hid", "undefined")
-
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
