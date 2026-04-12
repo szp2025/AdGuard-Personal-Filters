@@ -2446,4 +2446,28 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 *$header=Sec-CH-UA-Full-Version: ,important
 *$header=Sec-CH-UA-Full-Version-List: ,important
 
+
+! === [L56: DOM-INTEGRITY-ZERO-TRUST] v186.0 ===
+! Нулевое доверие к DOM: Блокировка динамической генерации кода.
+
+! 1. Принудительное использование Trusted Types (Anti-XSS / Anti-Injection)
+! Запрещает сайтам использовать функции типа innerHTML для вставки кода.
+*$csp=require-trusted-types-for 'script',important
+
+! 2. CSP: Ограничение навигации (Navigation-to)
+! Запрещает сайту принудительно перенаправлять тебя на другие домены без клика.
+*$csp=navigation-to 'self' *.google.com *.gstatic.com,important
+
+! 3. Запрет на использование Shared Workers
+! Последняя лазейка для фоновых вычислений, которую мы еще не закрыли.
+#%#//scriptlet("set-constant", "SharedWorker", "undefined")
+
+! 4. Блокировка доступа к буферу обмена (Clipboard API)
+! Сайты не смогут тайно читать твой буфер обмена или подменять в нем данные.
+#%#//scriptlet("set-constant", "navigator.clipboard", "undefined")
+
+! 5. Финальная блокировка "невидимых" запросов (Report-To)
+! Запрещает браузеру отправлять отчеты об ошибках CSP обратно в Google.
+*$csp=report-to 'none'; report-uri 'none',important
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
