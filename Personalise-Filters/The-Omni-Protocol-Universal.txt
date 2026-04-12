@@ -2320,6 +2320,34 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 
 
 
+! === [L66: ADAPTIVE-BALANCE] v196.0 ===
+! Единый модуль совместимости для ИИ и системных приложений Google.
+
+! 1. Глобальное исключение для системных компонентов Google (Android Integrity)
+! Позволяет приложениям Assistant и Gemini работать без сетевых разрывов.
+@@||google.com^$app=com.google.android.apps.googleassistant
+@@||googleapis.com^$app=com.google.android.apps.googleassistant
+@@||gstatic.com^$app=com.google.android.apps.googleassistant
+@@||google.com^$app=com.google.android.googlequicksearchbox
+
+! 2. Снятие архитектурных замков (Shadow DOM / Blobs) только для Google
+! Это возвращает возможность отрисовки интерфейсов, не открывая лазеек для рекламы на других сайтах.
+@@||google.com^$scriptlet(set-constant, Element.prototype.attachShadow, undefined)
+@@||gstatic.com^$scriptlet(set-constant, Element.prototype.attachShadow, undefined)
+@@||google.com^$scriptlet(abort-on-property-read, URL.createObjectURL)
+
+! 3. Восстановление критических API для работы нейросетей
+@@||gemini.google.com^$scriptlet(set-constant, SharedArrayBuffer, undefined)
+@@||gemini.google.com^$scriptlet(set-constant, navigator.clipboard, undefined)
+
+! 4. Разблокировка типов контента для проверки связи (Anti-Timeout)
+! Больше никаких "Impossible de se connecter au serveur".
+@@||gemini.google.com^$websocket,xmlhttprequest,ping,other
+@@||alkaliminer-pa.clients6.google.com^$xmlhttprequest,websocket,other
+
+! 5. Смягчение Trusted Types для доменов ИИ
+@@||gemini.google.com^$csp=require-trusted-types-for 'script'
+
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
