@@ -2420,4 +2420,30 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ##[data-ad-id]
 ##[data-control-id]
 
+
+! === [L55: NETWORK-INTEGRITY-FINAL] v185.0 ===
+! Финализация сетевой целостности и блокировка микро-утечек.
+
+! 1. Запрет на использование API сетевых запросов в фоновом режиме
+! Не дает сайтам отправлять данные, пока телефон "спит".
+#%#//scriptlet("set-constant", "navigator.sendBeacon", "false")
+#%#//scriptlet("set-constant", "navigator.scheduling", "undefined")
+
+! 2. Блокировка обнаружения сетевых интерфейсов через JS
+! Скрывает информацию о том, используешь ли ты Wi-Fi или мобильные данные.
+#%#//scriptlet("set-constant", "navigator.connection", "undefined")
+
+! 3. CSP: Запрет на использование Worker-скриптов для аналитики
+! Запрещает создавать скрытые вычислительные потоки для сбора данных.
+*$csp=worker-src 'none',important
+
+! 4. Блокировка API состояния памяти устройства (Device Memory)
+! Спецслужбы не смогут узнать точный объем твоей RAM для идентификации.
+#%#//scriptlet("set-constant", "navigator.deviceMemory", "undefined")
+
+! 5. Финальная очистка заголовков (Client-Hints)
+! Удаляем последние остатки информации о модели и архитектуре.
+*$header=Sec-CH-UA-Full-Version: ,important
+*$header=Sec-CH-UA-Full-Version-List: ,important
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
