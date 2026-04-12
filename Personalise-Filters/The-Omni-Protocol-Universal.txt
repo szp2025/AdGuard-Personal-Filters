@@ -2547,5 +2547,29 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ! Маскирует частоту обновления твоего экрана (60/90/120Hz), делая её стандартной.
 #%#//scriptlet("set-constant", "requestAnimationFrame", "undefined")
 
+! === [L60: THE-ZEN-FINAL-LOCK] v190.0 ===
+! Финальная герметизация: Блокировка временных хранилищ и кэш-аналитики.
+
+! 1. Запрет на использование Cache Storage API
+! Не дает сайтам сохранять тяжелые ресурсы в кэш браузера для тайной слежки.
+#%#//scriptlet("set-constant", "caches", "undefined")
+
+! 2. Блокировка IndexedDB для рекламных доменов
+! Закрывает возможность создания локальных баз данных со твоим ID.
+||*^$indexeddb,domain=~google.com|~gmail.com|~youtube.com,important
+
+! 3. CSP: Запрет на встраивание через Object и Embed
+! Полностью исключает запуск Flash (да, он еще бывает) или PDF-плагинов внутри страниц.
+*$csp=object-src 'none',important
+
+! 4. Ограничение времени жизни сессии (Session Storage Isolation)
+! Попытка минимизировать хранение данных в пределах одной вкладки.
+#%#//scriptlet("set-constant", "sessionStorage.setItem", "undefined")
+
+! 5. Финальный флаг: Запрет на отладочные инструменты (Anti-Debugging)
+! Скрывает от сайтов возможность понять, что ты анализируешь их трафик.
+#%#//scriptlet("set-constant", "console.clear", "undefined")
+#%#//scriptlet("set-constant", "console.table", "undefined")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
