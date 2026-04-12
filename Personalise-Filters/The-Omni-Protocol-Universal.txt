@@ -2470,4 +2470,32 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ! Запрещает браузеру отправлять отчеты об ошибках CSP обратно в Google.
 *$csp=report-to 'none'; report-uri 'none',important
 
+
+! === [L57: TOTAL-CONTENT-TYPE-CONTROL] v187.0 ===
+! Глобальный контроль типов данных и блокировка скрытых методов передачи.
+
+! 1. Принудительная фильтрация всех типов для Google (Zero-Leak)
+! Гарантирует, что даже скрытые WebSocket или Ping запросы проходят через фильтр.
+||google.com^$script,image,stylesheet,font,media,xmlhttprequest,subdocument,document,websocket,ping,other,important
+||gstatic.com^$script,image,stylesheet,font,media,xmlhttprequest,subdocument,document,websocket,ping,other,important
+||googleapis.com^$script,image,stylesheet,font,media,xmlhttprequest,subdocument,document,websocket,ping,other,important
+
+! 2. Блокировка скрытых "пинг-запросов" для всего интернета
+! Это те самые запросы, которые сайты шлют, когда ты просто двигаешь мышкой.
+*$ping,important
+
+! 3. Блокировка фоновых WebSocket соединений (кроме доверенных)
+! Не дает сайтам открывать постоянный канал связи для слежки в реальном времени.
+*$websocket,domain=~google.com|~youtube.com|~gmail.com,important
+
+! 4. Ограничение типа 'Other' (Защита от нестандартных протоколов)
+! Блокирует любые запросы, которые браузер не смог классифицировать (часто это трекеры).
+||*^$other,domain=~google.com|~gmail.com,important
+
+! 5. Запрет на подгрузку шрифтов со сторонних ресурсов (Hard-Lock)
+! Если шрифт не на самом сайте — он нам не нужен (защита от фингерпринтинга).
+*$font,third-party,important
+
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
