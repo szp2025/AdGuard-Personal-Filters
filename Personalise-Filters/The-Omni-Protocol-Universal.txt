@@ -2474,11 +2474,7 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ! === [L57: TOTAL-CONTENT-TYPE-CONTROL] v187.0 ===
 ! Глобальный контроль типов данных и блокировка скрытых методов передачи.
 
-! 1. Принудительная фильтрация всех типов для Google (Zero-Leak)
-! Гарантирует, что даже скрытые WebSocket или Ping запросы проходят через фильтр.
-||google.com^$script,image,stylesheet,font,media,xmlhttprequest,subdocument,document,websocket,ping,other,important
-||gstatic.com^$script,image,stylesheet,font,media,xmlhttprequest,subdocument,document,websocket,ping,other,important
-||googleapis.com^$script,image,stylesheet,font,media,xmlhttprequest,subdocument,document,websocket,ping,other,important
+
 
 ! 2. Блокировка скрытых "пинг-запросов" для всего интернета
 ! Это те самые запросы, которые сайты шлют, когда ты просто двигаешь мышкой.
@@ -2661,6 +2657,16 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ! Позволяет приложению использовать свои внутренние методы без вмешательства.
 @@||*^$app=com.google.android.apps.googleassistant
 @@||*^$app=com.google.android.googlequicksearchbox
+
+! === [L65: CORE-SYNTAX-FIX] v195.0 ===
+! Исправление: разрешаем типы данных, чтобы AdGuard мог их инспектировать без блокировки.
+
+@@||google.com^$script,image,stylesheet,font,media,xmlhttprequest,subdocument,document,websocket,ping,other
+@@||gstatic.com^$script,image,stylesheet,font,media,xmlhttprequest,subdocument,document,websocket,ping,other
+@@||googleapis.com^$script,image,stylesheet,font,media,xmlhttprequest,subdocument,document,websocket,ping,other
+
+! Исключение для интерфейса Gemini
+@@||gemini.google.com^$document,subdocument,other
 
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
