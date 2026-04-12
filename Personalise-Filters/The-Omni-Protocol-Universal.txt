@@ -2370,5 +2370,54 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ! Усиливаем блокировку отпечатков, если CSP font-src где-то игнорируется.
 #%#//scriptlet("set-constant", "document.fonts", "undefined")
 
+! === [L53: AMBIENT-ISOLATION-CORE] v183.0 ===
+! Полная изоляция от физического окружения и сетевого сканирования.
+
+! 1. Запрет на доступ к Bluetooth (Web Bluetooth API)
+! Не дает сайтам искать твои наушники, часы или умные устройства рядом.
+#%#//scriptlet("set-constant", "navigator.bluetooth", "undefined")
+
+! 2. Блокировка API обнаружения рекламы на ТВ и устройствах (Presentation API)
+! Запрещает сайтам "выбрасывать" контент на другие экраны или искать их.
+#%#//scriptlet("set-constant", "navigator.presentation", "undefined")
+
+! 3. CSP: Запрет на использование потоков данных в реальном времени (WebRTC)
+! Блокирует самую опасную утечку реального IP-адреса в обход VPN/Прокси.
+*$csp=connect-src 'self' *.google.com *.googleapis.com *.gstatic.com; worker-src 'none',important
+
+! 4. Запрет на доступ к игровым контроллерам (Gamepad API)
+! Уникальный ID твоего джойстика больше не будет использоваться для фингерпринтинга.
+#%#//scriptlet("set-constant", "navigator.getGamepads", "undefined")
+
+! 5. Финализация запрета на геолокацию (Hard-Lock)
+! Полное уничтожение возможности запросить координаты, даже если системное окно всплывет.
+#%#//scriptlet("set-constant", "navigator.geolocation", "undefined")
+
+
+! === [L54: ARCHITECTURAL-PURGE-CORE] v184.0 ===
+! Деконструкция скрытых элементов и блокировка динамических утечек.
+
+! 1. Запрет на создание Blob-объектов (Anti-Data-Hiding)
+! Закрывает лазейку загрузки ресурсов без URL (в обход сетевых фильтров).
+#%#//scriptlet("abort-on-property-read", "URL.createObjectURL")
+
+! 2. Блокировка Shadow DOM (Open/Closed)
+! Выводит скрытые рекламные и трекинговые элементы Google из "тени" на свет.
+#%#//scriptlet("set-constant", "Element.prototype.attachShadow", "undefined")
+
+! 3. CSP: Запрет на загрузку данных через DATA-схемы (Anti-Inlining)
+! Защита от выполнения кода, встроенного прямо в HTML в формате Base64.
+*$csp=script-src 'self' *.google.com *.gstatic.com; img-src 'self' *.google.com *.gstatic.com data:; default-src 'self' *.google.com,important
+
+! 4. Блокировка Service Worker и Уведомлений
+! Предотвращает фоновую активность сайтов после закрытия вкладок.
+#%#//scriptlet("set-constant", "Notification.permission", "denied")
+#%#//scriptlet("set-constant", "navigator.serviceWorker.register", "undefined")
+
+! 5. Аннигиляция атрибутов отслеживания
+! Удаляет скрытые метки (tracking-id) прямо из кода страницы.
+##[data-tracking]
+##[data-ad-id]
+##[data-control-id]
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
