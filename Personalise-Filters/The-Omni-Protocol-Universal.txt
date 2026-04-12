@@ -2593,4 +2593,29 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 @@||gemini.google.com^$scriptlet(set-constant, navigator.clipboard, undefined)
 
 
+! === [L62: NEURAL-CORRIDOR] v192.0 ===
+! Снятие архитектурных ограничений для стабильной работы Gemini.
+
+! 1. Полная отмена CSP ограничений для доменов Gemini
+! Позволяет интерфейсу загружать скрипты и устанавливать соединения без блокировок.
+@@||gemini.google.com^$csp
+@@||ai.google.com^$csp
+@@||alkaliminer-pa.clients6.google.com^$csp
+
+! 2. Восстановление работы Shadow DOM для Google (необходимо для отрисовки чата)
+@@||google.com^$scriptlet(set-constant, Element.prototype.attachShadow, undefined)
+@@||gstatic.com^$scriptlet(set-constant, Element.prototype.attachShadow, undefined)
+
+! 3. Разрешение на выполнение фоновых воркеров для стабильной связи
+@@||gemini.google.com^$scriptlet(set-constant, navigator.serviceWorker.register, undefined)
+@@||google.com^$scriptlet(set-constant, navigator.serviceWorker.register, undefined)
+
+! 4. Разрешение на использование IndexedDB для хранения сессий чата
+@@||gemini.google.com^$indexeddb
+@@||google.com^$indexeddb
+
+! 5. Восстановление возможности навигации (убирает баги при переходах)
+@@||gemini.google.com^$csp=navigation-to
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
