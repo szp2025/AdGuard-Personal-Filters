@@ -2522,5 +2522,30 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 ! Гарантирует, что даже видео/аудио потоки проверяются на наличие трекеров.
 ||*^$media,websocket,xmlhttprequest,important
 
+! === [L59: FINAL-SHIELD-CALIBRATION] v189.0 ===
+! Калибрация интерфейса и защита от визуального трекинга.
+
+! 1. Запрет на использование API "движения глаз" и фокуса
+! Не дает сайтам знать, на какую часть страницы ты смотришь.
+#%#//scriptlet("set-constant", "document.onmouseenter", "undefined")
+#%#//scriptlet("set-constant", "document.onmouseleave", "undefined")
+
+! 2. Блокировка CSS-запросов на проверку установленных расширений
+! Защищает от "хитрых" скриптов, которые ищут следы AdGuard в стилях.
+#%#//scriptlet("abort-on-property-read", "getComputedStyle")
+
+! 3. Глобальное подавление косметических "дыр"
+! Убирает пустые места и белые блоки, которые остаются после удаления рекламы.
+##.ad-container, .adsbygoogle, #ad-slot { display: none !important; height: 0 !important; visibility: hidden !important; }
+
+! 4. Запрет на доступ к списку плагинов и MIME-типов
+! Последний штрих в маскировке: сайты видят "пустой" список возможностей браузера.
+#%#//scriptlet("set-constant", "navigator.plugins.length", "0")
+#%#//scriptlet("set-constant", "navigator.mimeTypes.length", "0")
+
+! 5. Ограничение частоты обновления кадров (Anti-FPS-Fingerprint)
+! Маскирует частоту обновления твоего экрана (60/90/120Hz), делая её стандартной.
+#%#//scriptlet("set-constant", "requestAnimationFrame", "undefined")
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
