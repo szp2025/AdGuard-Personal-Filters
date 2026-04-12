@@ -2571,5 +2571,26 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 #%#//scriptlet("set-constant", "console.clear", "undefined")
 #%#//scriptlet("set-constant", "console.table", "undefined")
 
+! === [L61: DIPLOMATIC-IMMUNITY] v191.0 ===
+! Исключения для работы Gemini и сервисов Google без потери защиты.
+
+! 1. Разрешаем Trusted Types для доменов Gemini
+! Без этого интерфейс чата просто не отрисуется.
+@@||gemini.google.com^$csp=require-trusted-types-for 'script'
+@@||alkaliminer-pa.clients6.google.com^$csp=require-trusted-types-for 'script'
+
+! 2. Возвращаем Blob URL для Google (нужно для работы скриптов ИИ)
+@@||google.com^$scriptlet(abort-on-property-read, URL.createObjectURL)
+@@||gstatic.com^$scriptlet(abort-on-property-read, URL.createObjectURL)
+
+! 3. Восстанавливаем Service Workers для уведомлений и стабильности Gemini
+@@||gemini.google.com^$scriptlet(set-constant, navigator.serviceWorker.register, undefined)
+
+! 4. Разрешаем SharedArrayBuffer (нужен для быстрых вычислений ИИ в браузере)
+@@||gemini.google.com^$scriptlet(set-constant, SharedArrayBuffer, undefined)
+
+! 5. Ослабляем хватку для буфера обмена на Gemini (чтобы ты мог копировать код)
+@@||gemini.google.com^$scriptlet(set-constant, navigator.clipboard, undefined)
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
