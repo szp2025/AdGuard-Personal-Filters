@@ -2618,4 +2618,49 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 @@||gemini.google.com^$csp=navigation-to
 
 
+! === [L63: AI-EMERGENCY-BYPASS] v193.0 ===
+! Принудительное исключение Gemini из всех системных блокировок.
+
+! 1. Разблокировка всех типов контента для Gemini (Убирает ошибку сервера)
+! Это отменяет влияние блока v187 на домены Gemini.
+@@||gemini.google.com^$script,image,stylesheet,font,media,xmlhttprequest,subdocument,document,websocket,ping,other
+@@||alkaliminer-pa.clients6.google.com^$script,image,stylesheet,font,media,xmlhttprequest,subdocument,document,websocket,ping,other
+@@||proactivebackend-pa.googleapis.com^$xmlhttprequest,websocket,other
+
+! 2. Полное исключение из CSP (Content Security Policy)
+! Позволяет Gemini выполнять любые внутренние скрипты без проверки.
+@@||gemini.google.com^$csp
+@@||alkaliminer-pa.clients6.google.com^$csp
+
+! 3. Восстановление системных API для Google
+! Отменяет блокировки из v184-v186 специально для доменов Google.
+@@||google.com^$scriptlet(abort-on-property-read, URL.createObjectURL)
+@@||google.com^$scriptlet(set-constant, Element.prototype.attachShadow, undefined)
+@@||google.com^$scriptlet(set-constant, navigator.serviceWorker.register, undefined)
+
+! 4. Разрешение на "Пинги" и фоновую синхронизацию для Gemini
+! Чтобы сервер видел, что ты онлайн и не обрывал сессию.
+@@||gemini.google.com^$ping
+@@||google.com^$ping,domain=gemini.google.com
+
+! === [L64: APP-INTEGRITY-RESCUE] v194.0 ===
+! Разблокировка системных эндпоинтов для мобильного приложения ИИ.
+
+! 1. Приоритетный белый список для API приложения
+! Эти домены — "нервная система" приложения в Android.
+@@||assistant.googleapis.com^$important
+@@||semantic-location-pa.googleapis.com^$important
+@@||identitytoolkit.googleapis.com^$important
+
+! 2. Отмена блокировки типов данных для системных запросов Google
+! Приложению жизненно необходимы $websocket и $xmlhttprequest для чата.
+@@||google.com^$websocket,xmlhttprequest,ping,other,app=com.google.android.apps.googleassistant
+@@||googleapis.com^$websocket,xmlhttprequest,ping,other,app=com.google.android.apps.googleassistant
+
+! 3. Исключение приложения из-под действия жестких CSP и скриплетов
+! Позволяет приложению использовать свои внутренние методы без вмешательства.
+@@||*^$app=com.google.android.apps.googleassistant
+@@||*^$app=com.google.android.googlequicksearchbox
+
+
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
