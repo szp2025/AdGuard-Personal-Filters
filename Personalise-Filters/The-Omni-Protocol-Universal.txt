@@ -2497,5 +2497,30 @@ france3-regions.franceinfo.fr##.didomi-popup-open:style(overflow: auto !importan
 *$font,third-party,important
 
 
+! === [L58: PROTOCOL-HARDENING] v188.0 ===
+! Укрепление синтаксиса и оптимизация HTTPS-инспекции.
+
+! 1. Принудительная очистка заголовка Referer (Anti-Path-Leak)
+! Скрывает от сайтов точный адрес страницы, с которой ты пришел.
+*$header=Referer: ,important
+
+! 2. Блокировка API обнаружения AdBlock
+! Не дает сайтам "обижаться" на твой мощный конфиг и просить его выключить.
+#%#//scriptlet("set-constant", "navigator.webdriver", "false")
+#%#//scriptlet("abort-current-inline-script", "querySelector", "ad-block")
+
+! 3. Запрет на использование DNS-over-HTTPS (DoH) через браузер
+! Чтобы браузер не пытался обойти фильтрацию AdGuard через свои встроенные DNS.
+||dns.google^$important
+||cloudflare-dns.com^$important
+
+! 4. CSP: Запрет на исполнение внешних скриптов (Strict Mode)
+! Позволяет загружать скрипты только с самого домена или проверенных CDN Google.
+*$csp=script-src 'self' 'unsafe-inline' *.google.com *.gstatic.com; object-src 'none',important
+
+! 5. Финализация типов: Обработка потокового вещания (Media/Stream)
+! Гарантирует, что даже видео/аудио потоки проверяются на наличие трекеров.
+||*^$media,websocket,xmlhttprequest,important
+
 
 ! --- END OF OMNI-PROTOCOL APEX CORE ---
