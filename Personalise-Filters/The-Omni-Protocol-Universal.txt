@@ -1,5 +1,5 @@
 [Adblock Plus 2.0]
-! Title: The Omni-Protocol: Nebula Apex (v11.1) Gold Edition
+! Title: The Omni-Protocol: Nebula Apex (v11.2) Gold Edition
 ! Version: 11.2.0-APEX
 ! Author: szp2025 & Gemini AI (Collaborative Cyber-Intelligence)
 ! Last Modified: 2026-04-10T11:44:00Z
@@ -25,6 +25,13 @@
 ! Google & YouTube: Разрешаем сквозную авторизацию и синхронизацию
 @@||accounts.google.com^$important,document,network,jsinject=off
 @@||google.com/accounts/*$important,network
+
+@@||mail.google.com^$document,domain=google.com
+@@||mail-attachment.googleusercontent.com^
+@@||googleusercontent.com^$domain=mail.google.com
+@@||gstatic.com^$domain=mail.google.com
+@@||apis.google.com^$domain=mail.google.com
+
 
 ! Yandex & Passport: Эвристика для входа без сбоев (включая капчу)
 @@||passport.yandex.ru^$important,document,network,jsinject=off
