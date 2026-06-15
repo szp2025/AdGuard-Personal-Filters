@@ -32,6 +32,11 @@
 @@||gstatic.com^$important,domain=mail.google.com
 @@||apis.google.com^$important,domain=mail.google.com
 
+! --- UNIVERSAL PHPMYADMIN INTERACTIVITY FIX (GENERIC DEBLOCAGE) ---
+@@/*/myadmin/index.php?route=*$important,document,jsinject=off
+@@/*/phpmyadmin/index.php?route=*$important,document,jsinject=off
+@@/.*\/php(my)?admin.*/$important,document,jsinject=off,extension
+
 ! Yandex & Passport: Эвристика для входа без сбоев (включая капчу)
 @@||passport.yandex.ru^$important,document,jsinject=off
 @@||ext.captcha.yandex.net^$important,network
