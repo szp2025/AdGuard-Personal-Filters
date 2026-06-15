@@ -23,18 +23,17 @@
 
 ! === 5. TRUSTED EXCEPTIONS (AUTH-FLOW v20.4) ===
 ! Google & YouTube: Разрешаем сквозную авторизацию и синхронизацию
-@@||accounts.google.com^$important,document,network,jsinject=off
-@@||google.com/accounts/*$important,network
+@@||accounts.google.com^$important,document,jsinject=off
+@@||google.com/accounts/*$important
 
-@@||mail.google.com^$document,domain=google.com
-@@||mail-attachment.googleusercontent.com^
-@@||googleusercontent.com^$domain=mail.google.com
-@@||gstatic.com^$domain=mail.google.com
-@@||apis.google.com^$domain=mail.google.com
-
+! --- Déblocage Réseau et Authentification Gmail ---
+@@||mail.google.com^$important,document,jsinject=off,extension
+@@||googleusercontent.com^$important,extension
+@@||gstatic.com^$important,domain=mail.google.com
+@@||apis.google.com^$important,domain=mail.google.com
 
 ! Yandex & Passport: Эвристика для входа без сбоев (включая капчу)
-@@||passport.yandex.ru^$important,document,network,jsinject=off
+@@||passport.yandex.ru^$important,document,jsinject=off
 @@||ext.captcha.yandex.net^$important,network
 
 ! TF1 / MYTF1: Разрешаем авторизацию и работу DRM-плеера (критично для Франции)
